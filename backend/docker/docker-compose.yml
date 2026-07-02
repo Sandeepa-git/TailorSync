@@ -1,0 +1,23 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: tailor
+      POSTGRES_PASSWORD: tailor
+      POSTGRES_DB: tailorsync
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+  web:
+    build: ./
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    volumes:
+      - ../backend/app:/app/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+volumes:
+  db-data:

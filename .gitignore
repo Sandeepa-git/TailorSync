@@ -1,0 +1,33 @@
+# Python virtual environments
+.venv/
+venv/
+ENV/
+env/
+__pycache__/
+*.pyc
+
+# Flutter/Dart
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+
+# Node/npm
+node_modules/
+
+# OS/IDE files
+.DS_Store
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+# Local configuration
+.env
+.env.*
