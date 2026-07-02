@@ -64,5 +64,5 @@ jobs:
         uses: azure/webapps-deploy@v3
         id: deploy-to-webapp
         with:
-          app-name: 'tailorsync-api-bqgscxf3g2d7c7hb'
+          app-name: 'tailorsync-api'
           slot-name: 'Production'
