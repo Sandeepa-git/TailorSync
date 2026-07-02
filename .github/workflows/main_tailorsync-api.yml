@@ -66,3 +66,4 @@ jobs:
         with:
           app-name: 'tailorsync-api'
           slot-name: 'Production'
+          startup-command: 'gunicorn --bind=0.0.0.0 --workers=4 --worker-class=uvicorn.workers.UvicornWorker app.main:app'
