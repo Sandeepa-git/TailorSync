@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../config/env_config.dart';
 import '../api_client.dart';
 
 final apiClientProvider = Provider((ref) {
-  return ApiClient.create('http://10.18.157.15:8000/api/v1');
+  return ApiClient.create(EnvConfig.backendUrl);
 });
