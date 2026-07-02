@@ -118,9 +118,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               obscureText: true,
                               validator: (v) {
                                 if (v == null || v.isEmpty) return 'Password is required';
-                                if (v.length < 8) return 'Must be at least 8 characters';
-                                if (!RegExp(r'[A-Z]').hasMatch(v)) return 'Must contain at least one capital letter';
-                                if (!RegExp(r'[!@#\$&*~`%\^\(\)_\+\-=\[\]\{\};:"\\|,.<>/?]').hasMatch(v)) return 'Must contain at least one special character';
+                                if (_isSignUp) {
+                                  if (v.length < 8) return 'Must be at least 8 characters';
+                                  if (!RegExp(r'[A-Z]').hasMatch(v)) return 'Must contain at least one capital letter';
+                                  if (!RegExp(r'[!@#\$&*~`%\^\(\)_\+\-=\[\]\{\};:"\\|,.<>/?]').hasMatch(v)) return 'Must contain at least one special character';
+                                }
                                 return null;
                               },
                             ),

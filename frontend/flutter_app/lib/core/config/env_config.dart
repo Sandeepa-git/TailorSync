@@ -1,6 +1,6 @@
 class EnvConfig {
   static const String backendUrl = String.fromEnvironment(
     'BACKEND_URL',
-    defaultValue: 'http://10.18.157.15:8000/api/v1',
+    defaultValue: 'https://tailorsync-api-bqgscxf3g2d7c7hb.uaenorth-01.azurewebsites.net/api/v1',
   );
 }
