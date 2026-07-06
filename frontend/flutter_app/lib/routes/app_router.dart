@@ -8,6 +8,8 @@ import '../features/customers/presentation/screens/customers_list_screen.dart';
 import '../features/customers/presentation/screens/customer_form_screen.dart';
 import '../features/orders/presentation/screens/orders_list_screen.dart';
 import '../features/orders/presentation/screens/new_order_wizard.dart';
+import '../features/orders/presentation/screens/order_details_screen.dart';
+import '../features/orders/models/order.dart';
 import '../features/tasks/presentation/screens/tasks_screen.dart';
 import '../features/reports/presentation/screens/reports_screen.dart';
 import '../features/ai_tools/presentation/screens/ai_tools_screen.dart';
@@ -68,6 +70,12 @@ final GoRouter appRouter = GoRouter(
         GoRoute(
           path: '/orders',
           builder: (BuildContext context, GoRouterState state) => const OrdersListScreen(),
+          routes: [
+            GoRoute(
+              path: 'details',
+              builder: (BuildContext context, GoRouterState state) => OrderDetailsScreen(order: state.extra as Order),
+            ),
+          ],
         ),
         GoRoute(
           path: '/tasks',

@@ -74,11 +74,14 @@ class OrdersListScreen extends ConsumerWidget {
                     ),
                   ],
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
+                child: InkWell(
+                  onTap: () => context.go('/orders/details', extra: o),
+                  borderRadius: BorderRadius.circular(16),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
                       // Header row
                       Row(
                         children: [
@@ -123,6 +126,7 @@ class OrdersListScreen extends ConsumerWidget {
                       ),
                     ],
                   ),
+                ),
                 ),
               );
             },

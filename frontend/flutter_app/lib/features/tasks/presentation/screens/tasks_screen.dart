@@ -205,6 +205,7 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
                     stageIcon: Icons.cut,
                     dueDate: task['due_date'] != null ? task['due_date'].toString().split('T')[0] : 'N/A',
                     isHighPriority: isHighPriority,
+                    onUpdateStage: () => _showUpdateStageDialog(context, task, ref),
                   );
                 },
               ),
@@ -212,6 +213,51 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
         ),
       ),
     ),
+    );
+  }
+
+  void _showUpdateStageDialog(BuildContext context, dynamic task, WidgetRef ref) {
+    final stages = ['Order Received', 'Cutting', 'Sewing', 'Fitting', 'Quality Check', 'Ready', 'Delivered'];
+    final currentStage = task['status'] ?? 'Order Received';
+    
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      builder: (ctx) => Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Update Task Stage', style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.bold, color: const Color(0xFF1A237E))),
+            const SizedBox(height: 16),
+            ...stages.map((stage) {
+              final isSelected = stage == currentStage;
+              return ListTile(
+                title: Text(stage, style: GoogleFonts.inter(fontWeight: isSelected ? FontWeight.bold : FontWeight.normal)),
+                trailing: isSelected ? const Icon(Icons.check, color: Color(0xFF1A237E)) : null,
+                onTap: () async {
+                  Navigator.pop(ctx);
+                  if (stage == currentStage) return;
+                  
+                  try {
+                    final api = ref.read(apiClientProvider);
+                    await api.updateOrder(task['id'], {
+                      'status': stage,
+                      'customer_id': task['customer_id'],
+                      'garment_type': task['garment_type'],
+                    });
+                    _loadData();
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Task updated to $stage'), backgroundColor: const Color(0xFF2ECC71)));
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to update task'), backgroundColor: Colors.red));
+                  }
+                },
+              );
+            }),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -259,6 +305,7 @@ class _TaskCard extends StatelessWidget {
   final IconData stageIcon;
   final String dueDate;
   final bool isHighPriority;
+  final VoidCallback? onUpdateStage;
 
   const _TaskCard({
     required this.orderId,
@@ -273,6 +320,7 @@ class _TaskCard extends StatelessWidget {
     required this.stageIcon,
     required this.dueDate,
     this.isHighPriority = false,
+    this.onUpdateStage,
   });
 
   @override
@@ -343,11 +391,14 @@ class _TaskCard extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Row(
-                          children: [
-                            Text('Update Stage', style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.bold, color: const Color(0xFF1A237E))),
-                            const Icon(Icons.keyboard_arrow_down, size: 16, color: Color(0xFF1A237E)),
-                          ],
+                        InkWell(
+                          onTap: onUpdateStage,
+                          child: Row(
+                            children: [
+                              Text('Update Stage', style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.bold, color: const Color(0xFF1A237E))),
+                              const Icon(Icons.keyboard_arrow_down, size: 16, color: Color(0xFF1A237E)),
+                            ],
+                          ),
                         ),
                         Icon(Icons.description_outlined, size: 20, color: const Color(0xFF757575)),
                       ],
