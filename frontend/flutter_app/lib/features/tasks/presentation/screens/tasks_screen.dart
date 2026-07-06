@@ -30,7 +30,7 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
     try {
       final api = ref.read(apiClientProvider);
       final userResp = await api.getMe();
-      final ordersResp = await api.dio.get('/orders');
+      final ordersResp = await api.listOrders();
       
       if (mounted) {
         setState(() {
