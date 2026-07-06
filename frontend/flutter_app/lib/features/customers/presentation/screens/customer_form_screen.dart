@@ -15,6 +15,7 @@ class CustomerFormScreen extends ConsumerStatefulWidget {
 }
 
 class _CustomerFormScreenState extends ConsumerState<CustomerFormScreen> {
+  final _formKey = GlobalKey<FormState>();
   final _name = TextEditingController();
   final _email = TextEditingController();
   final _phone = TextEditingController();
@@ -31,7 +32,7 @@ class _CustomerFormScreenState extends ConsumerState<CustomerFormScreen> {
   }
 
   void _save() async {
-    if (_name.text.isEmpty) return;
+    if (!_formKey.currentState!.validate()) return;
     setState(() => _loading = true);
     final api = ref.read(apiClientProvider);
     try {
@@ -71,24 +72,35 @@ class _CustomerFormScreenState extends ConsumerState<CustomerFormScreen> {
         child: Card(
           child: Padding(
             padding: const EdgeInsets.all(24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                TextField(controller: _name, decoration: const InputDecoration(labelText: 'Full Name', prefixIcon: Icon(Icons.person))),
-                const SizedBox(height: 16),
-                TextField(
-                  controller: _email, 
-                  decoration: const InputDecoration(labelText: 'Email Address', prefixIcon: Icon(Icons.email)),
-                  readOnly: widget.customer != null, // Lock email field when editing
-                ),
-                const SizedBox(height: 16),
-                TextField(controller: _phone, decoration: const InputDecoration(labelText: 'Phone Number', prefixIcon: Icon(Icons.phone))),
-                const SizedBox(height: 32),
-                ElevatedButton(
-                  onPressed: _loading ? null : _save,
-                  child: _loading ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white)) : Text('Save Customer', style: GoogleFonts.inter(fontWeight: FontWeight.bold)),
-                )
-              ],
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  TextFormField(
+                    controller: _name, 
+                    decoration: const InputDecoration(labelText: 'Full Name', prefixIcon: Icon(Icons.person)),
+                    validator: (v) => v == null || v.isEmpty ? 'Name is required' : null,
+                  ),
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: _email, 
+                    decoration: const InputDecoration(labelText: 'Email Address', prefixIcon: Icon(Icons.email)),
+                    readOnly: widget.customer != null, // Lock email field when editing
+                  ),
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: _phone, 
+                    decoration: const InputDecoration(labelText: 'Phone Number', prefixIcon: Icon(Icons.phone)),
+                    keyboardType: TextInputType.phone,
+                  ),
+                  const SizedBox(height: 32),
+                  ElevatedButton(
+                    onPressed: _loading ? null : _save,
+                    child: _loading ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white)) : Text('Save Customer', style: GoogleFonts.inter(fontWeight: FontWeight.bold)),
+                  )
+                ],
+              ),
             ),
           ),
         ),

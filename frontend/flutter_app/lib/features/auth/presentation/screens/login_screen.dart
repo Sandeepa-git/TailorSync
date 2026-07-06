@@ -35,6 +35,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       
       final token = response.data['access_token'];
       api.setToken(token);
+      await ref.read(secureStorageProvider).write(key: 'auth_token', value: token);
 
       if (!mounted) return;
       context.go('/home');

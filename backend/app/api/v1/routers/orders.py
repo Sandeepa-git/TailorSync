@@ -3,13 +3,15 @@ from typing import List, Optional
 from sqlalchemy.orm import Session
 from app.schemas.order import OrderCreate, OrderRead, OrderUpdate
 from app.database.session import get_db
+from app.api.deps import get_current_user
+from app.models.user import User
 
 router = APIRouter()
 
 @router.get("/", response_model=List[OrderRead])
-def list_orders(status: Optional[str] = None, db: Session = Depends(get_db)):
+def list_orders(status: Optional[str] = None, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     from app.services.order_service import list_orders as svc_list
-    orders = svc_list(db, status=status)
+    orders = svc_list(db, current_user.business_id, status=status)
     result = []
     for o in orders:
         assignment = o.staff_assignments[0] if o.staff_assignments else None
@@ -34,9 +36,9 @@ def list_orders(status: Optional[str] = None, db: Session = Depends(get_db)):
     return result
 
 @router.post("/", response_model=OrderRead)
-def create_order(payload: OrderCreate, db: Session = Depends(get_db)):
+def create_order(payload: OrderCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     from app.services.order_service import create_order as svc_create
-    o = svc_create(db, payload)
+    o = svc_create(db, payload, current_user.business_id)
     return {
         "id": o.id,
         "customer_id": o.customer_id,
@@ -54,14 +56,14 @@ def create_order(payload: OrderCreate, db: Session = Depends(get_db)):
     }
 
 @router.get("/stats")
-def get_stats(db: Session = Depends(get_db)):
+def get_stats(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     from app.services.order_service import get_dashboard_stats
-    return get_dashboard_stats(db)
+    return get_dashboard_stats(db, current_user.business_id)
 
 @router.get("/{order_id}", response_model=OrderRead)
-def get_order(order_id: int, db: Session = Depends(get_db)):
+def get_order(order_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     from app.services.order_service import get_order as svc_get
-    o = svc_get(db, order_id)
+    o = svc_get(db, order_id, current_user.business_id)
     if not o:
         raise HTTPException(status_code=404, detail="Order not found")
     assignment = o.staff_assignments[0] if getattr(o, 'staff_assignments', None) else None
@@ -84,9 +86,9 @@ def get_order(order_id: int, db: Session = Depends(get_db)):
     }
 
 @router.put("/{order_id}", response_model=OrderRead)
-def update_order(order_id: int, payload: OrderUpdate, db: Session = Depends(get_db)):
+def update_order(order_id: int, payload: OrderUpdate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     from app.services.order_service import update_order as svc_update
-    o = svc_update(db, order_id, payload)
+    o = svc_update(db, order_id, payload, current_user.business_id)
     if not o:
         raise HTTPException(status_code=404, detail="Order not found")
     assignment = o.staff_assignments[0] if getattr(o, 'staff_assignments', None) else None

@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../../../core/network/providers/api_provider.dart';
 
-class SplashScreen extends StatefulWidget {
+class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
 
   @override
-  State<SplashScreen> createState() => _SplashScreenState();
+  ConsumerState<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
+class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _fadeIn;
   late Animation<double> _scale;
@@ -29,8 +31,16 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     );
     _controller.forward();
 
-    Future.delayed(const Duration(seconds: 3), () {
-      if (mounted) context.go('/login');
+    Future.delayed(const Duration(seconds: 3), () async {
+      if (!mounted) return;
+      final storage = ref.read(secureStorageProvider);
+      final token = await storage.read(key: 'auth_token');
+      if (token != null && token.isNotEmpty) {
+        ref.read(apiClientProvider).setToken(token);
+        if (mounted) context.go('/home');
+      } else {
+        if (mounted) context.go('/login');
+      }
     });
   }
 

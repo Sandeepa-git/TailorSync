@@ -6,18 +6,14 @@ from app.schemas.user import UserRead, UserUpdate
 from app.core.security import get_password_hash
 from jose import jwt
 from app.core.config import settings
+from app.api.deps import get_current_user
 
 router = APIRouter()
 
-def get_current_user_id(authorization: str = None):
-    """Extract user ID from the JWT token in the Authorization header."""
-    # This is a simplified version; in production use Depends with Header
-    return None
-
 @router.get("/me")
-def get_me(db: Session = Depends(get_db)):
-    """Get the first user (simplified - in production, extract from JWT)."""
-    user = db.query(User).first()
+def get_me(current_user: User = Depends(get_current_user)):
+    """Get the current authenticated user."""
+    user = current_user
     if not user:
         raise HTTPException(status_code=404, detail="No user found")
     return {
@@ -30,9 +26,9 @@ def get_me(db: Session = Depends(get_db)):
     }
 
 @router.put("/me")
-def update_me(payload: UserUpdate, db: Session = Depends(get_db)):
+def update_me(payload: UserUpdate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     """Update current user's profile."""
-    user = db.query(User).first()
+    user = current_user
     if not user:
         raise HTTPException(status_code=404, detail="No user found")
     
@@ -55,8 +51,10 @@ def update_me(payload: UserUpdate, db: Session = Depends(get_db)):
     }
 
 @router.get("/")
-def list_users(db: Session = Depends(get_db)):
-    users = db.query(User).all()
+def list_users(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    if not current_user.business_id:
+        return []
+    users = db.query(User).filter(User.business_id == current_user.business_id).all()
     return [
         {
             "id": u.id,

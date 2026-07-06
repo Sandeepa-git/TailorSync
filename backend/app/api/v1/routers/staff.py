@@ -4,28 +4,27 @@ from app.database.session import get_db
 from app.models.user import User, RoleEnum
 from app.schemas.user import UserRead, UserCreate
 from app.core.security import get_password_hash
+from app.api.deps import get_current_user
 
 router = APIRouter()
 
 @router.get("/", response_model=list[UserRead])
-def list_staff(db: Session = Depends(get_db)):
+def list_staff(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     """List all staff for the current user's business."""
-    user = db.query(User).first()
-    if not user or not user.business_id:
+    if not current_user or not current_user.business_id:
         return []
     
     staff = db.query(User).filter(
-        User.business_id == user.business_id,
-        User.id != user.id,
+        User.business_id == current_user.business_id,
+        User.id != current_user.id,
         User.is_active == True
     ).all()
     return staff
 
 @router.post("/", response_model=UserRead)
-def add_staff(payload: UserCreate, db: Session = Depends(get_db)):
+def add_staff(payload: UserCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     """Add a new staff member to the current user's business."""
-    user = db.query(User).first()
-    if not user or not user.business_id:
+    if not current_user or not current_user.business_id:
         raise HTTPException(status_code=400, detail="You must have a business to add staff")
     
     # Check if email exists
@@ -38,7 +37,7 @@ def add_staff(payload: UserCreate, db: Session = Depends(get_db)):
         phone=payload.phone,
         hashed_password=get_password_hash(payload.password),
         role=RoleEnum.STAFF,
-        business_id=user.business_id,
+        business_id=current_user.business_id,
         is_active=True
     )
     db.add(new_staff)
@@ -47,15 +46,14 @@ def add_staff(payload: UserCreate, db: Session = Depends(get_db)):
     return new_staff
 
 @router.delete("/{staff_id}")
-def deactivate_staff(staff_id: int, db: Session = Depends(get_db)):
+def deactivate_staff(staff_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     """Deactivate a staff member."""
-    user = db.query(User).first()
-    if not user or not user.business_id:
+    if not current_user or not current_user.business_id:
         raise HTTPException(status_code=403, detail="Not authorized")
         
     staff = db.query(User).filter(
         User.id == staff_id,
-        User.business_id == user.business_id
+        User.business_id == current_user.business_id
     ).first()
     
     if not staff:

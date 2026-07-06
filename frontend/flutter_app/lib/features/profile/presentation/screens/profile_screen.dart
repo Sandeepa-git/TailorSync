@@ -63,6 +63,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     if (confirm == true) {
       final api = ref.read(apiClientProvider);
       api.clearToken();
+      await ref.read(secureStorageProvider).delete(key: 'auth_token');
       if (mounted) context.go('/login');
     }
   }

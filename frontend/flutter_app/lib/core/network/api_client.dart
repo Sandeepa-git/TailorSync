@@ -49,11 +49,11 @@ class ApiClient {
 
   // Staff Management
   Future<Response> listStaff() async {
-    return dio.get('/staff');
+    return dio.get('/staff/');
   }
 
   Future<Response> createStaff(Map<String, dynamic> payload) async {
-    return dio.post('/staff', data: payload);
+    return dio.post('/staff/', data: payload);
   }
 
   Future<Response> deactivateStaff(int id) async {
@@ -79,11 +79,11 @@ class ApiClient {
 
   // Customers
   Future<Response> listCustomers({Map<String, dynamic>? params}) async {
-    return dio.get('/customers', queryParameters: params);
+    return dio.get('/customers/', queryParameters: params);
   }
 
   Future<Response> createCustomer(Map<String, dynamic> payload) async {
-    return dio.post('/customers', data: payload);
+    return dio.post('/customers/', data: payload);
   }
 
   Future<Response> updateCustomer(int id, Map<String, dynamic> payload) async {
@@ -92,11 +92,11 @@ class ApiClient {
 
   // Orders
   Future<Response> listOrders({Map<String, dynamic>? params}) async {
-    return dio.get('/orders', queryParameters: params);
+    return dio.get('/orders/', queryParameters: params);
   }
 
   Future<Response> createOrder(Map<String, dynamic> payload) async {
-    return dio.post('/orders', data: payload);
+    return dio.post('/orders/', data: payload);
   }
 
   Future<Response> getOrder(int id) async {

@@ -5,8 +5,8 @@ from app.models.staff_assignment import StaffAssignment
 from app.schemas.order import OrderCreate, OrderUpdate
 from datetime import datetime
 
-def list_orders(db: Session, skip: int = 0, limit: int = 100, status: str = None):
-    query = db.query(Order).options(
+def list_orders(db: Session, business_id: int, skip: int = 0, limit: int = 100, status: str = None):
+    query = db.query(Order).filter(Order.business_id == business_id).options(
         joinedload(Order.customer),
         joinedload(Order.staff_assignments).joinedload(StaffAssignment.staff)
     )
@@ -18,9 +18,10 @@ def list_orders(db: Session, skip: int = 0, limit: int = 100, status: str = None
             pass
     return query.order_by(Order.created_at.desc()).offset(skip).limit(limit).all()
 
-def create_order(db: Session, order: OrderCreate):
+def create_order(db: Session, order: OrderCreate, business_id: int):
     # Create the order itself (exclude nested objects)
     order_data = order.dict(exclude={'measurements', 'staff_id'})
+    order_data['business_id'] = business_id
     
     # Convert priority string to enum
     priority_str = order_data.pop('priority', 'Medium')
@@ -54,16 +55,16 @@ def create_order(db: Session, order: OrderCreate):
     db.refresh(db_order)
     return db_order
 
-def get_order(db: Session, order_id: int):
+def get_order(db: Session, order_id: int, business_id: int):
     return db.query(Order).options(
         joinedload(Order.customer),
         joinedload(Order.measurements),
         joinedload(Order.staff_assignments).joinedload(StaffAssignment.staff),
         joinedload(Order.notes),
-    ).filter(Order.id == order_id).first()
+    ).filter(Order.id == order_id, Order.business_id == business_id).first()
 
-def update_order(db: Session, order_id: int, updates: OrderUpdate):
-    order = db.query(Order).filter(Order.id == order_id).first()
+def update_order(db: Session, order_id: int, updates: OrderUpdate, business_id: int):
+    order = db.query(Order).filter(Order.id == order_id, Order.business_id == business_id).first()
     if not order:
         return None
     
@@ -107,12 +108,12 @@ def update_order(db: Session, order_id: int, updates: OrderUpdate):
     db.refresh(order)
     return order
 
-def get_dashboard_stats(db: Session):
-    total_orders = db.query(Order).count()
-    ongoing = db.query(Order).filter(Order.status.notin_([OrderStatus.DELIVERED])).count()
-    completed = db.query(Order).filter(Order.status == OrderStatus.DELIVERED).count()
+def get_dashboard_stats(db: Session, business_id: int):
+    total_orders = db.query(Order).filter(Order.business_id == business_id).count()
+    ongoing = db.query(Order).filter(Order.business_id == business_id, Order.status.notin_([OrderStatus.DELIVERED])).count()
+    completed = db.query(Order).filter(Order.business_id == business_id, Order.status == OrderStatus.DELIVERED).count()
     from app.models.customer import Customer
-    total_customers = db.query(Customer).count()
+    total_customers = db.query(Customer).filter(Customer.business_id == business_id).count()
     return {
         "total_orders": total_orders,
         "ongoing_orders": ongoing,
