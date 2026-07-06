@@ -100,8 +100,13 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
             padding: const EdgeInsets.only(right: 16),
             child: CircleAvatar(
               radius: 16,
-              backgroundImage: const NetworkImage('https://i.pravatar.cc/100?img=11'),
-              backgroundColor: Colors.grey.shade200,
+              backgroundColor: const Color(0xFF5C6BC0),
+              child: Text(
+                _user?['full_name'] != null && _user!['full_name'].isNotEmpty 
+                  ? _user!['full_name'][0].toUpperCase() 
+                  : 'M',
+                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
+              ),
             ),
           ),
         ],

@@ -750,14 +750,28 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> {
           padding: const EdgeInsets.all(16),
           child: Row(
             children: [
-              const CircleAvatar(radius: 16, backgroundImage: NetworkImage('https://i.pravatar.cc/100?img=11')),
+              CircleAvatar(
+                radius: 16,
+                backgroundColor: const Color(0xFF5C6BC0),
+                child: Text(
+                  _user?['full_name'] != null && _user!['full_name'].isNotEmpty 
+                    ? _user!['full_name'][0].toUpperCase() 
+                    : 'M',
+                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
+                ),
+              ),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text('Assigned To', style: GoogleFonts.inter(fontSize: 10, color: const Color(0xFF5C6BC0))),
-                    Text(_selectedStaffId == 1 ? 'Marcus Chen' : 'Sarah Lin', style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.bold, color: const Color(0xFF1A237E))),
+                    Text(
+                      _selectedStaffId == _user?['id'] 
+                        ? (_user?['full_name'] ?? 'Master Tailor') 
+                        : 'Staff #$_selectedStaffId', 
+                      style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.bold, color: const Color(0xFF1A237E))
+                    ),
                   ],
                 ),
               ),
@@ -946,9 +960,14 @@ class _StaffCard extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Icon(isSelected ? Icons.radio_button_checked : Icons.radio_button_unchecked, color: isSelected ? const Color(0xFF1A237E) : const Color(0xFFE8EAF6)),
-            const SizedBox(width: 12),
-            CircleAvatar(radius: 16, backgroundImage: NetworkImage('https://i.pravatar.cc/100?img=$id')),
+            CircleAvatar(
+              radius: 16, 
+              backgroundColor: isSelected ? const Color(0xFF1A237E) : const Color(0xFF5C6BC0),
+              child: Text(
+                name.isNotEmpty ? name[0].toUpperCase() : '?',
+                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
+              ),
+            ),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
