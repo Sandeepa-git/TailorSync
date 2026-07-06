@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../providers/orders_provider.dart';
 import '../../models/order.dart';
+import '../../../../core/network/providers/api_provider.dart';
+import 'package:dio/dio.dart';
 
 class OrdersListScreen extends ConsumerWidget {
   const OrdersListScreen({super.key});
@@ -90,6 +92,11 @@ class OrdersListScreen extends ConsumerWidget {
                           ),
                           const Spacer(),
                           Text('#${o.id}', style: GoogleFonts.inter(fontSize: 13, color: const Color(0xFF5C6BC0))),
+                          const SizedBox(width: 8),
+                          InkWell(
+                            onTap: () => _confirmDeleteOrder(context, ref, o),
+                            child: const Icon(Icons.delete_outline, color: Color(0xFFD32F2F), size: 20),
+                          ),
                         ],
                       ),
                       const SizedBox(height: 10),
@@ -130,6 +137,32 @@ class OrdersListScreen extends ConsumerWidget {
         icon: const Icon(Icons.add),
         label: Text('New Order', style: GoogleFonts.inter(fontWeight: FontWeight.bold)),
         onPressed: () => context.go('/orders/new'),
+      ),
+    );
+  }
+
+  void _confirmDeleteOrder(BuildContext context, WidgetRef ref, Order order) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Delete Order'),
+        content: Text('Are you sure you want to delete order #${order.id}?'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+          TextButton(
+            onPressed: () async {
+              Navigator.pop(ctx);
+              try {
+                await ref.read(apiClientProvider).deleteOrder(order.id!);
+                ref.invalidate(ordersProvider);
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Order deleted')));
+              } catch (e) {
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to delete order'), backgroundColor: Colors.red));
+              }
+            },
+            child: const Text('Delete', style: TextStyle(color: Colors.red)),
+          ),
+        ],
       ),
     );
   }

@@ -90,6 +90,10 @@ class ApiClient {
     return dio.put('/customers/$id', data: payload);
   }
 
+  Future<Response> deleteCustomer(int id) async {
+    return dio.delete('/customers/$id');
+  }
+
   // Orders
   Future<Response> listOrders({Map<String, dynamic>? params}) async {
     return dio.get('/orders/', queryParameters: params);
@@ -105,6 +109,10 @@ class ApiClient {
 
   Future<Response> updateOrder(int id, Map<String, dynamic> payload) async {
     return dio.put('/orders/$id', data: payload);
+  }
+
+  Future<Response> deleteOrder(int id) async {
+    return dio.delete('/orders/$id');
   }
 
   Future<Response> getOrderStats() async {

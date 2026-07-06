@@ -106,6 +106,13 @@ def update_order(order_id: int, payload: OrderUpdate, db: Session = Depends(get_
         "customer_instructions": o.customer_instructions,
         "customer_name": o.customer.name if o.customer else None,
         "customer_phone": o.customer.phone if o.customer else None,
-        "staff_id": assignment.staff_id if assignment else None,
         "staff_name": assignment.staff.full_name if assignment and assignment.staff else None,
     }
+
+@router.delete("/{order_id}")
+def delete_order(order_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    from app.services.order_service import delete_order as svc_delete
+    success = svc_delete(db, order_id, current_user.business_id)
+    if not success:
+        raise HTTPException(status_code=404, detail="Order not found")
+    return {"detail": "Order deleted successfully"}

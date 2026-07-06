@@ -25,4 +25,14 @@ def update_customer(customer_id: int, payload: CustomerUpdate, db: Session = Dep
     updated = svc_update(db, customer_id, payload, current_user.business_id)
     if not updated:
         raise HTTPException(status_code=404, detail="Customer not found")
+        raise HTTPException(status_code=404, detail="Customer not found")
     return updated
+
+@router.delete("/{customer_id}")
+def delete_customer(customer_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    from app.services.customer_service import delete_customer as svc_delete
+    from fastapi import HTTPException
+    success, message = svc_delete(db, customer_id, current_user.business_id)
+    if not success:
+        raise HTTPException(status_code=400, detail=message)
+    return {"detail": message}

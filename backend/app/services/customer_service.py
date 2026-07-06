@@ -21,4 +21,24 @@ def update_customer(db: Session, customer_id: int, updates: CustomerUpdate, busi
             customer.phone = updates.phone
         db.commit()
         db.refresh(customer)
+        db.refresh(customer)
     return customer
+
+def delete_customer(db: Session, customer_id: int, business_id: int):
+    customer = db.query(Customer).filter(Customer.id == customer_id, Customer.business_id == business_id).first()
+    if not customer:
+        return False, "Customer not found"
+    
+    # Check for active orders
+    from app.models.order import Order, OrderStatus
+    active_orders = db.query(Order).filter(
+        Order.customer_id == customer_id, 
+        Order.status != OrderStatus.DELIVERED
+    ).count()
+    
+    if active_orders > 0:
+        return False, f"Cannot delete customer with {active_orders} active orders"
+    
+    db.delete(customer)
+    db.commit()
+    return True, "Customer deleted successfully"

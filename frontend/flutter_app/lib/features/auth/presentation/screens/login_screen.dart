@@ -20,6 +20,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   bool _loading = false;
   bool _isSignUp = false;
+  bool _obscurePassword = true;
 
   void _submit() async {
     if (!_formKey.currentState!.validate()) return;
@@ -72,15 +73,18 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.cut, size: 64, color: Color(0xFF1A237E)),
-                  const SizedBox(height: 16),
-                  Text('TailorSync', style: Theme.of(context).textTheme.displayLarge),
+                  const Icon(Icons.cut, size: 48, color: Color(0xFF1A237E)),
+                  const SizedBox(height: 12),
+                  Text('TailorSync', style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold, color: const Color(0xFF1A237E))),
                   const SizedBox(height: 8),
-                  Text('Elevate Your Craft', style: Theme.of(context).textTheme.bodyLarge),
-                  const SizedBox(height: 48),
+                  Text('Elevate Your Craft', style: Theme.of(context).textTheme.titleMedium?.copyWith(color: const Color(0xFF5C6BC0))),
+                  const SizedBox(height: 32),
                   Card(
+                    elevation: 4,
+                    shadowColor: const Color(0xFF1A237E).withOpacity(0.1),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                     child: Padding(
-                      padding: const EdgeInsets.all(24.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
                       child: Form(
                         key: _formKey,
                         child: Column(
@@ -115,8 +119,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             const SizedBox(height: 16),
                             TextFormField(
                               controller: _password,
-                              decoration: const InputDecoration(labelText: 'Password', prefixIcon: Icon(Icons.lock)),
-                              obscureText: true,
+                              decoration: InputDecoration(
+                                labelText: 'Password', 
+                                prefixIcon: const Icon(Icons.lock),
+                                suffixIcon: IconButton(
+                                  icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility),
+                                  onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+                                ),
+                              ),
+                              obscureText: _obscurePassword,
                               validator: (v) {
                                 if (v == null || v.isEmpty) return 'Password is required';
                                 if (_isSignUp) {
@@ -130,15 +141,19 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             const SizedBox(height: 24),
                           SizedBox(
                             width: double.infinity,
+                            height: 48,
                             child: ElevatedButton(
                               onPressed: _loading ? null : _submit,
-                              style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF1A237E)),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFF1A237E),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                              ),
                               child: _loading 
                                 ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2)) 
-                                : Text(_isSignUp ? 'Sign Up' : 'Sign In', style: const TextStyle(color: Colors.white)),
+                                : Text(_isSignUp ? 'Sign Up' : 'Sign In', style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600)),
                             ),
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 20),
                           TextButton(
                             onPressed: () => setState(() {
                               _isSignUp = !_isSignUp;

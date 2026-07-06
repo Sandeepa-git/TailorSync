@@ -40,6 +40,8 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> {
             _selectedStaffId = _user?['id'];
           } else if (_staffList.isNotEmpty) {
             _selectedStaffId = _staffList.first['id'];
+          } else {
+            _selectedStaffId = _user?['id'];
           }
           _loadingInit = false;
         });
@@ -422,27 +424,17 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(color: const Color(0xFF1A237E), borderRadius: BorderRadius.circular(8)),
-                child: const Icon(Icons.auto_awesome, color: Colors.white, size: 20),
+                child: const Icon(Icons.info_outline, color: Colors.white, size: 20),
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        Text('AI Measurement Assistant', style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: const Color(0xFF1A237E))),
-                        const SizedBox(width: 8),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                          decoration: BoxDecoration(color: const Color(0xFF1A237E), borderRadius: BorderRadius.circular(4)),
-                          child: const Text('Beta', style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold)),
-                        ),
-                      ],
-                    ),
+                    Text('Notice', style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: const Color(0xFF1A237E))),
                     const SizedBox(height: 4),
                     Text(
-                      "We've predicted certain values based on the client's height and chest measurements. Review and adjust as needed.",
+                      "AI measurement predictions and suggestions will be available soon! Please enter all measurements manually for now.",
                       style: GoogleFonts.inter(fontSize: 12, color: const Color(0xFF5C6BC0)),
                     ),
                   ],
@@ -453,12 +445,12 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> {
         ),
         const SizedBox(height: 24),
 
-        _MeasureInputRow(label: 'Height', controller: _height, icon: Icons.height),
-        _MeasureInputRow(label: 'Chest', controller: _chest, icon: Icons.straighten),
-        _MeasureInputRow(label: 'Neck', controller: _neck, icon: Icons.person, isPredicted: true),
+        _MeasureInputRow(label: 'Height', controller: _height, icon: Icons.height, hintText: 'Enter value'),
+        _MeasureInputRow(label: 'Chest', controller: _chest, icon: Icons.straighten, hintText: 'Enter value'),
+        _MeasureInputRow(label: 'Neck', controller: _neck, icon: Icons.person, hintText: 'Enter value'),
         _MeasureInputRow(label: 'Shoulder', controller: _shoulder, icon: Icons.accessibility_new, hintText: 'Enter value'),
         _MeasureInputRow(label: 'Sleeve Length', controller: _sleeveLength, icon: Icons.back_hand, hintText: 'Enter value'),
-        _MeasureInputRow(label: 'Waist', controller: _waist, icon: Icons.person_add_alt, isPredicted: true),
+        _MeasureInputRow(label: 'Waist', controller: _waist, icon: Icons.person_add_alt, hintText: 'Enter value'),
 
         const SizedBox(height: 32),
         Row(
@@ -538,11 +530,11 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> {
         ),
         const SizedBox(height: 32),
 
-        // AI Fabric Intelligence Card
+        // AI Fabric Intelligence Card - Disabled Notice
         Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: const Color(0xFF2C323A), // Dark gray matching screenshot
+            color: const Color(0xFFF1F3FB), 
             borderRadius: BorderRadius.circular(16),
           ),
           child: Column(
@@ -550,45 +542,15 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> {
             children: [
               Row(
                 children: [
-                  const Icon(Icons.psychology, color: Color(0xFF5C6BC0), size: 20),
+                  const Icon(Icons.info_outline, color: Color(0xFF1A237E), size: 20),
                   const SizedBox(width: 8),
-                  Text('AI Fabric Intelligence', style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.bold, color: const Color(0xFF9FA8DA))),
+                  Text('Notice', style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.bold, color: const Color(0xFF1A237E))),
                 ],
               ),
-              const SizedBox(height: 20),
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(color: Colors.white.withOpacity(0.05), borderRadius: BorderRadius.circular(8)),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Estimated Fabric', style: GoogleFonts.inter(fontSize: 11, color: Colors.white54)),
-                    const SizedBox(height: 4),
-                    Text('2.5 meters', style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 16),
-              Text('Recommended:', style: GoogleFonts.inter(fontSize: 11, color: Colors.white54)),
-              const SizedBox(height: 8),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Egyptian Cotton', style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
-                      Text('Premium, Breathable', style: GoogleFonts.inter(fontSize: 11, color: Colors.white54)),
-                    ],
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text('98%', style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.bold, color: const Color(0xFF2ECC71))),
-                      Text('Match', style: GoogleFonts.inter(fontSize: 11, color: const Color(0xFF2ECC71))),
-                    ],
-                  ),
-                ],
+              const SizedBox(height: 12),
+              Text(
+                "AI Fabric Estimation and Recommendations will be available soon!",
+                style: GoogleFonts.inter(fontSize: 13, color: const Color(0xFF5C6BC0)),
               ),
             ],
           ),

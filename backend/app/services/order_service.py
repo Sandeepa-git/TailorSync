@@ -120,3 +120,17 @@ def get_dashboard_stats(db: Session, business_id: int):
         "completed_orders": completed,
         "total_customers": total_customers,
     }
+
+def delete_order(db: Session, order_id: int, business_id: int):
+    order = db.query(Order).filter(Order.id == order_id, Order.business_id == business_id).first()
+    if not order:
+        return False
+    
+    # Let SQLAlchemy handle cascade deletions if configured, or manually delete related rows.
+    # Note: StaffAssignment and Measurements usually cascade delete or can be manually deleted.
+    db.query(Measurement).filter(Measurement.order_id == order_id).delete()
+    db.query(StaffAssignment).filter(StaffAssignment.order_id == order_id).delete()
+    
+    db.delete(order)
+    db.commit()
+    return True
