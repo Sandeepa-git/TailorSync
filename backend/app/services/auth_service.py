@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from app.models.user import User
 from app.core.jwt import create_access_token
 from app.core.security import get_password_hash, verify_password
+from app.models.business import Business
 
 # Initialize Firebase Admin App
 try:
@@ -16,7 +17,15 @@ def email_login(db: Session, email: str, password: str):
     user = db.query(User).filter(User.email == email).first()
     if not user or not verify_password(password, user.hashed_password):
         raise HTTPException(status_code=401, detail="Incorrect email or password")
-    
+    if not user.business_id:
+        biz_name = f"{user.full_name}'s Tailor Shop" if user.full_name else "My Tailor Shop"
+        new_biz = Business(name=biz_name)
+        db.add(new_biz)
+        db.commit()
+        db.refresh(new_biz)
+        user.business_id = new_biz.id
+        db.commit()
+
     return {
         "access_token": create_access_token(str(user.id), {"role": user.role.value}),
         "token_type": "bearer"
@@ -36,6 +45,15 @@ def email_signup(db: Session, email: str, password: str, full_name: str = "", ph
     db.add(user)
     db.commit()
     db.refresh(user)
+    
+    biz_name = f"{full_name}'s Tailor Shop" if full_name else "My Tailor Shop"
+    new_biz = Business(name=biz_name)
+    db.add(new_biz)
+    db.commit()
+    db.refresh(new_biz)
+    user.business_id = new_biz.id
+    db.commit()
+    
     return {
         "access_token": create_access_token(str(user.id), {"role": user.role.value}),
         "token_type": "bearer"
@@ -61,6 +79,22 @@ def google_login(db: Session, firebase_token: str):
         db.add(user)
         db.commit()
         db.refresh(user)
+        
+        biz_name = f"{user.full_name}'s Tailor Shop" if user.full_name else "My Tailor Shop"
+        new_biz = Business(name=biz_name)
+        db.add(new_biz)
+        db.commit()
+        db.refresh(new_biz)
+        user.business_id = new_biz.id
+        db.commit()
+    elif not user.business_id:
+        biz_name = f"{user.full_name}'s Tailor Shop" if user.full_name else "My Tailor Shop"
+        new_biz = Business(name=biz_name)
+        db.add(new_biz)
+        db.commit()
+        db.refresh(new_biz)
+        user.business_id = new_biz.id
+        db.commit()
         
     return {
         "access_token": create_access_token(str(user.id), {"role": user.role.value}),

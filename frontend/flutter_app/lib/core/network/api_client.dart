@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 class ApiClient {
   final Dio dio;
   String? _accessToken;
+  void Function()? onUnauthorized;
 
   ApiClient(this.dio);
 
@@ -16,6 +17,12 @@ class ApiClient {
           options.headers['Authorization'] = 'Bearer ${client._accessToken}';
         }
         return handler.next(options);
+      },
+      onError: (DioException e, handler) {
+        if (e.response?.statusCode == 401) {
+          client.onUnauthorized?.call();
+        }
+        return handler.next(e);
       },
     ));
     return client;
