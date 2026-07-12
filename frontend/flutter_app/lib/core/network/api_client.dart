@@ -141,4 +141,25 @@ class ApiClient {
   Future<Response> predictMeasurements(Map<String, dynamic> payload) async {
     return dio.post('/ai/predict-measurements', data: payload);
   }
+
+  // Measurement Templates
+  Future<Response> getMeasurementTemplates() async {
+    return dio.get('/measurement-templates/');
+  }
+
+  Future<Response> getMeasurementTemplateByCategory(String categoryName) async {
+    return dio.get('/measurement-templates/$categoryName');
+  }
+
+  Future<Response> createMeasurementTemplate(Map<String, dynamic> payload) async {
+    return dio.post('/measurement-templates/', data: payload);
+  }
+
+  Future<Response> updateMeasurementTemplate(int id, Map<String, dynamic> payload) async {
+    return dio.put('/measurement-templates/$id', data: payload);
+  }
+
+  Future<Response> deleteMeasurementTemplate(int id) async {
+    return dio.delete('/measurement-templates/$id');
+  }
 }

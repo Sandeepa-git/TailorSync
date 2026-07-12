@@ -90,6 +90,45 @@ class OrderDetailsScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 24),
             ],
+
+            // Measurements
+            if (order.measurements != null && order.measurements!.isNotEmpty) ...[
+              Text('Measurements', style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.bold, color: const Color(0xFF1A237E))),
+              const SizedBox(height: 12),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: const Color(0xFFE8EAF6)),
+                ),
+                child: Wrap(
+                  spacing: 12,
+                  runSpacing: 12,
+                  children: order.measurements!.map((m) {
+                    return Container(
+                      width: MediaQuery.of(context).size.width / 2 - 44, // Half width minus padding
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF8F9FA),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: const Color(0xFFE8EAF6)),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(m['field_name'] ?? 'Unknown', style: GoogleFonts.inter(fontSize: 11, color: const Color(0xFF5C6BC0))),
+                          const SizedBox(height: 4),
+                          Text('${m['value']} ${m['unit'] ?? 'cm'}', style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.bold, color: const Color(0xFF1A237E))),
+                        ],
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
+              const SizedBox(height: 24),
+            ],
             
             // Actions
             SizedBox(

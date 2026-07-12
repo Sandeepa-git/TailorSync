@@ -12,6 +12,7 @@ class Order {
   final String? customerInstructions;
   final String? customerName;
   final String? customerPhone;
+  final List<dynamic>? measurements;
 
   Order({
     this.id,
@@ -27,6 +28,7 @@ class Order {
     this.customerInstructions,
     this.customerName,
     this.customerPhone,
+    this.measurements,
   });
 
   factory Order.fromJson(Map<String, dynamic> json) => Order(
@@ -43,5 +45,6 @@ class Order {
         customerInstructions: json['customer_instructions'],
         customerName: json['customer_name'],
         customerPhone: json['customer_phone'],
+        measurements: json['measurements'],
       );
 }

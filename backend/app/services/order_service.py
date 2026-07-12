@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session, joinedload
 from app.models.order import Order, OrderStatus, OrderPriority
-from app.models.measurement import Measurement
+from app.models.customer_measurement import CustomerMeasurement
 from app.models.staff_assignment import StaffAssignment
 from app.schemas.order import OrderCreate, OrderUpdate
 from datetime import datetime
@@ -8,7 +8,8 @@ from datetime import datetime
 def list_orders(db: Session, business_id: int, skip: int = 0, limit: int = 100, status: str = None):
     query = db.query(Order).filter(Order.business_id == business_id).options(
         joinedload(Order.customer),
-        joinedload(Order.staff_assignments).joinedload(StaffAssignment.staff)
+        joinedload(Order.staff_assignments).joinedload(StaffAssignment.staff),
+        joinedload(Order.measurements).joinedload(CustomerMeasurement.field)
     )
     if status:
         try:
@@ -36,11 +37,14 @@ def create_order(db: Session, order: OrderCreate, business_id: int):
     
     # Create measurements if provided
     if order.measurements:
-        m_data = order.measurements.dict()
-        m_data['customer_id'] = order.customer_id
-        m_data['order_id'] = db_order.id
-        db_measurement = Measurement(**m_data)
-        db.add(db_measurement)
+        for m_data in order.measurements:
+            db_measurement = CustomerMeasurement(
+                customer_id=order.customer_id,
+                order_id=db_order.id,
+                field_id=m_data.field_id,
+                value=m_data.value
+            )
+            db.add(db_measurement)
     
     # Create staff assignment if provided
     if order.staff_id:
@@ -58,7 +62,7 @@ def create_order(db: Session, order: OrderCreate, business_id: int):
 def get_order(db: Session, order_id: int, business_id: int):
     return db.query(Order).options(
         joinedload(Order.customer),
-        joinedload(Order.measurements),
+        joinedload(Order.measurements).joinedload(CustomerMeasurement.field),
         joinedload(Order.staff_assignments).joinedload(StaffAssignment.staff),
         joinedload(Order.notes),
     ).filter(Order.id == order_id, Order.business_id == business_id).first()
@@ -128,7 +132,7 @@ def delete_order(db: Session, order_id: int, business_id: int):
     
     # Let SQLAlchemy handle cascade deletions if configured, or manually delete related rows.
     # Note: StaffAssignment and Measurements usually cascade delete or can be manually deleted.
-    db.query(Measurement).filter(Measurement.order_id == order_id).delete()
+    db.query(CustomerMeasurement).filter(CustomerMeasurement.order_id == order_id).delete()
     db.query(StaffAssignment).filter(StaffAssignment.order_id == order_id).delete()
     
     db.delete(order)

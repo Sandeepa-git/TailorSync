@@ -15,4 +15,4 @@ class Customer(Base):
     
     orders = relationship("Order", back_populates="customer")
     business = relationship("Business", back_populates="customers")
-    measurements = relationship("Measurement", back_populates="customer")
+    measurements = relationship("CustomerMeasurement", back_populates="customer")

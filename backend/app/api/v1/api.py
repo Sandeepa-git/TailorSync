@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from app.api.v1.routers import auth, users, staff, customers, orders, measurements, reports, ai, business
+from app.api.v1.routers import auth, users, staff, customers, orders, measurements, reports, ai, business, templates
 
 api_router = APIRouter()
 
@@ -12,3 +12,4 @@ api_router.include_router(measurements.router, prefix="/measurements", tags=["me
 api_router.include_router(reports.router, prefix="/reports", tags=["reports"])
 api_router.include_router(ai.router, prefix="/ai", tags=["ai"])
 api_router.include_router(business.router, prefix="/business", tags=["business"])
+api_router.include_router(templates.router, prefix="/measurement-templates", tags=["templates"])

@@ -72,12 +72,9 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> {
   ];
 
   // Step 3: Measurements
-  final _height = TextEditingController(text: '180');
-  final _chest = TextEditingController(text: '102');
-  final _neck = TextEditingController(text: '41.5');
-  final _shoulder = TextEditingController();
-  final _sleeveLength = TextEditingController();
-  final _waist = TextEditingController(text: '88');
+  Map<String, dynamic>? _measurementTemplate;
+  bool _loadingTemplate = false;
+  final Map<int, TextEditingController> _measurementControllers = {};
 
   // Step 4: Style & Fabric
   String _occasion = 'Daily';
@@ -87,14 +84,31 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> {
   int? _selectedStaffId = 1; // Default to first staff member for demo
   String _staffSearch = '';
 
-  void _nextStep() {
+  Future<void> _nextStep() async {
     if (_currentStep == 0 && _selectedCustomerId == null) {
       _showSnack('Please select a customer');
       return;
     }
-    if (_currentStep == 1 && _selectedGarment == null) {
-      _showSnack('Please select a garment type');
-      return;
+    if (_currentStep == 1) {
+      if (_selectedGarment == null) {
+        _showSnack('Please select a garment type');
+        return;
+      }
+      // Load template for selected garment
+      setState(() => _loadingTemplate = true);
+      try {
+        final api = ref.read(apiClientProvider);
+        final resp = await api.getMeasurementTemplateByCategory(_selectedGarment!);
+        _measurementTemplate = resp.data;
+        _measurementControllers.clear();
+        final fields = _measurementTemplate!['fields'] as List;
+        for (var f in fields) {
+          _measurementControllers[f['id']] = TextEditingController(text: f['placeholder'] ?? '');
+        }
+      } catch (e) {
+        _showSnack('Failed to load measurement template');
+      }
+      setState(() => _loadingTemplate = false);
     }
     setState(() => _currentStep++);
   }
@@ -120,14 +134,19 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> {
       if (_selectedStaffId != null) body['staff_id'] = _selectedStaffId;
 
       // Measurements
-      final m = <String, dynamic>{};
-      if (_height.text.isNotEmpty) m['height'] = double.tryParse(_height.text);
-      if (_chest.text.isNotEmpty) m['chest'] = double.tryParse(_chest.text);
-      if (_neck.text.isNotEmpty) m['neck'] = double.tryParse(_neck.text);
-      if (_shoulder.text.isNotEmpty) m['shoulder'] = double.tryParse(_shoulder.text);
-      if (_sleeveLength.text.isNotEmpty) m['sleeve_length'] = double.tryParse(_sleeveLength.text);
-      if (_waist.text.isNotEmpty) m['waist'] = double.tryParse(_waist.text);
-      if (m.isNotEmpty) body['measurements'] = m;
+      final mList = <Map<String, dynamic>>[];
+      _measurementControllers.forEach((fieldId, controller) {
+        if (controller.text.isNotEmpty) {
+          final val = double.tryParse(controller.text);
+          if (val != null) {
+            mList.add({
+              'field_id': fieldId,
+              'value': val
+            });
+          }
+        }
+      });
+      if (mList.isNotEmpty) body['measurements'] = mList;
 
       await api.createOrder(body);
       ref.invalidate(ordersProvider);
@@ -408,8 +427,16 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> {
     );
   }
 
-  // ── Step 3: Measurements ──────────────────────────────────────────
   Widget _buildMeasurementsStep() {
+    if (_loadingTemplate) {
+      return const Center(child: Padding(
+        padding: EdgeInsets.all(40.0),
+        child: CircularProgressIndicator(color: Color(0xFF1A237E)),
+      ));
+    }
+
+    final fields = _measurementTemplate?['fields'] as List? ?? [];
+
     return Column(
       children: [
         Container(
@@ -445,12 +472,21 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> {
         ),
         const SizedBox(height: 24),
 
-        _MeasureInputRow(label: 'Height', controller: _height, icon: Icons.height, hintText: 'Enter value'),
-        _MeasureInputRow(label: 'Chest', controller: _chest, icon: Icons.straighten, hintText: 'Enter value'),
-        _MeasureInputRow(label: 'Neck', controller: _neck, icon: Icons.person, hintText: 'Enter value'),
-        _MeasureInputRow(label: 'Shoulder', controller: _shoulder, icon: Icons.accessibility_new, hintText: 'Enter value'),
-        _MeasureInputRow(label: 'Sleeve Length', controller: _sleeveLength, icon: Icons.back_hand, hintText: 'Enter value'),
-        _MeasureInputRow(label: 'Waist', controller: _waist, icon: Icons.person_add_alt, hintText: 'Enter value'),
+        if (fields.isEmpty)
+          const Padding(
+            padding: EdgeInsets.all(20.0),
+            child: Text('No measurement fields required for this garment type.', style: TextStyle(color: Colors.grey)),
+          )
+        else
+          ...fields.map((f) {
+            return _MeasureInputRow(
+              label: f['field_name'] + (f['is_required'] == true ? ' *' : ''),
+              controller: _measurementControllers[f['id']]!,
+              icon: Icons.straighten,
+              hintText: f['placeholder'] ?? 'Enter value',
+              unit: f['unit'] ?? 'cm',
+            );
+          }),
 
         const SizedBox(height: 32),
         Row(
@@ -722,20 +758,20 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> {
                 ],
               ),
               const SizedBox(height: 12),
-              Row(
-                children: [
-                  Expanded(child: _ReviewMeasureBox(label: 'Neck', value: '${_neck.text} cm')),
-                  const SizedBox(width: 8),
-                  Expanded(child: _ReviewMeasureBox(label: 'Chest', value: '${_chest.text} cm', isAi: true)),
-                ],
-              ),
-              const SizedBox(height: 8),
-              Row(
-                children: [
-                  Expanded(child: _ReviewMeasureBox(label: 'Waist', value: '${_waist.text} cm')),
-                  const SizedBox(width: 8),
-                  Expanded(child: _ReviewMeasureBox(label: 'Sleeve', value: '${_sleeveLength.text.isEmpty ? '64' : _sleeveLength.text} cm', isAi: true)),
-                ],
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: _measurementControllers.entries.map((e) {
+                  final fieldId = e.key;
+                  final fieldData = (_measurementTemplate?['fields'] as List?)?.firstWhere((f) => f['id'] == fieldId, orElse: () => null);
+                  if (fieldData == null) return const SizedBox.shrink();
+                  final val = e.value.text;
+                  if (val.isEmpty) return const SizedBox.shrink();
+                  return SizedBox(
+                    width: MediaQuery.of(context).size.width / 2 - 36,
+                    child: _ReviewMeasureBox(label: fieldData['field_name'], value: '$val ${fieldData['unit'] ?? 'cm'}'),
+                  );
+                }).toList(),
               ),
             ],
           ),
@@ -875,8 +911,9 @@ class _MeasureInputRow extends StatelessWidget {
   final IconData icon;
   final bool isPredicted;
   final String hintText;
+  final String unit;
 
-  const _MeasureInputRow({required this.label, required this.controller, required this.icon, this.isPredicted = false, this.hintText = ''});
+  const _MeasureInputRow({required this.label, required this.controller, required this.icon, this.isPredicted = false, this.hintText = '', this.unit = 'cm'});
 
   @override
   Widget build(BuildContext context) {
@@ -919,7 +956,7 @@ class _MeasureInputRow extends StatelessWidget {
                     ),
                   ),
                 ),
-                Text('cm', style: GoogleFonts.inter(color: const Color(0xFF5C6BC0), fontSize: 13)),
+                Text(unit, style: GoogleFonts.inter(color: const Color(0xFF5C6BC0), fontSize: 13)),
                 const SizedBox(width: 16),
                 Container(
                   padding: const EdgeInsets.all(10),

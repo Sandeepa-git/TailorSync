@@ -9,6 +9,9 @@ import app.models.business
 import app.models.customer
 import app.models.order
 import app.models.measurement
+import app.models.measurement_template
+import app.models.measurement_field
+import app.models.customer_measurement
 import app.models.ai_prediction
 import app.models.fabric_estimation
 import app.models.fabric_recommendation

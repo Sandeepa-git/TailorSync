@@ -33,7 +33,7 @@ class Order(Base):
     tailor_remarks = Column(String, nullable=True)
     customer_instructions = Column(String, nullable=True)
     
-    measurements = relationship("Measurement", back_populates="order")
+    measurements = relationship("CustomerMeasurement", back_populates="order")
     staff_assignments = relationship("StaffAssignment", back_populates="order")
     notes = relationship("Note", back_populates="order")
     customer = relationship("Customer", back_populates="orders")

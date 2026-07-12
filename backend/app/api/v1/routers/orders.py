@@ -31,6 +31,14 @@ def list_orders(status: Optional[str] = None, db: Session = Depends(get_db), cur
             "customer_phone": o.customer.phone if o.customer else None,
             "staff_id": assignment.staff_id if assignment else None,
             "staff_name": assignment.staff.full_name if assignment and assignment.staff else None,
+            "measurements": [
+                {
+                    "field_id": m.field_id,
+                    "field_name": m.field.field_name,
+                    "value": m.value,
+                    "unit": m.field.unit
+                } for m in o.measurements
+            ] if hasattr(o, 'measurements') and o.measurements else []
         }
         result.append(data)
     return result
@@ -83,6 +91,14 @@ def get_order(order_id: int, db: Session = Depends(get_db), current_user: User =
         "customer_phone": o.customer.phone if o.customer else None,
         "staff_id": assignment.staff_id if assignment else None,
         "staff_name": assignment.staff.full_name if assignment and assignment.staff else None,
+        "measurements": [
+            {
+                "field_id": m.field_id,
+                "field_name": m.field.field_name,
+                "value": m.value,
+                "unit": m.field.unit
+            } for m in o.measurements
+        ] if hasattr(o, 'measurements') and o.measurements else []
     }
 
 @router.put("/{order_id}", response_model=OrderRead)

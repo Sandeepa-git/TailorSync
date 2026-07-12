@@ -2,16 +2,9 @@ from pydantic import BaseModel
 from typing import Optional, List
 from datetime import datetime
 
-class MeasurementInput(BaseModel):
-    height: Optional[float] = None
-    weight: Optional[float] = None
-    chest: Optional[float] = None
-    waist: Optional[float] = None
-    hip: Optional[float] = None
-    shoulder: Optional[float] = None
-    sleeve_length: Optional[float] = None
-    inseam: Optional[float] = None
-    predicted_fields: Optional[List[str]] = []
+class DynamicMeasurementInput(BaseModel):
+    field_id: int
+    value: float
 
 class OrderCreate(BaseModel):
     customer_id: int
@@ -21,7 +14,7 @@ class OrderCreate(BaseModel):
     priority: Optional[str] = "Medium"
     tailor_remarks: Optional[str] = None
     customer_instructions: Optional[str] = None
-    measurements: Optional[MeasurementInput] = None
+    measurements: Optional[List[DynamicMeasurementInput]] = None
     staff_id: Optional[int] = None
 
 class OrderRead(BaseModel):
@@ -40,6 +33,7 @@ class OrderRead(BaseModel):
     customer_phone: Optional[str] = None
     staff_id: Optional[int] = None
     staff_name: Optional[str] = None
+    measurements: List[dict] = []
 
     class Config:
         orm_mode = True
