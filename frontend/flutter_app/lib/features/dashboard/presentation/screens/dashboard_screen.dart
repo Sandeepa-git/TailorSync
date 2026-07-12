@@ -26,7 +26,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   Future<void> _loadData() async {
     try {
       final api = ref.read(apiClientProvider);
-      final statsResp = await api.dio.get('/orders/stats');
+      final statsResp = await api.getOrderStats();
       final userResp = await api.getMe();
       if (mounted) {
         setState(() {

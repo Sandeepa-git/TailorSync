@@ -31,7 +31,7 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> {
     try {
       final api = ref.read(apiClientProvider);
       final userResp = await api.getMe();
-      final staffResp = await api.dio.get('/staff');
+      final staffResp = await api.listStaff();
       if (mounted) {
         setState(() {
           _user = userResp.data;

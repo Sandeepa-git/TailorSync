@@ -30,9 +30,9 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
   Future<void> _loadData() async {
     try {
       final api = ref.read(apiClientProvider);
-      final statsResp = await api.dio.get('/orders/stats');
-      final ordersResp = await api.dio.get('/orders');
-      final staffResp = await api.dio.get('/staff');
+      final statsResp = await api.getOrderStats();
+      final ordersResp = await api.listOrders();
+      final staffResp = await api.listStaff();
       if (mounted) {
         setState(() {
           _stats = statsResp.data;
