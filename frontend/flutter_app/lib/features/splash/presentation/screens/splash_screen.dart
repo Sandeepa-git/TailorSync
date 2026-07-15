@@ -31,17 +31,42 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
     );
     _controller.forward();
 
-    Future.delayed(const Duration(seconds: 3), () async {
-      if (!mounted) return;
-      final storage = ref.read(secureStorageProvider);
+    _checkAuthAndNavigate();
+  }
+
+  Future<void> _checkAuthAndNavigate() async {
+    // Give splash animation time to play
+    await Future.delayed(const Duration(seconds: 2));
+    if (!mounted) return;
+
+    final storage = ref.read(secureStorageProvider);
+    final api = ref.read(apiClientProvider);
+
+    try {
       final token = await storage.read(key: 'auth_token');
       if (token != null && token.isNotEmpty) {
-        ref.read(apiClientProvider).setToken(token);
-        if (mounted) context.go('/home');
-      } else {
-        if (mounted) context.go('/login');
+        // Set the token and verify it with the backend
+        api.setToken(token);
+        try {
+          final response = await api.verifyToken();
+          if (response.statusCode == 200 && response.data?['valid'] == true) {
+            // Token is valid — navigate to home
+            if (mounted) context.go('/home');
+            return;
+          }
+        } catch (e) {
+          // Token is invalid/expired — clear it
+          debugPrint('Token verification failed: $e');
+          api.clearToken();
+          await storage.delete(key: 'auth_token');
+        }
       }
-    });
+    } catch (e) {
+      debugPrint('Auth check error: $e');
+    }
+
+    // No valid token — go to login
+    if (mounted) context.go('/login');
   }
 
   @override
@@ -55,7 +80,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
       body: Center(
-        child: AnimatedBuilder(
+        child: _SplashAnimatedBuilder(
           animation: _controller,
           builder: (context, child) {
             return Opacity(
@@ -127,9 +152,10 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
   }
 }
 
-class AnimatedBuilder extends AnimatedWidget {
+/// Custom AnimatedWidget to avoid naming conflict with Flutter's AnimatedBuilder
+class _SplashAnimatedBuilder extends AnimatedWidget {
   final Widget Function(BuildContext, Widget?) builder;
-  const AnimatedBuilder({super.key, required Animation<double> animation, required this.builder})
+  const _SplashAnimatedBuilder({required Animation<double> animation, required this.builder})
       : super(listenable: animation);
 
   @override

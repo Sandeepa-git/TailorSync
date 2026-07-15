@@ -8,7 +8,12 @@ class ApiClient {
   ApiClient(this.dio);
 
   static ApiClient create(String baseUrl) {
-    final dio = Dio(BaseOptions(baseUrl: baseUrl));
+    final dio = Dio(BaseOptions(
+      baseUrl: baseUrl,
+      connectTimeout: const Duration(seconds: 30),
+      receiveTimeout: const Duration(seconds: 30),
+      sendTimeout: const Duration(seconds: 30),
+    ));
     final client = ApiClient(dio);
 
     dio.interceptors.add(InterceptorsWrapper(
@@ -21,7 +26,9 @@ class ApiClient {
       onError: (DioException e, handler) {
         if (e.response?.statusCode == 401) {
           final path = e.requestOptions.path;
-          if (!path.contains('/auth/login') && !path.contains('/auth/signup')) {
+          if (!path.contains('/auth/login') &&
+              !path.contains('/auth/signup') &&
+              !path.contains('/auth/verify')) {
             client.onUnauthorized?.call();
           }
         }
@@ -37,6 +44,13 @@ class ApiClient {
 
   void clearToken() {
     _accessToken = null;
+  }
+
+  bool get hasToken => _accessToken != null && _accessToken!.isNotEmpty;
+
+  // Token Verification
+  Future<Response> verifyToken() async {
+    return dio.get('/auth/verify');
   }
 
   // User Profile

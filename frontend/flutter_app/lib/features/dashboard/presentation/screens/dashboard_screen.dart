@@ -195,6 +195,10 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                 if (confirm == true) {
                   final api = ref.read(apiClientProvider);
                   api.clearToken();
+                  // Clear the persisted token from secure storage
+                  try {
+                    await ref.read(secureStorageProvider).delete(key: 'auth_token');
+                  } catch (_) {}
                   if (context.mounted) context.go('/login');
                 }
               },

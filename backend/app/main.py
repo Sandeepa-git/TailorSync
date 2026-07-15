@@ -2,6 +2,14 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.v1.api import api_router
 from app.core.config import settings
+import logging
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
+logger = logging.getLogger(__name__)
 
 # Import all models to populate SQLAlchemy metadata registry
 import app.models.user
@@ -34,3 +42,9 @@ app.include_router(api_router, prefix="/api/v1")
 @app.get("/")
 def root():
     return {"message": "TailorSync API"}
+
+@app.get("/health")
+def health():
+    """Health check endpoint for deployment verification."""
+    return {"status": "healthy", "service": "TailorSync API"}
+

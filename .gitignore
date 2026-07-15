@@ -31,3 +31,8 @@ node_modules/
 # Local configuration
 .env
 .env.*
+local.properties
+
+# Build artifacts
+*.apk
+*.aab

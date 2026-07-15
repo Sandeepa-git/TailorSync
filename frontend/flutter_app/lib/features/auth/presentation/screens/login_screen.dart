@@ -35,20 +35,60 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       }
       
       final token = response.data['access_token'];
+      if (token == null || token.toString().isEmpty) {
+        throw Exception('No access token received from server');
+      }
+      
       api.setToken(token);
       await ref.read(secureStorageProvider).write(key: 'auth_token', value: token);
 
       if (!mounted) return;
       context.go('/home');
+    } on DioException catch (e) {
+      if (!mounted) return;
+      String error = _isSignUp ? 'Sign up failed' : 'Login failed';
+      
+      if (e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.receiveTimeout ||
+          e.type == DioExceptionType.sendTimeout) {
+        error = 'Connection timed out. Please check your internet and try again.';
+      } else if (e.type == DioExceptionType.connectionError) {
+        error = 'Cannot connect to server. Please check your internet connection.';
+      } else if (e.response != null) {
+        final statusCode = e.response?.statusCode;
+        final data = e.response?.data;
+        
+        if (data is Map && data.containsKey('detail')) {
+          error = data['detail'].toString();
+        } else if (statusCode == 401) {
+          error = 'Incorrect email or password';
+        } else if (statusCode == 400) {
+          error = 'Email already registered';
+        } else if (statusCode == 422) {
+          error = 'Please check your input and try again';
+        } else if (statusCode == 500) {
+          error = 'Server error. Please try again later.';
+        }
+      }
+      
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(error),
+          backgroundColor: const Color(0xFFD32F2F),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        ),
+      );
     } catch (e) {
       if (!mounted) return;
-      String error = 'Authentication failed';
-      try {
-          if (e is DioException && e.response != null) {
-            error = e.response?.data['detail'] ?? error;
-          }
-      } catch (_) {}
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error)));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('An unexpected error occurred: ${e.toString()}'),
+          backgroundColor: const Color(0xFFD32F2F),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        ),
+      );
     } finally {
       if (mounted) setState(() => _loading = false);
     }
@@ -133,7 +173,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 if (_isSignUp) {
                                   if (v.length < 8) return 'Must be at least 8 characters';
                                   if (!RegExp(r'[A-Z]').hasMatch(v)) return 'Must contain at least one capital letter';
-                                  if (!RegExp(r'[!@#\$&*~`%\^\(\)_\+\-=\[\]\{\};:"\\|,.<>/?]').hasMatch(v)) return 'Must contain at least one special character';
+                                  if (!RegExp(r'[!@#\$&*~`%\^\(\)_\+\-=\[\]\{};:"\\|,.<>/?]').hasMatch(v)) return 'Must contain at least one special character';
                                 }
                                 return null;
                               },
