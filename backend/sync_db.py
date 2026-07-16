@@ -15,8 +15,17 @@ from app.models.note import Note
 from app.models.fabric_catalog import FabricCatalog
 
 def sync():
-    print("Dropping existing database tables to apply schema updates...")
-    Base.metadata.drop_all(bind=engine)
+    print("Dropping public schema to apply clean schema updates...")
+    from sqlalchemy import text
+    with engine.connect() as conn:
+        conn.execute(text("DROP SCHEMA public CASCADE;"))
+        conn.execute(text("CREATE SCHEMA public;"))
+        # Neon might not need grant all if it's default owner, but it's safe to add
+        try:
+            conn.execute(text("GRANT ALL ON SCHEMA public TO public;"))
+        except Exception:
+            pass
+        conn.commit()
     print("Creating new database tables...")
     Base.metadata.create_all(bind=engine)
     print("Database tables created successfully!")

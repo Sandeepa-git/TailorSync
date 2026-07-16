@@ -24,5 +24,5 @@ class Measurement(Base):
     
     recorded_at = Column(DateTime, default=datetime.utcnow)
     
-    customer = relationship("Customer", back_populates="measurements")
-    order = relationship("Order", back_populates="measurements")
+    customer = relationship("Customer")
+    order = relationship("Order")
