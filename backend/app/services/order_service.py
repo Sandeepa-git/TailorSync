@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session, joinedload
 from app.models.order import Order, OrderStatus, OrderPriority
-from app.models.customer_measurement import CustomerMeasurement
+from app.models.measurement import Measurement
 from app.models.staff_assignment import StaffAssignment
 from app.schemas.order import OrderCreate, OrderUpdate
 from datetime import datetime
@@ -9,14 +9,10 @@ def list_orders(db: Session, business_id: int, skip: int = 0, limit: int = 100, 
     query = db.query(Order).filter(Order.business_id == business_id).options(
         joinedload(Order.customer),
         joinedload(Order.staff_assignments).joinedload(StaffAssignment.staff),
-        joinedload(Order.measurements).joinedload(CustomerMeasurement.field)
+        joinedload(Order.measurements).joinedload(Measurement.field)
     )
     if status:
-        try:
-            status_enum = OrderStatus(status)
-            query = query.filter(Order.status == status_enum)
-        except ValueError:
-            pass
+        query = query.filter(Order.status == status)
     return query.order_by(Order.created_at.desc()).offset(skip).limit(limit).all()
 
 def create_order(db: Session, order: OrderCreate, business_id: int):
@@ -24,23 +20,27 @@ def create_order(db: Session, order: OrderCreate, business_id: int):
     order_data = order.dict(exclude={'measurements', 'staff_id'})
     order_data['business_id'] = business_id
     
-    # Convert priority string to enum
+    # Clean and query garment type lookups via the model property setter
+    garment_type_name = order_data.pop('garment_type', '')
+    
+    # Convert priority string to status/priority
     priority_str = order_data.pop('priority', 'Medium')
-    try:
-        order_data['priority'] = OrderPriority(priority_str)
-    except (ValueError, KeyError):
-        order_data['priority'] = OrderPriority.MEDIUM
     
     db_order = Order(**order_data)
+    # Set priority and garment type name (which triggers the lookup/creation)
+    db_order.priority = priority_str
     db.add(db_order)
     db.flush()  # Get the order ID before committing
+    
+    db_order.garment_type = garment_type_name
+    db.flush()
     
     # Create measurements if provided
     if order.measurements:
         for m_data in order.measurements:
-            db_measurement = CustomerMeasurement(
+            db_measurement = Measurement(
                 customer_id=order.customer_id,
-                order_id=db_order.id,
+                order_id=db_order.order_id,
                 field_id=m_data.field_id,
                 value=m_data.value
             )
@@ -49,9 +49,9 @@ def create_order(db: Session, order: OrderCreate, business_id: int):
     # Create staff assignment if provided
     if order.staff_id:
         assignment = StaffAssignment(
-            order_id=db_order.id,
+            order_id=db_order.order_id,
             staff_id=order.staff_id,
-            role="Assigned"
+            assigned_role="Assigned"
         )
         db.add(assignment)
     
@@ -62,29 +62,23 @@ def create_order(db: Session, order: OrderCreate, business_id: int):
 def get_order(db: Session, order_id: int, business_id: int):
     return db.query(Order).options(
         joinedload(Order.customer),
-        joinedload(Order.measurements).joinedload(CustomerMeasurement.field),
+        joinedload(Order.measurements).joinedload(Measurement.field),
         joinedload(Order.staff_assignments).joinedload(StaffAssignment.staff),
         joinedload(Order.notes),
-    ).filter(Order.id == order_id, Order.business_id == business_id).first()
+    ).filter(Order.order_id == order_id, Order.business_id == business_id).first()
 
 def update_order(db: Session, order_id: int, updates: OrderUpdate, business_id: int):
-    order = db.query(Order).filter(Order.id == order_id, Order.business_id == business_id).first()
+    order = db.query(Order).filter(Order.order_id == order_id, Order.business_id == business_id).first()
     if not order:
         return None
     
     if updates.status is not None:
-        try:
-            order.status = OrderStatus(updates.status)
-            if updates.status == "Delivered":
-                order.completed_at = datetime.utcnow()
-        except ValueError:
-            pass
+        order.status = updates.status
+        if updates.status == "Delivered":
+            order.completed_at = datetime.utcnow()
     
     if updates.priority is not None:
-        try:
-            order.priority = OrderPriority(updates.priority)
-        except ValueError:
-            pass
+        order.priority = updates.priority
     
     if updates.due_date is not None:
         order.due_date = updates.due_date
@@ -104,7 +98,7 @@ def update_order(db: Session, order_id: int, updates: OrderUpdate, business_id: 
             assignment = StaffAssignment(
                 order_id=order_id,
                 staff_id=updates.staff_id,
-                role="Assigned"
+                assigned_role="Assigned"
             )
             db.add(assignment)
     
@@ -114,8 +108,8 @@ def update_order(db: Session, order_id: int, updates: OrderUpdate, business_id: 
 
 def get_dashboard_stats(db: Session, business_id: int):
     total_orders = db.query(Order).filter(Order.business_id == business_id).count()
-    ongoing = db.query(Order).filter(Order.business_id == business_id, Order.status.notin_([OrderStatus.DELIVERED])).count()
-    completed = db.query(Order).filter(Order.business_id == business_id, Order.status == OrderStatus.DELIVERED).count()
+    ongoing = db.query(Order).filter(Order.business_id == business_id, Order.status != "Delivered").count()
+    completed = db.query(Order).filter(Order.business_id == business_id, Order.status == "Delivered").count()
     from app.models.customer import Customer
     total_customers = db.query(Customer).filter(Customer.business_id == business_id).count()
     return {
@@ -126,13 +120,11 @@ def get_dashboard_stats(db: Session, business_id: int):
     }
 
 def delete_order(db: Session, order_id: int, business_id: int):
-    order = db.query(Order).filter(Order.id == order_id, Order.business_id == business_id).first()
+    order = db.query(Order).filter(Order.order_id == order_id, Order.business_id == business_id).first()
     if not order:
         return False
     
-    # Let SQLAlchemy handle cascade deletions if configured, or manually delete related rows.
-    # Note: StaffAssignment and Measurements usually cascade delete or can be manually deleted.
-    db.query(CustomerMeasurement).filter(CustomerMeasurement.order_id == order_id).delete()
+    db.query(Measurement).filter(Measurement.order_id == order_id).delete()
     db.query(StaffAssignment).filter(StaffAssignment.order_id == order_id).delete()
     
     db.delete(order)

@@ -13,6 +13,9 @@ from app.models.fabric_recommendation import FabricRecommendation
 from app.models.staff_assignment import StaffAssignment
 from app.models.note import Note
 from app.models.fabric_catalog import FabricCatalog
+from app.models.garment_type import GarmentType
+from app.models.measurement_template import MeasurementTemplate
+from app.models.measurement_field import MeasurementField
 
 def sync():
     print("Dropping public schema to apply clean schema updates...")

@@ -10,6 +10,9 @@ import app.models.fabric_recommendation
 import app.models.staff_assignment
 import app.models.note
 import app.models.fabric_catalog
+import app.models.measurement_template
+import app.models.measurement_field
+import app.models.garment_type
 db = SessionLocal()
 try:
     user = db.query(User).filter(User.email == "t@e.com").first()

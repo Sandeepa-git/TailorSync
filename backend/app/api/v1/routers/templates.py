@@ -73,7 +73,7 @@ def create_template(payload: MeasurementTemplateCreate, db: Session = Depends(ge
 @router.put("/{template_id}", response_model=MeasurementTemplateRead)
 def update_template(template_id: int, payload: MeasurementTemplateUpdate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     template = db.query(MeasurementTemplate).filter(
-        MeasurementTemplate.id == template_id,
+        MeasurementTemplate.template_id == template_id,
         MeasurementTemplate.business_id == current_user.business_id
     ).first()
     
@@ -92,7 +92,7 @@ def update_template(template_id: int, payload: MeasurementTemplateUpdate, db: Se
 @router.delete("/{template_id}")
 def delete_template(template_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     template = db.query(MeasurementTemplate).filter(
-        MeasurementTemplate.id == template_id,
+        MeasurementTemplate.template_id == template_id,
         MeasurementTemplate.business_id == current_user.business_id
     ).first()
     

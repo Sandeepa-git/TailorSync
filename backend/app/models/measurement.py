@@ -1,28 +1,30 @@
-from sqlalchemy import Column, Integer, Float, String, ForeignKey, DateTime, JSON
-from sqlalchemy.orm import relationship
-from app.database.base import Base
 from datetime import datetime
+from sqlalchemy import Column, Integer, ForeignKey, DateTime, Numeric, Boolean
+from sqlalchemy.orm import relationship
+from sqlalchemy.ext.hybrid import hybrid_property
+from app.database.base import Base
 
 class Measurement(Base):
     __tablename__ = "measurements"
-    id = Column(Integer, primary_key=True, index=True)
-    customer_id = Column(Integer, ForeignKey("customers.id"), nullable=False)
-    order_id = Column(Integer, ForeignKey("orders.id"), nullable=True) # Optional link to specific order
     
-    # Core dimensions (cm)
-    height = Column(Float)
-    weight = Column(Float)
-    chest = Column(Float)
-    waist = Column(Float)
-    hip = Column(Float)
-    shoulder = Column(Float)
-    sleeve_length = Column(Float)
-    inseam = Column(Float)
+    measurement_id = Column(Integer, primary_key=True, index=True)
+    order_id = Column(Integer, ForeignKey("orders.order_id"), nullable=True)
+    customer_id = Column(Integer, ForeignKey("customers.customer_id"), nullable=False)
+    field_id = Column(Integer, ForeignKey("measurement_fields.field_id"), nullable=False)
+    value = Column(Numeric(10, 2), nullable=True)
+    entered_by = Column(Integer, ForeignKey("users.user_id"), nullable=True)
+    is_ai_generated = Column(Boolean, default=False, nullable=False)
+    recorded_at = Column(DateTime, default=datetime.utcnow, nullable=False)
     
-    # Store which fields were predicted by AI vs manual
-    predicted_fields = Column(JSON, default=list)
-    
-    recorded_at = Column(DateTime, default=datetime.utcnow)
-    
-    customer = relationship("Customer")
-    order = relationship("Order")
+    order = relationship("Order", back_populates="measurements")
+    customer = relationship("Customer", back_populates="measurements")
+    field = relationship("MeasurementField")
+    entered_by_rel = relationship("User")
+
+    @hybrid_property
+    def id(self):
+        return self.measurement_id
+
+    @id.setter
+    def id(self, value):
+        self.measurement_id = value

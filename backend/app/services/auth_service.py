@@ -33,7 +33,7 @@ def _ensure_business(db: Session, user: User) -> None:
         return
     try:
         biz_name = f"{user.full_name}'s Tailor Shop" if user.full_name else "My Tailor Shop"
-        new_biz = Business(name=biz_name)
+        new_biz = Business(business_name=biz_name)
         db.add(new_biz)
         db.flush()
         user.business_id = new_biz.id
@@ -84,7 +84,7 @@ def email_signup(db: Session, email: str, password: str, full_name: str = "", ph
         db.flush()
         
         biz_name = f"{full_name}'s Tailor Shop" if full_name else "My Tailor Shop"
-        new_biz = Business(name=biz_name)
+        new_biz = Business(business_name=biz_name)
         db.add(new_biz)
         db.flush()
         
@@ -122,7 +122,7 @@ def google_login(db: Session, firebase_token: str):
             db.flush()
             
             biz_name = f"{user.full_name}'s Tailor Shop" if user.full_name else "My Tailor Shop"
-            new_biz = Business(name=biz_name)
+            new_biz = Business(business_name=biz_name)
             db.add(new_biz)
             db.flush()
             

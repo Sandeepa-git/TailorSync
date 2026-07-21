@@ -16,7 +16,7 @@ def list_staff(db: Session = Depends(get_db), current_user: User = Depends(get_c
     
     staff = db.query(User).filter(
         User.business_id == current_user.business_id,
-        User.id != current_user.id,
+        User.user_id != current_user.user_id,
         User.is_active == True
     ).all()
     return staff
@@ -52,7 +52,7 @@ def deactivate_staff(staff_id: int, db: Session = Depends(get_db), current_user:
         raise HTTPException(status_code=403, detail="Not authorized")
         
     staff = db.query(User).filter(
-        User.id == staff_id,
+        User.user_id == staff_id,
         User.business_id == current_user.business_id
     ).first()
     
