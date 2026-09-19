@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/network/providers/api_provider.dart';
+import '../../../../core/widgets/skeleton_loading.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
@@ -73,7 +74,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     if (_loading) {
       return const Scaffold(
         backgroundColor: Color(0xFFF8F9FA),
-        body: Center(child: CircularProgressIndicator(color: Color(0xFF1A237E))),
+        body: SafeArea(child: ProfileSkeleton()),
       );
     }
 
@@ -82,12 +83,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       appBar: AppBar(
         backgroundColor: const Color(0xFFF8F9FA),
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Color(0xFF1A237E)),
-          onPressed: () => context.go('/home'),
-        ),
+        centerTitle: true,
         title: Text(
-          'Settings',
+          'Profile & Settings',
           style: GoogleFonts.inter(
             fontWeight: FontWeight.bold,
             color: const Color(0xFF1A237E),
@@ -107,47 +105,49 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Profile Section
-            Text('Profile', style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.bold, color: const Color(0xFF1A237E))),
-            const SizedBox(height: 12),
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: const Color(0xFFE8EAF6)),
-                boxShadow: [
-                  BoxShadow(color: const Color(0xFF1A237E).withValues(alpha: 0.02), blurRadius: 10, offset: const Offset(0, 4)),
-                ],
-              ),
-              child: Column(
-                children: [
-                  _SettingsListTile(
-                    title: 'Edit Name',
-                    subtitle: _user?['full_name'] ?? 'Update Name',
-                    trailingIcon: Icons.chevron_right,
-                    onTap: () => ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Name editing coming soon'))),
+      body: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(20),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 720),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Profile', style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.bold, color: const Color(0xFF1A237E))),
+                const SizedBox(height: 12),
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: const Color(0xFFE8EAF6)),
+                    boxShadow: [
+                      BoxShadow(color: const Color(0xFF1A237E).withValues(alpha: 0.02), blurRadius: 10, offset: const Offset(0, 4)),
+                    ],
                   ),
-                  const Divider(height: 1, color: Color(0xFFE8EAF6)),
-                  _SettingsListTile(
-                    title: 'Edit Phone Number',
-                    subtitle: _user?['phone'] ?? 'Update Phone',
-                    trailingIcon: Icons.edit,
-                    onTap: () => ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Phone editing coming soon'))),
+                  child: Column(
+                    children: [
+                      _SettingsListTile(
+                        title: 'Edit Name',
+                        subtitle: _user?['full_name'] ?? 'Update Name',
+                        trailingIcon: Icons.chevron_right,
+                        onTap: () => ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Name editing coming soon'))),
+                      ),
+                      const Divider(height: 1, color: Color(0xFFE8EAF6)),
+                      _SettingsListTile(
+                        title: 'Edit Phone Number',
+                        subtitle: _user?['phone'] ?? 'Update Phone',
+                        trailingIcon: Icons.edit,
+                        onTap: () => ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Phone editing coming soon'))),
+                      ),
+                      const Divider(height: 1, color: Color(0xFFE8EAF6)),
+                      _SettingsListTile(
+                        title: 'Change Password',
+                        trailingIcon: Icons.chevron_right,
+                        onTap: () => ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Password change coming soon'))),
+                      ),
+                    ],
                   ),
-                  const Divider(height: 1, color: Color(0xFFE8EAF6)),
-                  _SettingsListTile(
-                    title: 'Change Password',
-                    trailingIcon: Icons.chevron_right,
-                    onTap: () => ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Password change coming soon'))),
-                  ),
-                ],
-              ),
-            ),
+                ),
             const SizedBox(height: 24),
 
             if (_user?['role'] != 'staff') ...[
@@ -247,8 +247,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           ],
         ),
       ),
-    );
-  }
+    ),
+  ),
+);
+}
 }
 
 class _SettingsListTile extends StatelessWidget {

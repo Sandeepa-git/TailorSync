@@ -7,11 +7,21 @@ import '../../../routes/app_router.dart';
 
 final apiClientProvider = Provider((ref) {
   final client = ApiClient.create(EnvConfig.backendUrl);
+  final storage = ref.read(secureStorageProvider);
+
+  client.tokenGetter = () async {
+    try {
+      return await storage.read(key: 'auth_token');
+    } catch (_) {
+      return null;
+    }
+  };
+
   client.onUnauthorized = () async {
     // Clear both in-memory token AND secure storage
     client.clearToken();
     try {
-      await ref.read(secureStorageProvider).delete(key: 'auth_token');
+      await storage.delete(key: 'auth_token');
     } catch (_) {}
     appRouter.go('/login');
   };

@@ -4,6 +4,7 @@ class ApiClient {
   final Dio dio;
   String? _accessToken;
   void Function()? onUnauthorized;
+  Future<String?> Function()? tokenGetter;
 
   ApiClient(this.dio);
 
@@ -17,7 +18,15 @@ class ApiClient {
     final client = ApiClient(dio);
 
     dio.interceptors.add(InterceptorsWrapper(
-      onRequest: (options, handler) {
+      onRequest: (options, handler) async {
+        if (client._accessToken == null && client.tokenGetter != null) {
+          try {
+            final stored = await client.tokenGetter!();
+            if (stored != null && stored.isNotEmpty) {
+              client._accessToken = stored;
+            }
+          } catch (_) {}
+        }
         if (client._accessToken != null) {
           options.headers['Authorization'] = 'Bearer ${client._accessToken}';
         }

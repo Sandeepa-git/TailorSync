@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/network/providers/api_provider.dart';
+import '../../../../core/widgets/skeleton_loading.dart';
 
 class StaffManagementScreen extends ConsumerStatefulWidget {
   const StaffManagementScreen({super.key});
@@ -126,7 +127,7 @@ class _StaffManagementScreenState extends ConsumerState<StaffManagementScreen> {
     if (_loading) {
       return const Scaffold(
         backgroundColor: Color(0xFFF8F9FA),
-        body: Center(child: CircularProgressIndicator(color: Color(0xFF1A237E))),
+        body: SafeArea(child: CustomersListSkeleton()),
       );
     }
 

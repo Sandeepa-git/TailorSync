@@ -1,4 +1,4 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../core/presentation/layout/main_layout.dart';
 import '../features/splash/presentation/screens/splash_screen.dart';

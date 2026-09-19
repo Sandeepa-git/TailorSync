@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 import '../../../../core/network/providers/api_provider.dart';
+import '../../../../core/widgets/skeleton_loading.dart';
 import '../../../orders/presentation/providers/orders_provider.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
@@ -15,7 +18,9 @@ class DashboardScreen extends ConsumerStatefulWidget {
 class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   Map<String, dynamic>? _stats;
   Map<String, dynamic>? _user;
+  List<dynamic> _tasks = [];
   bool _loading = true;
+  bool _error = false;
 
   @override
   void initState() {
@@ -24,495 +29,588 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   }
 
   Future<void> _loadData() async {
+    setState(() {
+      _loading = true;
+      _error = false;
+    });
     try {
       final api = ref.read(apiClientProvider);
       final statsResp = await api.getOrderStats();
       final userResp = await api.getMe();
+      final ordersResp = await api.listOrders();
+
       if (mounted) {
         setState(() {
           _stats = statsResp.data;
           _user = userResp.data;
+          _tasks = ordersResp.data;
           _loading = false;
         });
       }
     } catch (e) {
-      if (mounted) setState(() => _loading = false);
+      if (mounted) {
+        setState(() {
+          _loading = false;
+          _error = true;
+        });
+      }
     }
+  }
+
+  String _getGreeting() {
+    final hour = DateTime.now().hour;
+    if (hour < 12) return 'Good Morning';
+    if (hour < 17) return 'Good Afternoon';
+    return 'Good Evening';
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_loading) {
+      return Scaffold(
+        backgroundColor: const Color(0xFFF8F9FA),
+        appBar: AppBar(
+          backgroundColor: const Color(0xFFF8F9FA),
+          elevation: 0,
+          automaticallyImplyLeading: false,
+          title: Text(
+            'TailorSync',
+            style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: const Color(0xFF1A237E)),
+          ),
+          centerTitle: true,
+        ),
+        body: const DashboardSkeleton(),
+      );
+    }
+
+    if (_error) {
+      return Scaffold(
+        backgroundColor: const Color(0xFFF8F9FA),
+        appBar: AppBar(
+          backgroundColor: const Color(0xFFF8F9FA),
+          elevation: 0,
+          automaticallyImplyLeading: false,
+          title: Text('TailorSync', style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: const Color(0xFF1A237E))),
+          centerTitle: true,
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.error_outline, size: 48, color: Color(0xFFD32F2F)),
+              const SizedBox(height: 16),
+              Text('Failed to load dashboard', style: GoogleFonts.inter(fontSize: 16, color: const Color(0xFF1A237E), fontWeight: FontWeight.bold)),
+              const SizedBox(height: 16),
+              ElevatedButton.icon(
+                onPressed: _loadData,
+                icon: const Icon(Icons.refresh),
+                label: const Text('Retry'),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
     final firstName = _user?['full_name']?.split(' ').first ?? 'Tailor';
-    final activeOrders = _stats?['ongoing_orders'] ?? 0;
+    final activeOrders = _stats?['ongoing_orders'] ?? _tasks.where((t) => t['status'] != 'Delivered' && t['status'] != 'Ready').length;
     
-    // Initialize to 0 for a fresh state
-    final dueToday = 0;
-    final overdue = 0;
+    final dueTodayCount = _tasks.where((t) {
+      if (t['due_date'] == null) return false;
+      final due = DateTime.parse(t['due_date']);
+      final now = DateTime.now();
+      return due.year == now.year && due.month == now.month && due.day == now.day;
+    }).length;
+
+    final overdueCount = _tasks.where((t) {
+      if (t['due_date'] == null || t['status'] == 'Delivered' || t['status'] == 'Ready') return false;
+      final due = DateTime.parse(t['due_date']);
+      return due.isBefore(DateTime.now().subtract(const Duration(days: 1)));
+    }).length;
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
       appBar: AppBar(
         backgroundColor: const Color(0xFFF8F9FA),
         elevation: 0,
-        leading: Builder(
-          builder: (context) => IconButton(
-            icon: const Icon(Icons.menu, color: Color(0xFF1A237E)),
-            onPressed: () => Scaffold.of(context).openDrawer(),
-          ),
-        ),
+        automaticallyImplyLeading: false,
         title: Text(
           'TailorSync',
-          style: GoogleFonts.inter(
-            fontWeight: FontWeight.bold,
-            color: const Color(0xFF1A237E),
-          ),
+          style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: const Color(0xFF1A237E)),
         ),
         centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.settings_outlined, color: Color(0xFF1A237E)),
-            onPressed: () => context.go('/profile'),
+      ),
+      body: RefreshIndicator(
+        onRefresh: _loadData,
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          padding: EdgeInsets.only(
+            left: 16,
+            right: 16,
+            top: 16,
+            bottom: MediaQuery.of(context).padding.bottom + 84,
           ),
-        ],
-      ),
-      drawer: Drawer(
-        backgroundColor: Colors.white,
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            GestureDetector(
-              onTap: () {
-                Navigator.pop(context); // Close the drawer
-                context.go('/profile');
-              },
-              child: UserAccountsDrawerHeader(
-                decoration: const BoxDecoration(
-                  color: Color(0xFF1A237E),
-                ),
-                accountName: Text(
-                  _user?['full_name'] ?? 'Loading...',
-                  style: GoogleFonts.inter(fontWeight: FontWeight.bold, fontSize: 16),
-                ),
-                accountEmail: Text(
-                  _user?['email'] ?? '',
-                  style: GoogleFonts.inter(fontSize: 13, color: const Color(0xFF9FA8DA)),
-                ),
-                currentAccountPicture: CircleAvatar(
-                  backgroundColor: Colors.white,
-                  child: Text(
-                    (_user?['full_name'] ?? 'U')[0].toUpperCase(),
-                    style: GoogleFonts.inter(fontSize: 24, fontWeight: FontWeight.bold, color: const Color(0xFF1A237E)),
-                  ),
-                ),
-              ),
-            ),
-            ListTile(
-              leading: const Icon(Icons.home, color: Color(0xFF5C6BC0)),
-              title: Text('Home', style: GoogleFonts.inter(color: const Color(0xFF1A237E), fontWeight: FontWeight.w600)),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.add_circle_outline, color: Color(0xFF5C6BC0)),
-              title: Text('New Order', style: GoogleFonts.inter(color: const Color(0xFF1A237E), fontWeight: FontWeight.w600)),
-              onTap: () {
-                Navigator.pop(context);
-                context.push('/orders/new');
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.shopping_bag_outlined, color: Color(0xFF5C6BC0)),
-              title: Text('Orders', style: GoogleFonts.inter(color: const Color(0xFF1A237E), fontWeight: FontWeight.w600)),
-              onTap: () {
-                Navigator.pop(context);
-                context.go('/orders');
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.people_outline, color: Color(0xFF5C6BC0)),
-              title: Text('Customers', style: GoogleFonts.inter(color: const Color(0xFF1A237E), fontWeight: FontWeight.w600)),
-              onTap: () {
-                Navigator.pop(context);
-                context.go('/customers');
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.assignment_outlined, color: Color(0xFF5C6BC0)),
-              title: Text('My Tasks', style: GoogleFonts.inter(color: const Color(0xFF1A237E), fontWeight: FontWeight.w600)),
-              onTap: () {
-                Navigator.pop(context);
-                context.go('/tasks');
-              },
-            ),
-            if (_user?['role'] != 'staff')
-              ListTile(
-                leading: const Icon(Icons.bar_chart_outlined, color: Color(0xFF5C6BC0)),
-                title: Text('Reports', style: GoogleFonts.inter(color: const Color(0xFF1A237E), fontWeight: FontWeight.w600)),
-                onTap: () {
-                  Navigator.pop(context);
-                  context.go('/reports');
-                },
-              ),
-            const Divider(),
-            ListTile(
-              leading: const Icon(Icons.person, color: Color(0xFF5C6BC0)),
-              title: Text('Profile & Settings', style: GoogleFonts.inter(color: const Color(0xFF1A237E), fontWeight: FontWeight.w600)),
-              onTap: () {
-                Navigator.pop(context);
-                context.go('/profile');
-              },
-            ),
-            const Divider(),
-            ListTile(
-              leading: const Icon(Icons.logout, color: Color(0xFFD32F2F)),
-              title: Text('Logout', style: GoogleFonts.inter(color: const Color(0xFFD32F2F), fontWeight: FontWeight.w600)),
-              onTap: () async {
-                Navigator.pop(context); // Close the drawer first
-                final confirm = await showDialog<bool>(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: Text('Logout', style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: const Color(0xFF1A237E))),
-                    content: Text('Are you sure you want to log out?', style: GoogleFonts.inter(color: const Color(0xFF5C6BC0))),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.of(context).pop(false),
-                        child: Text('No', style: GoogleFonts.inter(color: const Color(0xFF5C6BC0))),
-                      ),
-                      ElevatedButton(
-                        onPressed: () => Navigator.of(context).pop(true),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFFD32F2F),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                        ),
-                        child: Text('Yes', style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold)),
-                      ),
-                    ],
-                  ),
-                );
-
-                if (confirm == true) {
-                  final api = ref.read(apiClientProvider);
-                  api.clearToken();
-                  // Clear the persisted token from secure storage
-                  try {
-                    await ref.read(secureStorageProvider).delete(key: 'auth_token');
-                  } catch (_) {}
-                  if (context.mounted) context.go('/login');
-                }
-              },
-            ),
-          ],
-        ),
-      ),
-      body: _loading
-          ? const Center(child: CircularProgressIndicator())
-          : RefreshIndicator(
-              onRefresh: _loadData,
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Greeting
-                    Text(
-                      'Good Morning, $firstName',
-                      style: GoogleFonts.inter(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: const Color(0xFF1A237E),
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      'Here is your dashboard overview.',
-                      style: GoogleFonts.inter(
-                        fontSize: 14,
-                        color: const Color(0xFF5C6BC0),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-
-                    // Stats Pills Row
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: [
-                          _StatPill(
-                            label: 'Active Orders: $activeOrders',
-                            backgroundColor: const Color(0xFF1A237E),
-                            textColor: Colors.white,
-                          ),
-                          const SizedBox(width: 8),
-                          _StatPill(
-                            label: 'Due Today: $dueToday',
-                            backgroundColor: const Color(0xFFFFEBEB),
-                            textColor: const Color(0xFFD32F2F),
-                          ),
-                          const SizedBox(width: 8),
-                          _StatPill(
-                            label: 'Overdue: $overdue',
-                            backgroundColor: const Color(0xFFF1F3F5),
-                            textColor: const Color(0xFF495057),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-
-                    // Big New Order Card
-                    GestureDetector(
-                      onTap: () => context.go('/orders/new'),
-                      child: Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(24),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF0F175A), // Very dark blue
-                          borderRadius: BorderRadius.circular(24),
-                          boxShadow: [
-                            BoxShadow(
-                              color: const Color(0xFF1A237E).withOpacity(0.2),
-                              blurRadius: 15,
-                              offset: const Offset(0, 8),
-                            ),
-                          ],
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              width: 48,
-                              height: 48,
-                              decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.15),
-                                shape: BoxShape.circle,
-                              ),
-                              child: const Icon(Icons.add, color: Colors.white),
-                            ),
-                            const SizedBox(height: 16),
-                            Text(
-                              'New Order',
-                              style: GoogleFonts.inter(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              'Create a customer order quickly.',
-                              style: GoogleFonts.inter(
-                                fontSize: 13,
-                                color: Colors.white.withOpacity(0.8),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-
-                    // Quick Actions Grid
-                    GridView.count(
-                      crossAxisCount: 2,
-                      mainAxisSpacing: 16,
-                      crossAxisSpacing: 16,
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      childAspectRatio: 1.4,
-                      children: [
-                        _QuickActionCard(
-                          icon: Icons.assignment_outlined,
-                          label: 'Orders',
-                          subtitle: 'Track and update orders',
-                          iconColor: const Color(0xFF1A237E),
-                          iconBgColor: const Color(0xFFE8EAF6),
-                          onTap: () => context.go('/orders'),
-                        ),
-                        _QuickActionCard(
-                          icon: Icons.people_outline,
-                          label: 'Customers',
-                          subtitle: 'Manage records',
-                          iconColor: const Color(0xFF343A40),
-                          iconBgColor: const Color(0xFFF8F9FA),
-                          onTap: () => context.go('/customers'),
-                        ),
-                        _QuickActionCard(
-                          icon: Icons.check_circle_outline,
-                          label: 'My Tasks',
-                          subtitle: 'View assigned work',
-                          iconColor: const Color(0xFF1A237E),
-                          iconBgColor: const Color(0xFFE8EAF6),
-                          onTap: () => context.go('/tasks'),
-                        ),
-                        if (_user?['role'] != 'staff')
-                          _QuickActionCard(
-                            icon: Icons.bar_chart,
-                            label: 'Reports',
-                            subtitle: 'Business insights',
-                            iconColor: const Color(0xFF343A40),
-                            iconBgColor: const Color(0xFFF8F9FA),
-                            onTap: () => context.go('/reports'),
-                          ),
-                      ],
-                    ),
-                    const SizedBox(height: 32),
-
-                    // Recent Orders
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header with time-based greeting & user avatar
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Recent Orders',
+                          '${_getGreeting()}, $firstName',
                           style: GoogleFonts.inter(
-                            fontSize: 18,
+                            fontSize: 22,
                             fontWeight: FontWeight.bold,
                             color: const Color(0xFF1A237E),
                           ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                        TextButton(
-                          onPressed: () => context.go('/orders'),
-                          child: Text(
-                            'View All',
-                            style: GoogleFonts.inter(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w600,
-                              color: const Color(0xFF1A237E),
-                            ),
-                          ),
+                        const SizedBox(height: 4),
+                        Text(
+                          'Here is your dashboard overview.',
+                          style: GoogleFonts.inter(fontSize: 13, color: const Color(0xFF5C6BC0)),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 12),
-                    
-                    // Fetch recent orders from provider
-                    Consumer(
-                      builder: (context, ref, child) {
-                        final ordersAsync = ref.watch(ordersProvider);
-                        return ordersAsync.when(
-                          data: (orders) {
-                            if (orders.isEmpty) {
-                              return const Center(child: Text('No recent orders'));
-                            }
-                            // Take top 3
-                            final recent = orders.take(3).toList();
-                            return Column(
-                              children: recent.map((o) {
-                                final initials = o.customerName?.split(' ').map((e) => e[0]).take(2).join('').toUpperCase() ?? 'C';
-                                return Container(
-                                  margin: const EdgeInsets.only(bottom: 12),
-                                  padding: const EdgeInsets.all(16),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(16),
-                                    border: Border.all(color: const Color(0xFFE8EAF6)),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: const Color(0xFF1A237E).withOpacity(0.02),
-                                        blurRadius: 8,
-                                        offset: const Offset(0, 2),
-                                      ),
-                                    ],
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      CircleAvatar(
-                                        backgroundColor: const Color(0xFFE8EAF6),
-                                        foregroundColor: const Color(0xFF1A237E),
-                                        child: Text(initials, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
-                                      ),
-                                      const SizedBox(width: 16),
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              o.customerName ?? 'Unknown',
-                                              style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: const Color(0xFF1A237E)),
-                                            ),
-                                            const SizedBox(height: 2),
-                                            Text(
-                                              o.garmentType,
-                                              style: GoogleFonts.inter(fontSize: 13, color: const Color(0xFF5C6BC0)),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                                        decoration: BoxDecoration(
-                                          color: o.status == 'Cutting' ? const Color(0xFF1A237E) : const Color(0xFFE8EAF6),
-                                          borderRadius: BorderRadius.circular(12),
-                                        ),
-                                        child: Text(
-                                          o.status ?? 'Draft',
-                                          style: GoogleFonts.inter(
-                                            fontSize: 11,
-                                            fontWeight: FontWeight.w600,
-                                            color: o.status == 'Cutting' ? Colors.white : const Color(0xFF5C6BC0),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              }).toList(),
-                            );
-                          },
-                          loading: () => const Center(child: CircularProgressIndicator()),
-                          error: (e, st) => Center(child: Text('Error loading orders')),
-                        );
-                      },
+                  ),
+                  const SizedBox(width: 12),
+                  CircleAvatar(
+                    radius: 22,
+                    backgroundColor: const Color(0xFF1A237E),
+                    child: Text(
+                      firstName.isNotEmpty ? firstName[0].toUpperCase() : 'T',
+                      style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
                     ),
-                    const SizedBox(height: 20),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ),
+              const SizedBox(height: 16),
+
+              // 3 Compact Stat Cards Row (Active, Due Today, Overdue)
+              Row(
+                children: [
+                  Expanded(
+                    child: _StatCard(
+                      label: 'Active',
+                      value: '$activeOrders',
+                      icon: Icons.work_outline,
+                      color: const Color(0xFF1A237E),
+                      bgColor: Colors.white,
+                      borderColor: const Color(0xFFE8EAF6),
+                      onTap: () => context.go('/tasks'),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: _StatCard(
+                      label: 'Due Today',
+                      value: '$dueTodayCount',
+                      icon: Icons.calendar_today_outlined,
+                      color: const Color(0xFF1A237E),
+                      bgColor: const Color(0xFFE8EAF6),
+                      borderColor: const Color(0xFFE8EAF6),
+                      onTap: () => context.go('/tasks'),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: _StatCard(
+                      label: 'Overdue',
+                      value: '$overdueCount',
+                      icon: Icons.warning_amber_rounded,
+                      color: overdueCount > 0 ? const Color(0xFFD32F2F) : const Color(0xFF757575),
+                      bgColor: overdueCount > 0 ? const Color(0xFFFFEBEE) : Colors.white,
+                      borderColor: overdueCount > 0 ? const Color(0xFFFFCDD2) : const Color(0xFFE8EAF6),
+                      onTap: () => context.go('/tasks'),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+
+              // Hero "New Order" Card
+              _NewOrderHeroCard(onTap: () => context.go('/orders/new')),
+              const SizedBox(height: 20),
+
+              // Shortcut Grid (SliverGridDelegateWithMaxCrossAxisExtent 180, mainAxisExtent 112)
+              GridView(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                  maxCrossAxisExtent: 180,
+                  mainAxisExtent: 112,
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 12,
+                ),
+                children: [
+                  _ShortcutCard(
+                    icon: Icons.shopping_bag_outlined,
+                    title: 'Orders',
+                    subtitle: 'Track and update orders',
+                    badgeText: '$activeOrders active',
+                    iconColor: const Color(0xFF1A237E),
+                    iconBgColor: const Color(0xFFE8EAF6),
+                    onTap: () => context.go('/orders'),
+                  ),
+                  _ShortcutCard(
+                    icon: Icons.people_outline,
+                    title: 'Customers',
+                    subtitle: 'Manage client records',
+                    iconColor: const Color(0xFF343A40),
+                    iconBgColor: const Color(0xFFF1F3F5),
+                    onTap: () => context.go('/customers'),
+                  ),
+                  _ShortcutCard(
+                    icon: Icons.assignment_outlined,
+                    title: 'My Tasks',
+                    subtitle: 'View assigned work',
+                    badgeText: overdueCount > 0 ? '$overdueCount overdue' : null,
+                    badgeColor: overdueCount > 0 ? const Color(0xFFD32F2F) : null,
+                    iconColor: const Color(0xFF1A237E),
+                    iconBgColor: const Color(0xFFE8EAF6),
+                    onTap: () => context.go('/tasks'),
+                  ),
+                  if (_user?['role'] != 'staff')
+                    _ShortcutCard(
+                      icon: Icons.bar_chart_rounded,
+                      title: 'Reports',
+                      subtitle: 'Business insights',
+                      iconColor: const Color(0xFF343A40),
+                      iconBgColor: const Color(0xFFF1F3F5),
+                      onTap: () => context.go('/reports'),
+                    ),
+                ],
+              ),
+              const SizedBox(height: 28),
+
+              // Recent Orders Section Header
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Recent Orders',
+                    style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.bold, color: const Color(0xFF1A237E)),
+                  ),
+                  TextButton(
+                    onPressed: () => context.go('/orders'),
+                    child: Text(
+                      'View All',
+                      style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w600, color: const Color(0xFF1A237E)),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+
+              // Recent Orders List (Max 3 items with empty state fallback)
+              Consumer(
+                builder: (context, ref, child) {
+                  final ordersAsync = ref.watch(ordersProvider);
+                  return ordersAsync.when(
+                    data: (orders) {
+                      if (orders.isEmpty) {
+                        return Container(
+                          padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(color: const Color(0xFFE8EAF6)),
+                          ),
+                          child: Center(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Icon(Icons.receipt_long_outlined, size: 44, color: Color(0xFF9FA8DA)),
+                                const SizedBox(height: 8),
+                                Text(
+                                  'No recent orders yet',
+                                  style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w600, color: const Color(0xFF5C6BC0)),
+                                ),
+                                const SizedBox(height: 12),
+                                OutlinedButton.icon(
+                                  onPressed: () => context.go('/orders/new'),
+                                  icon: const Icon(Icons.add, size: 16),
+                                  label: const Text('Create First Order'),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      }
+                      final recent = orders.take(3).toList();
+                      return Column(
+                        children: recent.map((o) {
+                          final initials = o.customerName != null && o.customerName!.isNotEmpty
+                              ? o.customerName!.split(' ').map((e) => e[0]).take(2).join('').toUpperCase()
+                              : 'C';
+                          return Container(
+                            margin: const EdgeInsets.only(bottom: 12),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(color: const Color(0xFFE8EAF6)),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: const Color(0xFF1A237E).withValues(alpha: 0.02),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: InkWell(
+                              onTap: () => context.go('/orders/details', extra: o),
+                              borderRadius: BorderRadius.circular(16),
+                              child: Padding(
+                                padding: const EdgeInsets.all(14),
+                                child: Row(
+                                  children: [
+                                    CircleAvatar(
+                                      radius: 20,
+                                      backgroundColor: const Color(0xFFE8EAF6),
+                                      foregroundColor: const Color(0xFF1A237E),
+                                      child: Text(initials, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                                    ),
+                                    const SizedBox(width: 14),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            o.customerName ?? 'Customer #${o.customerId}',
+                                            style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: const Color(0xFF1A237E), fontSize: 14),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          const SizedBox(height: 2),
+                                          Text(
+                                            '${o.garmentType} • #ORD-${o.id.toString().padLeft(4, '0')}',
+                                            style: GoogleFonts.inter(fontSize: 12, color: const Color(0xFF5C6BC0)),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFF1A237E).withValues(alpha: 0.08),
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Text(
+                                        o.status ?? 'Draft',
+                                        style: GoogleFonts.inter(
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.bold,
+                                          color: const Color(0xFF1A237E),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      );
+                    },
+                    loading: () => const Shimmer(
+                      child: Column(
+                        children: [
+                          SkeletonContainer(height: 64, borderRadius: 16),
+                          SizedBox(height: 12),
+                          SkeletonContainer(height: 64, borderRadius: 16),
+                        ],
+                      ),
+                    ),
+                    error: (e, st) => const Center(child: Text('Error loading orders')),
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
 
-class _StatPill extends StatelessWidget {
+class _StatCard extends StatelessWidget {
   final String label;
-  final Color backgroundColor;
-  final Color textColor;
+  final String value;
+  final IconData icon;
+  final Color color;
+  final Color bgColor;
+  final Color borderColor;
+  final VoidCallback onTap;
 
-  const _StatPill({required this.label, required this.backgroundColor, required this.textColor});
+  const _StatCard({
+    required this.label,
+    required this.value,
+    required this.icon,
+    required this.color,
+    required this.bgColor,
+    required this.borderColor,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(20),
+        color: bgColor,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: borderColor),
       ),
-      child: Text(
-        label,
-        style: GoogleFonts.inter(
-          fontSize: 12,
-          fontWeight: FontWeight.w600,
-          color: textColor,
+      child: InkWell(
+        onTap: () {
+          HapticFeedback.selectionClick();
+          onTap();
+        },
+        borderRadius: BorderRadius.circular(16),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Icon(icon, size: 16, color: color),
+                  Text(
+                    value,
+                    style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.bold, color: color),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 6),
+              Text(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: GoogleFonts.inter(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
+                  color: color.withValues(alpha: 0.8),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
-class _QuickActionCard extends StatelessWidget {
+class _NewOrderHeroCard extends StatefulWidget {
+  final VoidCallback onTap;
+
+  const _NewOrderHeroCard({required this.onTap});
+
+  @override
+  State<_NewOrderHeroCard> createState() => _NewOrderHeroCardState();
+}
+
+class _NewOrderHeroCardState extends State<_NewOrderHeroCard> {
+  bool _isPressed = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTapDown: (_) => setState(() => _isPressed = true),
+      onTapUp: (_) => setState(() => _isPressed = false),
+      onTapCancel: () => setState(() => _isPressed = false),
+      onTap: () {
+        HapticFeedback.selectionClick();
+        widget.onTap();
+      },
+      child: AnimatedScale(
+        scale: _isPressed ? 0.98 : 1.0,
+        duration: const Duration(milliseconds: 100),
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [Color(0xFF1A237E), Color(0xFF0F175A)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFF1A237E).withValues(alpha: 0.25),
+                blurRadius: 15,
+                offset: const Offset(0, 6),
+              ),
+            ],
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: 44,
+                      height: 44,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.15),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(Icons.add_rounded, color: Colors.white, size: 24),
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      'New Order',
+                      style: GoogleFonts.inter(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Create a customer order quickly.',
+                      style: GoogleFonts.inter(
+                        fontSize: 13,
+                        color: Colors.white.withValues(alpha: 0.8),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const Icon(Icons.arrow_forward_rounded, color: Colors.white70, size: 24),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ShortcutCard extends StatelessWidget {
   final IconData icon;
-  final String label;
+  final String title;
   final String subtitle;
+  final String? badgeText;
+  final Color? badgeColor;
   final Color iconColor;
   final Color iconBgColor;
   final VoidCallback onTap;
 
-  const _QuickActionCard({
+  const _ShortcutCard({
     required this.icon,
-    required this.label,
+    required this.title,
     required this.subtitle,
+    this.badgeText,
+    this.badgeColor,
     required this.iconColor,
     required this.iconBgColor,
     required this.onTap,
@@ -520,54 +618,84 @@ class _QuickActionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: const Color(0xFFE8EAF6)),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFF1A237E).withOpacity(0.02),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: iconBgColor,
-                borderRadius: BorderRadius.circular(8),
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: const Color(0xFFE8EAF6)),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF1A237E).withValues(alpha: 0.02),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: InkWell(
+        onTap: () {
+          HapticFeedback.selectionClick();
+          onTap();
+        },
+        borderRadius: BorderRadius.circular(16),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    width: 34,
+                    height: 34,
+                    decoration: BoxDecoration(
+                      color: iconBgColor,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Icon(icon, color: iconColor, size: 18),
+                  ),
+                  if (badgeText != null)
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: (badgeColor ?? const Color(0xFF1A237E)).withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Text(
+                        badgeText!,
+                        style: GoogleFonts.inter(
+                          fontSize: 9,
+                          fontWeight: FontWeight.bold,
+                          color: badgeColor ?? const Color(0xFF1A237E),
+                        ),
+                      ),
+                    ),
+                ],
               ),
-              child: Icon(icon, color: iconColor, size: 20),
-            ),
-            const SizedBox(height: 12),
-            Text(
-              label,
-              style: GoogleFonts.inter(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-                color: const Color(0xFF1A237E),
+              const SizedBox(height: 10),
+              Text(
+                title,
+                style: GoogleFonts.inter(
+                  fontSize: 13,
+                  fontWeight: FontWeight.bold,
+                  color: const Color(0xFF1A237E),
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
-            ),
-            const SizedBox(height: 2),
-            Text(
-              subtitle,
-              style: GoogleFonts.inter(
-                fontSize: 11,
-                color: const Color(0xFF5C6BC0),
+              const SizedBox(height: 2),
+              Text(
+                subtitle,
+                style: GoogleFonts.inter(
+                  fontSize: 11,
+                  color: const Color(0xFF5C6BC0),
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

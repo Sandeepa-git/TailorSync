@@ -9,18 +9,38 @@ class AppWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ProviderScope(
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 480),
-          child: MaterialApp.router(
-            title: 'TailorSync',
-            theme: AppTheme.lightTheme,
-            routerConfig: appRouter,
-            debugShowCheckedModeBanner: false,
-          ),
-        ),
+      child: MaterialApp.router(
+        title: 'TailorSync',
+        theme: AppTheme.lightTheme,
+        routerConfig: appRouter,
+        debugShowCheckedModeBanner: false,
+        builder: (context, child) {
+          return Container(
+            color: const Color(0xFFE0E0E0), // Light neutral background on empty desktop sides
+            child: Center(
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  final double effectiveWidth = constraints.maxWidth > 430 ? 430 : constraints.maxWidth;
+                  final double effectiveHeight = constraints.maxHeight;
+                  final currentMediaQuery = MediaQuery.of(context);
+
+                  return MediaQuery(
+                    data: currentMediaQuery.copyWith(
+                      size: Size(effectiveWidth, effectiveHeight),
+                    ),
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 430),
+                      child: ClipRect(
+                        child: child ?? const SizedBox.shrink(),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          );
+        },
       ),
     );
   }
 }
-

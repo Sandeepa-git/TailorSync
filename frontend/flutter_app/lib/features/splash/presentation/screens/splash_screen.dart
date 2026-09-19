@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:dio/dio.dart';
 import '../../../../core/network/providers/api_provider.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
@@ -54,11 +55,19 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
             if (mounted) context.go('/home');
             return;
           }
+        } on DioException catch (e) {
+          debugPrint('Token verification error: $e');
+          if (e.response?.statusCode == 401) {
+            // Only clear token if backend explicitly rejected credentials
+            api.clearToken();
+            await storage.delete(key: 'auth_token');
+          } else {
+            // Network glitch / timeout — assume token is present and proceed to home
+            if (mounted) context.go('/home');
+            return;
+          }
         } catch (e) {
-          // Token is invalid/expired — clear it
           debugPrint('Token verification failed: $e');
-          api.clearToken();
-          await storage.delete(key: 'auth_token');
         }
       }
     } catch (e) {

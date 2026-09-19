@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/network/providers/api_provider.dart';
+import '../../../../core/widgets/skeleton_loading.dart';
 
 class BusinessProfileScreen extends ConsumerStatefulWidget {
   const BusinessProfileScreen({super.key});
@@ -71,7 +72,7 @@ class _BusinessProfileScreenState extends ConsumerState<BusinessProfileScreen> {
     if (_loading) {
       return const Scaffold(
         backgroundColor: Color(0xFFF8F9FA),
-        body: Center(child: CircularProgressIndicator(color: Color(0xFF1A237E))),
+        body: SafeArea(child: ProfileSkeleton()),
       );
     }
 

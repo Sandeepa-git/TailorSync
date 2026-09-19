@@ -79,10 +79,6 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
       appBar: AppBar(
         backgroundColor: const Color(0xFFF8F9FA),
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Color(0xFF1A237E)),
-          onPressed: () => context.go('/home'),
-        ),
         title: Text(
           'Reports & Analytics',
           style: GoogleFonts.inter(
