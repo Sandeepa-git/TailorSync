@@ -1,5 +1,5 @@
 from pydantic import BaseSettings
-from typing import List
+from typing import List, Union
 
 class Settings(BaseSettings):
     PROJECT_NAME: str = "TailorSync"
@@ -7,7 +7,7 @@ class Settings(BaseSettings):
     SECRET_KEY: str = "temporary_development_secret_key"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 365
     REFRESH_TOKEN_EXPIRE_DAYS: int = 365
-    ALLOWED_HOSTS: List[str] = ["*"]
+    ALLOWED_HOSTS: Union[List[str], str] = ["*"]
 
     class Config:
         env_file = ".env"
