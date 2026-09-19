@@ -16,7 +16,7 @@ def list_orders(status: Optional[str] = None, db: Session = Depends(get_db), cur
     for o in orders:
         assignment = o.staff_assignments[0] if o.staff_assignments else None
         data = {
-            "id": o.id,
+            "id": o.order_id,
             "customer_id": o.customer_id,
             "garment_type": o.garment_type,
             "occasion": o.occasion,
@@ -27,7 +27,7 @@ def list_orders(status: Optional[str] = None, db: Session = Depends(get_db), cur
             "created_at": o.created_at,
             "tailor_remarks": o.tailor_remarks,
             "customer_instructions": o.customer_instructions,
-            "customer_name": o.customer.name if o.customer else None,
+            "customer_name": o.customer.full_name if o.customer else None,
             "customer_phone": o.customer.phone if o.customer else None,
             "staff_id": assignment.staff_id if assignment else None,
             "staff_name": assignment.staff.full_name if assignment and assignment.staff else None,
@@ -48,7 +48,7 @@ def create_order(payload: OrderCreate, db: Session = Depends(get_db), current_us
     from app.services.order_service import create_order as svc_create
     o = svc_create(db, payload, current_user.business_id)
     return {
-        "id": o.id,
+        "id": o.order_id,
         "customer_id": o.customer_id,
         "garment_type": o.garment_type,
         "occasion": o.occasion,
@@ -76,7 +76,7 @@ def get_order(order_id: int, db: Session = Depends(get_db), current_user: User =
         raise HTTPException(status_code=404, detail="Order not found")
     assignment = o.staff_assignments[0] if getattr(o, 'staff_assignments', None) else None
     return {
-        "id": o.id,
+        "id": o.order_id,
         "customer_id": o.customer_id,
         "garment_type": o.garment_type,
         "occasion": o.occasion,
@@ -87,7 +87,7 @@ def get_order(order_id: int, db: Session = Depends(get_db), current_user: User =
         "created_at": o.created_at,
         "tailor_remarks": o.tailor_remarks,
         "customer_instructions": o.customer_instructions,
-        "customer_name": o.customer.name if o.customer else None,
+        "customer_name": o.customer.full_name if o.customer else None,
         "customer_phone": o.customer.phone if o.customer else None,
         "staff_id": assignment.staff_id if assignment else None,
         "staff_name": assignment.staff.full_name if assignment and assignment.staff else None,
@@ -109,7 +109,7 @@ def update_order(order_id: int, payload: OrderUpdate, db: Session = Depends(get_
         raise HTTPException(status_code=404, detail="Order not found")
     assignment = o.staff_assignments[0] if getattr(o, 'staff_assignments', None) else None
     return {
-        "id": o.id,
+        "id": o.order_id,
         "customer_id": o.customer_id,
         "garment_type": o.garment_type,
         "occasion": o.occasion,
@@ -120,7 +120,7 @@ def update_order(order_id: int, payload: OrderUpdate, db: Session = Depends(get_
         "created_at": o.created_at,
         "tailor_remarks": o.tailor_remarks,
         "customer_instructions": o.customer_instructions,
-        "customer_name": o.customer.name if o.customer else None,
+        "customer_name": o.customer.full_name if o.customer else None,
         "customer_phone": o.customer.phone if o.customer else None,
         "staff_name": assignment.staff.full_name if assignment and assignment.staff else None,
     }

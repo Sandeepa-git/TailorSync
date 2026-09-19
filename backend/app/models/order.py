@@ -59,7 +59,7 @@ class Order(Base):
     def id(self, value):
         self.order_id = value
 
-    @hybrid_property
+    @property
     def due_date(self):
         if self.expected_delivery_date is None:
             return None
@@ -74,7 +74,7 @@ class Order(Base):
         else:
             self.expected_delivery_date = value
 
-    @hybrid_property
+    @property
     def completed_at(self):
         if self.completed_date is None:
             return None
