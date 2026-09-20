@@ -9,6 +9,7 @@ class CustomerCreate(BaseModel):
 class CustomerUpdate(BaseModel):
     name: Optional[str] = None
     phone: Optional[str] = None
+    email: Optional[str] = None
 
 class CustomerRead(CustomerCreate):
     id: int

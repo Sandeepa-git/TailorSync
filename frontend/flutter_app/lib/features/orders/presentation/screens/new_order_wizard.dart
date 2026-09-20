@@ -59,6 +59,10 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> {
   // Step 2: Garment
   String? _selectedGarment;
   final List<Map<String, dynamic>> _garmentTypes = [
+    {'name': 'Short Sleeve Shirt', 'icon': Icons.checkroom},
+    {'name': 'Long Sleeve Shirt', 'icon': Icons.dry_cleaning},
+    {'name': 'Short Trouser', 'icon': Icons.straighten},
+    {'name': 'Long Trouser', 'icon': Icons.straighten},
     {'name': 'Shirts', 'icon': Icons.checkroom},
     {'name': 'Trousers', 'icon': Icons.straighten},
     {'name': 'Dresses', 'icon': Icons.woman},
@@ -76,22 +80,138 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> {
   bool _loadingTemplate = false;
   final Map<int, TextEditingController> _measurementControllers = {};
 
+  Map<String, dynamic> _getDefaultTemplateForCategory(String cat) {
+    switch (cat) {
+      case 'Short Sleeve Shirt':
+        return {
+          'category_name': cat,
+          'fields': [
+            {'id': 1, 'field_name': 'Shoulder Length', 'unit': 'cm', 'is_required': true, 'placeholder': 'e.g. 44'},
+            {'id': 2, 'field_name': 'Height', 'unit': 'cm', 'is_required': true, 'placeholder': 'e.g. 175'},
+            {'id': 3, 'field_name': 'Short Sleeve Length', 'unit': 'cm', 'is_required': false, 'placeholder': 'e.g. 24'},
+            {'id': 4, 'field_name': 'Chest', 'unit': 'cm', 'is_required': false, 'placeholder': 'e.g. 96'},
+            {'id': 5, 'field_name': 'Collar Size', 'unit': 'cm', 'is_required': false, 'placeholder': 'e.g. 39'},
+            {'id': 6, 'field_name': 'Sleeve Opening', 'unit': 'cm', 'is_required': false, 'placeholder': 'e.g. 34'},
+          ]
+        };
+      case 'Long Sleeve Shirt':
+        return {
+          'category_name': cat,
+          'fields': [
+            {'id': 1, 'field_name': 'Shoulder Length', 'unit': 'cm', 'is_required': true, 'placeholder': 'e.g. 44'},
+            {'id': 2, 'field_name': 'Height', 'unit': 'cm', 'is_required': true, 'placeholder': 'e.g. 175'},
+            {'id': 3, 'field_name': 'Chest', 'unit': 'cm', 'is_required': false, 'placeholder': 'e.g. 96'},
+            {'id': 4, 'field_name': 'Collar Size', 'unit': 'cm', 'is_required': false, 'placeholder': 'e.g. 39'},
+            {'id': 5, 'field_name': 'Long Sleeve Length', 'unit': 'cm', 'is_required': false, 'placeholder': 'e.g. 62'},
+            {'id': 6, 'field_name': 'Sleeve Opening', 'unit': 'cm', 'is_required': false, 'placeholder': 'e.g. 22'},
+          ]
+        };
+      case 'Short Trouser':
+        return {
+          'category_name': cat,
+          'fields': [
+            {'id': 1, 'field_name': 'Height Till Knee', 'unit': 'cm', 'is_required': true, 'placeholder': 'e.g. 52'},
+            {'id': 2, 'field_name': 'Waist', 'unit': 'cm', 'is_required': true, 'placeholder': 'e.g. 82'},
+            {'id': 3, 'field_name': 'Around Knee', 'unit': 'cm', 'is_required': false, 'placeholder': 'e.g. 40'},
+            {'id': 4, 'field_name': 'Seat', 'unit': 'cm', 'is_required': false, 'placeholder': 'e.g. 98'},
+            {'id': 5, 'field_name': 'Crotch', 'unit': 'cm', 'is_required': false, 'placeholder': 'e.g. 68'},
+            {'id': 6, 'field_name': 'Short Trouser Leg Opening', 'unit': 'cm', 'is_required': false, 'placeholder': 'e.g. 44'},
+          ]
+        };
+      case 'Long Trouser':
+        return {
+          'category_name': cat,
+          'fields': [
+            {'id': 1, 'field_name': 'Height Till Knee', 'unit': 'cm', 'is_required': true, 'placeholder': 'e.g. 52'},
+            {'id': 2, 'field_name': 'Waist', 'unit': 'cm', 'is_required': true, 'placeholder': 'e.g. 82'},
+            {'id': 3, 'field_name': 'Around Knee', 'unit': 'cm', 'is_required': false, 'placeholder': 'e.g. 40'},
+            {'id': 4, 'field_name': 'Seat', 'unit': 'cm', 'is_required': false, 'placeholder': 'e.g. 98'},
+            {'id': 5, 'field_name': 'Crotch', 'unit': 'cm', 'is_required': false, 'placeholder': 'e.g. 68'},
+            {'id': 6, 'field_name': 'Long Trouser Leg Opening', 'unit': 'cm', 'is_required': false, 'placeholder': 'e.g. 38'},
+          ]
+        };
+      default:
+        return {
+          'category_name': cat,
+          'fields': [
+            {'id': 1, 'field_name': 'Shoulder Length', 'unit': 'cm', 'is_required': true, 'placeholder': 'e.g. 44'},
+            {'id': 2, 'field_name': 'Height', 'unit': 'cm', 'is_required': true, 'placeholder': 'e.g. 175'},
+            {'id': 3, 'field_name': 'Chest', 'unit': 'cm', 'is_required': false, 'placeholder': 'e.g. 96'},
+            {'id': 4, 'field_name': 'Waist', 'unit': 'cm', 'is_required': false, 'placeholder': 'e.g. 82'},
+          ]
+        };
+    }
+  }
+
   // Step 4: Style & Fabric
-  String _occasion = 'Daily';
-  String _climate = 'Hot';
+  String _occasion = 'Everyday / Casual';
+  String _weather = 'Warm';
+  final List<String> _fabricPreferences = ['Soft', 'Breathable'];
+  String _fit = 'Regular Fit';
+
+  final List<String> _occasionOptions = const [
+    'Everyday / Casual',
+    'Office / Work',
+    'Wedding',
+    'Party / Celebration',
+    'School',
+    'University',
+    'Business / Formal Event',
+    'Religious / Cultural Event',
+    'Travel',
+    'Outdoor Activity',
+    'Other',
+  ];
+
+  final List<String> _weatherOptions = const [
+    'Very Hot',
+    'Hot',
+    'Warm',
+    'Mild',
+    'Cool',
+    'Cold',
+    'Very Cold',
+    'Humid',
+    'Rainy',
+    'Windy',
+    'Mixed / Changing Weather',
+  ];
+
+  final List<String> _fabricFeelOptions = const [
+    'Very Soft',
+    'Soft',
+    'Smooth',
+    'Slightly Rough',
+    'Rough / Textured',
+    'Lightweight / Thin',
+    'Medium Weight',
+    'Heavy / Thick',
+    'Stretchy',
+    'Structured / Firm',
+    'Breathable',
+    'Extra Comfortable',
+  ];
+
+  final List<String> _fitOptions = const [
+    'Slim Fit',
+    'Modern Fit',
+    'Regular Fit',
+  ];
 
   // Step 5: Assign & Review
   int? _selectedStaffId = 1; // Default to first staff member for demo
   String _staffSearch = '';
+  final Set<int> _invalidFieldIds = {};
 
   Future<void> _nextStep() async {
-    if (_currentStep == 0 && _selectedCustomerId == null) {
-      _showSnack('Please select a customer');
-      return;
-    }
-    if (_currentStep == 1) {
+    if (_currentStep == 0) {
+      if (_selectedCustomerId == null) {
+        _showSnack('⚠️ Please select a customer before proceeding to the next step');
+        return;
+      }
+    } else if (_currentStep == 1) {
       if (_selectedGarment == null) {
-        _showSnack('Please select a garment type');
+        _showSnack('⚠️ Please select a garment type before proceeding to the next step');
         return;
       }
       // Load template for selected garment
@@ -103,14 +223,65 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> {
         _measurementControllers.clear();
         final fields = _measurementTemplate!['fields'] as List;
         for (var f in fields) {
-          _measurementControllers[f['id']] = TextEditingController(text: f['placeholder'] ?? '');
+          _measurementControllers[f['id']] = TextEditingController();
         }
       } catch (e) {
-        _showSnack('Failed to load measurement template');
+        _measurementTemplate = _getDefaultTemplateForCategory(_selectedGarment!);
+        _measurementControllers.clear();
+        final fields = _measurementTemplate!['fields'] as List;
+        for (var f in fields) {
+          _measurementControllers[f['id']] = TextEditingController();
+        }
       }
       setState(() => _loadingTemplate = false);
+    } else if (_currentStep == 2) {
+      final fields = (_measurementTemplate?['fields'] as List? ?? []).cast<Map<String, dynamic>>();
+      final priorityFields = fields.where((f) {
+        final name = (f['field_name'] ?? '').toString();
+        final isReq = f['is_required'] == true;
+        return isReq || name == 'Shoulder Length' || name == 'Height' || name == 'Height Till Knee' || name == 'Waist';
+      }).toList();
+
+      final missing = <String>[];
+      _invalidFieldIds.clear();
+      for (var f in priorityFields) {
+        final id = f['id'] as int;
+        final ctrl = _measurementControllers[id];
+        final text = ctrl?.text.trim() ?? '';
+        if (text.isEmpty || double.tryParse(text) == null) {
+          missing.add(f['field_name'] ?? 'Measurement');
+          _invalidFieldIds.add(id);
+        }
+      }
+
+      if (missing.isNotEmpty) {
+        setState(() {});
+        _showSnack('⚠️ Please enter valid numerical values for priority measurements: ${missing.join(", ")}');
+        return;
+      }
+    } else if (_currentStep == 3) {
+      if (_occasion.isEmpty) {
+        _showSnack('⚠️ Please select an Occasion before proceeding');
+        return;
+      }
+      if (_weather.isEmpty) {
+        _showSnack('⚠️ Please select a Weather condition before proceeding');
+        return;
+      }
+      if (_fabricPreferences.isEmpty) {
+        _showSnack('⚠️ Please select at least one Fabric Feel preference before proceeding');
+        return;
+      }
+      if (_fit.isEmpty) {
+        _showSnack('⚠️ Please select a Fit preference before proceeding');
+        return;
+      }
     }
-    setState(() => _currentStep++);
+
+    setState(() {
+      _invalidFieldIds.clear();
+      _currentStep++;
+    });
   }
 
   void _prevStep() {
@@ -118,10 +289,44 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> {
   }
 
   void _showSnack(String msg) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg), backgroundColor: const Color(0xFFD32F2F)));
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            const Icon(Icons.warning_amber_rounded, color: Colors.white, size: 20),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                msg,
+                style: GoogleFonts.inter(fontWeight: FontWeight.w600, fontSize: 13, color: Colors.white),
+              ),
+            ),
+          ],
+        ),
+        backgroundColor: const Color(0xFFC62828), // Red warning
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        margin: const EdgeInsets.all(16),
+        duration: const Duration(seconds: 4),
+      ),
+    );
   }
 
   Future<void> _saveOrder() async {
+    if (_selectedCustomerId == null) {
+      _showSnack('⚠️ Customer missing. Please go back to Step 1 and select a customer');
+      return;
+    }
+    if (_selectedGarment == null) {
+      _showSnack('⚠️ Garment missing. Please go back to Step 2 and select a garment');
+      return;
+    }
+    if (_selectedStaffId == null) {
+      _showSnack('⚠️ Please select a staff member to assign the order');
+      return;
+    }
+
     setState(() => _saving = true);
     try {
       final api = ref.read(apiClientProvider);
@@ -129,6 +334,12 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> {
         'customer_id': _selectedCustomerId,
         'garment_type': _selectedGarment,
         'priority': 'Medium',
+        'style_preferences': {
+          'occasion': _occasion,
+          'weather': _weather,
+          'fabric_feel': _fabricPreferences,
+          'fit': _fit,
+        },
       };
       
       if (_selectedStaffId != null) body['staff_id'] = _selectedStaffId;
@@ -346,19 +557,18 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> {
         }),
 
         const SizedBox(height: 24),
-        if (_selectedCustomerId != null)
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: _nextStep,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF0F175A), // Navy
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-              ),
-              child: const Text('Continue to Garment Type', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+            onPressed: _nextStep,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF0F175A), // Navy
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             ),
+            child: const Text('Continue to Garment Type', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
           ),
+        ),
       ],
     );
   }
@@ -435,15 +645,25 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> {
       ));
     }
 
-    final fields = _measurementTemplate?['fields'] as List? ?? [];
+    final fields = (_measurementTemplate?['fields'] as List? ?? []).cast<Map<String, dynamic>>();
+
+    final priorityFields = fields.where((f) {
+      final name = (f['field_name'] ?? '').toString();
+      final isReq = f['is_required'] == true;
+      return isReq || name == 'Shoulder Length' || name == 'Height' || name == 'Height Till Knee' || name == 'Waist';
+    }).toList();
+
+    final additionalFields = fields.where((f) => !priorityFields.contains(f)).toList();
 
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: const Color(0xFFF1F3FB), // Light indigo background
             borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: const Color(0xFFE8EAF6)),
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -451,17 +671,17 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(color: const Color(0xFF1A237E), borderRadius: BorderRadius.circular(8)),
-                child: const Icon(Icons.info_outline, color: Colors.white, size: 20),
+                child: const Icon(Icons.auto_awesome, color: Colors.white, size: 20),
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Notice', style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: const Color(0xFF1A237E))),
+                    Text('AI Prediction Ready', style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: const Color(0xFF1A237E))),
                     const SizedBox(height: 4),
                     Text(
-                      "AI measurement predictions and suggestions will be available soon! Please enter all measurements manually for now.",
+                      "Priority / Must-Have measurements (e.g. Height & Shoulder Length) are primary inputs used by AI to accurately predict remaining measurements.",
                       style: GoogleFonts.inter(fontSize: 12, color: const Color(0xFF5C6BC0)),
                     ),
                   ],
@@ -477,16 +697,78 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> {
             padding: EdgeInsets.all(20.0),
             child: Text('No measurement fields required for this garment type.', style: TextStyle(color: Colors.grey)),
           )
-        else
-          ...fields.map((f) {
-            return _MeasureInputRow(
-              label: f['field_name'] + (f['is_required'] == true ? ' *' : ''),
-              controller: _measurementControllers[f['id']]!,
-              icon: Icons.straighten,
-              hintText: f['placeholder'] ?? 'Enter value',
-              unit: f['unit'] ?? 'cm',
-            );
-          }),
+        else ...[
+          if (priorityFields.isNotEmpty) ...[
+            Container(
+              margin: const EdgeInsets.only(bottom: 14),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+              decoration: BoxDecoration(
+                color: const Color(0xFFFFF8E1),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: const Color(0xFFFFE082)),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.star_rounded, color: Color(0xFFD97706), size: 20),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Priority / Must-Have Measurements',
+                      style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: const Color(0xFFB45309), fontSize: 13),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            ...priorityFields.map((f) {
+              final id = f['id'] as int;
+              return _MeasureInputRow(
+                label: f['field_name'] ?? '',
+                controller: _measurementControllers[id]!,
+                icon: Icons.straighten,
+                hintText: f['placeholder'] ?? 'Enter value',
+                unit: f['unit'] ?? 'cm',
+                isPriority: true,
+                hasError: _invalidFieldIds.contains(id),
+              );
+            }),
+            const SizedBox(height: 12),
+          ],
+
+          if (additionalFields.isNotEmpty) ...[
+            Container(
+              margin: EdgeInsets.only(bottom: 14, top: priorityFields.isNotEmpty ? 8 : 0),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+              decoration: BoxDecoration(
+                color: const Color(0xFFF8F9FA),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: const Color(0xFFE8EAF6)),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.straighten, color: Color(0xFF1A237E), size: 18),
+                  const SizedBox(width: 8),
+                  Text(
+                    'Additional Measurements',
+                    style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: const Color(0xFF1A237E), fontSize: 13),
+                  ),
+                ],
+              ),
+            ),
+            ...additionalFields.map((f) {
+              final id = f['id'] as int;
+              return _MeasureInputRow(
+                label: f['field_name'] ?? '',
+                controller: _measurementControllers[id]!,
+                icon: Icons.straighten,
+                hintText: f['placeholder'] ?? 'Enter value',
+                unit: f['unit'] ?? 'cm',
+                isPriority: false,
+                hasError: _invalidFieldIds.contains(id),
+              );
+            }),
+          ],
+        ],
 
         const SizedBox(height: 32),
         Row(
@@ -515,6 +797,7 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> {
   }
 
   // ── Step 4: Style & Fabric ────────────────────────────────────────
+  // ── Step 4: Style & Fabric ────────────────────────────────────────
   Widget _buildStyleStep() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -524,69 +807,83 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> {
         Text('Style & Fabric', style: GoogleFonts.inter(fontSize: 22, fontWeight: FontWeight.bold, color: const Color(0xFF1A237E))),
         const SizedBox(height: 24),
 
-        Text('Occasion', style: GoogleFonts.inter(fontSize: 12, color: const Color(0xFF5C6BC0))),
-        const SizedBox(height: 8),
-        Row(
-          children: ['Daily', 'Office', 'Formal'].map((e) {
-            final isSelected = _occasion == e;
-            return Padding(
-              padding: const EdgeInsets.only(right: 8),
-              child: ChoiceChip(
-                label: Text(e),
-                selected: isSelected,
-                onSelected: (v) => setState(() => _occasion = e),
-                selectedColor: const Color(0xFF1A237E),
-                backgroundColor: Colors.white,
-                labelStyle: TextStyle(color: isSelected ? Colors.white : const Color(0xFF5C6BC0)),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20), side: const BorderSide(color: Color(0xFFE8EAF6))),
-              ),
-            );
-          }).toList(),
+        // 1. Occasion (Single selection)
+        _buildStyleSection(
+          title: 'Occasion',
+          badgeText: 'Single selection',
+          isMulti: false,
+          options: _occasionOptions,
+          selectedValues: [_occasion],
+          onSelect: (val) => setState(() => _occasion = val),
         ),
-        const SizedBox(height: 20),
 
-        Text('Climate', style: GoogleFonts.inter(fontSize: 12, color: const Color(0xFF5C6BC0))),
-        const SizedBox(height: 8),
-        Row(
-          children: ['Hot', 'Warm', 'Cool'].map((e) {
-            final isSelected = _climate == e;
-            return Padding(
-              padding: const EdgeInsets.only(right: 8),
-              child: ChoiceChip(
-                label: Text(e),
-                selected: isSelected,
-                onSelected: (v) => setState(() => _climate = e),
-                selectedColor: const Color(0xFF1A237E),
-                backgroundColor: Colors.white,
-                labelStyle: TextStyle(color: isSelected ? Colors.white : const Color(0xFF5C6BC0)),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20), side: const BorderSide(color: Color(0xFFE8EAF6))),
-              ),
-            );
-          }).toList(),
+        // 2. Weather (Single selection)
+        _buildStyleSection(
+          title: 'Weather',
+          badgeText: 'Single selection',
+          isMulti: false,
+          options: _weatherOptions,
+          selectedValues: [_weather],
+          onSelect: (val) => setState(() => _weather = val),
         ),
-        const SizedBox(height: 32),
 
-        // AI Fabric Intelligence Card - Disabled Notice
+        // 3. Fabric Feel & Preference (Multiple selection)
+        _buildStyleSection(
+          title: 'Fabric Feel & Preference',
+          badgeText: 'Multiple selection',
+          isMulti: true,
+          options: _fabricFeelOptions,
+          selectedValues: _fabricPreferences,
+          onSelect: (val) {
+            setState(() {
+              if (_fabricPreferences.contains(val)) {
+                _fabricPreferences.remove(val);
+              } else {
+                _fabricPreferences.add(val);
+              }
+            });
+          },
+        ),
+
+        // 4. Fit (Single selection)
+        _buildStyleSection(
+          title: 'Fit',
+          badgeText: 'Single selection',
+          isMulti: false,
+          options: _fitOptions,
+          selectedValues: [_fit],
+          onSelect: (val) => setState(() => _fit = val),
+        ),
+
+        // AI Fabric Recommendation Notice Card
         Container(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: const Color(0xFFF1F3FB), 
+            color: const Color(0xFFF1F3FB),
             borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: const Color(0xFFE8EAF6)),
           ),
-          child: Column(
+          child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  const Icon(Icons.info_outline, color: Color(0xFF1A237E), size: 20),
-                  const SizedBox(width: 8),
-                  Text('Notice', style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.bold, color: const Color(0xFF1A237E))),
-                ],
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(color: const Color(0xFF1A237E), borderRadius: BorderRadius.circular(8)),
+                child: const Icon(Icons.auto_awesome, color: Colors.white, size: 20),
               ),
-              const SizedBox(height: 12),
-              Text(
-                "AI Fabric Estimation and Recommendations will be available soon!",
-                style: GoogleFonts.inter(fontSize: 13, color: const Color(0xFF5C6BC0)),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('AI Fabric Recommendation Engine', style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: const Color(0xFF1A237E))),
+                    const SizedBox(height: 4),
+                    Text(
+                      "Your selected occasion, weather, fabric feel preferences, and fit will be passed to the AI system to recommend optimal fabric types!",
+                      style: GoogleFonts.inter(fontSize: 12, color: const Color(0xFF5C6BC0)),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -614,6 +911,56 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> {
             ),
           ],
         ),
+      ],
+    );
+  }
+
+  Widget _buildStyleSection({
+    required String title,
+    required String badgeText,
+    required bool isMulti,
+    required List<String> options,
+    required List<String> selectedValues,
+    required Function(String) onSelect,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Text(title, style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.bold, color: const Color(0xFF1A237E))),
+            const SizedBox(width: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+              decoration: BoxDecoration(
+                color: isMulti ? const Color(0xFFE8EAF6) : const Color(0xFFF1F3FB),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Text(
+                badgeText,
+                style: GoogleFonts.inter(
+                  fontSize: 10,
+                  color: isMulti ? const Color(0xFF1A237E) : const Color(0xFF5C6BC0),
+                  fontWeight: isMulti ? FontWeight.bold : FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: options.map((opt) {
+            final isSelected = selectedValues.contains(opt);
+            return _SelectChip(
+              label: opt,
+              isSelected: isSelected,
+              onTap: () => onSelect(opt),
+            );
+          }).toList(),
+        ),
+        const SizedBox(height: 24),
       ],
     );
   }
@@ -690,8 +1037,14 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> {
               Text(_selectedCustomerName ?? 'Unknown', style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.bold, color: const Color(0xFF1A237E))),
               Text('VIP Client • Ref: #JD-092', style: GoogleFonts.inter(fontSize: 11, color: const Color(0xFF5C6BC0))),
               const SizedBox(height: 12),
-              Text('Garment Type', style: GoogleFonts.inter(fontSize: 10, color: const Color(0xFF5C6BC0))),
-              Text('${_selectedGarment ?? 'Unknown'} • $_occasion • $_climate', style: GoogleFonts.inter(fontSize: 13, color: const Color(0xFF1A237E))),
+              Text('Garment & Style', style: GoogleFonts.inter(fontSize: 10, color: const Color(0xFF5C6BC0))),
+              Text('${_selectedGarment ?? 'Garment'} • $_fit', style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.bold, color: const Color(0xFF1A237E))),
+              const SizedBox(height: 2),
+              Text('Occasion: $_occasion  •  Weather: $_weather', style: GoogleFonts.inter(fontSize: 11, color: const Color(0xFF5C6BC0))),
+              if (_fabricPreferences.isNotEmpty) ...[
+                const SizedBox(height: 2),
+                Text('Fabric Feel: ${_fabricPreferences.join(", ")}', style: GoogleFonts.inter(fontSize: 11, color: const Color(0xFF1A237E), fontWeight: FontWeight.w500)),
+              ],
             ],
           ),
         ),
@@ -745,16 +1098,10 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
-                    children: [
-                      const Icon(Icons.straighten, size: 16, color: Color(0xFF1A237E)),
-                      const SizedBox(width: 8),
-                      Text('Key Measurements', style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.bold, color: const Color(0xFF1A237E))),
-                    ],
-                  ),
-                  Text('Edit', style: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.bold, color: const Color(0xFF5C6BC0))),
+                  const Icon(Icons.straighten, size: 16, color: Color(0xFF1A237E)),
+                  const SizedBox(width: 8),
+                  Text('Key Measurements', style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.bold, color: const Color(0xFF1A237E))),
                 ],
               ),
               const SizedBox(height: 12),
@@ -910,10 +1257,21 @@ class _MeasureInputRow extends StatelessWidget {
   final TextEditingController controller;
   final IconData icon;
   final bool isPredicted;
+  final bool isPriority;
+  final bool hasError;
   final String hintText;
   final String unit;
 
-  const _MeasureInputRow({required this.label, required this.controller, required this.icon, this.isPredicted = false, this.hintText = '', this.unit = 'cm'});
+  const _MeasureInputRow({
+    required this.label,
+    required this.controller,
+    required this.icon,
+    this.isPredicted = false,
+    this.isPriority = false,
+    this.hasError = false,
+    this.hintText = '',
+    this.unit = 'cm',
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -925,8 +1283,33 @@ class _MeasureInputRow extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(label, style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w600, color: const Color(0xFF1A237E))),
-              if (isPredicted)
+              Row(
+                children: [
+                  Text(label, style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w600, color: hasError ? const Color(0xFFC62828) : const Color(0xFF1A237E))),
+                  if (isPriority) ...[
+                    const SizedBox(width: 4),
+                    Text('*', style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.bold, color: const Color(0xFFD97706))),
+                  ],
+                ],
+              ),
+              if (isPriority)
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFFF8E1),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: const Color(0xFFFFB300), width: 1),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.star_rounded, size: 12, color: Color(0xFFD97706)),
+                      const SizedBox(width: 4),
+                      Text('Must-Have', style: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.bold, color: const Color(0xFFB45309))),
+                    ],
+                  ),
+                )
+              else if (isPredicted)
                 Row(
                   children: [
                     const Icon(Icons.auto_awesome, size: 12, color: Color(0xFF5C6BC0)),
@@ -941,7 +1324,10 @@ class _MeasureInputRow extends StatelessWidget {
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: isPredicted ? const Color(0xFF9FA8DA) : const Color(0xFFE8EAF6)),
+              border: Border.all(
+                color: hasError ? const Color(0xFFC62828) : (isPriority ? const Color(0xFFFFC107) : (isPredicted ? const Color(0xFF9FA8DA) : const Color(0xFFE8EAF6))),
+                width: hasError || isPriority ? 1.5 : 1.0,
+              ),
             ),
             child: Row(
               children: [
@@ -960,13 +1346,27 @@ class _MeasureInputRow extends StatelessWidget {
                 const SizedBox(width: 16),
                 Container(
                   padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(color: const Color(0xFFF8F9FA), borderRadius: BorderRadius.circular(8)),
+                  decoration: BoxDecoration(
+                    color: hasError ? const Color(0xFFFFEBEE) : (isPriority ? const Color(0xFFFFF8E1) : const Color(0xFFF8F9FA)),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                   margin: const EdgeInsets.only(right: 4),
-                  child: Icon(icon, color: const Color(0xFF5C6BC0), size: 18),
+                  child: Icon(
+                    icon,
+                    color: hasError ? const Color(0xFFC62828) : (isPriority ? const Color(0xFFD97706) : const Color(0xFF5C6BC0)),
+                    size: 18,
+                  ),
                 ),
               ],
             ),
           ),
+          if (hasError) ...[
+            const SizedBox(height: 4),
+            Text(
+              'This numerical measurement is required',
+              style: GoogleFonts.inter(fontSize: 11, color: const Color(0xFFC62828), fontWeight: FontWeight.w500),
+            ),
+          ],
         ],
       ),
     );
@@ -1067,6 +1467,57 @@ class _ReviewMeasureBox extends StatelessWidget {
           const SizedBox(height: 4),
           Text(value, style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.bold, color: const Color(0xFF1A237E))),
         ],
+      ),
+    );
+  }
+}
+
+class _SelectChip extends StatelessWidget {
+  final String label;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _SelectChip({
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 150),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
+        decoration: BoxDecoration(
+          color: isSelected ? const Color(0xFF1A237E) : Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: isSelected ? const Color(0xFF1A237E) : const Color(0xFFE8EAF6),
+            width: isSelected ? 1.5 : 1.0,
+          ),
+          boxShadow: isSelected
+              ? [BoxShadow(color: const Color(0xFF1A237E).withValues(alpha: 0.12), blurRadius: 4, offset: const Offset(0, 2))]
+              : null,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (isSelected) ...[
+              const Icon(Icons.check, color: Colors.white, size: 14),
+              const SizedBox(width: 6),
+            ],
+            Text(
+              label,
+              style: GoogleFonts.inter(
+                fontSize: 12,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                color: isSelected ? Colors.white : const Color(0xFF374151),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

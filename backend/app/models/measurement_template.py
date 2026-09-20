@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, ForeignKey
+from sqlalchemy import Column, Integer, ForeignKey, select
 from sqlalchemy.orm import relationship, object_session
 from sqlalchemy.ext.hybrid import hybrid_property
 from app.database.base import Base
@@ -34,7 +34,7 @@ class MeasurementTemplate(Base):
     def category_name(self, value):
         session = object_session(self)
         if session is not None and value:
-            name_clean = value.strip().capitalize()
+            name_clean = value.strip().title()
             g_type = session.query(GarmentType).filter(GarmentType.name == name_clean).first()
             if not g_type:
                 g_type = GarmentType(name=name_clean)
@@ -43,7 +43,11 @@ class MeasurementTemplate(Base):
             self.garment_type_id = g_type.garment_type_id
             self.garment_type_rel = g_type
         elif value:
-            self.garment_type_rel = GarmentType(name=value.strip().capitalize())
+            self.garment_type_rel = GarmentType(name=value.strip().title())
+
+    @category_name.expression
+    def category_name(cls):
+        return select(GarmentType.name).where(GarmentType.garment_type_id == cls.garment_type_id).scalar_subquery()
 
     @hybrid_property
     def garment_type(self):

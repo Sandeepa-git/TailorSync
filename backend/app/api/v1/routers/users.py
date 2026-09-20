@@ -25,6 +25,34 @@ def get_me(current_user: User = Depends(get_current_user)):
         "is_active": user.is_active,
     }
 
+from pydantic import BaseModel
+
+class ChangePasswordIn(BaseModel):
+    current_password: str
+    new_password: str
+
+@router.put("/me/password")
+def change_password(payload: ChangePasswordIn, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    """Change password with current password verification and strength check."""
+    user = current_user
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+        
+    if user.hashed_password == "firebase_managed":
+        raise HTTPException(status_code=400, detail="Google managed accounts cannot change password directly.")
+        
+    from app.core.security import verify_password, get_password_hash, validate_password_strength
+    if not verify_password(payload.current_password, user.hashed_password):
+        raise HTTPException(status_code=400, detail="Current password is incorrect.")
+        
+    is_valid, msg = validate_password_strength(payload.new_password)
+    if not is_valid:
+        raise HTTPException(status_code=400, detail=msg)
+        
+    user.hashed_password = get_password_hash(payload.new_password)
+    db.commit()
+    return {"status": "success", "detail": "Password changed successfully"}
+
 @router.put("/me")
 def update_me(payload: UserUpdate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     """Update current user's profile."""

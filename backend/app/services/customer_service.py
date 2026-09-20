@@ -19,8 +19,9 @@ def update_customer(db: Session, customer_id: int, updates: CustomerUpdate, busi
             customer.name = updates.name
         if updates.phone is not None:
             customer.phone = updates.phone
+        if updates.email is not None:
+            customer.email = updates.email
         db.commit()
-        db.refresh(customer)
         db.refresh(customer)
     return customer
 
@@ -29,16 +30,20 @@ def delete_customer(db: Session, customer_id: int, business_id: int):
     if not customer:
         return False, "Customer not found"
     
-    # Check for active orders
-    from app.models.order import Order, OrderStatus
+    # Check for active (non-delivered) orders
+    from app.models.order import Order
     active_orders = db.query(Order).filter(
         Order.customer_id == customer_id, 
-        Order.status != OrderStatus.DELIVERED
+        Order.status != "Delivered"
     ).count()
     
     if active_orders > 0:
-        return False, f"Cannot delete customer with {active_orders} active orders"
+        return False, f"Cannot delete customer with {active_orders} active order(s)"
     
-    db.delete(customer)
-    db.commit()
-    return True, "Customer deleted successfully"
+    try:
+        db.delete(customer)
+        db.commit()
+        return True, "Customer deleted successfully"
+    except Exception as e:
+        db.rollback()
+        return False, f"Could not delete customer: {str(e)}"

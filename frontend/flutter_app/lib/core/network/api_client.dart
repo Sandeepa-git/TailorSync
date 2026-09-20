@@ -71,6 +71,13 @@ class ApiClient {
     return dio.put('/users/me', data: payload);
   }
 
+  Future<Response> changePassword(String currentPassword, String newPassword) async {
+    return dio.put('/users/me/password', data: {
+      'current_password': currentPassword,
+      'new_password': newPassword,
+    });
+  }
+
   // Business Profile
   Future<Response> getBusiness() async {
     return dio.get('/business/me');

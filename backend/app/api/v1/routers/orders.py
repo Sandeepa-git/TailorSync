@@ -59,8 +59,8 @@ def create_order(payload: OrderCreate, db: Session = Depends(get_db), current_us
         "created_at": o.created_at,
         "tailor_remarks": o.tailor_remarks,
         "customer_instructions": o.customer_instructions,
-        "customer_name": None,
-        "customer_phone": None,
+        "customer_name": o.customer.full_name if getattr(o, 'customer', None) else None,
+        "customer_phone": o.customer.phone if getattr(o, 'customer', None) else None,
     }
 
 @router.get("/stats")

@@ -12,10 +12,13 @@ from app.schemas.template import MeasurementTemplateRead, MeasurementTemplateCre
 
 router = APIRouter()
 
+from sqlalchemy import or_, func
+from app.models.garment_type import GarmentType
+
 @router.get("/", response_model=List[MeasurementTemplateRead])
 def get_templates(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     """Get all templates for the current business + global templates."""
-    templates = db.query(MeasurementTemplate).filter(
+    templates = db.query(MeasurementTemplate).outerjoin(GarmentType, MeasurementTemplate.garment_type_id == GarmentType.garment_type_id).filter(
         or_(
             MeasurementTemplate.business_id == None,
             MeasurementTemplate.business_id == current_user.business_id
@@ -25,13 +28,47 @@ def get_templates(db: Session = Depends(get_db), current_user: User = Depends(ge
 
 @router.get("/{category_name}", response_model=MeasurementTemplateRead)
 def get_template_by_category(category_name: str, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    template = db.query(MeasurementTemplate).filter(
-        MeasurementTemplate.category_name == category_name,
+    cat_clean = category_name.strip()
+    
+    # 1. Direct case-insensitive match on garment_type name
+    template = db.query(MeasurementTemplate).outerjoin(GarmentType, MeasurementTemplate.garment_type_id == GarmentType.garment_type_id).filter(
+        func.lower(GarmentType.name) == func.lower(cat_clean),
         or_(
             MeasurementTemplate.business_id == None,
             MeasurementTemplate.business_id == current_user.business_id
         )
     ).first()
+
+    # 2. Singular/plural match (e.g. Shirts -> Shirt, Shirt -> Shirts)
+    if not template:
+        alt_name = cat_clean[:-1] if cat_clean.endswith('s') else cat_clean + 's'
+        template = db.query(MeasurementTemplate).outerjoin(GarmentType, MeasurementTemplate.garment_type_id == GarmentType.garment_type_id).filter(
+            func.lower(GarmentType.name) == func.lower(alt_name),
+            or_(
+                MeasurementTemplate.business_id == None,
+                MeasurementTemplate.business_id == current_user.business_id
+            )
+        ).first()
+
+    # 3. Substring match
+    if not template:
+        template = db.query(MeasurementTemplate).outerjoin(GarmentType, MeasurementTemplate.garment_type_id == GarmentType.garment_type_id).filter(
+            func.lower(GarmentType.name).contains(func.lower(cat_clean)),
+            or_(
+                MeasurementTemplate.business_id == None,
+                MeasurementTemplate.business_id == current_user.business_id
+            )
+        ).first()
+
+    # 4. Fallback to default/global template or first template available
+    if not template:
+        template = db.query(MeasurementTemplate).filter(
+            or_(
+                MeasurementTemplate.business_id == None,
+                MeasurementTemplate.business_id == current_user.business_id
+            )
+        ).first()
+
     if not template:
         raise HTTPException(status_code=404, detail="Template not found")
     return template

@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/network/providers/api_provider.dart';
+import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/skeleton_loading.dart';
 import '../../../orders/presentation/providers/orders_provider.dart';
 
@@ -68,14 +69,14 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   Widget build(BuildContext context) {
     if (_loading) {
       return Scaffold(
-        backgroundColor: const Color(0xFFF8F9FA),
+        backgroundColor: AppTheme.scaffoldBg,
         appBar: AppBar(
-          backgroundColor: const Color(0xFFF8F9FA),
+          backgroundColor: AppTheme.scaffoldBg,
           elevation: 0,
           automaticallyImplyLeading: false,
           title: Text(
             'TailorSync',
-            style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: const Color(0xFF1A237E)),
+            style: GoogleFonts.outfit(fontWeight: FontWeight.bold, color: AppTheme.primary, fontSize: 20, letterSpacing: -0.3),
           ),
           centerTitle: true,
         ),
@@ -85,21 +86,29 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
     if (_error) {
       return Scaffold(
-        backgroundColor: const Color(0xFFF8F9FA),
+        backgroundColor: AppTheme.scaffoldBg,
         appBar: AppBar(
-          backgroundColor: const Color(0xFFF8F9FA),
+          backgroundColor: AppTheme.scaffoldBg,
           elevation: 0,
           automaticallyImplyLeading: false,
-          title: Text('TailorSync', style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: const Color(0xFF1A237E))),
+          title: Text('TailorSync', style: GoogleFonts.outfit(fontWeight: FontWeight.bold, color: AppTheme.primary, fontSize: 20, letterSpacing: -0.3)),
           centerTitle: true,
         ),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.error_outline, size: 48, color: Color(0xFFD32F2F)),
+              Container(
+                width: 64,
+                height: 64,
+                decoration: BoxDecoration(
+                  color: AppTheme.error.withValues(alpha: 0.08),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.error_outline, size: 32, color: AppTheme.error),
+              ),
               const SizedBox(height: 16),
-              Text('Failed to load dashboard', style: GoogleFonts.inter(fontSize: 16, color: const Color(0xFF1A237E), fontWeight: FontWeight.bold)),
+              Text('Failed to load dashboard', style: GoogleFonts.inter(fontSize: 16, color: AppTheme.primary, fontWeight: FontWeight.bold)),
               const SizedBox(height: 16),
               ElevatedButton.icon(
                 onPressed: _loadData,
@@ -129,25 +138,26 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     }).length;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FA),
+      backgroundColor: AppTheme.scaffoldBg,
       appBar: AppBar(
-        backgroundColor: const Color(0xFFF8F9FA),
+        backgroundColor: AppTheme.scaffoldBg,
         elevation: 0,
         automaticallyImplyLeading: false,
         title: Text(
           'TailorSync',
-          style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: const Color(0xFF1A237E)),
+          style: GoogleFonts.outfit(fontWeight: FontWeight.bold, color: AppTheme.primary, fontSize: 20, letterSpacing: -0.3),
         ),
         centerTitle: true,
       ),
       body: RefreshIndicator(
         onRefresh: _loadData,
+        color: AppTheme.primary,
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           padding: EdgeInsets.only(
-            left: 16,
-            right: 16,
-            top: 16,
+            left: 20,
+            right: 20,
+            top: 8,
             bottom: MediaQuery.of(context).padding.bottom + 84,
           ),
           child: Column(
@@ -162,35 +172,61 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          '${_getGreeting()}, $firstName',
+                          '${_getGreeting()} 👋',
                           style: GoogleFonts.inter(
-                            fontSize: 22,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: AppTheme.textCaption,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          firstName,
+                          style: GoogleFonts.outfit(
+                            fontSize: 26,
                             fontWeight: FontWeight.bold,
-                            color: const Color(0xFF1A237E),
+                            color: AppTheme.primary,
+                            letterSpacing: -0.5,
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          'Here is your dashboard overview.',
-                          style: GoogleFonts.inter(fontSize: 13, color: const Color(0xFF5C6BC0)),
                         ),
                       ],
                     ),
                   ),
                   const SizedBox(width: 12),
-                  CircleAvatar(
-                    radius: 22,
-                    backgroundColor: const Color(0xFF1A237E),
-                    child: Text(
-                      firstName.isNotEmpty ? firstName[0].toUpperCase() : 'T',
-                      style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
+                  GestureDetector(
+                    onTap: () => context.push('/profile'),
+                    child: Container(
+                      padding: const EdgeInsets.all(3),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: const LinearGradient(
+                          colors: [AppTheme.primary, AppTheme.secondary],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppTheme.primary.withValues(alpha: 0.25),
+                            blurRadius: 12,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: CircleAvatar(
+                        radius: 22,
+                        backgroundColor: AppTheme.surface,
+                        child: Text(
+                          firstName.isNotEmpty ? firstName[0].toUpperCase() : 'T',
+                          style: GoogleFonts.outfit(color: AppTheme.primary, fontWeight: FontWeight.bold, fontSize: 18),
+                        ),
+                      ),
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 24),
 
               // 3 Compact Stat Cards Row (Active, Due Today, Overdue)
               Row(
@@ -199,44 +235,41 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                     child: _StatCard(
                       label: 'Active',
                       value: '$activeOrders',
-                      icon: Icons.work_outline,
-                      color: const Color(0xFF1A237E),
-                      bgColor: Colors.white,
-                      borderColor: const Color(0xFFE8EAF6),
+                      icon: Icons.work_outline_rounded,
+                      color: const Color(0xFF1565C0),
+                      bgColor: const Color(0xFFE3F2FD),
                       onTap: () => context.go('/tasks'),
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: 10),
                   Expanded(
                     child: _StatCard(
                       label: 'Due Today',
                       value: '$dueTodayCount',
-                      icon: Icons.calendar_today_outlined,
-                      color: const Color(0xFF1A237E),
-                      bgColor: const Color(0xFFE8EAF6),
-                      borderColor: const Color(0xFFE8EAF6),
+                      icon: Icons.schedule_rounded,
+                      color: const Color(0xFFE65100),
+                      bgColor: const Color(0xFFFFF3E0),
                       onTap: () => context.go('/tasks'),
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: 10),
                   Expanded(
                     child: _StatCard(
                       label: 'Overdue',
                       value: '$overdueCount',
                       icon: Icons.warning_amber_rounded,
-                      color: overdueCount > 0 ? const Color(0xFFD32F2F) : const Color(0xFF757575),
-                      bgColor: overdueCount > 0 ? const Color(0xFFFFEBEE) : Colors.white,
-                      borderColor: overdueCount > 0 ? const Color(0xFFFFCDD2) : const Color(0xFFE8EAF6),
+                      color: overdueCount > 0 ? const Color(0xFFC62828) : const Color(0xFF757575),
+                      bgColor: overdueCount > 0 ? const Color(0xFFFFEBEE) : const Color(0xFFF5F5F5),
                       onTap: () => context.go('/tasks'),
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 24),
 
               // Hero "New Order" Card
               _NewOrderHeroCard(onTap: () => context.go('/orders/new')),
-              const SizedBox(height: 20),
+              const SizedBox(height: 24),
 
               // Shortcut Grid (SliverGridDelegateWithMaxCrossAxisExtent 180, mainAxisExtent 112)
               GridView(
@@ -244,7 +277,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                 physics: const NeverScrollableScrollPhysics(),
                 gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                   maxCrossAxisExtent: 180,
-                  mainAxisExtent: 112,
+                  mainAxisExtent: 118,
                   crossAxisSpacing: 12,
                   mainAxisSpacing: 12,
                 ),
@@ -254,16 +287,16 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                     title: 'Orders',
                     subtitle: 'Track and update orders',
                     badgeText: '$activeOrders active',
-                    iconColor: const Color(0xFF1A237E),
-                    iconBgColor: const Color(0xFFE8EAF6),
+                    iconColor: const Color(0xFF1565C0),
+                    iconBgColor: const Color(0xFFE3F2FD),
                     onTap: () => context.go('/orders'),
                   ),
                   _ShortcutCard(
-                    icon: Icons.people_outline,
+                    icon: Icons.people_outline_rounded,
                     title: 'Customers',
                     subtitle: 'Manage client records',
-                    iconColor: const Color(0xFF343A40),
-                    iconBgColor: const Color(0xFFF1F3F5),
+                    iconColor: const Color(0xFF00695C),
+                    iconBgColor: const Color(0xFFE0F2F1),
                     onTap: () => context.go('/customers'),
                   ),
                   _ShortcutCard(
@@ -271,9 +304,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                     title: 'My Tasks',
                     subtitle: 'View assigned work',
                     badgeText: overdueCount > 0 ? '$overdueCount overdue' : null,
-                    badgeColor: overdueCount > 0 ? const Color(0xFFD32F2F) : null,
-                    iconColor: const Color(0xFF1A237E),
-                    iconBgColor: const Color(0xFFE8EAF6),
+                    badgeColor: overdueCount > 0 ? const Color(0xFFC62828) : null,
+                    iconColor: const Color(0xFFE65100),
+                    iconBgColor: const Color(0xFFFFF3E0),
                     onTap: () => context.go('/tasks'),
                   ),
                   if (_user?['role'] != 'staff')
@@ -281,8 +314,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                       icon: Icons.bar_chart_rounded,
                       title: 'Reports',
                       subtitle: 'Business insights',
-                      iconColor: const Color(0xFF343A40),
-                      iconBgColor: const Color(0xFFF1F3F5),
+                      iconColor: const Color(0xFF6A1B9A),
+                      iconBgColor: const Color(0xFFF3E5F5),
                       onTap: () => context.go('/reports'),
                     ),
                 ],
@@ -295,13 +328,13 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                 children: [
                   Text(
                     'Recent Orders',
-                    style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.bold, color: const Color(0xFF1A237E)),
+                    style: GoogleFonts.outfit(fontSize: 18, fontWeight: FontWeight.bold, color: AppTheme.primary, letterSpacing: -0.3),
                   ),
                   TextButton(
                     onPressed: () => context.go('/orders'),
                     child: Text(
                       'View All',
-                      style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w600, color: const Color(0xFF1A237E)),
+                      style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w600, color: AppTheme.secondary),
                     ),
                   ),
                 ],
@@ -316,23 +349,31 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                     data: (orders) {
                       if (orders.isEmpty) {
                         return Container(
-                          padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+                          padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 20),
                           decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(16),
-                            border: Border.all(color: const Color(0xFFE8EAF6)),
+                            color: AppTheme.surface,
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: AppTheme.softShadow,
                           ),
                           child: Center(
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                const Icon(Icons.receipt_long_outlined, size: 44, color: Color(0xFF9FA8DA)),
-                                const SizedBox(height: 8),
-                                Text(
-                                  'No recent orders yet',
-                                  style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w600, color: const Color(0xFF5C6BC0)),
+                                Container(
+                                  width: 56,
+                                  height: 56,
+                                  decoration: BoxDecoration(
+                                    color: AppTheme.tertiary,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: const Icon(Icons.receipt_long_outlined, size: 28, color: AppTheme.secondary),
                                 ),
                                 const SizedBox(height: 12),
+                                Text(
+                                  'No recent orders yet',
+                                  style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w600, color: AppTheme.secondary),
+                                ),
+                                const SizedBox(height: 14),
                                 OutlinedButton.icon(
                                   onPressed: () => context.go('/orders/new'),
                                   icon: const Icon(Icons.add, size: 16),
@@ -352,29 +393,31 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                           return Container(
                             margin: const EdgeInsets.only(bottom: 12),
                             decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(16),
-                              border: Border.all(color: const Color(0xFFE8EAF6)),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: const Color(0xFF1A237E).withValues(alpha: 0.02),
-                                  blurRadius: 8,
-                                  offset: const Offset(0, 2),
-                                ),
-                              ],
+                              color: AppTheme.surface,
+                              borderRadius: BorderRadius.circular(18),
+                              boxShadow: AppTheme.softShadow,
                             ),
                             child: InkWell(
                               onTap: () => context.go('/orders/details', extra: o),
-                              borderRadius: BorderRadius.circular(16),
+                              borderRadius: BorderRadius.circular(18),
                               child: Padding(
                                 padding: const EdgeInsets.all(14),
                                 child: Row(
                                   children: [
-                                    CircleAvatar(
-                                      radius: 20,
-                                      backgroundColor: const Color(0xFFE8EAF6),
-                                      foregroundColor: const Color(0xFF1A237E),
-                                      child: Text(initials, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                                    Container(
+                                      width: 42,
+                                      height: 42,
+                                      decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                          colors: [AppTheme.primary, AppTheme.secondary],
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
+                                        ),
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: Center(
+                                        child: Text(initials, style: GoogleFonts.inter(fontWeight: FontWeight.bold, fontSize: 13, color: Colors.white)),
+                                      ),
                                     ),
                                     const SizedBox(width: 14),
                                     Expanded(
@@ -383,14 +426,14 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                         children: [
                                           Text(
                                             o.customerName ?? 'Customer #${o.customerId}',
-                                            style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: const Color(0xFF1A237E), fontSize: 14),
+                                            style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: AppTheme.primary, fontSize: 14),
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
                                           ),
                                           const SizedBox(height: 2),
                                           Text(
                                             '${o.garmentType} • #ORD-${o.id.toString().padLeft(4, '0')}',
-                                            style: GoogleFonts.inter(fontSize: 12, color: const Color(0xFF5C6BC0)),
+                                            style: GoogleFonts.inter(fontSize: 12, color: AppTheme.textCaption),
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
                                           ),
@@ -400,15 +443,15 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                     Container(
                                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                                       decoration: BoxDecoration(
-                                        color: const Color(0xFF1A237E).withValues(alpha: 0.08),
-                                        borderRadius: BorderRadius.circular(8),
+                                        color: AppTheme.primary.withValues(alpha: 0.08),
+                                        borderRadius: BorderRadius.circular(20),
                                       ),
                                       child: Text(
                                         o.status ?? 'Draft',
                                         style: GoogleFonts.inter(
                                           fontSize: 11,
                                           fontWeight: FontWeight.bold,
-                                          color: const Color(0xFF1A237E),
+                                          color: AppTheme.primary,
                                         ),
                                       ),
                                     ),
@@ -423,9 +466,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                     loading: () => const Shimmer(
                       child: Column(
                         children: [
-                          SkeletonContainer(height: 64, borderRadius: 16),
+                          SkeletonContainer(height: 64, borderRadius: 18),
                           SizedBox(height: 12),
-                          SkeletonContainer(height: 64, borderRadius: 16),
+                          SkeletonContainer(height: 64, borderRadius: 18),
                         ],
                       ),
                     ),
@@ -447,7 +490,6 @@ class _StatCard extends StatelessWidget {
   final IconData icon;
   final Color color;
   final Color bgColor;
-  final Color borderColor;
   final VoidCallback onTap;
 
   const _StatCard({
@@ -456,7 +498,6 @@ class _StatCard extends StatelessWidget {
     required this.icon,
     required this.color,
     required this.bgColor,
-    required this.borderColor,
     required this.onTap,
   });
 
@@ -464,32 +505,36 @@ class _StatCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: bgColor,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: borderColor),
+        color: AppTheme.surface,
+        borderRadius: BorderRadius.circular(18),
+        boxShadow: AppTheme.softShadow,
       ),
       child: InkWell(
         onTap: () {
           HapticFeedback.selectionClick();
           onTap();
         },
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(18),
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
+          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Icon(icon, size: 16, color: color),
-                  Text(
-                    value,
-                    style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.bold, color: color),
-                  ),
-                ],
+              Container(
+                width: 32,
+                height: 32,
+                decoration: BoxDecoration(
+                  color: bgColor,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(icon, size: 16, color: color),
               ),
-              const SizedBox(height: 6),
+              const SizedBox(height: 10),
+              Text(
+                value,
+                style: GoogleFonts.outfit(fontSize: 22, fontWeight: FontWeight.bold, color: color),
+              ),
+              const SizedBox(height: 2),
               Text(
                 label,
                 maxLines: 1,
@@ -497,7 +542,7 @@ class _StatCard extends StatelessWidget {
                 style: GoogleFonts.inter(
                   fontSize: 11,
                   fontWeight: FontWeight.w600,
-                  color: color.withValues(alpha: 0.8),
+                  color: color.withValues(alpha: 0.7),
                 ),
               ),
             ],
@@ -531,62 +576,91 @@ class _NewOrderHeroCardState extends State<_NewOrderHeroCard> {
         widget.onTap();
       },
       child: AnimatedScale(
-        scale: _isPressed ? 0.98 : 1.0,
-        duration: const Duration(milliseconds: 100),
+        scale: _isPressed ? 0.97 : 1.0,
+        duration: const Duration(milliseconds: 120),
+        curve: Curves.easeOut,
         child: Container(
           width: double.infinity,
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(22),
           decoration: BoxDecoration(
             gradient: const LinearGradient(
-              colors: [Color(0xFF1A237E), Color(0xFF0F175A)],
+              colors: [Color(0xFF283593), Color(0xFF1A237E), Color(0xFF0D1042)],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(22),
             boxShadow: [
               BoxShadow(
-                color: const Color(0xFF1A237E).withValues(alpha: 0.25),
-                blurRadius: 15,
-                offset: const Offset(0, 6),
+                color: const Color(0xFF1A237E).withValues(alpha: 0.30),
+                blurRadius: 20,
+                offset: const Offset(0, 8),
+              ),
+              BoxShadow(
+                color: const Color(0xFF1A237E).withValues(alpha: 0.12),
+                blurRadius: 6,
+                offset: const Offset(0, 2),
               ),
             ],
           ),
-          child: Row(
+          child: Stack(
             children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: 44,
-                      height: 44,
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.15),
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(Icons.add_rounded, color: Colors.white, size: 24),
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      'New Order',
-                      style: GoogleFonts.inter(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      'Create a customer order quickly.',
-                      style: GoogleFonts.inter(
-                        fontSize: 13,
-                        color: Colors.white.withValues(alpha: 0.8),
-                      ),
-                    ),
-                  ],
+              // Decorative watermark
+              Positioned(
+                right: -10,
+                bottom: -14,
+                child: Icon(
+                  Icons.content_cut_rounded,
+                  size: 80,
+                  color: Colors.white.withValues(alpha: 0.05),
                 ),
               ),
-              const Icon(Icons.arrow_forward_rounded, color: Colors.white70, size: 24),
+              Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: 46,
+                          height: 46,
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(alpha: 0.15),
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                          child: const Icon(Icons.add_rounded, color: Colors.white, size: 24),
+                        ),
+                        const SizedBox(height: 14),
+                        Text(
+                          'New Order',
+                          style: GoogleFonts.outfit(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            letterSpacing: -0.3,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          'Create a customer order quickly.',
+                          style: GoogleFonts.inter(
+                            fontSize: 13,
+                            color: Colors.white.withValues(alpha: 0.75),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Icon(Icons.arrow_forward_rounded, color: Colors.white, size: 20),
+                  ),
+                ],
+              ),
             ],
           ),
         ),
@@ -620,25 +694,18 @@ class _ShortcutCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFE8EAF6)),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF1A237E).withValues(alpha: 0.02),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        color: AppTheme.surface,
+        borderRadius: BorderRadius.circular(18),
+        boxShadow: AppTheme.softShadow,
       ),
       child: InkWell(
         onTap: () {
           HapticFeedback.selectionClick();
           onTap();
         },
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(18),
         child: Padding(
-          padding: const EdgeInsets.all(12),
+          padding: const EdgeInsets.all(14),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
@@ -647,39 +714,39 @@ class _ShortcutCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Container(
-                    width: 34,
-                    height: 34,
+                    width: 36,
+                    height: 36,
                     decoration: BoxDecoration(
                       color: iconBgColor,
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(10),
                     ),
                     child: Icon(icon, color: iconColor, size: 18),
                   ),
                   if (badgeText != null)
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
                       decoration: BoxDecoration(
-                        color: (badgeColor ?? const Color(0xFF1A237E)).withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(6),
+                        color: (badgeColor ?? AppTheme.primary).withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
                         badgeText!,
                         style: GoogleFonts.inter(
                           fontSize: 9,
                           fontWeight: FontWeight.bold,
-                          color: badgeColor ?? const Color(0xFF1A237E),
+                          color: badgeColor ?? AppTheme.primary,
                         ),
                       ),
                     ),
                 ],
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 12),
               Text(
                 title,
                 style: GoogleFonts.inter(
                   fontSize: 13,
                   fontWeight: FontWeight.bold,
-                  color: const Color(0xFF1A237E),
+                  color: AppTheme.primary,
                 ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
@@ -689,7 +756,7 @@ class _ShortcutCard extends StatelessWidget {
                 subtitle,
                 style: GoogleFonts.inter(
                   fontSize: 11,
-                  color: const Color(0xFF5C6BC0),
+                  color: AppTheme.textCaption,
                 ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,

@@ -20,9 +20,9 @@ class Customer(Base):
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
     
-    orders = relationship("Order", back_populates="customer")
+    orders = relationship("Order", back_populates="customer", cascade="all, delete-orphan")
     business = relationship("Business", back_populates="customers")
-    measurements = relationship("Measurement", back_populates="customer")
+    measurements = relationship("Measurement", back_populates="customer", cascade="all, delete-orphan")
 
     @hybrid_property
     def id(self):

@@ -16,7 +16,7 @@ class AppWidget extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         builder: (context, child) {
           return Container(
-            color: const Color(0xFFE0E0E0), // Light neutral background on empty desktop sides
+            color: const Color(0xFFE8EAF6), // Subtle indigo-tinted desktop background
             child: Center(
               child: LayoutBuilder(
                 builder: (context, constraints) {
