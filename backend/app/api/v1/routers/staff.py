@@ -54,8 +54,8 @@ def add_staff(payload: UserCreate, db: Session = Depends(get_db), current_user: 
     return new_staff
 
 @router.delete("/{staff_id}")
-def deactivate_staff(staff_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    """Deactivate a staff member."""
+def delete_staff(staff_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    """Delete a staff member and their assignments/notes."""
     if not current_user or not current_user.business_id:
         raise HTTPException(status_code=403, detail="Not authorized")
         
@@ -67,6 +67,26 @@ def deactivate_staff(staff_id: int, db: Session = Depends(get_db), current_user:
     if not staff:
         raise HTTPException(status_code=404, detail="Staff not found")
         
-    staff.is_active = False
+    staff_email = staff.email
+    staff_name = staff.full_name
+        
+    # Delete staff assignments
+    from app.models.staff_assignment import StaffAssignment
+    db.query(StaffAssignment).filter(StaffAssignment.staff_id == staff_id).delete()
+    
+    # Delete staff notes
+    from app.models.note import Note
+    db.query(Note).filter(Note.created_by == staff_id).delete()
+    
+    # Delete staff
+    db.delete(staff)
     db.commit()
-    return {"status": "success", "message": "Staff deactivated"}
+    
+    # Send removal email
+    try:
+        from app.services.email_service import send_staff_removal_email
+        send_staff_removal_email(staff_email, staff_name or "")
+    except Exception:
+        pass
+        
+    return {"status": "success", "message": "Staff member deleted"}

@@ -71,3 +71,16 @@ Best regards,
 TailorSync Team
 """
     send_email_async(email, subject, content)
+
+def send_staff_removal_email(email: str, full_name: str):
+    subject = "TailorSync - Access Revoked"
+    content = f"""Hello {full_name},
+
+Your access to the TailorSync business account has been removed by the administrator. 
+
+You will no longer be able to log in or view tasks. If you believe this is a mistake, please contact your manager.
+
+Best regards,
+TailorSync Team
+"""
+    send_email_async(email, subject, content)
