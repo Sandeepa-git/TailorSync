@@ -84,3 +84,29 @@ Best regards,
 TailorSync Team
 """
     send_email_async(email, subject, content)
+
+def send_staff_deactivated_email(email: str, full_name: str):
+    subject = "TailorSync - Account Suspended"
+    content = f"""Hello {full_name},
+
+Your TailorSync staff account has been temporarily deactivated by the administrator. 
+
+You will not be able to log in during this period. Please contact your manager for more details.
+
+Best regards,
+TailorSync Team
+"""
+    send_email_async(email, subject, content)
+
+def send_staff_reactivated_email(email: str, full_name: str):
+    subject = "TailorSync - Account Reactivated"
+    content = f"""Hello {full_name},
+
+Good news! Your TailorSync staff account has been reactivated by the administrator. 
+
+You can now log in and manage your assigned tasks again.
+
+Best regards,
+TailorSync Team
+"""
+    send_email_async(email, subject, content)

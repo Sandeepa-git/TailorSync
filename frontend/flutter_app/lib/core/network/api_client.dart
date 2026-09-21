@@ -97,6 +97,14 @@ class ApiClient {
   }
 
   Future<Response> deactivateStaff(int id) async {
+    return dio.patch('/staff/$id/deactivate');
+  }
+
+  Future<Response> reactivateStaff(int id) async {
+    return dio.patch('/staff/$id/reactivate');
+  }
+
+  Future<Response> removeStaff(int id) async {
     return dio.delete('/staff/$id');
   }
 

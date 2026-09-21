@@ -16,8 +16,7 @@ def list_staff(db: Session = Depends(get_db), current_user: User = Depends(get_c
     
     staff = db.query(User).filter(
         User.business_id == current_user.business_id,
-        User.user_id != current_user.user_id,
-        User.is_active == True
+        User.user_id != current_user.user_id
     ).all()
     return staff
 
@@ -90,3 +89,53 @@ def delete_staff(staff_id: int, db: Session = Depends(get_db), current_user: Use
         pass
         
     return {"status": "success", "message": "Staff member deleted"}
+
+@router.patch("/{staff_id}/deactivate")
+def deactivate_staff(staff_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    """Deactivate a staff member (suspend access)."""
+    if not current_user or not current_user.business_id:
+        raise HTTPException(status_code=403, detail="Not authorized")
+        
+    staff = db.query(User).filter(
+        User.user_id == staff_id,
+        User.business_id == current_user.business_id
+    ).first()
+    
+    if not staff:
+        raise HTTPException(status_code=404, detail="Staff not found")
+        
+    staff.is_active = False
+    db.commit()
+    
+    try:
+        from app.services.email_service import send_staff_deactivated_email
+        send_staff_deactivated_email(staff.email, staff.full_name or "")
+    except Exception:
+        pass
+        
+    return {"status": "success", "message": "Staff deactivated"}
+
+@router.patch("/{staff_id}/reactivate")
+def reactivate_staff(staff_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    """Reactivate a suspended staff member."""
+    if not current_user or not current_user.business_id:
+        raise HTTPException(status_code=403, detail="Not authorized")
+        
+    staff = db.query(User).filter(
+        User.user_id == staff_id,
+        User.business_id == current_user.business_id
+    ).first()
+    
+    if not staff:
+        raise HTTPException(status_code=404, detail="Staff not found")
+        
+    staff.is_active = True
+    db.commit()
+    
+    try:
+        from app.services.email_service import send_staff_reactivated_email
+        send_staff_reactivated_email(staff.email, staff.full_name or "")
+    except Exception:
+        pass
+        
+    return {"status": "success", "message": "Staff reactivated"}

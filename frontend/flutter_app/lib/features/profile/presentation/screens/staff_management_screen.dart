@@ -37,17 +37,18 @@ class _StaffManagementScreenState extends ConsumerState<StaffManagementScreen> {
     }
   }
 
-  Future<void> _deactivateStaff(int id) async {
+  void _deactivateStaff(int id) async {
     final confirm = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Deactivate Staff'),
-        content: const Text('Are you sure you want to deactivate this staff member?'),
+        title: Text('Deactivate Staff', style: GoogleFonts.outfit(fontWeight: FontWeight.bold, color: const Color(0xFF1A237E))),
+        content: const Text('Are you sure you want to deactivate this staff member? They will not be able to log in, but their data will be kept.'),
         actions: [
           TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancel')),
-          TextButton(
+          ElevatedButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Deactivate', style: TextStyle(color: Colors.red)),
+            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF1A237E), foregroundColor: Colors.white),
+            child: const Text('Deactivate'),
           ),
         ],
       ),
@@ -60,6 +61,64 @@ class _StaffManagementScreenState extends ConsumerState<StaffManagementScreen> {
       await api.deactivateStaff(id);
       _loadStaff();
       if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Staff deactivated')));
+    } catch (e) {
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
+    }
+  }
+
+  void _reactivateStaff(int id) async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Reactivate Staff', style: GoogleFonts.outfit(fontWeight: FontWeight.bold, color: const Color(0xFF1A237E))),
+        content: const Text('Are you sure you want to reactivate this staff member? They will regain access to their account.'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancel')),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF1A237E), foregroundColor: Colors.white),
+            child: const Text('Reactivate'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm != true) return;
+
+    try {
+      final api = ref.read(apiClientProvider);
+      await api.reactivateStaff(id);
+      _loadStaff();
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Staff reactivated')));
+    } catch (e) {
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
+    }
+  }
+
+  void _removeStaff(int id) async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Remove Staff', style: GoogleFonts.outfit(fontWeight: FontWeight.bold, color: Colors.red)),
+        content: const Text('Are you sure you want to permanently remove this staff member? This will delete their assignments and cannot be undone.'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancel')),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
+            child: const Text('Remove Permanently'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm != true) return;
+
+    try {
+      final api = ref.read(apiClientProvider);
+      await api.removeStaff(id);
+      _loadStaff();
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Staff removed')));
     } catch (e) {
       if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
     }
@@ -298,12 +357,60 @@ class _StaffManagementScreenState extends ConsumerState<StaffManagementScreen> {
                       backgroundColor: const Color(0xFF5C6BC0),
                       child: Text((staff['full_name'] ?? 'S')[0].toUpperCase(), style: const TextStyle(color: Colors.white)),
                     ),
-                    title: Text(staff['full_name'] ?? 'Unknown', style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: const Color(0xFF1A237E))),
+                    title: Row(
+                      children: [
+                        Text(staff['full_name'] ?? 'Unknown', style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: const Color(0xFF1A237E))),
+                        if (staff['is_active'] == false) ...[
+                          const SizedBox(width: 8),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                            decoration: BoxDecoration(color: Colors.red.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(4)),
+                            child: Text('Deactivated', style: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.red)),
+                          ),
+                        ],
+                      ],
+                    ),
                     subtitle: Text(staff['email'] ?? '', style: GoogleFonts.inter(fontSize: 12, color: const Color(0xFF757575))),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.person_off_outlined, color: Color(0xFFD32F2F)),
-                      onPressed: () => _deactivateStaff(staff['id']),
-                      tooltip: 'Deactivate Staff',
+                    trailing: PopupMenuButton<String>(
+                      icon: const Icon(Icons.more_vert, color: Color(0xFF757575)),
+                      onSelected: (value) {
+                        if (value == 'deactivate') {
+                          _deactivateStaff(staff['id']);
+                        } else if (value == 'reactivate') {
+                          _reactivateStaff(staff['id']);
+                        } else if (value == 'remove') {
+                          _removeStaff(staff['id']);
+                        }
+                      },
+                      itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                        if (staff['is_active'] != false)
+                          const PopupMenuItem<String>(
+                            value: 'deactivate',
+                            child: ListTile(
+                              leading: Icon(Icons.person_off_outlined, color: Colors.orange),
+                              title: Text('Deactivate Access'),
+                              contentPadding: EdgeInsets.zero,
+                            ),
+                          ),
+                        if (staff['is_active'] == false)
+                          const PopupMenuItem<String>(
+                            value: 'reactivate',
+                            child: ListTile(
+                              leading: Icon(Icons.person_add_alt_1_outlined, color: Colors.green),
+                              title: Text('Reactivate Access'),
+                              contentPadding: EdgeInsets.zero,
+                            ),
+                          ),
+                        const PopupMenuDivider(),
+                        const PopupMenuItem<String>(
+                          value: 'remove',
+                          child: ListTile(
+                            leading: Icon(Icons.delete_outline, color: Colors.red),
+                            title: Text('Remove Permanently', style: TextStyle(color: Colors.red)),
+                            contentPadding: EdgeInsets.zero,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 );
