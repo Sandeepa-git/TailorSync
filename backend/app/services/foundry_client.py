@@ -27,7 +27,7 @@ class FoundryClient:
             endpoint=settings.AZURE_FOUNDRY_ENDPOINT,
             credential=credential
         )
-        agents = self._client.agents.list()
+        agents = self._client.agents.list_agents()
         agent = next((a for a in agents if a.name == settings.AZURE_FOUNDRY_AGENT_NAME), None)
         if not agent:
             raise FoundryUnavailableError(f"Agent '{settings.AZURE_FOUNDRY_AGENT_NAME}' not found.")
