@@ -43,6 +43,14 @@ def add_staff(payload: UserCreate, db: Session = Depends(get_db), current_user: 
     db.add(new_staff)
     db.commit()
     db.refresh(new_staff)
+    
+    # Send email notification
+    try:
+        from app.services.email_service import send_staff_invitation_email
+        send_staff_invitation_email(payload.email, payload.full_name, payload.password)
+    except Exception:
+        pass # Fail gracefully if email sending fails
+
     return new_staff
 
 @router.delete("/{staff_id}")

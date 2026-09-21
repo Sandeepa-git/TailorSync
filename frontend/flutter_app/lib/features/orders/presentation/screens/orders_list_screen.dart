@@ -22,6 +22,7 @@ class OrdersListScreen extends ConsumerStatefulWidget {
 class _OrdersListScreenState extends ConsumerState<OrdersListScreen> {
   final TextEditingController _searchController = TextEditingController();
   Timer? _debounceTimer;
+  Timer? _pollingTimer;
   String _searchQuery = '';
   String _selectedStatusFilter = 'All';
 
@@ -39,10 +40,16 @@ class _OrdersListScreenState extends ConsumerState<OrdersListScreen> {
   void initState() {
     super.initState();
     _searchController.addListener(_onSearchChanged);
+    _pollingTimer = Timer.periodic(const Duration(seconds: 10), (_) {
+      if (mounted) {
+        ref.invalidate(ordersProvider);
+      }
+    });
   }
 
   @override
   void dispose() {
+    _pollingTimer?.cancel();
     _searchController.removeListener(_onSearchChanged);
     _searchController.dispose();
     _debounceTimer?.cancel();

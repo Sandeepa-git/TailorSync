@@ -5,7 +5,7 @@ from app.models.staff_assignment import StaffAssignment
 from app.schemas.order import OrderCreate, OrderUpdate
 from datetime import datetime
 
-def list_orders(db: Session, business_id: int, skip: int = 0, limit: int = 100, status: str = None):
+def list_orders(db: Session, business_id: int, skip: int = 0, limit: int = 100, status: str = None, staff_id: int = None):
     query = db.query(Order).filter(Order.business_id == business_id).options(
         joinedload(Order.customer),
         joinedload(Order.staff_assignments).joinedload(StaffAssignment.staff),
@@ -13,6 +13,8 @@ def list_orders(db: Session, business_id: int, skip: int = 0, limit: int = 100, 
     )
     if status:
         query = query.filter(Order.status == status)
+    if staff_id:
+        query = query.join(StaffAssignment).filter(StaffAssignment.staff_id == staff_id)
     return query.order_by(Order.created_at.desc()).offset(skip).limit(limit).all()
 
 def create_order(db: Session, order: OrderCreate, business_id: int):
@@ -106,10 +108,14 @@ def update_order(db: Session, order_id: int, updates: OrderUpdate, business_id: 
     db.refresh(order)
     return order
 
-def get_dashboard_stats(db: Session, business_id: int):
-    total_orders = db.query(Order).filter(Order.business_id == business_id).count()
-    ongoing = db.query(Order).filter(Order.business_id == business_id, Order.status != "Delivered").count()
-    completed = db.query(Order).filter(Order.business_id == business_id, Order.status == "Delivered").count()
+def get_dashboard_stats(db: Session, business_id: int, staff_id: int = None):
+    query = db.query(Order).filter(Order.business_id == business_id)
+    if staff_id:
+        query = query.join(StaffAssignment).filter(StaffAssignment.staff_id == staff_id)
+        
+    total_orders = query.count()
+    ongoing = query.filter(Order.status != "Delivered").count()
+    completed = query.filter(Order.status == "Delivered").count()
     from app.models.customer import Customer
     total_customers = db.query(Customer).filter(Customer.business_id == business_id).count()
     return {

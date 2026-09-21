@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/network/providers/api_provider.dart';
 import '../../../../core/widgets/skeleton_loading.dart';
+import 'package:dio/dio.dart';
 
 class StaffManagementScreen extends ConsumerStatefulWidget {
   const StaffManagementScreen({super.key});
@@ -65,57 +66,170 @@ class _StaffManagementScreenState extends ConsumerState<StaffManagementScreen> {
   }
 
   void _showAddStaffDialog() {
+    final formKey = GlobalKey<FormState>();
     final emailCtrl = TextEditingController();
+    final confirmEmailCtrl = TextEditingController();
     final nameCtrl = TextEditingController();
     final phoneCtrl = TextEditingController();
     final passwordCtrl = TextEditingController();
     bool saving = false;
+    bool obscurePassword = true;
 
-    showDialog(
+    showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
       builder: (context) => StatefulBuilder(
-        builder: (context, setDialogState) {
-          return AlertDialog(
-            title: const Text('Add New Staff'),
-            content: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextField(controller: nameCtrl, decoration: const InputDecoration(labelText: 'Full Name')),
-                  TextField(controller: emailCtrl, decoration: const InputDecoration(labelText: 'Email Address')),
-                  TextField(controller: phoneCtrl, decoration: const InputDecoration(labelText: 'Phone Number')),
-                  TextField(controller: passwordCtrl, decoration: const InputDecoration(labelText: 'Temporary Password'), obscureText: true),
-                ],
+        builder: (context, setModalState) {
+          final bottomInset = MediaQuery.of(context).viewInsets.bottom;
+          return Container(
+            margin: EdgeInsets.only(bottom: bottomInset, top: 40),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(topLeft: Radius.circular(24), topRight: Radius.circular(24)),
+            ),
+            child: Form(
+              key: formKey,
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Add New Staff', style: GoogleFonts.inter(fontSize: 22, fontWeight: FontWeight.bold, color: const Color(0xFF1A237E))),
+                    const SizedBox(height: 8),
+                    Text('Fill in the details below to invite a new staff member.', style: GoogleFonts.inter(fontSize: 13, color: Colors.grey[600])),
+                    const SizedBox(height: 24),
+
+                    TextFormField(
+                      controller: nameCtrl,
+                      decoration: const InputDecoration(
+                        labelText: 'Full Name', 
+                        prefixIcon: Icon(Icons.person_outline),
+                        contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                      ),
+                      validator: (v) => v == null || v.trim().isEmpty ? 'Full name is required' : null,
+                    ),
+                    const SizedBox(height: 16),
+
+                    TextFormField(
+                      controller: emailCtrl,
+                      keyboardType: TextInputType.emailAddress,
+                      decoration: const InputDecoration(
+                        labelText: 'Email Address', 
+                        prefixIcon: Icon(Icons.email_outlined),
+                        contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                      ),
+                      validator: (v) {
+                        if (v == null || v.trim().isEmpty) return 'Email is required';
+                        if (!RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(v.trim())) return 'Enter a valid email';
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    
+                    TextFormField(
+                      controller: confirmEmailCtrl,
+                      keyboardType: TextInputType.emailAddress,
+                      decoration: const InputDecoration(
+                        labelText: 'Confirm Email Address', 
+                        prefixIcon: Icon(Icons.mark_email_read_outlined),
+                        contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                      ),
+                      validator: (v) {
+                        if (v == null || v.trim().isEmpty) return 'Please confirm email';
+                        if (v.trim() != emailCtrl.text.trim()) return 'Emails do not match';
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 16),
+
+                    TextFormField(
+                      controller: phoneCtrl,
+                      keyboardType: TextInputType.phone,
+                      decoration: const InputDecoration(
+                        labelText: 'Phone Number', 
+                        prefixIcon: Icon(Icons.phone_outlined),
+                        contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                      ),
+                      validator: (v) => v == null || v.trim().isEmpty ? 'Phone number is required' : null,
+                    ),
+                    const SizedBox(height: 16),
+
+                    TextFormField(
+                      controller: passwordCtrl,
+                      obscureText: obscurePassword,
+                      decoration: InputDecoration(
+                        labelText: 'Temporary Password', 
+                        prefixIcon: const Icon(Icons.lock_outline),
+                        suffixIcon: IconButton(
+                          icon: Icon(obscurePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined),
+                          onPressed: () => setModalState(() => obscurePassword = !obscurePassword),
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                      ),
+                      validator: (v) => v == null || v.length < 6 ? 'Password must be at least 6 characters' : null,
+                    ),
+                    const SizedBox(height: 32),
+
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: saving
+                            ? null
+                            : () async {
+                                if (!formKey.currentState!.validate()) return;
+                                
+                                setModalState(() => saving = true);
+                                try {
+                                  final api = ref.read(apiClientProvider);
+                                  await api.createStaff({
+                                    'email': emailCtrl.text.trim(),
+                                    'full_name': nameCtrl.text.trim(),
+                                    'phone': phoneCtrl.text.trim(),
+                                    'password': passwordCtrl.text,
+                                  });
+                                  if (mounted) {
+                                    Navigator.pop(context);
+                                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Staff added successfully & email sent!')));
+                                    _loadStaff();
+                                  }
+                                } on DioException catch (e) {
+                                  if (mounted) {
+                                    String errorMsg = 'Failed to add staff';
+                                    if (e.response?.data != null && e.response!.data is Map && e.response!.data.containsKey('detail')) {
+                                      errorMsg = e.response!.data['detail'].toString();
+                                    }
+                                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(errorMsg), backgroundColor: Colors.red));
+                                  }
+                                } catch (e) {
+                                  if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red));
+                                } finally {
+                                  setModalState(() => saving = false);
+                                }
+                              },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF1A237E),
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        ),
+                        child: saving 
+                            ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white)) 
+                            : Text('Send Invitation', style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: Colors.white)),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    SizedBox(
+                      width: double.infinity,
+                      child: TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: Text('Cancel', style: GoogleFonts.inter(color: Colors.grey[600], fontWeight: FontWeight.bold)),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-            actions: [
-              TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
-              ElevatedButton(
-                onPressed: saving
-                    ? null
-                    : () async {
-                        setDialogState(() => saving = true);
-                        try {
-                          final api = ref.read(apiClientProvider);
-                          await api.createStaff({
-                            'email': emailCtrl.text.trim(),
-                            'full_name': nameCtrl.text.trim(),
-                            'phone': phoneCtrl.text.trim(),
-                            'password': passwordCtrl.text,
-                          });
-                          if (mounted) {
-                            Navigator.pop(context);
-                            _loadStaff();
-                          }
-                        } catch (e) {
-                          if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
-                        } finally {
-                          setDialogState(() => saving = false);
-                        }
-                      },
-                child: saving ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2)) : const Text('Add Staff'),
-              ),
-            ],
           );
         },
       ),

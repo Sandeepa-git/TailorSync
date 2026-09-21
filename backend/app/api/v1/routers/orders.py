@@ -11,7 +11,8 @@ router = APIRouter()
 @router.get("/", response_model=List[OrderRead])
 def list_orders(status: Optional[str] = None, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     from app.services.order_service import list_orders as svc_list
-    orders = svc_list(db, current_user.business_id, status=status)
+    staff_id = current_user.user_id if current_user.role.value == "STAFF" else None
+    orders = svc_list(db, current_user.business_id, status=status, staff_id=staff_id)
     result = []
     for o in orders:
         assignment = o.staff_assignments[0] if o.staff_assignments else None
@@ -47,6 +48,16 @@ def list_orders(status: Optional[str] = None, db: Session = Depends(get_db), cur
 def create_order(payload: OrderCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     from app.services.order_service import create_order as svc_create
     o = svc_create(db, payload, current_user.business_id)
+    
+    if payload.staff_id:
+        try:
+            staff = db.query(User).filter(User.user_id == payload.staff_id).first()
+            if staff:
+                from app.services.email_service import send_task_assignment_email
+                send_task_assignment_email(staff.email, staff.full_name, o.order_number or str(o.order_id), o.garment_type)
+        except Exception:
+            pass
+
     return {
         "id": o.order_id,
         "customer_id": o.customer_id,
@@ -66,7 +77,8 @@ def create_order(payload: OrderCreate, db: Session = Depends(get_db), current_us
 @router.get("/stats")
 def get_stats(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     from app.services.order_service import get_dashboard_stats
-    return get_dashboard_stats(db, current_user.business_id)
+    staff_id = current_user.user_id if current_user.role.value == "STAFF" else None
+    return get_dashboard_stats(db, current_user.business_id, staff_id=staff_id)
 
 @router.get("/{order_id}", response_model=OrderRead)
 def get_order(order_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
@@ -107,6 +119,16 @@ def update_order(order_id: int, payload: OrderUpdate, db: Session = Depends(get_
     o = svc_update(db, order_id, payload, current_user.business_id)
     if not o:
         raise HTTPException(status_code=404, detail="Order not found")
+        
+    if payload.staff_id is not None:
+        try:
+            staff = db.query(User).filter(User.user_id == payload.staff_id).first()
+            if staff:
+                from app.services.email_service import send_task_assignment_email
+                send_task_assignment_email(staff.email, staff.full_name, o.order_number or str(o.order_id), o.garment_type)
+        except Exception:
+            pass
+            
     assignment = o.staff_assignments[0] if getattr(o, 'staff_assignments', None) else None
     return {
         "id": o.order_id,

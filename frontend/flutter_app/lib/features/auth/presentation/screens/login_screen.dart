@@ -285,7 +285,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         ),
         child: Center(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.all(24.0),
+            padding: const EdgeInsets.all(16.0),
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 420),
               child: Column(
@@ -295,12 +295,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   const SizedBox(height: 12),
                   Text(
                     'TailorSync',
-                    style: GoogleFonts.outfit(fontWeight: FontWeight.bold, fontSize: 28, color: const Color(0xFF1A237E)),
+                    style: GoogleFonts.outfit(fontWeight: FontWeight.bold, fontSize: 24, color: const Color(0xFF1A237E)),
                   ),
                   const SizedBox(height: 6),
                   Text(
                     'Elevate Your Craft',
-                    style: GoogleFonts.inter(fontSize: 14, color: const Color(0xFF5C6BC0), fontWeight: FontWeight.w500),
+                    style: GoogleFonts.inter(fontSize: 12, color: const Color(0xFF5C6BC0), fontWeight: FontWeight.w500),
                   ),
                   const SizedBox(height: 28),
                   Card(
@@ -308,7 +308,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     shadowColor: const Color(0xFF1A237E).withOpacity(0.12),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 28),
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
                       child: Form(
                         key: _formKey,
                         child: AutofillGroup(
@@ -317,12 +317,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             children: [
                               Text(
                                 _isSignUp ? 'Create Account' : 'Welcome Back',
-                                style: GoogleFonts.inter(fontSize: 20, fontWeight: FontWeight.bold, color: const Color(0xFF1A237E)),
+                                style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.bold, color: const Color(0xFF1A237E)),
                               ),
                               const SizedBox(height: 4),
                               Text(
                                 _isSignUp ? 'Fill in your details to get started' : 'Sign in to access your dashboard',
-                                style: GoogleFonts.inter(fontSize: 13, color: Colors.grey[600]),
+                                style: GoogleFonts.inter(fontSize: 12, color: Colors.grey[600]),
                               ),
                               const SizedBox(height: 20),
 
@@ -330,7 +330,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 TextFormField(
                                   controller: _name,
                                   autofillHints: const [AutofillHints.name],
-                                  decoration: const InputDecoration(labelText: 'Full Name', prefixIcon: Icon(Icons.person_outline)),
+                                  decoration: const InputDecoration(
+                                    labelText: 'Full Name', 
+                                    prefixIcon: Icon(Icons.person_outline),
+                                    contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                                  ),
                                   validator: (v) => v == null || v.trim().isEmpty ? 'Full name is required' : null,
                                 ),
                                 const SizedBox(height: 16),
@@ -338,7 +342,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                   controller: _phone,
                                   keyboardType: TextInputType.phone,
                                   autofillHints: const [AutofillHints.telephoneNumber],
-                                  decoration: const InputDecoration(labelText: 'Mobile Number', prefixIcon: Icon(Icons.phone_outlined)),
+                                  decoration: const InputDecoration(
+                                    labelText: 'Mobile Number', 
+                                    prefixIcon: Icon(Icons.phone_outlined),
+                                    contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                                  ),
                                   validator: (v) => v == null || v.trim().isEmpty ? 'Mobile number is required' : null,
                                 ),
                                 const SizedBox(height: 16),
@@ -348,7 +356,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 controller: _email,
                                 keyboardType: TextInputType.emailAddress,
                                 autofillHints: const [AutofillHints.email],
-                                decoration: const InputDecoration(labelText: 'Email Address', prefixIcon: Icon(Icons.email_outlined)),
+                                decoration: const InputDecoration(
+                                  labelText: 'Email Address', 
+                                  prefixIcon: Icon(Icons.email_outlined),
+                                  contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                                ),
                                 validator: (v) {
                                   if (v == null || v.trim().isEmpty) return 'Email address is required';
                                   if (!RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(v.trim())) {
@@ -366,6 +378,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 decoration: InputDecoration(
                                   labelText: 'Password',
                                   prefixIcon: const Icon(Icons.lock_outline),
+                                  contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
                                   suffixIcon: IconButton(
                                     icon: Icon(_obscurePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined),
                                     onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
@@ -410,6 +423,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                   decoration: InputDecoration(
                                     labelText: 'Confirm Password',
                                     prefixIcon: const Icon(Icons.lock_reset_outlined),
+                                    contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
                                     suffixIcon: IconButton(
                                       icon: Icon(_obscureConfirmPassword ? Icons.visibility_off_outlined : Icons.visibility_outlined),
                                       onPressed: () => setState(() => _obscureConfirmPassword = !_obscureConfirmPassword),

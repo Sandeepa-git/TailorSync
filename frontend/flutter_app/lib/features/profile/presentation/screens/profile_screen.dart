@@ -71,6 +71,32 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     }
   }
 
+  Widget _buildChecklistItem(String label, bool isSatisfied) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 3.0),
+      child: Row(
+        children: [
+          Icon(
+            isSatisfied ? Icons.check_circle_rounded : Icons.radio_button_unchecked,
+            size: 16,
+            color: isSatisfied ? const Color(0xFF2E7D32) : Colors.grey[400],
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              label,
+              style: GoogleFonts.inter(
+                fontSize: 12.5,
+                color: isSatisfied ? const Color(0xFF2E7D32) : Colors.grey[600],
+                fontWeight: isSatisfied ? FontWeight.w600 : FontWeight.normal,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   void _showChangePasswordDialog() {
     final currentPasswordCtrl = TextEditingController();
     final newPasswordCtrl = TextEditingController();
@@ -83,114 +109,172 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     showDialog(
       context: context,
       builder: (ctx) => StatefulBuilder(
-        builder: (context, setDialogState) => AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          title: Text(
-            'Change Password',
-            style: GoogleFonts.outfit(fontWeight: FontWeight.bold, color: AppTheme.primary, letterSpacing: -0.3),
-          ),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: currentPasswordCtrl,
-                  obscureText: obscureCurrent,
-                  decoration: InputDecoration(
-                    labelText: 'Current Password',
-                    suffixIcon: IconButton(
-                      icon: Icon(obscureCurrent ? Icons.visibility_off : Icons.visibility),
-                      onPressed: () => setDialogState(() => obscureCurrent = !obscureCurrent),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: newPasswordCtrl,
-                  obscureText: obscureNew,
-                  decoration: InputDecoration(
-                    labelText: 'New Password',
-                    hintText: 'Min 8 chars (A-Z, a-z, 0-9, special)',
-                    suffixIcon: IconButton(
-                      icon: Icon(obscureNew ? Icons.visibility_off : Icons.visibility),
-                      onPressed: () => setDialogState(() => obscureNew = !obscureNew),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: confirmPasswordCtrl,
-                  obscureText: obscureConfirm,
-                  decoration: InputDecoration(
-                    labelText: 'Confirm New Password',
-                    suffixIcon: IconButton(
-                      icon: Icon(obscureConfirm ? Icons.visibility_off : Icons.visibility),
-                      onPressed: () => setDialogState(() => obscureConfirm = !obscureConfirm),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: saving ? null : () => Navigator.pop(ctx),
-              child: Text('Cancel', style: GoogleFonts.inter(color: Colors.grey)),
-            ),
-            ElevatedButton(
-              onPressed: saving
-                  ? null
-                  : () async {
-                      final currPw = currentPasswordCtrl.text.trim();
-                      final newPw = newPasswordCtrl.text.trim();
-                      final confPw = confirmPasswordCtrl.text.trim();
+        builder: (context, setDialogState) {
+          final newPwText = newPasswordCtrl.text;
+          bool hasMinLength = newPwText.length >= 8;
+          bool hasUppercase = RegExp(r'[A-Z]').hasMatch(newPwText);
+          bool hasLowercase = RegExp(r'[a-z]').hasMatch(newPwText);
+          bool hasDigit = RegExp(r'[0-9]').hasMatch(newPwText);
+          bool hasSpecialChar = RegExp(r'[!@#$%^&*(),.?":{}|<>\_\+\-=\[\]\\/]').hasMatch(newPwText);
+          bool isPasswordValid = hasMinLength && hasUppercase && hasLowercase && hasDigit && hasSpecialChar;
+          bool passwordsMatch = newPwText.isNotEmpty && newPwText == confirmPasswordCtrl.text;
 
-                      if (currPw.isEmpty || newPw.isEmpty || confPw.isEmpty) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Please fill in all fields'), backgroundColor: AppTheme.error),
-                        );
-                        return;
-                      }
-                      if (newPw != confPw) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('New passwords do not match'), backgroundColor: AppTheme.error),
-                        );
-                        return;
-                      }
+          return AlertDialog(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            title: Text(
+              'Change Password',
+              style: GoogleFonts.outfit(fontWeight: FontWeight.bold, color: AppTheme.primary, letterSpacing: -0.3),
+            ),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    controller: currentPasswordCtrl,
+                    obscureText: obscureCurrent,
+                    decoration: InputDecoration(
+                      labelText: 'Current Password',
+                      suffixIcon: IconButton(
+                        icon: Icon(obscureCurrent ? Icons.visibility_off : Icons.visibility),
+                        onPressed: () => setDialogState(() => obscureCurrent = !obscureCurrent),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: newPasswordCtrl,
+                    obscureText: obscureNew,
+                    onChanged: (_) => setDialogState(() {}),
+                    decoration: InputDecoration(
+                      labelText: 'New Password',
+                      hintText: 'Min 8 chars (A-Z, a-z, 0-9, special)',
+                      suffixIcon: IconButton(
+                        icon: Icon(obscureNew ? Icons.visibility_off : Icons.visibility),
+                        onPressed: () => setDialogState(() => obscureNew = !obscureNew),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF4F6FB),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: const Color(0xFFE2E6F0)),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Password Requirements:', style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.bold, color: const Color(0xFF1A237E))),
+                        const SizedBox(height: 6),
+                        _buildChecklistItem('Minimum 8 characters', hasMinLength),
+                        _buildChecklistItem('At least one uppercase letter (A-Z)', hasUppercase),
+                        _buildChecklistItem('At least one lowercase letter (a-z)', hasLowercase),
+                        _buildChecklistItem('At least one number (0-9)', hasDigit),
+                        _buildChecklistItem('At least one special character (!@#\$%...)', hasSpecialChar),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: confirmPasswordCtrl,
+                    obscureText: obscureConfirm,
+                    onChanged: (_) => setDialogState(() {}),
+                    decoration: InputDecoration(
+                      labelText: 'Confirm New Password',
+                      suffixIcon: IconButton(
+                        icon: Icon(obscureConfirm ? Icons.visibility_off : Icons.visibility),
+                        onPressed: () => setDialogState(() => obscureConfirm = !obscureConfirm),
+                      ),
+                    ),
+                  ),
+                  if (confirmPasswordCtrl.text.isNotEmpty) ...[
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Icon(
+                          passwordsMatch ? Icons.check_circle : Icons.error,
+                          size: 16,
+                          color: passwordsMatch ? const Color(0xFF2E7D32) : const Color(0xFFD32F2F),
+                        ),
+                        const SizedBox(width: 6),
+                        Text(
+                          passwordsMatch ? 'Passwords match' : 'Passwords do not match',
+                          style: GoogleFonts.inter(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: passwordsMatch ? const Color(0xFF2E7D32) : const Color(0xFFD32F2F),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: saving ? null : () => Navigator.pop(ctx),
+                child: Text('Cancel', style: GoogleFonts.inter(color: Colors.grey)),
+              ),
+              ElevatedButton(
+                onPressed: saving || !isPasswordValid || !passwordsMatch
+                    ? null
+                    : () async {
+                        final currPw = currentPasswordCtrl.text.trim();
+                        final newPw = newPasswordCtrl.text.trim();
+                        final confPw = confirmPasswordCtrl.text.trim();
 
-                      setDialogState(() => saving = true);
-                      try {
-                        final api = ref.read(apiClientProvider);
-                        await api.changePassword(currPw, newPw);
-                        if (context.mounted) {
-                          Navigator.pop(ctx);
+                        if (currPw.isEmpty || newPw.isEmpty || confPw.isEmpty) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Password changed successfully!'), backgroundColor: Color(0xFF388E3C)),
+                            const SnackBar(content: Text('Please fill in all fields'), backgroundColor: AppTheme.error),
                           );
+                          return;
                         }
-                      } catch (e) {
-                        setDialogState(() => saving = false);
-                        String err = 'Failed to change password';
-                        if (e is DioException && e.response?.data != null) {
-                          final data = e.response!.data;
-                          if (data is Map && data.containsKey('detail')) {
-                            err = data['detail'].toString();
+                        if (newPw != confPw) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('New passwords do not match'), backgroundColor: AppTheme.error),
+                          );
+                          return;
+                        }
+
+                        setDialogState(() => saving = true);
+                        try {
+                          final api = ref.read(apiClientProvider);
+                          await api.changePassword(currPw, newPw);
+                          if (context.mounted) {
+                            Navigator.pop(ctx);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Password changed successfully!'), backgroundColor: Color(0xFF388E3C)),
+                            );
+                          }
+                        } catch (e) {
+                          setDialogState(() => saving = false);
+                          String err = 'Failed to change password';
+                          if (e is DioException && e.response?.data != null) {
+                            final data = e.response!.data;
+                            if (data is Map && data.containsKey('detail')) {
+                              err = data['detail'].toString();
+                            }
+                          }
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(err), backgroundColor: AppTheme.error),
+                            );
                           }
                         }
-                        if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(err), backgroundColor: AppTheme.error),
-                          );
-                        }
-                      }
-                    },
-              style: ElevatedButton.styleFrom(backgroundColor: AppTheme.primary),
-              child: saving
-                  ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                  : Text('Update Password', style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold)),
-            ),
-          ],
-        ),
+                      },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppTheme.primary,
+                  disabledBackgroundColor: Colors.grey[300],
+                ),
+                child: saving
+                    ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                    : Text('Update Password', style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold)),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
