@@ -321,7 +321,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.cut, size: 52, color: Color(0xFF1A237E)),
+                  Image.asset(
+                    'assets/icon.png',
+                    height: 52,
+                  ),
                   const SizedBox(height: 12),
                   Text(
                     'TailorSync',
