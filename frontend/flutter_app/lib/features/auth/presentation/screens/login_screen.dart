@@ -323,7 +323,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 children: [
                   Image.asset(
                     'assets/icon.png',
-                    height: 52,
+                    height: 90,
                   ),
                   const SizedBox(height: 12),
                   Text(
