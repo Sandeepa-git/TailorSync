@@ -15,6 +15,10 @@ class LoginScreen extends ConsumerStatefulWidget {
 }
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
+  final _businessName = TextEditingController();
+  final _businessRegNumber = TextEditingController();
+  final _businessContact = TextEditingController();
+  final _orgName = TextEditingController(); // For login
   final _name = TextEditingController();
   final _email = TextEditingController();
   final _phone = TextEditingController();
@@ -38,6 +42,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   void dispose() {
     _password.removeListener(_updateState);
     _confirmPassword.removeListener(_updateState);
+    _businessName.dispose();
+    _businessRegNumber.dispose();
+    _businessContact.dispose();
+    _orgName.dispose();
     _name.dispose();
     _email.dispose();
     _phone.dispose();
@@ -181,9 +189,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     try {
       Response response;
       if (_isSignUp) {
-        response = await api.signup(_email.text.trim(), _password.text.trim(), _name.text.trim(), _phone.text.trim());
+        response = await api.signup(
+          businessName: _businessName.text.trim(),
+          businessRegistrationNumber: _businessRegNumber.text.trim(),
+          businessContactNumber: _businessContact.text.trim(),
+          email: _email.text.trim(),
+          password: _password.text.trim(),
+          fullName: _name.text.trim(),
+          phone: _phone.text.trim(),
+        );
       } else {
-        response = await api.login(_email.text.trim(), _password.text.trim());
+        response = await api.login(_orgName.text.trim(), _email.text.trim(), _password.text.trim());
       }
 
       final token = response.data['access_token'];
@@ -362,6 +378,50 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                     contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
                                   ),
                                   validator: (v) => v == null || v.trim().isEmpty ? 'Mobile number is required' : null,
+                                ),
+                                const SizedBox(height: 16),
+                                TextFormField(
+                                  controller: _businessName,
+                                  decoration: const InputDecoration(
+                                    labelText: 'Business / Organization Name',
+                                    prefixIcon: Icon(Icons.business),
+                                    contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                                  ),
+                                  validator: (v) => v == null || v.trim().isEmpty ? 'Business name is required' : null,
+                                ),
+                                const SizedBox(height: 16),
+                                TextFormField(
+                                  controller: _businessRegNumber,
+                                  decoration: const InputDecoration(
+                                    labelText: 'Business Registered Number',
+                                    prefixIcon: Icon(Icons.receipt_long),
+                                    contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                                  ),
+                                  validator: (v) => v == null || v.trim().isEmpty ? 'Registration number is required' : null,
+                                ),
+                                const SizedBox(height: 16),
+                                TextFormField(
+                                  controller: _businessContact,
+                                  keyboardType: TextInputType.phone,
+                                  decoration: const InputDecoration(
+                                    labelText: 'Business Contact Number',
+                                    prefixIcon: Icon(Icons.phone),
+                                    contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                                  ),
+                                  validator: (v) => v == null || v.trim().isEmpty ? 'Business contact is required' : null,
+                                ),
+                                const SizedBox(height: 16),
+                              ],
+                              
+                              if (!_isSignUp) ...[
+                                TextFormField(
+                                  controller: _orgName,
+                                  decoration: const InputDecoration(
+                                    labelText: 'Organization / Business Name',
+                                    prefixIcon: Icon(Icons.business),
+                                    contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                                  ),
+                                  validator: (v) => v == null || v.trim().isEmpty ? 'Organization name is required' : null,
                                 ),
                                 const SizedBox(height: 16),
                               ],

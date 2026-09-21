@@ -114,13 +114,33 @@ class ApiClient {
     return dio.delete('/staff/$id');
   }
 
-  // Authentication
-  Future<Response> login(String email, String password) async {
-    return dio.post('/auth/login', data: {'email': email, 'password': password});
+  // Authentication  // Auth
+  Future<Response> login(String organizationName, String email, String password) async {
+    return dio.post('/auth/login', data: {
+      'organization_name': organizationName,
+      'email': email,
+      'password': password
+    });
   }
 
-  Future<Response> signup(String email, String password, String name, String phone) async {
-    return dio.post('/auth/signup', data: {'email': email, 'password': password, 'full_name': name, 'phone': phone});
+  Future<Response> signup({
+    required String businessName,
+    required String businessRegistrationNumber,
+    required String businessContactNumber,
+    required String email,
+    required String password,
+    String? fullName,
+    String? phone,
+  }) async {
+    return dio.post('/auth/signup', data: {
+      'business_name': businessName,
+      'business_registration_number': businessRegistrationNumber,
+      'business_contact_number': businessContactNumber,
+      'email': email,
+      'password': password,
+      'full_name': fullName ?? '',
+      'phone': phone ?? '',
+    });
   }
 
   Future<Response> googleLogin(String firebaseToken) async {

@@ -9,6 +9,7 @@ class Business(Base):
     
     business_id = Column(Integer, primary_key=True, index=True)
     business_name = Column(String(100), nullable=False)
+    registration_number = Column(String(100), nullable=True)
     address = Column(Text, nullable=True)
     phone = Column(String(20), nullable=True)
     email = Column(String(100), nullable=True)

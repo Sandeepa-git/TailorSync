@@ -55,12 +55,18 @@ def _generate_token(user: User) -> dict:
         "token_type": "bearer"
     }
 
-def email_login(db: Session, email: str, password: str):
+def email_login(db: Session, organization_name: str, email: str, password: str):
     normalized_email = email.strip().lower()
     user = db.query(User).filter(func.lower(User.email) == normalized_email).first()
     if not user:
         logger.info(f"Login failed: no user found for email {normalized_email}")
         raise HTTPException(status_code=401, detail="Incorrect email or password")
+        
+    _ensure_business(db, user)
+    
+    if user.business and user.business.business_name != organization_name.strip():
+        logger.info(f"Login failed: organization mismatch for {normalized_email}")
+        raise HTTPException(status_code=401, detail="You do not belong to this organization.")
     
     if user.hashed_password == "firebase_managed":
         raise HTTPException(status_code=401, detail="This account uses Google Sign-In. Please use the Google login option.")
@@ -81,7 +87,7 @@ def email_login(db: Session, email: str, password: str):
     _ensure_business(db, user)
     return _generate_token(user)
 
-def email_signup(db: Session, email: str, password: str, full_name: str = "", phone: str = ""):
+def email_signup(db: Session, email: str, password: str, business_name: str, business_registration_number: str, business_contact_number: str, full_name: str = "", phone: str = ""):
     normalized_email = email.strip().lower()
     
     # Validate password strength on backend
@@ -92,10 +98,6 @@ def email_signup(db: Session, email: str, password: str, full_name: str = "", ph
     existing = db.query(User).filter(func.lower(User.email) == normalized_email).first()
     if existing:
         raise HTTPException(status_code=400, detail="Email already registered")
-        
-    existing_admin = db.query(User).filter(User.role == RoleEnum.OWNER).first()
-    if existing_admin:
-        raise HTTPException(status_code=400, detail="An admin account already exists. Only one admin is allowed.")
     
     try:
         user = User(
@@ -108,8 +110,11 @@ def email_signup(db: Session, email: str, password: str, full_name: str = "", ph
         db.add(user)
         db.flush()
         
-        biz_name = f"{full_name.strip()}'s Tailor Shop" if full_name.strip() else "My Tailor Shop"
-        new_biz = Business(business_name=biz_name)
+        new_biz = Business(
+            business_name=business_name.strip(),
+            registration_number=business_registration_number.strip(),
+            phone=business_contact_number.strip()
+        )
         db.add(new_biz)
         db.flush()
         
