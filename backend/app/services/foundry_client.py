@@ -1,7 +1,7 @@
 import logging
 import time
 from azure.ai.projects import AIProjectClient
-from azure.core.credentials import AzureKeyCredential
+from azure.identity import DefaultAzureCredential
 from app.core.config import settings
 
 logger = logging.getLogger(__name__)
@@ -22,7 +22,7 @@ class FoundryClient:
         return cls._instance
 
     def _initialize(self):
-        credential = AzureKeyCredential(settings.AZURE_FOUNDRY_API_KEY)
+        credential = DefaultAzureCredential()
         self._client = AIProjectClient(
             endpoint=settings.AZURE_FOUNDRY_ENDPOINT,
             credential=credential
