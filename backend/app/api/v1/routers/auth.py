@@ -34,7 +34,6 @@ def _clear_rate_limit(key: str):
         del _failed_attempts[key]
 
 class EmailLoginIn(BaseModel):
-    organization_name: str
     email: str
     password: str
 
@@ -64,7 +63,7 @@ def login(payload: EmailLoginIn, request: Request, db: Session = Depends(get_db)
     _check_rate_limit(rate_key)
     
     try:
-        token = auth_service.email_login(db, payload.organization_name, payload.email, payload.password)
+        token = auth_service.email_login(db, payload.email, payload.password)
         _clear_rate_limit(rate_key)
         return token
     except HTTPException as e:

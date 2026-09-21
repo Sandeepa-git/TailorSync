@@ -199,7 +199,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           phone: _phone.text.trim(),
         );
       } else {
-        response = await api.login(_orgName.text.trim(), _email.text.trim(), _password.text.trim());
+        response = await api.login(_email.text.trim(), _password.text.trim());
       }
 
       final token = response.data['access_token'];
@@ -409,19 +409,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                     contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
                                   ),
                                   validator: (v) => v == null || v.trim().isEmpty ? 'Business contact is required' : null,
-                                ),
-                                const SizedBox(height: 16),
-                              ],
-                              
-                              if (!_isSignUp) ...[
-                                TextFormField(
-                                  controller: _orgName,
-                                  decoration: const InputDecoration(
-                                    labelText: 'Organization / Business Name',
-                                    prefixIcon: Icon(Icons.business),
-                                    contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-                                  ),
-                                  validator: (v) => v == null || v.trim().isEmpty ? 'Organization name is required' : null,
                                 ),
                                 const SizedBox(height: 16),
                               ],

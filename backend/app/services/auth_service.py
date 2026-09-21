@@ -55,7 +55,7 @@ def _generate_token(user: User) -> dict:
         "token_type": "bearer"
     }
 
-def email_login(db: Session, organization_name: str, email: str, password: str):
+def email_login(db: Session, email: str, password: str):
     normalized_email = email.strip().lower()
     user = db.query(User).filter(func.lower(User.email) == normalized_email).first()
     if not user:
@@ -63,10 +63,6 @@ def email_login(db: Session, organization_name: str, email: str, password: str):
         raise HTTPException(status_code=401, detail="Incorrect email or password")
         
     _ensure_business(db, user)
-    
-    if user.business and user.business.business_name != organization_name.strip():
-        logger.info(f"Login failed: organization mismatch for {normalized_email}")
-        raise HTTPException(status_code=401, detail="You do not belong to this organization.")
     
     if user.hashed_password == "firebase_managed":
         raise HTTPException(status_code=401, detail="This account uses Google Sign-In. Please use the Google login option.")

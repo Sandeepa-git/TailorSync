@@ -115,9 +115,8 @@ class ApiClient {
   }
 
   // Authentication  // Auth
-  Future<Response> login(String organizationName, String email, String password) async {
+  Future<Response> login(String email, String password) async {
     return dio.post('/auth/login', data: {
-      'organization_name': organizationName,
       'email': email,
       'password': password
     });
