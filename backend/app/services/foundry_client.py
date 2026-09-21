@@ -28,7 +28,7 @@ class FoundryClient:
             credential=credential
         )
         agents = self._client.agents.list_agents()
-        agent = next((a for a in agents if a.name == settings.AZURE_FOUNDRY_AGENT_NAME), None)
+        agent = next((a for a in agents if a.name.lower() == settings.AZURE_FOUNDRY_AGENT_NAME.lower()), None)
         if not agent:
             raise FoundryUnavailableError(f"Agent '{settings.AZURE_FOUNDRY_AGENT_NAME}' not found.")
         self._agent_id = agent.id

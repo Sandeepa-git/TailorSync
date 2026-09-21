@@ -6,6 +6,7 @@ import '../../../../core/network/providers/api_provider.dart';
 import '../../../customers/presentation/providers/customers_provider.dart';
 import '../../../customers/models/customer.dart';
 import '../../presentation/providers/orders_provider.dart';
+import 'package:dio/dio.dart';
 
 class NewOrderWizard extends ConsumerStatefulWidget {
   const NewOrderWizard({super.key});
@@ -246,7 +247,10 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> {
       for (var f in fields) {
         _measurementControllers[f['id']] = TextEditingController();
       }
-      setState(() => _loadingTemplate = false);
+      setState(() { 
+        _loadingTemplate = false;
+        _currentStep++;
+      });
     } else if (_currentStep == 2) {
       // Step 2: Measurements -> Step 3: AI Prediction
       final fields = (_measurementTemplate?['fields'] as List? ?? []).cast<Map<String, dynamic>>();
