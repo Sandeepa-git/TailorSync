@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:dio/dio.dart';
+import '../../../../routes/app_router.dart';
+import '../../../../core/network/providers/user_provider.dart';
 import '../../../../core/network/providers/api_provider.dart';
 import '../../../../core/theme/app_theme.dart';
 
@@ -111,6 +113,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
             try {
               final userResp = await api.getMe();
               final role = userResp.data?['role'];
+              ref.invalidate(userProvider);
               if (role == 'staff' || role == 'STAFF') {
                 destination = '/tasks';
               } else {
