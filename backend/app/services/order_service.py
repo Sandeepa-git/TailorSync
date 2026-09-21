@@ -19,7 +19,7 @@ def list_orders(db: Session, business_id: int, skip: int = 0, limit: int = 100, 
 
 def create_order(db: Session, order: OrderCreate, business_id: int):
     # Create the order itself (exclude nested objects)
-    order_data = order.dict(exclude={'measurements', 'staff_id'})
+    order_data = order.dict(exclude={'measurements', 'staff_id', 'selected_fabric', 'fabric_estimation'})
     order_data['business_id'] = business_id
     
     # Clean and query garment type lookups via the model property setter
@@ -44,7 +44,8 @@ def create_order(db: Session, order: OrderCreate, business_id: int):
                 customer_id=order.customer_id,
                 order_id=db_order.order_id,
                 field_id=m_data.field_id,
-                value=m_data.value
+                value=m_data.value,
+                is_ai_generated=m_data.is_ai_generated
             )
             db.add(db_measurement)
     
@@ -56,6 +57,33 @@ def create_order(db: Session, order: OrderCreate, business_id: int):
             assigned_role="Assigned"
         )
         db.add(assignment)
+        
+    if order.fabric_estimation:
+        from app.models.fabric_estimation import FabricEstimation
+        est_model = FabricEstimation(
+            order_id=db_order.order_id,
+            required_length=order.fabric_estimation.get("recommended_quantity_meters", 0),
+            unit="meters",
+        )
+        db.add(est_model)
+        
+    if order.selected_fabric:
+        from app.models.fabric_catalog import FabricCatalog
+        from app.models.fabric_recommendation import FabricRecommendation
+        
+        # Check if fabric exists or create dummy
+        fabric = db.query(FabricCatalog).filter(FabricCatalog.fabric_name == order.selected_fabric).first()
+        if not fabric:
+            fabric = FabricCatalog(fabric_name=order.selected_fabric, fabric_type="Custom")
+            db.add(fabric)
+            db.flush()
+            
+        rec_model = FabricRecommendation(
+            order_id=db_order.order_id,
+            fabric_id=fabric.fabric_id,
+            reason="Selected by user after AI recommendation"
+        )
+        db.add(rec_model)
     
     db.commit()
     db.refresh(db_order)

@@ -203,7 +203,26 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> {
   String _staffSearch = '';
   final Set<int> _invalidFieldIds = {};
 
+  // AI Measurement Prediction state
+  List<Map<String, dynamic>> _aiPredictions = [];
+  Map<String, String> _confirmedMeasurements = {};
+  Map<String, bool> _isAiGenerated = {};
+  bool _aiPredictionLoading = false;
+  String? _aiPredictionError;
+
+  // Fabric Recommendation state
+  List<Map<String, dynamic>> _fabricRecommendations = [];
+  int? _selectedFabricIndex;
+  bool _fabricRecLoading = false;
+  String? _fabricRecError;
+
+  // Fabric Estimation state
+  Map<String, dynamic>? _fabricEstimation;
+  bool _fabricEstLoading = false;
+  String? _fabricEstError;
+
   Future<void> _nextStep() async {
+    final api = ref.read(apiClientProvider);
     if (_currentStep == 0) {
       if (_selectedCustomerId == null) {
         _showSnack('⚠️ Please select a customer before proceeding to the next step');
@@ -217,24 +236,19 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> {
       // Load template for selected garment
       setState(() => _loadingTemplate = true);
       try {
-        final api = ref.read(apiClientProvider);
         final resp = await api.getMeasurementTemplateByCategory(_selectedGarment!);
         _measurementTemplate = resp.data;
-        _measurementControllers.clear();
-        final fields = _measurementTemplate!['fields'] as List;
-        for (var f in fields) {
-          _measurementControllers[f['id']] = TextEditingController();
-        }
       } catch (e) {
         _measurementTemplate = _getDefaultTemplateForCategory(_selectedGarment!);
-        _measurementControllers.clear();
-        final fields = _measurementTemplate!['fields'] as List;
-        for (var f in fields) {
-          _measurementControllers[f['id']] = TextEditingController();
-        }
+      }
+      _measurementControllers.clear();
+      final fields = _measurementTemplate!['fields'] as List;
+      for (var f in fields) {
+        _measurementControllers[f['id']] = TextEditingController();
       }
       setState(() => _loadingTemplate = false);
     } else if (_currentStep == 2) {
+      // Step 2: Measurements -> Step 3: AI Prediction
       final fields = (_measurementTemplate?['fields'] as List? ?? []).cast<Map<String, dynamic>>();
       final priorityFields = fields.where((f) {
         final name = (f['field_name'] ?? '').toString();
@@ -244,6 +258,7 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> {
 
       final missing = <String>[];
       _invalidFieldIds.clear();
+      final enteredMeasures = <String, String>{};
       for (var f in priorityFields) {
         final id = f['id'] as int;
         final ctrl = _measurementControllers[id];
@@ -259,23 +274,98 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> {
         _showSnack('⚠️ Please enter valid numerical values for priority measurements: ${missing.join(", ")}');
         return;
       }
+      
+      for (var f in fields) {
+        final id = f['id'] as int;
+        final name = f['field_name'] as String;
+        final text = _measurementControllers[id]?.text.trim() ?? '';
+        if (text.isNotEmpty) {
+          enteredMeasures[name] = text;
+          _confirmedMeasurements[name] = text;
+          _isAiGenerated[name] = false;
+        }
+      }
+
+      setState(() { _aiPredictionLoading = true; _aiPredictionError = null; _currentStep++; });
+      try {
+        final resp = await api.predictMeasurements({'garment_type': _selectedGarment, 'measurements': enteredMeasures});
+        setState(() {
+          _aiPredictions = List<Map<String, dynamic>>.from(resp.data['predictions'] ?? []);
+          _aiPredictionLoading = false;
+        });
+      } catch (e) {
+        setState(() {
+          _aiPredictionError = "AI prediction unavailable. You can proceed and enter measurements manually.";
+          _aiPredictionLoading = false;
+        });
+      }
+      return;
     } else if (_currentStep == 3) {
-      if (_occasion.isEmpty) {
-        _showSnack('⚠️ Please select an Occasion before proceeding');
+      // Step 3: AI Prediction -> Step 4: Style & Fabric
+      // Ensure all predictions are confirmed/handled
+      for (var p in _aiPredictions) {
+         final m = p['measurement'] as String;
+         if (!_confirmedMeasurements.containsKey(m)) {
+            _confirmedMeasurements[m] = p['recommended'].toString();
+            _isAiGenerated[m] = true;
+         }
+      }
+    } else if (_currentStep == 4) {
+      // Step 4: Style & Fabric -> Step 5: Fabric Recommendation
+      if (_occasion.isEmpty || _weather.isEmpty || _fabricPreferences.isEmpty || _fit.isEmpty) {
+        _showSnack('⚠️ Please fill all style preferences');
         return;
       }
-      if (_weather.isEmpty) {
-        _showSnack('⚠️ Please select a Weather condition before proceeding');
+      setState(() { _fabricRecLoading = true; _fabricRecError = null; _currentStep++; });
+      try {
+        final resp = await api.recommendFabric({
+          'garment_type': _selectedGarment,
+          'occasion': _occasion,
+          'weather': _weather,
+          'fabric_preferences': _fabricPreferences,
+          'fit': _fit
+        });
+        setState(() {
+          _fabricRecommendations = List<Map<String, dynamic>>.from(resp.data['recommendations'] ?? []);
+          _selectedFabricIndex = null;
+          _fabricRecLoading = false;
+        });
+      } catch (e) {
+        setState(() {
+          _fabricRecError = "Fabric recommendations unavailable. Please proceed manually.";
+          _fabricRecLoading = false;
+        });
+      }
+      return;
+    } else if (_currentStep == 5) {
+      // Step 5: Fabric Rec -> Step 6: Fabric Estimation
+      if (_selectedFabricIndex == null && _fabricRecError == null) {
+        _showSnack('⚠️ Please select a fabric recommendation');
         return;
       }
-      if (_fabricPreferences.isEmpty) {
-        _showSnack('⚠️ Please select at least one Fabric Feel preference before proceeding');
-        return;
+      String selectedFabric = "Manual Fabric";
+      if (_selectedFabricIndex != null && _fabricRecommendations.isNotEmpty) {
+         selectedFabric = _fabricRecommendations[_selectedFabricIndex!]['fabric_name'];
       }
-      if (_fit.isEmpty) {
-        _showSnack('⚠️ Please select a Fit preference before proceeding');
-        return;
+      
+      setState(() { _fabricEstLoading = true; _fabricEstError = null; _currentStep++; });
+      try {
+        final resp = await api.estimateFabric({
+          'garment_type': _selectedGarment,
+          'fabric': selectedFabric,
+          'measurements': _confirmedMeasurements
+        });
+        setState(() {
+          _fabricEstimation = resp.data;
+          _fabricEstLoading = false;
+        });
+      } catch (e) {
+        setState(() {
+          _fabricEstError = "Fabric estimation unavailable.";
+          _fabricEstLoading = false;
+        });
       }
+      return;
     }
 
     setState(() {
@@ -313,6 +403,14 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> {
     );
   }
 
+  int _getFieldIdByName(String name) {
+    final fields = (_measurementTemplate?['fields'] as List? ?? []).cast<Map<String, dynamic>>();
+    for (var f in fields) {
+      if (f['field_name'] == name) return f['id'] as int;
+    }
+    return 0;
+  }
+
   Future<void> _saveOrder() async {
     if (_selectedCustomerId == null) {
       _showSnack('⚠️ Customer missing. Please go back to Step 1 and select a customer');
@@ -346,18 +444,28 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> {
 
       // Measurements
       final mList = <Map<String, dynamic>>[];
-      _measurementControllers.forEach((fieldId, controller) {
-        if (controller.text.isNotEmpty) {
-          final val = double.tryParse(controller.text);
-          if (val != null) {
+      _confirmedMeasurements.forEach((fieldName, value) {
+        final val = double.tryParse(value);
+        if (val != null) {
+          final fieldId = _getFieldIdByName(fieldName);
+          if (fieldId > 0) {
             mList.add({
               'field_id': fieldId,
-              'value': val
+              'value': val,
+              'is_ai_generated': _isAiGenerated[fieldName] ?? false,
             });
           }
         }
       });
       if (mList.isNotEmpty) body['measurements'] = mList;
+
+      if (_selectedFabricIndex != null && _fabricRecommendations.isNotEmpty) {
+        body['selected_fabric'] = _fabricRecommendations[_selectedFabricIndex!]['fabric_name'];
+      }
+
+      if (_fabricEstimation != null) {
+        body['fabric_estimation'] = _fabricEstimation;
+      }
 
       await api.createOrder(body);
       ref.invalidate(ordersProvider);
@@ -372,7 +480,7 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> {
 
   @override
   Widget build(BuildContext context) {
-    final stepTitles = ['Customer Selection', 'Select Garment Type', 'Measurements', 'Style & Fabric', 'Assign Staff & Review'];
+    final stepTitles = ['Customer Selection', 'Select Garment Type', 'Measurements', 'AI Prediction', 'Style & Fabric', 'Fabric Recommendation', 'Fabric Estimation', 'Assign Staff & Review'];
     final currentTitle = stepTitles[_currentStep];
 
     return Scaffold(
@@ -467,8 +575,11 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> {
       case 0: return _buildCustomerStep();
       case 1: return _buildGarmentStep();
       case 2: return _buildMeasurementsStep();
-      case 3: return _buildStyleStep();
-      case 4: return _buildAssignReviewStep();
+      case 3: return _buildAiPredictionStep();
+      case 4: return _buildStyleStep();
+      case 5: return _buildFabricRecStep();
+      case 6: return _buildFabricEstStep();
+      case 7: return _buildAssignReviewStep();
       default: return const SizedBox.shrink();
     }
   }
@@ -791,6 +902,160 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> {
   }
 
   // ── Step 4: Style & Fabric ────────────────────────────────────────
+  // ── Step 3: AI Prediction ──────────────────────────────────────────
+  Widget _buildAiPredictionStep() {
+    if (_aiPredictionLoading) {
+      return const Center(
+        child: Padding(
+          padding: EdgeInsets.all(48.0),
+          child: Column(
+            children: [
+              CircularProgressIndicator(),
+              SizedBox(height: 16),
+              Text('Analyzing AI predictions for measurements...'),
+            ],
+          ),
+        ),
+      );
+    }
+    if (_aiPredictionError != null) {
+      return Column(
+        children: [
+          const Icon(Icons.error_outline, color: Colors.red, size: 48),
+          const SizedBox(height: 16),
+          Text(_aiPredictionError!, textAlign: TextAlign.center),
+          const SizedBox(height: 32),
+          ElevatedButton(onPressed: _nextStep, child: const Text('Proceed Manually'))
+        ],
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('AI Measurement Review', style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.bold, color: const Color(0xFF1A237E))),
+        const SizedBox(height: 8),
+        const Text('Review and adjust the AI predicted measurements.'),
+        const SizedBox(height: 24),
+        if (_aiPredictions.isEmpty)
+          const Text('No predictions found. Please proceed.')
+        else
+          ..._aiPredictions.map((pred) {
+            final m = pred['measurement'];
+            return Card(
+              margin: const EdgeInsets.only(bottom: 16),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(m, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                    const SizedBox(height: 8),
+                    Text('AI Reasoning: ${pred['reason']}', style: const TextStyle(color: Colors.grey, fontSize: 12)),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TextFormField(
+                            key: ValueKey('${m}_${_confirmedMeasurements[m]}'),
+                            initialValue: _confirmedMeasurements[m] ?? pred['recommended'].toString(),
+                            onChanged: (val) {
+                              _confirmedMeasurements[m] = val;
+                              _isAiGenerated[m] = false;
+                            },
+                            decoration: const InputDecoration(labelText: 'Confirmed Value', border: OutlineInputBorder()),
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        OutlinedButton(
+                          onPressed: () {
+                             setState(() {
+                                _confirmedMeasurements[m] = pred['recommended'].toString();
+                                _isAiGenerated[m] = true;
+                             });
+                          },
+                          child: const Text('Use AI Value'),
+                        )
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            );
+          }),
+        const SizedBox(height: 24),
+        SizedBox(width: double.infinity, child: ElevatedButton(onPressed: _nextStep, child: const Text('Confirm & Continue')))
+      ],
+    );
+  }
+
+  // ── Step 5: Fabric Recommendation ──────────────────────────────────
+  Widget _buildFabricRecStep() {
+    if (_fabricRecLoading) {
+      return const Center(child: Padding(padding: EdgeInsets.all(48.0), child: CircularProgressIndicator()));
+    }
+    if (_fabricRecError != null) {
+      return Column(
+        children: [
+          Text(_fabricRecError!),
+          ElevatedButton(onPressed: _nextStep, child: const Text('Proceed Manually'))
+        ],
+      );
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Fabric Recommendations', style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.bold, color: const Color(0xFF1A237E))),
+        const SizedBox(height: 16),
+        ..._fabricRecommendations.asMap().entries.map((e) {
+          final i = e.key;
+          final rec = e.value;
+          return RadioListTile<int>(
+            title: Text('${rec['fabric_name']} (${rec['suitability_percentage']}%)'),
+            subtitle: Text(rec['reason']),
+            value: i,
+            groupValue: _selectedFabricIndex,
+            onChanged: (val) => setState(() => _selectedFabricIndex = val),
+          );
+        }),
+        const SizedBox(height: 24),
+        SizedBox(width: double.infinity, child: ElevatedButton(onPressed: _nextStep, child: const Text('Continue')))
+      ],
+    );
+  }
+
+  // ── Step 6: Fabric Estimation ──────────────────────────────────────
+  Widget _buildFabricEstStep() {
+    if (_fabricEstLoading) {
+      return const Center(child: Padding(padding: EdgeInsets.all(48.0), child: CircularProgressIndicator()));
+    }
+    if (_fabricEstError != null) {
+      return Column(
+        children: [
+          Text(_fabricEstError!),
+          ElevatedButton(onPressed: _nextStep, child: const Text('Proceed'))
+        ],
+      );
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Fabric Yardage Estimation', style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.bold, color: const Color(0xFF1A237E))),
+        const SizedBox(height: 16),
+        if (_fabricEstimation != null) ...[
+          Text('Recommended: ${_fabricEstimation!['recommended_quantity_meters']} Meters', style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+          Text('Width: ${_fabricEstimation!['fabric_width_inches']}"'),
+          if (_fabricEstimation!['estimated_range'] != null)
+             Text('Range: ${_fabricEstimation!['estimated_range']['min']} - ${_fabricEstimation!['estimated_range']['max']} Meters'),
+          const SizedBox(height: 12),
+          Text('Reason: ${_fabricEstimation!['reason']}'),
+        ],
+        const SizedBox(height: 24),
+        SizedBox(width: double.infinity, child: ElevatedButton(onPressed: _nextStep, child: const Text('Continue')))
+      ],
+    );
+  }
+
   // ── Step 4: Style & Fabric ────────────────────────────────────────
   Widget _buildStyleStep() {
     return Column(

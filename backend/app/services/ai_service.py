@@ -1,91 +1,169 @@
-import joblib
-import pandas as pd
-import os
+import json
+import logging
 from typing import Dict, Any
+from app.services.foundry_client import FoundryClient
+from app.schemas.ai import (
+    MeasurementPredictIn, MeasurementPredictOut,
+    FabricRecommendIn, FabricRecommendOut,
+    FabricEstimateIn, FabricEstimateOut
+)
 
-# Load models if they exist
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-MEASUREMENT_MODEL_PATH = os.path.join(BASE_DIR, "ai_models", "measurement_predictor.joblib")
-FABRIC_MODEL_PATH = os.path.join(BASE_DIR, "ai_models", "fabric_recommender.joblib")
+logger = logging.getLogger(__name__)
 
-measurement_model = None
-fabric_model = None
+GARMENT_FABRIC_WIDTH = {
+    "Short Sleeve Shirt": 45,
+    "Long Sleeve Shirt": 45,
+    "Short Trouser": 60,
+    "Long Trouser": 60,
+}
 
-if os.path.exists(MEASUREMENT_MODEL_PATH):
-    measurement_model = joblib.load(MEASUREMENT_MODEL_PATH)
+FIELD_DISPLAY_MAP = {
+    "shoulder_length": "Shoulder Length",
+    "height": "Height",
+    "height_till_knee": "Height Till Knee",
+    "waist": "Waist",
+    "around_knee": "Round Knee",
+    "seat": "Seat",
+    "crotch": "Crotch",
+    "short_trouser_leg_opening": "Round End",
+    "long_trouser_leg_opening": "Round End",
+    "chest": "Chest",
+    "collar_size": "Collar Size",
+    "short_sleeve_length": "Short Sleeve Length",
+    "long_sleeve_length": "Long Sleeve Length",
+    "sleeve_opening": "Sleeve Opening",
+}
 
-if os.path.exists(FABRIC_MODEL_PATH):
-    fabric_model = joblib.load(FABRIC_MODEL_PATH)
+def extract_json_from_response(response_text: str) -> dict:
+    try:
+        # Strip markdown json blocks if present
+        text = response_text.strip()
+        if text.startswith("```json"):
+            text = text[7:]
+        if text.startswith("```"):
+            text = text[3:]
+        if text.endswith("```"):
+            text = text[:-3]
+        return json.loads(text.strip())
+    except json.JSONDecodeError as e:
+        logger.error(f"Failed to parse JSON from agent: {e} - Content: {response_text}")
+        raise ValueError("Invalid JSON response from AI")
 
-def predict_measurements(profile: Dict[str, Any]) -> Dict[str, float]:
-    """Predicts missing measurements given height and weight."""
-    if not measurement_model:
-        return {}
+def predict_measurements(request: MeasurementPredictIn, user_id: int, business_id: int, order_id: int = None) -> MeasurementPredictOut:
+    client = FoundryClient.get_instance()
     
-    height = profile.get("height")
-    weight = profile.get("weight")
-    
-    if not height or not weight:
-        return {} # Not enough data
-        
-    X_pred = pd.DataFrame([{'height': height, 'weight': weight}])
-    predictions = measurement_model.predict(X_pred)[0]
-    
-    return {
-        "chest": round(predictions[0], 2),
-        "waist": round(predictions[1], 2),
-        "hip": round(predictions[2], 2),
-        "shoulder": round(predictions[3], 2),
-        "sleeve_length": round(predictions[4], 2),
-        "inseam": round(predictions[5], 2),
+    # Map API names to display names for the prompt
+    mapped_measurements = {
+        FIELD_DISPLAY_MAP.get(k, k): v 
+        for k, v in request.measurements.items()
     }
+    
+    prompt = f"""
+    Operation: Predict Measurements
+    Garment Type: {request.garment_type}
+    Provided Measurements: {json.dumps(mapped_measurements)}
+    
+    Predict the missing measurements for this garment type.
+    Return ONLY a JSON object matching this schema exactly:
+    {{
+      "garment_type": "{request.garment_type}",
+      "predictions": [
+        {{
+          "measurement": "<API field name from schema>",
+          "recommended": "<value as string>",
+          "alternatives": ["<val1>", "<val2>"],
+          "reason": "<brief explanation>"
+        }}
+      ]
+    }}
+    
+    Use these exact measurement names for the "measurement" field: {list(FIELD_DISPLAY_MAP.keys())}
+    """
+    
+    raw_response = client.invoke_agent(
+        prompt, 
+        operation="measurement_prediction", 
+        user_id=user_id, 
+        business_id=business_id, 
+        order_id=order_id
+    )
+    
+    data = extract_json_from_response(raw_response)
+    return MeasurementPredictOut(**data)
 
-def estimate_fabric(items: list, measurements: dict) -> Dict[str, Any]:
-    """Estimates fabric yardage based on measurements and item type."""
-    total_meters = 0.0
-    breakdown = {}
+def recommend_fabrics(request: FabricRecommendIn, user_id: int, business_id: int, order_id: int = None) -> FabricRecommendOut:
+    client = FoundryClient.get_instance()
     
-    height = measurements.get("height", 170) if measurements else 170
+    prompt = f"""
+    Operation: Fabric Recommendation
+    Garment Type: {request.garment_type}
+    Occasion: {request.occasion}
+    Weather: {request.weather}
+    Preferences: {', '.join(request.fabric_preferences)}
+    Fit: {request.fit}
     
-    for item in items:
-        garment = item.get("garment_type", "").lower()
-        if "shirt" in garment:
-            req = (height / 100) * 1.5 
-        elif "trouser" in garment or "pant" in garment:
-            req = (height / 100) * 1.3
-        elif "suit" in garment:
-            req = (height / 100) * 3.5
-        elif "dress" in garment:
-            req = (height / 100) * 2.5
-        else:
-            req = 2.0
-            
-        req = round(req, 2)
-        total_meters += req
-        breakdown[garment or "unknown"] = req
-        
-    return {"fabric_required_meters": round(total_meters, 2), "breakdown": breakdown}
+    Recommend exactly 3 fabrics for this garment and context.
+    Return ONLY a JSON object matching this schema exactly:
+    {{
+      "recommendations": [
+        {{
+          "fabric_name": "<name>",
+          "suitability_percentage": <integer 0-100>,
+          "reason": "<brief explanation>"
+        }}
+      ]
+    }}
+    """
+    
+    raw_response = client.invoke_agent(
+        prompt, 
+        operation="fabric_recommendation", 
+        user_id=user_id, 
+        business_id=business_id, 
+        order_id=order_id
+    )
+    
+    data = extract_json_from_response(raw_response)
+    return FabricRecommendOut(**data)
 
-def recommend_fabrics(style: str, constraints: Dict[str, Any] = None):
-    if not fabric_model:
-        return []
-        
-    occasion = constraints.get("occasion", "casual") if constraints else "casual"
+def estimate_fabric(request: FabricEstimateIn, user_id: int, business_id: int, order_id: int = None) -> FabricEstimateOut:
+    client = FoundryClient.get_instance()
     
-    garment_map = {"shirt": 0, "trouser": 1, "suit": 2, "dress": 3}
-    occasion_map = {"casual": 0, "formal": 1, "party": 2, "summer": 3}
+    fabric_width = GARMENT_FABRIC_WIDTH.get(request.garment_type, 45)
     
-    g_idx = garment_map.get(style.lower(), 0)
-    o_idx = occasion_map.get(occasion.lower(), 0)
+    # Map API names to display names for the prompt
+    mapped_measurements = {
+        FIELD_DISPLAY_MAP.get(k, k): v 
+        for k, v in request.measurements.items()
+    }
     
-    fabric_idx = fabric_model.predict([[g_idx, o_idx]])[0]
+    prompt = f"""
+    Operation: Fabric Estimation
+    Garment Type: {request.garment_type}
+    Fabric Name: {request.fabric}
+    Fabric Width (inches): {fabric_width}
+    Confirmed Measurements: {json.dumps(mapped_measurements)}
     
-    fabrics = {0: "Cotton", 1: "Wool", 2: "Silk", 3: "Linen"}
-    recommended = fabrics.get(fabric_idx, "Cotton")
+    Estimate the required fabric quantity in meters.
+    Return ONLY a JSON object matching this schema exactly:
+    {{
+      "recommended_quantity_meters": <float>,
+      "estimated_range": {{
+        "min": <float>,
+        "max": <float>
+      }},
+      "fabric_width_inches": {fabric_width},
+      "reason": "<brief explanation>"
+    }}
+    """
     
-    return [
-        {
-            "fabric_type": recommended,
-            "reason": f"AI matched {recommended} as the best fabric for a {occasion} {style}."
-        }
-    ]
+    raw_response = client.invoke_agent(
+        prompt, 
+        operation="fabric_estimation", 
+        user_id=user_id, 
+        business_id=business_id, 
+        order_id=order_id
+    )
+    
+    data = extract_json_from_response(raw_response)
+    return FabricEstimateOut(**data)

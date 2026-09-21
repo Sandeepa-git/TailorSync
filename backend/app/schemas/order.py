@@ -5,6 +5,7 @@ from datetime import datetime
 class DynamicMeasurementInput(BaseModel):
     field_id: int
     value: float
+    is_ai_generated: Optional[bool] = False
 
 class OrderCreate(BaseModel):
     customer_id: int
@@ -16,6 +17,8 @@ class OrderCreate(BaseModel):
     customer_instructions: Optional[str] = None
     measurements: Optional[List[DynamicMeasurementInput]] = None
     staff_id: Optional[int] = None
+    selected_fabric: Optional[str] = None
+    fabric_estimation: Optional[dict] = None
 
 class OrderRead(BaseModel):
     id: int

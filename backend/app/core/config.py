@@ -9,6 +9,11 @@ class Settings(BaseSettings):
     REFRESH_TOKEN_EXPIRE_DAYS: int = 365
     ALLOWED_HOSTS: Union[List[str], str] = ["*"]
 
+    # Azure Foundry settings
+    AZURE_FOUNDRY_ENDPOINT: str = ""
+    AZURE_FOUNDRY_API_KEY: str = ""
+    AZURE_FOUNDRY_AGENT_NAME: str = "tailorsync-agent"
+
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"
