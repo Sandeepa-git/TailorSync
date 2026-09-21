@@ -17,9 +17,11 @@ def predict(payload: MeasurementPredictIn, current_user: User = Depends(get_curr
             payload, current_user.user_id, current_user.business_id
         )
     except Exception as e:
+        import traceback
+        traceback.print_exc()
         raise HTTPException(
             status_code=503,
-            detail="AI prediction is temporarily unavailable. You can enter the measurements manually."
+            detail=f"AI prediction is temporarily unavailable. Error: {str(e)}"
         )
 
 @router.post("/recommend-fabric", response_model=FabricRecommendOut)
