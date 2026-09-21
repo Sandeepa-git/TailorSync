@@ -72,7 +72,7 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
           _user = userResp.data;
           _allOrders = ordersResp.data;
 
-          if (_user?['role'] == 'staff') {
+          if (_user?['role'] == 'staff' || _user?['role'] == 'STAFF') {
             _tasks = _allOrders.where((o) => o['staff_id'] == _user?['id']).toList();
           } else {
             _tasks = _allOrders.where((o) => o['status'] != 'Delivered').toList();
@@ -222,32 +222,6 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
           ),
         ),
         centerTitle: true,
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16),
-            child: Container(
-              padding: const EdgeInsets.all(2),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: const LinearGradient(
-                  colors: [AppTheme.primary, AppTheme.secondary],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-              ),
-              child: CircleAvatar(
-                radius: 15,
-                backgroundColor: AppTheme.surface,
-                child: Text(
-                  _user?['full_name'] != null && _user!['full_name'].isNotEmpty 
-                    ? _user!['full_name'][0].toUpperCase() 
-                    : 'M',
-                  style: GoogleFonts.inter(color: AppTheme.primary, fontWeight: FontWeight.bold, fontSize: 13),
-                ),
-              ),
-            ),
-          ),
-        ],
       ),
       body: RefreshIndicator(
         onRefresh: _loadData,

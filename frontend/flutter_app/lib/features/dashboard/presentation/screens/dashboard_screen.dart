@@ -309,7 +309,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                     iconBgColor: const Color(0xFFFFF3E0),
                     onTap: () => context.go('/tasks'),
                   ),
-                  if (_user?['role'] != 'staff')
+                  if (_user?['role'] != 'staff' && _user?['role'] != 'STAFF')
                     _ShortcutCard(
                       icon: Icons.bar_chart_rounded,
                       title: 'Reports',

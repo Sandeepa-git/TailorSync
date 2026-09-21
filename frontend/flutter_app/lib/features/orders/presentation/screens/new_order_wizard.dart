@@ -36,7 +36,7 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> {
         setState(() {
           _user = userResp.data;
           _staffList = staffResp.data;
-          if (_user?['role'] == 'staff') {
+          if (_user?['role'] == 'staff' || _user?['role'] == 'STAFF') {
             _selectedStaffId = _user?['id'];
           } else if (_staffList.isNotEmpty) {
             _selectedStaffId = _staffList.first['id'];
@@ -975,7 +975,7 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (_user?['role'] != 'staff') ...[
+        if (_user?['role'] != 'staff' && _user?['role'] != 'STAFF') ...[
           Text('Assign Staff', style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.bold, color: const Color(0xFF1A237E))),
           const SizedBox(height: 4),
           Text('Select a staff member to lead the production of this garment.', style: GoogleFonts.inter(fontSize: 12, color: const Color(0xFF5C6BC0))),

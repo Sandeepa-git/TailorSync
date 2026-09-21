@@ -107,7 +107,18 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
         try {
           final response = await api.verifyToken();
           if (response.statusCode == 200 && response.data?['valid'] == true) {
-            destination = '/home';
+            // Fetch user info to determine role and initial route
+            try {
+              final userResp = await api.getMe();
+              final role = userResp.data?['role'];
+              if (role == 'staff' || role == 'STAFF') {
+                destination = '/tasks';
+              } else {
+                destination = '/home';
+              }
+            } catch (_) {
+              destination = '/home';
+            }
           }
         } on DioException catch (e) {
           debugPrint('Token verification error: $e');

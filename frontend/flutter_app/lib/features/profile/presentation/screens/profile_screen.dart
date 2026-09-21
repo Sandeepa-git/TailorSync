@@ -468,7 +468,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 ),
             const SizedBox(height: 24),
 
-            if (_user?['role'] != 'staff') ...[
+            if (_user?['role'] != 'staff' && _user?['role'] != 'STAFF') ...[
               // Business Settings Section
               Text('Business Settings', style: GoogleFonts.outfit(fontSize: 15, fontWeight: FontWeight.bold, color: AppTheme.primary, letterSpacing: -0.3)),
               const SizedBox(height: 12),

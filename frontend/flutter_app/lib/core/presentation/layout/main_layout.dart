@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../theme/app_theme.dart';
+import '../../network/providers/user_provider.dart';
 
 class MainLayout extends ConsumerWidget {
   final Widget child;
@@ -16,34 +17,53 @@ class MainLayout extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final String location = GoRouterState.of(context).location;
 
+    final userAsync = ref.watch(userProvider);
+    final isStaff = userAsync.valueOrNull?['role'] == 'staff' || userAsync.valueOrNull?['role'] == 'STAFF';
+
     int currentIndex = 0;
-    if (location.startsWith('/orders')) {
-      currentIndex = 1;
-    } else if (location.startsWith('/customers')) {
-      currentIndex = 2;
-    } else if (location.startsWith('/tasks')) {
-      currentIndex = 3;
-    } else if (location.startsWith('/reports')) {
-      currentIndex = 4;
+    if (isStaff) {
+      if (location.startsWith('/tasks')) {
+        currentIndex = 0;
+      } else if (location.startsWith('/profile')) {
+        currentIndex = 1;
+      }
+    } else {
+      if (location.startsWith('/orders')) {
+        currentIndex = 1;
+      } else if (location.startsWith('/customers')) {
+        currentIndex = 2;
+      } else if (location.startsWith('/tasks')) {
+        currentIndex = 3;
+      } else if (location.startsWith('/reports')) {
+        currentIndex = 4;
+      }
     }
 
     void onSelectDestination(int index) {
-      switch (index) {
-        case 0:
-          context.go('/home');
-          break;
-        case 1:
-          context.go('/orders');
-          break;
-        case 2:
-          context.go('/customers');
-          break;
-        case 3:
+      if (isStaff) {
+        if (index == 0) {
           context.go('/tasks');
-          break;
-        case 4:
-          context.go('/reports');
-          break;
+        } else if (index == 1) {
+          context.go('/profile');
+        }
+      } else {
+        switch (index) {
+          case 0:
+            context.go('/home');
+            break;
+          case 1:
+            context.go('/orders');
+            break;
+          case 2:
+            context.go('/customers');
+            break;
+          case 3:
+            context.go('/tasks');
+            break;
+          case 4:
+            context.go('/reports');
+            break;
+        }
       }
     }
 
@@ -102,33 +122,46 @@ class MainLayout extends ConsumerWidget {
                     HapticFeedback.selectionClick();
                     onSelectDestination(index);
                   },
-                  destinations: const [
-                    NavigationDestination(
-                      icon: Icon(Icons.grid_view_outlined),
-                      selectedIcon: Icon(Icons.grid_view_rounded),
-                      label: 'Home',
-                    ),
-                    NavigationDestination(
-                      icon: Icon(Icons.shopping_bag_outlined),
-                      selectedIcon: Icon(Icons.shopping_bag),
-                      label: 'Orders',
-                    ),
-                    NavigationDestination(
-                      icon: Icon(Icons.people_outline),
-                      selectedIcon: Icon(Icons.people),
-                      label: 'Customers',
-                    ),
-                    NavigationDestination(
-                      icon: Icon(Icons.assignment_outlined),
-                      selectedIcon: Icon(Icons.assignment),
-                      label: 'Tasks',
-                    ),
-                    NavigationDestination(
-                      icon: Icon(Icons.bar_chart_outlined),
-                      selectedIcon: Icon(Icons.bar_chart_rounded),
-                      label: 'Reports',
-                    ),
-                  ],
+                  destinations: isStaff 
+                    ? const [
+                        NavigationDestination(
+                          icon: Icon(Icons.assignment_outlined),
+                          selectedIcon: Icon(Icons.assignment),
+                          label: 'Tasks',
+                        ),
+                        NavigationDestination(
+                          icon: Icon(Icons.person_outline),
+                          selectedIcon: Icon(Icons.person),
+                          label: 'Profile',
+                        ),
+                      ]
+                    : const [
+                        NavigationDestination(
+                          icon: Icon(Icons.grid_view_outlined),
+                          selectedIcon: Icon(Icons.grid_view_rounded),
+                          label: 'Home',
+                        ),
+                        NavigationDestination(
+                          icon: Icon(Icons.shopping_bag_outlined),
+                          selectedIcon: Icon(Icons.shopping_bag),
+                          label: 'Orders',
+                        ),
+                        NavigationDestination(
+                          icon: Icon(Icons.people_outline),
+                          selectedIcon: Icon(Icons.people),
+                          label: 'Customers',
+                        ),
+                        NavigationDestination(
+                          icon: Icon(Icons.assignment_outlined),
+                          selectedIcon: Icon(Icons.assignment),
+                          label: 'Tasks',
+                        ),
+                        NavigationDestination(
+                          icon: Icon(Icons.bar_chart_outlined),
+                          selectedIcon: Icon(Icons.bar_chart_rounded),
+                          label: 'Reports',
+                        ),
+                      ],
                 ),
               ),
             ),

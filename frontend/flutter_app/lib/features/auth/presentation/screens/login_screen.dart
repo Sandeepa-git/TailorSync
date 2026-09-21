@@ -192,8 +192,19 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       api.setToken(token);
       await ref.read(secureStorageProvider).write(key: 'auth_token', value: token);
 
-      if (!mounted) return;
-      context.go('/home');
+      try {
+        final userResp = await api.getMe();
+        final role = userResp.data?['role'];
+        if (!mounted) return;
+        if (role == 'staff' || role == 'STAFF') {
+          context.go('/tasks');
+        } else {
+          context.go('/home');
+        }
+      } catch (_) {
+        if (!mounted) return;
+        context.go('/home');
+      }
     } on DioException catch (e) {
       if (!mounted) return;
       String error = _isSignUp ? 'Sign up failed' : 'Login failed';
