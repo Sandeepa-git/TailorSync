@@ -210,20 +210,13 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                               ),
                               child: Container(
                                 decoration: BoxDecoration(
-                                  gradient: const LinearGradient(
-                                    colors: [
-                                      Color(0xFF283593),
-                                      Color(0xFF1A237E),
-                                      Color(0xFF0D1042),
-                                    ],
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                  ),
                                   borderRadius: BorderRadius.circular(34),
+                                  color: Colors.white,
                                 ),
-                                child: const Center(
-                                  child:
-                                      Icon(Icons.content_cut, size: 52, color: Colors.white),
+                                clipBehavior: Clip.antiAlias,
+                                child: Image.asset(
+                                  'assets/icon.png',
+                                  fit: BoxFit.cover,
                                 ),
                               ),
                             );
