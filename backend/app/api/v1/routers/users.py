@@ -3,10 +3,12 @@ from sqlalchemy.orm import Session
 from app.database.session import get_db
 from app.models.user import User
 from app.schemas.user import UserRead, UserUpdate
-from app.core.security import get_password_hash
+from app.core.security import get_password_hash, verify_password
 from jose import jwt
 from app.core.config import settings
 from app.api.deps import get_current_user
+from app.models.business import Business
+from app.models.user import RoleEnum
 
 router = APIRouter()
 
@@ -94,3 +96,31 @@ def list_users(db: Session = Depends(get_db), current_user: User = Depends(get_c
         }
         for u in users
     ]
+
+class DeleteAccountIn(BaseModel):
+    password: str
+
+@router.post("/me/delete")
+def delete_my_account(payload: DeleteAccountIn, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    """Delete current user account (and business if owner), verifying with password."""
+    user = current_user
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+        
+    if user.hashed_password == "firebase_managed":
+        raise HTTPException(status_code=400, detail="Google managed accounts cannot be deleted this way yet.")
+        
+    if not verify_password(payload.password, user.hashed_password):
+        raise HTTPException(status_code=400, detail="Incorrect password.")
+        
+    if user.role == RoleEnum.OWNER and user.business_id:
+        business = db.query(Business).filter(Business.id == user.business_id).first()
+        if business:
+            db.delete(business)
+        else:
+            db.delete(user)
+    else:
+        db.delete(user)
+        
+    db.commit()
+    return {"status": "success", "message": "Account deleted successfully"}

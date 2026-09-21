@@ -92,6 +92,10 @@ def email_signup(db: Session, email: str, password: str, full_name: str = "", ph
     existing = db.query(User).filter(func.lower(User.email) == normalized_email).first()
     if existing:
         raise HTTPException(status_code=400, detail="Email already registered")
+        
+    existing_admin = db.query(User).filter(User.role == RoleEnum.OWNER).first()
+    if existing_admin:
+        raise HTTPException(status_code=400, detail="An admin account already exists. Only one admin is allowed.")
     
     try:
         user = User(

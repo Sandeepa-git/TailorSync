@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/network/providers/api_provider.dart';
 import '../../../../core/widgets/skeleton_loading.dart';
+import 'package:go_router/go_router.dart';
+import 'package:dio/dio.dart';
 
 class BusinessProfileScreen extends ConsumerStatefulWidget {
   const BusinessProfileScreen({super.key});
@@ -48,22 +50,75 @@ class _BusinessProfileScreenState extends ConsumerState<BusinessProfileScreen> {
     setState(() => _saving = true);
     try {
       final api = ref.read(apiClientProvider);
-      final payload = {
-        'name': _nameCtrl.text.trim(),
-        'phone': _contactCtrl.text.trim(),
+      await api.updateBusiness({
+        'business_name': _nameCtrl.text.trim(),
+        'contact_number': _contactCtrl.text.trim(),
         'address': _addressCtrl.text.trim(),
-      };
-      await api.updateBusiness(payload);
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Business profile updated successfully!')));
-        Navigator.pop(context, true);
-      }
+      });
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Business Profile updated')));
     } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to update: $e')));
-      }
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
     } finally {
       if (mounted) setState(() => _saving = false);
+    }
+  }
+
+  Future<void> _deleteAccount() async {
+    final passwordCtrl = TextEditingController();
+    bool obscurePassword = true;
+
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          title: Text('Delete Account', style: GoogleFonts.outfit(fontWeight: FontWeight.bold, color: Colors.red)),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text('This will permanently delete your admin account, your business, and ALL associated data (staff, customers, orders). This action CANNOT be undone.'),
+              const SizedBox(height: 16),
+              const Text('Please enter your password to confirm:'),
+              const SizedBox(height: 8),
+              TextField(
+                controller: passwordCtrl,
+                obscureText: obscurePassword,
+                decoration: InputDecoration(
+                  labelText: 'Current Password',
+                  suffixIcon: IconButton(
+                    icon: Icon(obscurePassword ? Icons.visibility_off : Icons.visibility),
+                    onPressed: () => setDialogState(() => obscurePassword = !obscurePassword),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancel')),
+            ElevatedButton(
+              onPressed: () => Navigator.pop(context, true),
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
+              child: const Text('Delete Permanently'),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    if (confirm != true || passwordCtrl.text.isEmpty) return;
+
+    try {
+      final api = ref.read(apiClientProvider);
+      await api.deleteMyAccount(passwordCtrl.text);
+      if (mounted) {
+        // Log out immediately
+        api.clearToken();
+        ref.read(secureStorageProvider).delete(key: 'auth_token');
+        context.go('/login');
+      }
+    } on DioException catch (e) {
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: ${e.response?.data['detail'] ?? 'Failed to delete account'}'), backgroundColor: Colors.red));
+    } catch (e) {
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red));
     }
   }
 
@@ -143,6 +198,20 @@ class _BusinessProfileScreenState extends ConsumerState<BusinessProfileScreen> {
                   child: _saving
                       ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
                       : Text('Save Changes', style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold)),
+                ),
+              ),
+              const SizedBox(height: 40),
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  onPressed: _deleteAccount,
+                  icon: const Icon(Icons.delete_forever, color: Colors.red),
+                  label: Text('Delete Admin Account', style: GoogleFonts.inter(color: Colors.red, fontWeight: FontWeight.bold)),
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    side: const BorderSide(color: Colors.red),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
                 ),
               ),
             ],

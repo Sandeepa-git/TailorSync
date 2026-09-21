@@ -78,6 +78,12 @@ class ApiClient {
     });
   }
 
+  Future<Response> deleteMyAccount(String password) async {
+    return dio.post('/users/me/delete', data: {
+      'password': password
+    });
+  }
+
   // Business Profile
   Future<Response> getBusiness() async {
     return dio.get('/business/me');
