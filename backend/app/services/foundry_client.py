@@ -43,7 +43,7 @@ class FoundryClient:
                 thread_id=thread.id, role="user", content=prompt
             )
             run = self._client.agents.runs.create_and_process(
-                thread_id=thread.id, agent_id=self._agent_id
+                thread_id=thread.id, assistant_id=self._agent_id
             )
             if run.status != "completed":
                 raise FoundryUnavailableError(f"Run status: {run.status}")
