@@ -294,8 +294,15 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> {
           _aiPredictionLoading = false;
         });
       } catch (e) {
+        String errorMsg = "AI prediction unavailable. You can proceed and enter measurements manually.";
+        if (e is DioException && e.response?.data != null) {
+          final data = e.response!.data;
+          if (data is Map && data.containsKey('detail')) {
+            errorMsg = data['detail'].toString();
+          }
+        }
         setState(() {
-          _aiPredictionError = "AI prediction unavailable. You can proceed and enter measurements manually.";
+          _aiPredictionError = errorMsg;
           _aiPredictionLoading = false;
         });
       }
