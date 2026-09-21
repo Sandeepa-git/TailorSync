@@ -381,7 +381,7 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> {
         backgroundColor: const Color(0xFFF8F9FA),
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Color(0xFF1A237E)),
+          icon: const Icon(Icons.home, color: Color(0xFF1A237E)),
           onPressed: () => context.go('/home'),
         ),
         title: Text(
@@ -389,12 +389,6 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> {
           style: GoogleFonts.inter(fontWeight: FontWeight.bold, fontSize: 18, color: const Color(0xFF1A237E)),
         ),
         centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.settings_outlined, color: Color(0xFF1A237E)),
-            onPressed: () => context.go('/profile'),
-          ),
-        ],
       ),
       body: SafeArea(
         child: Column(

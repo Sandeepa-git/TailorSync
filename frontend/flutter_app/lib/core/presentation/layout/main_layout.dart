@@ -137,8 +137,8 @@ class MainLayout extends ConsumerWidget {
                       ]
                     : const [
                         NavigationDestination(
-                          icon: Icon(Icons.grid_view_outlined),
-                          selectedIcon: Icon(Icons.grid_view_rounded),
+                          icon: Icon(Icons.home_outlined),
+                          selectedIcon: Icon(Icons.home),
                           label: 'Home',
                         ),
                         NavigationDestination(
