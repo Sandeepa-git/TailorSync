@@ -27,9 +27,10 @@ class FoundryClient:
             endpoint=settings.AZURE_FOUNDRY_ENDPOINT,
             credential=credential
         )
-        agent = self._client.agents.get(
-            agent_name=settings.AZURE_FOUNDRY_AGENT_NAME
-        )
+        agents = self._client.agents.list()
+        agent = next((a for a in agents if a.name == settings.AZURE_FOUNDRY_AGENT_NAME), None)
+        if not agent:
+            raise FoundryUnavailableError(f"Agent '{settings.AZURE_FOUNDRY_AGENT_NAME}' not found.")
         self._agent_id = agent.id
 
     def invoke_agent(self, prompt: str, operation: str = "",
