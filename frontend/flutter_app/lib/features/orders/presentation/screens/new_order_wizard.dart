@@ -98,12 +98,12 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
       return {
         'category_name': cat,
         'fields': [
-          {'id': 1, 'field_name': 'Shoulder Length', 'unit': 'cm', 'is_required': true, 'placeholder': 'e.g. 18'},
-          {'id': 2, 'field_name': 'Height', 'unit': 'cm', 'is_required': true, 'placeholder': 'e.g. 175'},
-          {'id': 3, 'field_name': 'Height Till Knee', 'unit': 'cm', 'is_required': true, 'placeholder': 'e.g. 55'},
-          {'id': 4, 'field_name': 'Waist', 'unit': 'cm', 'is_required': true, 'placeholder': 'e.g. 32'},
-          {'id': 5, 'field_name': 'Round Knee', 'unit': 'cm', 'is_required': false, 'placeholder': 'e.g. 20'},
-          {'id': 6, 'field_name': 'Seat', 'unit': 'cm', 'is_required': false, 'placeholder': 'e.g. 38'},
+          {'id': 1, 'field_name': 'Shoulder Length', 'unit': 'cm', 'is_required': true, 'placeholder': 'e.g.'},
+          {'id': 2, 'field_name': 'Height', 'unit': 'cm', 'is_required': true, 'placeholder': 'e.g.'},
+          {'id': 3, 'field_name': 'Height Till Knee', 'unit': 'cm', 'is_required': true, 'placeholder': 'e.g.'},
+          {'id': 4, 'field_name': 'Waist', 'unit': 'cm', 'is_required': true, 'placeholder': 'e.g.'},
+          {'id': 5, 'field_name': 'Round Knee', 'unit': 'cm', 'is_required': false, 'placeholder': 'e.g.'},
+          {'id': 6, 'field_name': 'Seat', 'unit': 'cm', 'is_required': false, 'placeholder': 'e.g.'},
         ]
       };
   }
@@ -313,7 +313,7 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topLeft, end: Alignment.bottomRight,
-                  colors: [Colors.black87, Color(0xFFF8FAFC)],
+                  colors: [Colors.white, Color(0xFFF8FAFC)],
                 ),
               ),
             ),
@@ -699,7 +699,7 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(color: isSel ? const Color(0xFF6366F1) : Colors.black12),
                 ),
-                child: Text(opt, style: TextStyle(color: isSel ? Colors.black87 : Colors.black87, fontWeight: isSel ? FontWeight.bold : FontWeight.normal)),
+                child: Text(opt, style: TextStyle(color: isSel ? Colors.white : Colors.black87, fontWeight: isSel ? FontWeight.bold : FontWeight.normal)),
               ),
             );
           }).toList(),
