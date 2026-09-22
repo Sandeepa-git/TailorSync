@@ -98,12 +98,12 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
       return {
         'category_name': cat,
         'fields': [
-          {'id': 1, 'field_name': 'Shoulder Length', 'unit': 'cm', 'is_required': true},
-          {'id': 2, 'field_name': 'Height', 'unit': 'cm', 'is_required': true},
-          {'id': 3, 'field_name': 'Height Till Knee', 'unit': 'cm', 'is_required': true},
-          {'id': 4, 'field_name': 'Waist', 'unit': 'cm', 'is_required': true},
-          {'id': 5, 'field_name': 'Round Knee', 'unit': 'cm', 'is_required': false},
-          {'id': 6, 'field_name': 'Seat', 'unit': 'cm', 'is_required': false},
+          {'id': 1, 'field_name': 'Shoulder Length', 'unit': 'cm', 'is_required': true, 'placeholder': 'e.g. 18'},
+          {'id': 2, 'field_name': 'Height', 'unit': 'cm', 'is_required': true, 'placeholder': 'e.g. 175'},
+          {'id': 3, 'field_name': 'Height Till Knee', 'unit': 'cm', 'is_required': true, 'placeholder': 'e.g. 55'},
+          {'id': 4, 'field_name': 'Waist', 'unit': 'cm', 'is_required': true, 'placeholder': 'e.g. 32'},
+          {'id': 5, 'field_name': 'Round Knee', 'unit': 'cm', 'is_required': false, 'placeholder': 'e.g. 20'},
+          {'id': 6, 'field_name': 'Seat', 'unit': 'cm', 'is_required': false, 'placeholder': 'e.g. 38'},
         ]
       };
   }
@@ -297,12 +297,12 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0F172A), // Premium Dark Mode Base
+      backgroundColor: Colors.white, // Premium Dark Mode Base
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: IconButton(icon: const Icon(Icons.close, color: Colors.white), onPressed: () => context.pop()),
-        title: Text('TailorSync AI Wizard', style: GoogleFonts.outfit(fontWeight: FontWeight.bold, color: Colors.white)),
+        leading: IconButton(icon: const Icon(Icons.close, color: Colors.black87), onPressed: () { if (context.canPop()) context.pop(); else context.go('/orders'); }),
+        title: Text('TailorSync AI Wizard', style: GoogleFonts.outfit(fontWeight: FontWeight.bold, color: Colors.black87)),
         centerTitle: true,
       ),
       body: Stack(
@@ -313,7 +313,7 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topLeft, end: Alignment.bottomRight,
-                  colors: [Color(0xFF0F172A), Color(0xFF1E1B4B)],
+                  colors: [Colors.black87, Color(0xFFF8FAFC)],
                 ),
               ),
             ),
@@ -351,8 +351,8 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Step ${_currentStep + 1} of ${_stepTitles.length}', style: GoogleFonts.inter(color: Colors.white54, fontSize: 12, fontWeight: FontWeight.bold)),
-              Text(_stepTitles[_currentStep], style: GoogleFonts.outfit(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600)),
+              Text('Step ${_currentStep + 1} of ${_stepTitles.length}', style: GoogleFonts.inter(color: Colors.black54, fontSize: 12, fontWeight: FontWeight.bold)),
+              Text(_stepTitles[_currentStep], style: GoogleFonts.outfit(color: Colors.black87, fontSize: 16, fontWeight: FontWeight.w600)),
             ],
           ),
           const SizedBox(height: 12),
@@ -364,7 +364,7 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
                   margin: const EdgeInsets.symmetric(horizontal: 2),
                   height: 4,
                   decoration: BoxDecoration(
-                    color: isActive ? const Color(0xFF6366F1) : Colors.white.withOpacity(0.1),
+                    color: isActive ? const Color(0xFF6366F1) : Colors.black.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(2),
                     boxShadow: isActive ? [BoxShadow(color: const Color(0xFF6366F1).withOpacity(0.5), blurRadius: 4)] : null,
                   ),
@@ -396,20 +396,20 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Who is this order for?', style: GoogleFonts.outfit(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white)),
+        Text('Who is this order for?', style: GoogleFonts.outfit(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black87)),
         const SizedBox(height: 8),
-        Text('Select an existing client or create a new profile.', style: GoogleFonts.inter(color: Colors.white70)),
+        Text('Select an existing client or create a new profile.', style: GoogleFonts.inter(color: Colors.black87)),
         const SizedBox(height: 24),
         TextField(
           onChanged: (v) => setState(() => _customerSearch = v),
-          style: const TextStyle(color: Colors.white),
+          style: const TextStyle(color: Colors.black87),
           decoration: InputDecoration(
             hintText: 'Search by name or phone...',
-            hintStyle: const TextStyle(color: Colors.white54),
-            prefixIcon: const Icon(Icons.search, color: Colors.white54),
+            hintStyle: const TextStyle(color: Colors.black54),
+            prefixIcon: const Icon(Icons.search, color: Colors.black54),
             filled: true,
-            fillColor: Colors.white.withOpacity(0.05),
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide.none),
+            fillColor: Colors.black.withOpacity(0.05),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide(color: Colors.black12)),
           ),
         ),
         const SizedBox(height: 24),
@@ -430,17 +430,17 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
                         margin: const EdgeInsets.only(bottom: 12),
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: isSelected ? const Color(0xFF6366F1).withOpacity(0.2) : Colors.white.withOpacity(0.05),
+                          color: isSelected ? const Color(0xFF6366F1).withOpacity(0.2) : Colors.black.withOpacity(0.05),
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(color: isSelected ? const Color(0xFF6366F1) : Colors.transparent),
                         ),
                         child: Row(
                           children: [
-                            CircleAvatar(backgroundColor: isSelected ? const Color(0xFF6366F1) : Colors.white10, child: Text(c.name[0].toUpperCase(), style: const TextStyle(color: Colors.white))),
+                            CircleAvatar(backgroundColor: isSelected ? const Color(0xFF6366F1) : Colors.black12, child: Text(c.name[0].toUpperCase(), style: const TextStyle(color: Colors.black87))),
                             const SizedBox(width: 16),
                             Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                              Text(c.name, style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: Colors.white)),
-                              Text(c.phone ?? 'No phone', style: GoogleFonts.inter(color: Colors.white54, fontSize: 12)),
+                              Text(c.name, style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: Colors.black87)),
+                              Text(c.phone ?? 'No phone', style: GoogleFonts.inter(color: Colors.black54, fontSize: 12)),
                             ])),
                             if (isSelected) const Icon(Icons.check_circle, color: Color(0xFF6366F1)),
                           ],
@@ -451,7 +451,7 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
                 );
               },
               loading: () => const Center(child: CircularProgressIndicator(color: Color(0xFF6366F1))),
-              error: (e, _) => const Text('Error loading customers', style: TextStyle(color: Colors.white)),
+              error: (e, _) => const Text('Error loading customers', style: TextStyle(color: Colors.black87)),
             );
           }),
         ),
@@ -464,9 +464,9 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('What are we making?', style: GoogleFonts.outfit(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white)),
+        Text('What are we making?', style: GoogleFonts.outfit(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black87)),
         const SizedBox(height: 8),
-        Text('Our AI will tailor the measurement flow based on this choice.', style: GoogleFonts.inter(color: Colors.white70)),
+        Text('Our AI will tailor the measurement flow based on this choice.', style: GoogleFonts.inter(color: Colors.black87)),
         const SizedBox(height: 24),
         Expanded(
           child: GridView.builder(
@@ -479,7 +479,7 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
                 onTap: () => setState(() => _selectedGarment = g['name']),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: isSelected ? g['color'].withOpacity(0.2) : Colors.white.withOpacity(0.05),
+                    color: isSelected ? g['color'].withOpacity(0.2) : Colors.black.withOpacity(0.05),
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(color: isSelected ? g['color'] : Colors.transparent, width: 2),
                     boxShadow: isSelected ? [BoxShadow(color: g['color'].withOpacity(0.3), blurRadius: 12)] : null,
@@ -487,9 +487,9 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(g['icon'], size: 40, color: isSelected ? g['color'] : Colors.white54),
+                      Icon(g['icon'], size: 40, color: isSelected ? g['color'] : Colors.black54),
                       const SizedBox(height: 12),
-                      Text(g['name'], textAlign: TextAlign.center, style: GoogleFonts.inter(color: Colors.white, fontWeight: isSelected ? FontWeight.bold : FontWeight.normal)),
+                      Text(g['name'], textAlign: TextAlign.center, style: GoogleFonts.inter(color: Colors.black87, fontWeight: isSelected ? FontWeight.bold : FontWeight.normal)),
                     ],
                   ),
                 ),
@@ -515,11 +515,11 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
           children: [
             const Icon(Icons.auto_awesome, color: Color(0xFF6366F1)),
             const SizedBox(width: 12),
-            Text('Smart Input', style: GoogleFonts.outfit(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white)),
+            Text('Smart Input', style: GoogleFonts.outfit(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black87)),
           ],
         ),
         const SizedBox(height: 8),
-        Text('Provide just the essential measurements. TailorSync AI will predict the rest using our advanced global dataset.', style: GoogleFonts.inter(color: Colors.white70)),
+        Text('Provide just the essential measurements. TailorSync AI will predict the rest using our advanced global dataset.', style: GoogleFonts.inter(color: Colors.black87)),
         const SizedBox(height: 24),
         Expanded(
           child: ListView.builder(
@@ -530,9 +530,9 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
                 margin: const EdgeInsets.only(bottom: 16),
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.05),
+                  color: Colors.black.withOpacity(0.05),
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: Colors.white10),
+                  border: Border.all(color: Colors.black12),
                 ),
                 child: Row(
                   children: [
@@ -540,7 +540,7 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(f['field_name'], style: GoogleFonts.inter(fontWeight: FontWeight.w600, color: Colors.white)),
+                          Text(f['field_name'], style: GoogleFonts.inter(fontWeight: FontWeight.w600, color: Colors.black87)),
                           if (f['is_required'] == true) Text('Required for AI accuracy', style: GoogleFonts.inter(fontSize: 11, color: const Color(0xFF6366F1))),
                         ],
                       ),
@@ -550,13 +550,13 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
                       child: TextField(
                         controller: _measurementControllers[f['id']],
                         keyboardType: TextInputType.number,
-                        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                        style: const TextStyle(color: Colors.black87, fontWeight: FontWeight.bold),
                         textAlign: TextAlign.center,
                         decoration: InputDecoration(
-                          hintText: '0.0', hintStyle: const TextStyle(color: Colors.white30),
-                          suffixText: f['unit'], suffixStyle: const TextStyle(color: Colors.white54),
-                          filled: true, fillColor: Colors.black26,
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
+                          hintText: f['placeholder'] ?? '0.0', hintStyle: const TextStyle(color: Colors.black38),
+                          suffixText: f['unit'], suffixStyle: const TextStyle(color: Colors.black54),
+                          filled: true, fillColor: Colors.grey.shade100,
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: Colors.black12)),
                         ),
                       ),
                     ),
@@ -586,9 +586,9 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
               ),
             ),
             const SizedBox(height: 32),
-            Text('Synthesizing Dataset...', style: GoogleFonts.outfit(fontSize: 20, color: Colors.white)),
+            Text('Synthesizing Dataset...', style: GoogleFonts.outfit(fontSize: 20, color: Colors.black87)),
             const SizedBox(height: 8),
-            Text('Matching your inputs against standard global patterns.', style: GoogleFonts.inter(color: Colors.white70)),
+            Text('Matching your inputs against standard global patterns.', style: GoogleFonts.inter(color: Colors.black87)),
           ],
         ),
       );
@@ -601,9 +601,9 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('AI Predictions Review', style: GoogleFonts.outfit(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white)),
+        Text('AI Predictions Review', style: GoogleFonts.outfit(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black87)),
         const SizedBox(height: 8),
-        Text("You are in control. Adjust any predicted value if it doesn't look right.", style: GoogleFonts.inter(color: Colors.white70)),
+        Text("You are in control. Adjust any predicted value if it doesn't look right.", style: GoogleFonts.inter(color: Colors.black87)),
         const SizedBox(height: 24),
         Expanded(
           child: ListView.builder(
@@ -615,7 +615,7 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
                 margin: const EdgeInsets.only(bottom: 16),
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(colors: [const Color(0xFF6366F1).withOpacity(0.1), Colors.white.withOpacity(0.02)]),
+                  gradient: LinearGradient(colors: [const Color(0xFF6366F1).withOpacity(0.1), Colors.black.withOpacity(0.02)]),
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(color: const Color(0xFF6366F1).withOpacity(0.3)),
                 ),
@@ -625,7 +625,7 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(mName, style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 16)),
+                        Text(mName, style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: Colors.black87, fontSize: 16)),
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                           decoration: BoxDecoration(color: const Color(0xFF6366F1), borderRadius: BorderRadius.circular(20)),
@@ -634,19 +634,19 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
                       ],
                     ),
                     const SizedBox(height: 8),
-                    Text(p['reason'] ?? 'AI predicted standard value.', style: GoogleFonts.inter(color: Colors.white54, fontSize: 12)),
+                    Text(p['reason'] ?? 'AI predicted standard value.', style: GoogleFonts.inter(color: Colors.black54, fontSize: 12)),
                     const SizedBox(height: 12),
                     Row(
                       children: [
-                        Text('Alternatives: ', style: GoogleFonts.inter(color: Colors.white70, fontSize: 12)),
+                        Text('Alternatives: ', style: GoogleFonts.inter(color: Colors.black87, fontSize: 12)),
                         ...(p['alternatives'] as List? ?? []).map((alt) => Padding(
                           padding: const EdgeInsets.only(right: 8),
                           child: GestureDetector(
                             onTap: () => setState(() => _confirmedMeasurements[mName] = alt.toString()),
                             child: Container(
                               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                              decoration: BoxDecoration(color: Colors.white10, borderRadius: BorderRadius.circular(8)),
-                              child: Text(alt.toString(), style: const TextStyle(color: Colors.white)),
+                              decoration: BoxDecoration(color: Colors.black12, borderRadius: BorderRadius.circular(8)),
+                              child: Text(alt.toString(), style: const TextStyle(color: Colors.black87)),
                             ),
                           ),
                         )),
@@ -668,7 +668,7 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Style & Fit', style: GoogleFonts.outfit(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white)),
+          Text('Style & Fit', style: GoogleFonts.outfit(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black87)),
           const SizedBox(height: 24),
           _buildChipSelector('Occasion', ['Everyday / Casual', 'Office / Work', 'Wedding', 'Party'], _occasion, (v) => setState(()=> _occasion = v)),
           const SizedBox(height: 24),
@@ -684,7 +684,7 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title, style: GoogleFonts.inter(fontWeight: FontWeight.w600, color: Colors.white54)),
+        Text(title, style: GoogleFonts.inter(fontWeight: FontWeight.w600, color: Colors.black54)),
         const SizedBox(height: 12),
         Wrap(
           spacing: 12, runSpacing: 12,
@@ -695,11 +695,11 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                 decoration: BoxDecoration(
-                  color: isSel ? const Color(0xFF6366F1) : Colors.white.withOpacity(0.05),
+                  color: isSel ? const Color(0xFF6366F1) : Colors.black.withOpacity(0.05),
                   borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: isSel ? const Color(0xFF6366F1) : Colors.white10),
+                  border: Border.all(color: isSel ? const Color(0xFF6366F1) : Colors.black12),
                 ),
-                child: Text(opt, style: TextStyle(color: isSel ? Colors.white : Colors.white70, fontWeight: isSel ? FontWeight.bold : FontWeight.normal)),
+                child: Text(opt, style: TextStyle(color: isSel ? Colors.black87 : Colors.black87, fontWeight: isSel ? FontWeight.bold : FontWeight.normal)),
               ),
             );
           }).toList(),
@@ -716,7 +716,7 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Top Fabrics', style: GoogleFonts.outfit(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white)),
+        Text('Top Fabrics', style: GoogleFonts.outfit(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black87)),
         const SizedBox(height: 24),
         Expanded(
           child: ListView.builder(
@@ -730,9 +730,9 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
                   margin: const EdgeInsets.only(bottom: 16),
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: isSel ? const Color(0xFF6366F1).withOpacity(0.2) : Colors.white.withOpacity(0.05),
+                    color: isSel ? const Color(0xFF6366F1).withOpacity(0.2) : Colors.black.withOpacity(0.05),
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: isSel ? const Color(0xFF6366F1) : Colors.white10, width: 2),
+                    border: Border.all(color: isSel ? const Color(0xFF6366F1) : Colors.black12, width: 2),
                   ),
                   child: Row(
                     children: [
@@ -747,9 +747,9 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(rec['fabric_name'] ?? '', style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 18)),
+                            Text(rec['fabric_name'] ?? '', style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: Colors.black87, fontSize: 18)),
                             const SizedBox(height: 4),
-                            Text(rec['reason'] ?? '', style: GoogleFonts.inter(color: Colors.white70, fontSize: 12)),
+                            Text(rec['reason'] ?? '', style: GoogleFonts.inter(color: Colors.black87, fontSize: 12)),
                           ],
                         ),
                       ),
@@ -784,19 +784,19 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
             children: [
               const Icon(Icons.straighten, size: 60, color: Color(0xFF6366F1)),
               const SizedBox(height: 16),
-              Text('Fabric Required', style: GoogleFonts.outfit(color: Colors.white70, fontSize: 18)),
+              Text('Fabric Required', style: GoogleFonts.outfit(color: Colors.black87, fontSize: 18)),
               const SizedBox(height: 8),
-              Text('${_fabricEstimation?['recommended_quantity_meters'] ?? '2.0'} Meters', style: GoogleFonts.outfit(color: Colors.white, fontSize: 40, fontWeight: FontWeight.bold)),
+              Text('${_fabricEstimation?['recommended_quantity_meters'] ?? '2.0'} Meters', style: GoogleFonts.outfit(color: Colors.black87, fontSize: 40, fontWeight: FontWeight.bold)),
               if (_fabricEstimation != null && _fabricEstimation!['estimated_range'] != null)
-                Text('Range: ${_fabricEstimation!['estimated_range']['min']} - ${_fabricEstimation!['estimated_range']['max']} m', style: GoogleFonts.inter(color: Colors.white54)),
+                Text('Range: ${_fabricEstimation!['estimated_range']['min']} - ${_fabricEstimation!['estimated_range']['max']} m', style: GoogleFonts.inter(color: Colors.black54)),
               const SizedBox(height: 24),
               TextField(
                 controller: _manualQuantityCtrl,
                 keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                style: const TextStyle(color: Colors.white),
+                style: const TextStyle(color: Colors.black87),
                 decoration: InputDecoration(
-                  labelText: 'Override Quantity (m)', labelStyle: const TextStyle(color: Colors.white54),
-                  filled: true, fillColor: Colors.white.withOpacity(0.05),
+                  labelText: 'Override Quantity (m)', labelStyle: const TextStyle(color: Colors.black54),
+                  filled: true, fillColor: Colors.black.withOpacity(0.05),
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                 ),
               ),
@@ -812,15 +812,15 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Assign & Save', style: GoogleFonts.outfit(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white)),
+        Text('Assign & Save', style: GoogleFonts.outfit(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black87)),
         const SizedBox(height: 24),
         Container(
            padding: const EdgeInsets.all(16),
-           decoration: BoxDecoration(color: Colors.white.withOpacity(0.05), borderRadius: BorderRadius.circular(16)),
+           decoration: BoxDecoration(color: Colors.black.withOpacity(0.05), borderRadius: BorderRadius.circular(16)),
            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                 Text('Order Summary', style: GoogleFonts.inter(color: Colors.white54, fontWeight: FontWeight.bold)),
+                 Text('Order Summary', style: GoogleFonts.inter(color: Colors.black54, fontWeight: FontWeight.bold)),
                  const SizedBox(height: 12),
                  _summaryRow('Customer', _selectedCustomerName ?? ''),
                  _summaryRow('Garment', _selectedGarment ?? ''),
@@ -830,19 +830,19 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
            ),
         ),
         const SizedBox(height: 24),
-        Text('Assign to Staff', style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: Colors.white)),
+        Text('Assign to Staff', style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: Colors.black87)),
         const SizedBox(height: 12),
         DropdownButtonFormField<int>(
           value: _selectedStaffId,
-          dropdownColor: const Color(0xFF1E1B4B),
-          style: const TextStyle(color: Colors.white),
+          dropdownColor: const Color(0xFFF8FAFC),
+          style: const TextStyle(color: Colors.black87),
           decoration: InputDecoration(
-            filled: true, fillColor: Colors.white.withOpacity(0.05),
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+            filled: true, fillColor: Colors.black.withOpacity(0.05),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: Colors.black12)),
           ),
           items: _staffList.map((s) => DropdownMenuItem<int>(
             value: s['id'],
-            child: Text(s['name'], style: const TextStyle(color: Colors.white)),
+            child: Text(s['name'], style: const TextStyle(color: Colors.black87)),
           )).toList(),
           onChanged: (v) => setState(() => _selectedStaffId = v),
         ),
@@ -856,8 +856,8 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
           child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                  Text(k, style: GoogleFonts.inter(color: Colors.white70)),
-                  Text(v, style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold)),
+                  Text(k, style: GoogleFonts.inter(color: Colors.black87)),
+                  Text(v, style: GoogleFonts.inter(color: Colors.black87, fontWeight: FontWeight.bold)),
               ]
           )
       );
@@ -868,14 +868,14 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: const Color(0xFF0F172A),
-        border: Border(top: BorderSide(color: Colors.white.withOpacity(0.05))),
+        color: Colors.white,
+        border: Border(top: BorderSide(color: Colors.black.withOpacity(0.05))),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           if (_currentStep > 0)
-            TextButton(onPressed: _prevStep, child: Text('Back', style: GoogleFonts.inter(color: Colors.white54, fontWeight: FontWeight.bold)))
+            TextButton(onPressed: _prevStep, child: Text('Back', style: GoogleFonts.inter(color: Colors.black54, fontWeight: FontWeight.bold)))
           else const SizedBox(width: 60),
           
           ElevatedButton(
