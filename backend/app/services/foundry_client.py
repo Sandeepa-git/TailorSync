@@ -52,7 +52,7 @@ class FoundryClient:
                 ]
             )
             run = self._client.agents.create_thread_and_process_run(
-                agent_id=self._agent_id,
+                assistant_id=self._agent_id,
                 thread=thread_options
             )
 
