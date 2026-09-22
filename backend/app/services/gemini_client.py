@@ -17,8 +17,8 @@ else:
 
 class GeminiClient:
     def __init__(self):
-        # We will use gemini-3.6-flash which works with the new token
-        self._model_name = "models/gemini-3.6-flash"
+        # We will use gemini-3.8-flash which works with the new token
+        self._model_name = "models/gemini-3.8-flash"
         self._dataset_service = DatasetService()
 
     def _call_gemini(self, prompt: str, operation: str, business_id: int, user_id: int, order_id: int, system_instruction: str = None) -> str:
