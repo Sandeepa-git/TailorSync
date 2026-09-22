@@ -365,9 +365,9 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
                   margin: const EdgeInsets.symmetric(horizontal: 2),
                   height: 4,
                   decoration: BoxDecoration(
-                    color: isActive ? const Color(0xFF1565C0) : Colors.black.withOpacity(0.1),
+                    color: isActive ? const Color(0xFF6366F1) : Colors.black.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(2),
-                    boxShadow: isActive ? [BoxShadow(color: const Color(0xFF1565C0).withOpacity(0.5), blurRadius: 4)] : null,
+                    boxShadow: isActive ? [BoxShadow(color: const Color(0xFF6366F1).withOpacity(0.5), blurRadius: 4)] : null,
                   ),
                 ),
               );
@@ -431,19 +431,19 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
                         margin: const EdgeInsets.only(bottom: 12),
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: isSelected ? const Color(0xFF1565C0).withOpacity(0.2) : Colors.black.withOpacity(0.05),
+                          color: isSelected ? const Color(0xFF6366F1).withOpacity(0.2) : Colors.black.withOpacity(0.05),
                           borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: isSelected ? const Color(0xFF1565C0) : Colors.transparent),
+                          border: Border.all(color: isSelected ? const Color(0xFF6366F1) : Colors.transparent),
                         ),
                         child: Row(
                           children: [
-                            CircleAvatar(backgroundColor: isSelected ? const Color(0xFF1565C0) : Colors.black12, child: Text(c.name[0].toUpperCase(), style: const TextStyle(color: Colors.black87))),
+                            CircleAvatar(backgroundColor: isSelected ? const Color(0xFF6366F1) : Colors.black12, child: Text(c.name[0].toUpperCase(), style: const TextStyle(color: Colors.black87))),
                             const SizedBox(width: 16),
                             Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                               Text(c.name, style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: Colors.black87)),
                               Text(c.phone ?? 'No phone', style: GoogleFonts.inter(color: Colors.black54, fontSize: 12)),
                             ])),
-                            if (isSelected) const Icon(Icons.check_circle, color: Color(0xFF1565C0)),
+                            if (isSelected) const Icon(Icons.check_circle, color: Color(0xFF6366F1)),
                           ],
                         ),
                       ),
@@ -451,7 +451,7 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
                   },
                 );
               },
-              loading: () => const Center(child: CircularProgressIndicator(color: Color(0xFF1565C0))),
+              loading: () => const Center(child: CircularProgressIndicator(color: Color(0xFF6366F1))),
               error: (e, _) => const Text('Error loading customers', style: TextStyle(color: Colors.black87)),
             );
           }),
@@ -504,7 +504,7 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
 
   // --- Step 3: Priority Input ---
   Widget _buildPriorityInputStep() {
-    if (_loadingTemplate) return const Center(child: CircularProgressIndicator(color: Color(0xFF1565C0)));
+    if (_loadingTemplate) return const Center(child: CircularProgressIndicator(color: Color(0xFF6366F1)));
     
     final fields = (_measurementTemplate?['fields'] as List? ?? []).cast<Map<String, dynamic>>();
     final priorityFields = fields.where((f) => f['is_required'] == true || ['Shoulder Length', 'Height', 'Height Till Knee', 'Waist'].contains(f['field_name'])).toList();
@@ -514,7 +514,7 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
       children: [
         Row(
           children: [
-            const Icon(Icons.auto_awesome, color: Color(0xFF1565C0)),
+            const Icon(Icons.auto_awesome, color: Color(0xFF6366F1)),
             const SizedBox(width: 12),
             Text('Smart Input', style: GoogleFonts.outfit(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black87)),
           ],
@@ -542,7 +542,7 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(f['field_name'], style: GoogleFonts.inter(fontWeight: FontWeight.w600, color: Colors.black87)),
-                          if (f['is_required'] == true) Text('Required for AI accuracy', style: GoogleFonts.inter(fontSize: 11, color: const Color(0xFF1565C0))),
+                          if (f['is_required'] == true) Text('Required for AI accuracy', style: GoogleFonts.inter(fontSize: 11, color: const Color(0xFF6366F1))),
                         ],
                       ),
                     ),
@@ -585,7 +585,7 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
               opacity: _pulseController,
               child: Container(
                 width: 100, height: 100,
-                decoration: BoxDecoration(shape: BoxShape.circle, color: const Color(0xFF1565C0).withOpacity(0.3), boxShadow: [BoxShadow(color: const Color(0xFF1565C0).withOpacity(0.5), blurRadius: 30)]),
+                decoration: BoxDecoration(shape: BoxShape.circle, color: const Color(0xFF6366F1).withOpacity(0.3), boxShadow: [BoxShadow(color: const Color(0xFF6366F1).withOpacity(0.5), blurRadius: 30)]),
                 child: const Icon(Icons.auto_awesome, color: Colors.white, size: 50),
               ),
             ),
@@ -619,9 +619,9 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
                 margin: const EdgeInsets.only(bottom: 16),
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(colors: [const Color(0xFF1565C0).withOpacity(0.1), Colors.black.withOpacity(0.02)]),
+                  gradient: LinearGradient(colors: [const Color(0xFF6366F1).withOpacity(0.1), Colors.black.withOpacity(0.02)]),
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: const Color(0xFF1565C0).withOpacity(0.3)),
+                  border: Border.all(color: const Color(0xFF6366F1).withOpacity(0.3)),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -632,7 +632,7 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
                         Text(mName, style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: Colors.black87, fontSize: 16)),
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                          decoration: BoxDecoration(color: const Color(0xFF1565C0), borderRadius: BorderRadius.circular(20)),
+                          decoration: BoxDecoration(color: const Color(0xFF6366F1), borderRadius: BorderRadius.circular(20)),
                           child: Text(_confirmedMeasurements[mName] ?? p['recommended'].toString(), style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold)),
                         ),
                       ],
@@ -699,9 +699,9 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                 decoration: BoxDecoration(
-                  color: isSel ? const Color(0xFF1565C0) : Colors.black.withOpacity(0.05),
+                  color: isSel ? const Color(0xFF6366F1) : Colors.black.withOpacity(0.05),
                   borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: isSel ? const Color(0xFF1565C0) : Colors.black12),
+                  border: Border.all(color: isSel ? const Color(0xFF6366F1) : Colors.black12),
                 ),
                 child: Text(opt, style: TextStyle(color: isSel ? Colors.white : Colors.black87, fontWeight: isSel ? FontWeight.bold : FontWeight.normal)),
               ),
@@ -714,7 +714,7 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
 
   // --- Step 6: Fabric Rec ---
   Widget _buildFabricRecStep() {
-    if (_fabricRecLoading) return const Center(child: CircularProgressIndicator(color: Color(0xFF1565C0)));
+    if (_fabricRecLoading) return const Center(child: CircularProgressIndicator(color: Color(0xFF6366F1)));
     if (_fabricRecError != null) return Center(child: Text(_fabricRecError!, style: const TextStyle(color: Colors.red)));
 
     return Column(
@@ -734,15 +734,15 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
                   margin: const EdgeInsets.only(bottom: 16),
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: isSel ? const Color(0xFF1565C0).withOpacity(0.2) : Colors.black.withOpacity(0.05),
+                    color: isSel ? const Color(0xFF6366F1).withOpacity(0.2) : Colors.black.withOpacity(0.05),
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: isSel ? const Color(0xFF1565C0) : Colors.black12, width: 2),
+                    border: Border.all(color: isSel ? const Color(0xFF6366F1) : Colors.black12, width: 2),
                   ),
                   child: Row(
                     children: [
                       Container(
                         width: 60, height: 60,
-                        decoration: BoxDecoration(color: const Color(0xFF1565C0), borderRadius: BorderRadius.circular(12)),
+                        decoration: BoxDecoration(color: const Color(0xFF6366F1), borderRadius: BorderRadius.circular(12)),
                         alignment: Alignment.center,
                         child: Text('${rec['suitability_percentage']}%', style: GoogleFonts.outfit(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18)),
                       ),
@@ -770,7 +770,7 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
 
   // --- Step 7: Estimation ---
   Widget _buildEstimationStep() {
-    if (_fabricEstLoading) return const Center(child: CircularProgressIndicator(color: Color(0xFF1565C0)));
+    if (_fabricEstLoading) return const Center(child: CircularProgressIndicator(color: Color(0xFF6366F1)));
     
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -780,13 +780,13 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
           width: double.infinity,
           padding: const EdgeInsets.all(32),
           decoration: BoxDecoration(
-            color: const Color(0xFF1565C0).withOpacity(0.1),
+            color: const Color(0xFF6366F1).withOpacity(0.1),
             borderRadius: BorderRadius.circular(24),
-            border: Border.all(color: const Color(0xFF1565C0).withOpacity(0.3)),
+            border: Border.all(color: const Color(0xFF6366F1).withOpacity(0.3)),
           ),
           child: Column(
             children: [
-              const Icon(Icons.straighten, size: 60, color: Color(0xFF1565C0)),
+              const Icon(Icons.straighten, size: 60, color: Color(0xFF6366F1)),
               const SizedBox(height: 16),
               Text('Fabric Required', style: GoogleFonts.outfit(color: Colors.black87, fontSize: 18)),
               const SizedBox(height: 8),
@@ -882,25 +882,17 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
             TextButton(onPressed: _prevStep, child: Text('Back', style: GoogleFonts.inter(color: Colors.black54, fontWeight: FontWeight.bold)))
           else const SizedBox(width: 60),
           
-          Container(
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [Color(0xFF283593), Color(0xFF1A237E), Color(0xFF0D1042)],
-              ),
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [BoxShadow(color: const Color(0xFF1A237E).withOpacity(0.5), blurRadius: 8)],
+          ElevatedButton(
+            onPressed: _saving ? null : (_currentStep == _stepTitles.length - 1 ? _saveOrder : _nextStep),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF6366F1),
+              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              elevation: 8,
+              shadowColor: const Color(0xFF6366F1).withOpacity(0.5),
             ),
-            child: ElevatedButton(
-              onPressed: _saving ? null : (_currentStep == _stepTitles.length - 1 ? _saveOrder : _nextStep),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.transparent,
-                shadowColor: Colors.transparent,
-                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-              ),
-              child: _saving ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2)) 
-                             : Text(_currentStep == _stepTitles.length - 1 ? 'Save Order' : 'Continue', style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
-            ),
+            child: _saving ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2)) 
+                           : Text(_currentStep == _stepTitles.length - 1 ? 'Save Order' : 'Continue', style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
           ),
         ],
       ),
