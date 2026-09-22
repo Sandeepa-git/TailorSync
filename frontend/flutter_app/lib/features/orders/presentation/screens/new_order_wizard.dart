@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -98,12 +99,12 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
       return {
         'category_name': cat,
         'fields': [
-          {'id': 1, 'field_name': 'Shoulder Length', 'unit': 'cm', 'is_required': true, 'placeholder': 'e.g.'},
-          {'id': 2, 'field_name': 'Height', 'unit': 'cm', 'is_required': true, 'placeholder': 'e.g.'},
-          {'id': 3, 'field_name': 'Height Till Knee', 'unit': 'cm', 'is_required': true, 'placeholder': 'e.g.'},
-          {'id': 4, 'field_name': 'Waist', 'unit': 'cm', 'is_required': true, 'placeholder': 'e.g.'},
-          {'id': 5, 'field_name': 'Round Knee', 'unit': 'cm', 'is_required': false, 'placeholder': 'e.g.'},
-          {'id': 6, 'field_name': 'Seat', 'unit': 'cm', 'is_required': false, 'placeholder': 'e.g.'},
+          {'id': 1, 'field_name': 'Shoulder Length', 'unit': 'cm', 'is_required': true, 'placeholder': '18'},
+          {'id': 2, 'field_name': 'Height', 'unit': 'cm', 'is_required': true, 'placeholder': '175'},
+          {'id': 3, 'field_name': 'Height Till Knee', 'unit': 'cm', 'is_required': true, 'placeholder': '55'},
+          {'id': 4, 'field_name': 'Waist', 'unit': 'cm', 'is_required': true, 'placeholder': '32'},
+          {'id': 5, 'field_name': 'Round Knee', 'unit': 'cm', 'is_required': false, 'placeholder': '20'},
+          {'id': 6, 'field_name': 'Seat', 'unit': 'cm', 'is_required': false, 'placeholder': '38'},
         ]
       };
   }
@@ -549,7 +550,10 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
                       width: 100,
                       child: TextField(
                         controller: _measurementControllers[f['id']],
-                        keyboardType: TextInputType.number,
+                        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
+                        ],
                         style: const TextStyle(color: Colors.black87, fontWeight: FontWeight.bold),
                         textAlign: TextAlign.center,
                         decoration: InputDecoration(
