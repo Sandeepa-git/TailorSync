@@ -49,21 +49,38 @@ class FoundryClient:
         try:
             # Use the new agent_reference approach from Azure AI Projects >=2.1.0
             my_agent = settings.AZURE_FOUNDRY_AGENT_NAME
-            # In the user's snippet, version was '3', if not provided via env, we default to "3".
-            # Using 'latest' or skipping version might be allowed, but we'll stick to '3' as requested.
-            my_version = "3"
             
-            response = self._openai_client.responses.create(
-                input=[{"role": "user", "content": prompt}],
-                extra_body={"agent_reference": {"name": my_agent, "version": my_version, "type": "agent_reference"}},
-            )
+            # Try multiple versions in case the one specified in the snippet is wrong or unpublished.
+            versions_to_try = [os.environ.get("AZURE_FOUNDRY_AGENT_VERSION", "1"), "latest", "1", "2", "3", "4", "5"]
+            seen_versions = set()
+            last_error = None
             
-            elapsed = time.time() - start
-            logger.info(f"AI [{operation}] ok business={business_id} "
-                       f"user={user_id} order={order_id} "
-                       f"time={elapsed:.2f}s")
-                       
-            return response.output_text
+            for version in versions_to_try:
+                if version in seen_versions:
+                    continue
+                seen_versions.add(version)
+                
+                try:
+                    response = self._openai_client.responses.create(
+                        input=[{"role": "user", "content": prompt}],
+                        extra_body={"agent_reference": {"name": my_agent, "version": version, "type": "agent_reference"}},
+                    )
+                    
+                    elapsed = time.time() - start
+                    logger.info(f"AI [{operation}] ok business={business_id} "
+                               f"user={user_id} order={order_id} "
+                               f"time={elapsed:.2f}s version={version}")
+                               
+                    return response.output_text
+                except Exception as e:
+                    if "not found" in str(e).lower() and "version" in str(e).lower():
+                        last_error = e
+                        logger.warning(f"Version {version} not found, trying next...")
+                        continue
+                    raise e
+                    
+            if last_error:
+                raise last_error
             
         except Exception as e:
             elapsed = time.time() - start
