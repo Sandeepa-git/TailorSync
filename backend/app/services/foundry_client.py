@@ -40,11 +40,18 @@ class FoundryClient:
             credential=credential
         )
         agents = self._client.agents.list_agents()
-        agent = next((a for a in agents if a.name.lower() == settings.AZURE_FOUNDRY_AGENT_NAME.lower()), None)
-        if not agent:
-            raise FoundryUnavailableError(f"Agent '{settings.AZURE_FOUNDRY_AGENT_NAME}' not found.")
-        self._agent_id = agent.id
-        logger.info(f"AI agent '{agent.name}' connected (id: {agent.id})")
+        agent = next((a for a in agents if a.name.strip().lower() == settings.AZURE_FOUNDRY_AGENT_NAME.strip().lower()), None)
+        
+        if agent:
+            self._agent_id = agent.id
+            logger.info(f"AI agent '{agent.name}' connected (id: {agent.id}) via list_agents")
+        else:
+            # Fallback: if list_agents fails to find it (e.g. due to Azure RBAC listing permissions),
+            # try to use an explicit ID from environment, or the known hardcoded one as a last resort.
+            env_agent_id = os.environ.get("AZURE_FOUNDRY_AGENT_ID")
+            known_agent_id = "asst_tDhFnouNbyRKkqxA3CCiQODI"
+            self._agent_id = env_agent_id if env_agent_id else known_agent_id
+            logger.warning(f"Agent '{settings.AZURE_FOUNDRY_AGENT_NAME}' not found in list_agents. Falling back to ID: {self._agent_id}")
 
     def invoke_agent(self, prompt: str, operation: str = "",
                      user_id: int = None, business_id: int = None,
