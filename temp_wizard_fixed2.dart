@@ -1,6 +1,5 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -99,12 +98,12 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
       return {
         'category_name': cat,
         'fields': [
-          {'id': 1, 'field_name': 'Shoulder Length', 'unit': 'cm', 'is_required': true, 'placeholder': '18'},
-          {'id': 2, 'field_name': 'Height', 'unit': 'cm', 'is_required': true, 'placeholder': '175'},
-          {'id': 3, 'field_name': 'Height Till Knee', 'unit': 'cm', 'is_required': true, 'placeholder': '55'},
-          {'id': 4, 'field_name': 'Waist', 'unit': 'cm', 'is_required': true, 'placeholder': '32'},
-          {'id': 5, 'field_name': 'Round Knee', 'unit': 'cm', 'is_required': false, 'placeholder': '20'},
-          {'id': 6, 'field_name': 'Seat', 'unit': 'cm', 'is_required': false, 'placeholder': '38'},
+          {'id': 1, 'field_name': 'Shoulder Length', 'unit': 'cm', 'is_required': true},
+          {'id': 2, 'field_name': 'Height', 'unit': 'cm', 'is_required': true},
+          {'id': 3, 'field_name': 'Height Till Knee', 'unit': 'cm', 'is_required': true},
+          {'id': 4, 'field_name': 'Waist', 'unit': 'cm', 'is_required': true},
+          {'id': 5, 'field_name': 'Round Knee', 'unit': 'cm', 'is_required': false},
+          {'id': 6, 'field_name': 'Seat', 'unit': 'cm', 'is_required': false},
         ]
       };
   }
@@ -298,11 +297,11 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0D1042), // Premium Dark Mode Base
+      backgroundColor: const Color(0xFF0F172A), // Premium Dark Mode Base
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: IconButton(icon: const Icon(Icons.close, color: Colors.white), onPressed: () { if (context.canPop()) context.pop(); else context.go('/orders'); }),
+        leading: IconButton(icon: const Icon(Icons.close, color: Colors.white), onPressed: () => context.pop()),
         title: Text('TailorSync AI Wizard', style: GoogleFonts.outfit(fontWeight: FontWeight.bold, color: Colors.white)),
         centerTitle: true,
       ),
@@ -314,7 +313,7 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topLeft, end: Alignment.bottomRight,
-                  colors: [Color(0xFF283593), Color(0xFF1A237E), Color(0xFF0D1042)],
+                  colors: [Color(0xFF0F172A), Color(0xFF1E1B4B)],
                 ),
               ),
             ),
@@ -550,10 +549,7 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
                       width: 100,
                       child: TextField(
                         controller: _measurementControllers[f['id']],
-                        keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                        inputFormatters: [
-                          FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
-                        ],
+                        keyboardType: TextInputType.number,
                         style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                         textAlign: TextAlign.center,
                         decoration: InputDecoration(
