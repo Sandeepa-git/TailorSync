@@ -19,8 +19,13 @@ class FoundryClient:
     @classmethod
     def get_instance(cls):
         if cls._instance is None:
-            cls._instance = cls()
-            cls._instance._initialize()
+            inst = cls()
+            try:
+                inst._initialize()
+                cls._instance = inst
+            except Exception:
+                cls._instance = None
+                raise
         return cls._instance
 
     def _initialize(self):
