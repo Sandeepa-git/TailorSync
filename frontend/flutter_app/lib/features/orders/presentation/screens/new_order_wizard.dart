@@ -235,7 +235,7 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> {
         return;
       }
       // Load template for selected garment
-      setState(() => _loadingTemplate = true);
+      setState(() { _loadingTemplate = true; _currentStep++; });
       try {
         final resp = await api.getMeasurementTemplateByCategory(_selectedGarment!);
         _measurementTemplate = resp.data;
@@ -249,8 +249,8 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> {
       }
       setState(() { 
         _loadingTemplate = false;
-        _currentStep++;
       });
+      return;
     } else if (_currentStep == 2) {
       // Step 2: Measurements -> Step 3: AI Prediction
       final fields = (_measurementTemplate?['fields'] as List? ?? []).cast<Map<String, dynamic>>();
@@ -913,28 +913,55 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> {
   }
 
   // ── Step 4: Style & Fabric ────────────────────────────────────────
+  Widget _buildAiLoadingState(String message) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 80.0, horizontal: 20),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: const Color(0xFFF1F3FB),
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(color: const Color(0xFF1A237E).withOpacity(0.1), blurRadius: 20, spreadRadius: 5),
+                ],
+              ),
+              child: const CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF1A237E)),
+                strokeWidth: 3,
+              ),
+            ),
+            const SizedBox(height: 32),
+            Text(
+              'AI Engine Processing',
+              style: GoogleFonts.inter(fontSize: 20, fontWeight: FontWeight.bold, color: const Color(0xFF1A237E)),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              message,
+              textAlign: TextAlign.center,
+              style: GoogleFonts.inter(fontSize: 14, color: const Color(0xFF5C6BC0)),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   // ── Step 3: AI Prediction ──────────────────────────────────────────
   Widget _buildAiPredictionStep() {
     if (_aiPredictionLoading) {
-      return const Center(
-        child: Padding(
-          padding: EdgeInsets.all(48.0),
-          child: Column(
-            children: [
-              CircularProgressIndicator(),
-              SizedBox(height: 16),
-              Text('Analyzing AI predictions for measurements...'),
-            ],
-          ),
-        ),
-      );
+      return _buildAiLoadingState('Analyzing garment geometry & calculating optimal dimensions...');
     }
     if (_aiPredictionError != null) {
       return Column(
         children: [
           const Icon(Icons.error_outline, color: Colors.red, size: 48),
           const SizedBox(height: 16),
-          Text(_aiPredictionError!, textAlign: TextAlign.center),
+          Text(_aiPredictionError!, textAlign: TextAlign.center, style: GoogleFonts.inter()),
           const SizedBox(height: 32),
           ElevatedButton(onPressed: _nextStep, child: const Text('Proceed Manually'))
         ],
@@ -944,26 +971,54 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('AI Measurement Review', style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.bold, color: const Color(0xFF1A237E))),
+        Text('AI Measurement Predictions', style: GoogleFonts.inter(fontSize: 22, fontWeight: FontWeight.bold, color: const Color(0xFF1A237E))),
         const SizedBox(height: 8),
-        const Text('Review and adjust the AI predicted measurements.'),
+        Text('Please review the dimensions calculated by the AI engine based on your priority inputs.', style: GoogleFonts.inter(fontSize: 14, color: const Color(0xFF5C6BC0))),
         const SizedBox(height: 24),
         if (_aiPredictions.isEmpty)
           const Text('No predictions found. Please proceed.')
         else
           ..._aiPredictions.map((pred) {
-            final m = pred['measurement'];
-            return Card(
+            final m = pred['measurement'] as String;
+            final isAi = _isAiGenerated[m] ?? true;
+            return Container(
               margin: const EdgeInsets.only(bottom: 16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: isAi ? const Color(0xFFC5CAE9) : const Color(0xFFE8EAF6)),
+                boxShadow: [
+                  BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 8, offset: const Offset(0, 4)),
+                ]
+              ),
               child: Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(20.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(m, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                    const SizedBox(height: 8),
-                    Text('AI Reasoning: ${pred['reason']}', style: const TextStyle(color: Colors.grey, fontSize: 12)),
+                    Row(
+                      children: [
+                        const Icon(Icons.auto_awesome, color: Color(0xFF1A237E), size: 18),
+                        const SizedBox(width: 8),
+                        Text(m, style: GoogleFonts.inter(fontWeight: FontWeight.bold, fontSize: 16, color: const Color(0xFF1A237E))),
+                        const Spacer(),
+                        if (isAi)
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(color: const Color(0xFFE8EAF6), borderRadius: BorderRadius.circular(12)),
+                            child: Text('AI Predicted', style: GoogleFonts.inter(fontSize: 10, color: const Color(0xFF3949AB), fontWeight: FontWeight.bold)),
+                          )
+                        else
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(color: const Color(0xFFFFF3E0), borderRadius: BorderRadius.circular(12)),
+                            child: Text('Manual Override', style: GoogleFonts.inter(fontSize: 10, color: const Color(0xFFE65100), fontWeight: FontWeight.bold)),
+                          )
+                      ],
+                    ),
                     const SizedBox(height: 12),
+                    Text(pred['reason'] ?? '', style: GoogleFonts.inter(color: const Color(0xFF5C6BC0), fontSize: 13, height: 1.4)),
+                    const SizedBox(height: 16),
                     Row(
                       children: [
                         Expanded(
@@ -973,20 +1028,35 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> {
                             onChanged: (val) {
                               _confirmedMeasurements[m] = val;
                               _isAiGenerated[m] = false;
+                              setState((){});
                             },
-                            decoration: const InputDecoration(labelText: 'Confirmed Value', border: OutlineInputBorder()),
+                            style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w600),
+                            decoration: InputDecoration(
+                              labelText: 'Final Value (cm)',
+                              labelStyle: GoogleFonts.inter(fontSize: 12),
+                              border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                            ),
+                            keyboardType: TextInputType.number,
                           ),
                         ),
                         const SizedBox(width: 16),
-                        OutlinedButton(
-                          onPressed: () {
-                             setState(() {
-                                _confirmedMeasurements[m] = pred['recommended'].toString();
-                                _isAiGenerated[m] = true;
-                             });
-                          },
-                          child: const Text('Use AI Value'),
-                        )
+                        if (!isAi)
+                           OutlinedButton.icon(
+                             onPressed: () {
+                               setState(() {
+                                  _confirmedMeasurements[m] = pred['recommended'].toString();
+                                  _isAiGenerated[m] = true;
+                               });
+                             },
+                             icon: const Icon(Icons.restore, size: 16),
+                             label: Text('Restore AI Value', style: GoogleFonts.inter(fontWeight: FontWeight.w600)),
+                             style: OutlinedButton.styleFrom(
+                               foregroundColor: const Color(0xFF1A237E),
+                               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                             ),
+                           )
                       ],
                     )
                   ],
@@ -995,7 +1065,25 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> {
             );
           }),
         const SizedBox(height: 24),
-        SizedBox(width: double.infinity, child: ElevatedButton(onPressed: _nextStep, child: const Text('Confirm & Continue')))
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+            onPressed: _nextStep,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF0F175A),
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('Confirm & Continue', style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold)),
+                const SizedBox(width: 8),
+                const Icon(Icons.arrow_forward, color: Colors.white, size: 16),
+              ],
+            ),
+          )
+        )
       ],
     );
   }
@@ -1003,7 +1091,7 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> {
   // ── Step 5: Fabric Recommendation ──────────────────────────────────
   Widget _buildFabricRecStep() {
     if (_fabricRecLoading) {
-      return const Center(child: Padding(padding: EdgeInsets.all(48.0), child: CircularProgressIndicator()));
+      return _buildAiLoadingState('Cross-referencing fabric libraries for optimal match...');
     }
     if (_fabricRecError != null) {
       return Column(
@@ -1016,21 +1104,77 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Fabric Recommendations', style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.bold, color: const Color(0xFF1A237E))),
-        const SizedBox(height: 16),
+        Text('AI Fabric Recommendations', style: GoogleFonts.inter(fontSize: 22, fontWeight: FontWeight.bold, color: const Color(0xFF1A237E))),
+        const SizedBox(height: 8),
+        Text('Based on $_weather weather and $_occasion, here are the top 3 fabric choices.', style: GoogleFonts.inter(fontSize: 14, color: const Color(0xFF5C6BC0))),
+        const SizedBox(height: 24),
         ..._fabricRecommendations.asMap().entries.map((e) {
           final i = e.key;
           final rec = e.value;
-          return RadioListTile<int>(
-            title: Text('${rec['fabric_name']} (${rec['suitability_percentage']}%)'),
-            subtitle: Text(rec['reason']),
-            value: i,
-            groupValue: _selectedFabricIndex,
-            onChanged: (val) => setState(() => _selectedFabricIndex = val),
+          final isSelected = _selectedFabricIndex == i;
+          return GestureDetector(
+            onTap: () => setState(() => _selectedFabricIndex = i),
+            child: Container(
+              margin: const EdgeInsets.only(bottom: 16),
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: isSelected ? const Color(0xFFF1F3FB) : Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: isSelected ? const Color(0xFF1A237E) : const Color(0xFFE8EAF6), width: isSelected ? 2 : 1),
+                boxShadow: isSelected ? [BoxShadow(color: const Color(0xFF1A237E).withOpacity(0.1), blurRadius: 8, offset: const Offset(0, 4))] : null,
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 50,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(color: const Color(0xFFE8EAF6), width: 3),
+                    ),
+                    child: Center(
+                      child: Text('${rec['suitability_percentage']}%', style: GoogleFonts.inter(fontWeight: FontWeight.bold, fontSize: 13, color: const Color(0xFF1A237E))),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(rec['fabric_name'], style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.bold, color: const Color(0xFF1A237E))),
+                        const SizedBox(height: 6),
+                        Text(rec['reason'], style: GoogleFonts.inter(fontSize: 13, color: const Color(0xFF5C6BC0), height: 1.4)),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Icon(isSelected ? Icons.radio_button_checked : Icons.radio_button_off, color: isSelected ? const Color(0xFF1A237E) : Colors.grey),
+                ],
+              ),
+            ),
           );
         }),
         const SizedBox(height: 24),
-        SizedBox(width: double.infinity, child: ElevatedButton(onPressed: _nextStep, child: const Text('Continue')))
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+            onPressed: _selectedFabricIndex == null ? null : _nextStep,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF0F175A),
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('Select & Continue', style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold)),
+                const SizedBox(width: 8),
+                const Icon(Icons.arrow_forward, color: Colors.white, size: 16),
+              ],
+            ),
+          )
+        )
       ],
     );
   }

@@ -1,7 +1,7 @@
 import json
 import logging
 from typing import Dict, Any
-from app.services.foundry_client import FoundryClient
+from app.services.gemini_client import GeminiClient
 from app.schemas.ai import (
     MeasurementPredictIn, MeasurementPredictOut,
     FabricRecommendIn, FabricRecommendOut,
@@ -36,7 +36,6 @@ FIELD_DISPLAY_MAP = {
 
 def extract_json_from_response(response_text: str) -> dict:
     try:
-        # Strip markdown json blocks if present
         text = response_text.strip()
         if text.startswith("```json"):
             text = text[7:]
@@ -50,9 +49,8 @@ def extract_json_from_response(response_text: str) -> dict:
         raise ValueError("Invalid JSON response from AI")
 
 def predict_measurements(request: MeasurementPredictIn, user_id: int, business_id: int, order_id: int = None) -> MeasurementPredictOut:
-    client = FoundryClient.get_instance()
+    client = GeminiClient()
     
-    # Map API names to display names for the prompt
     mapped_measurements = {
         FIELD_DISPLAY_MAP.get(k, k): v 
         for k, v in request.measurements.items()
@@ -80,7 +78,7 @@ def predict_measurements(request: MeasurementPredictIn, user_id: int, business_i
     Use these exact measurement names for the "measurement" field: {list(FIELD_DISPLAY_MAP.keys())}
     """
     
-    raw_response = client.invoke_agent(
+    raw_response = client._call_gemini(
         prompt, 
         operation="measurement_prediction", 
         user_id=user_id, 
@@ -89,10 +87,17 @@ def predict_measurements(request: MeasurementPredictIn, user_id: int, business_i
     )
     
     data = extract_json_from_response(raw_response)
+    
+    if "predictions" in data:
+        for pred in data["predictions"]:
+            api_name = pred.get("measurement")
+            display_name = FIELD_DISPLAY_MAP.get(api_name, api_name)
+            pred["measurement"] = display_name
+            
     return MeasurementPredictOut(**data)
 
 def recommend_fabrics(request: FabricRecommendIn, user_id: int, business_id: int, order_id: int = None) -> FabricRecommendOut:
-    client = FoundryClient.get_instance()
+    client = GeminiClient()
     
     prompt = f"""
     Operation: Fabric Recommendation
@@ -115,7 +120,7 @@ def recommend_fabrics(request: FabricRecommendIn, user_id: int, business_id: int
     }}
     """
     
-    raw_response = client.invoke_agent(
+    raw_response = client._call_gemini(
         prompt, 
         operation="fabric_recommendation", 
         user_id=user_id, 
@@ -127,11 +132,10 @@ def recommend_fabrics(request: FabricRecommendIn, user_id: int, business_id: int
     return FabricRecommendOut(**data)
 
 def estimate_fabric(request: FabricEstimateIn, user_id: int, business_id: int, order_id: int = None) -> FabricEstimateOut:
-    client = FoundryClient.get_instance()
+    client = GeminiClient()
     
     fabric_width = GARMENT_FABRIC_WIDTH.get(request.garment_type, 45)
     
-    # Map API names to display names for the prompt
     mapped_measurements = {
         FIELD_DISPLAY_MAP.get(k, k): v 
         for k, v in request.measurements.items()
@@ -157,7 +161,7 @@ def estimate_fabric(request: FabricEstimateIn, user_id: int, business_id: int, o
     }}
     """
     
-    raw_response = client.invoke_agent(
+    raw_response = client._call_gemini(
         prompt, 
         operation="fabric_estimation", 
         user_id=user_id, 
