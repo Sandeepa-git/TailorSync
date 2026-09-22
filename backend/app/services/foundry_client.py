@@ -1,7 +1,8 @@
 import logging
 import time
 from azure.ai.projects import AIProjectClient
-from azure.identity import InteractiveBrowserCredential
+from azure.identity import InteractiveBrowserCredential, DefaultAzureCredential
+import os
 from azure.ai.agents.models import AgentThreadCreationOptions, ThreadMessageOptions
 from app.core.config import settings
 
@@ -23,7 +24,12 @@ class FoundryClient:
         return cls._instance
 
     def _initialize(self):
-        credential = InteractiveBrowserCredential(tenant_id=settings.AZURE_TENANT_ID)
+        if os.environ.get("WEBSITE_SITE_NAME"):
+            logger.info("Running in Azure App Service, using DefaultAzureCredential")
+            credential = DefaultAzureCredential()
+        else:
+            logger.info("Running locally, using InteractiveBrowserCredential")
+            credential = InteractiveBrowserCredential(tenant_id=settings.AZURE_TENANT_ID)
         self._client = AIProjectClient(
             endpoint=settings.AZURE_FOUNDRY_ENDPOINT,
             credential=credential
