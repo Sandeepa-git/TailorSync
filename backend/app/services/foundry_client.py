@@ -1,7 +1,8 @@
 import logging
 import time
 from azure.ai.projects import AIProjectClient
-from azure.identity import DefaultAzureCredential
+from azure.identity import InteractiveBrowserCredential
+from azure.ai.agents.models import AgentThreadCreationOptions, ThreadMessageOptions
 from app.core.config import settings
 
 logger = logging.getLogger(__name__)
@@ -22,7 +23,7 @@ class FoundryClient:
         return cls._instance
 
     def _initialize(self):
-        credential = DefaultAzureCredential()
+        credential = InteractiveBrowserCredential(tenant_id=settings.AZURE_TENANT_ID)
         self._client = AIProjectClient(
             endpoint=settings.AZURE_FOUNDRY_ENDPOINT,
             credential=credential
@@ -32,23 +33,27 @@ class FoundryClient:
         if not agent:
             raise FoundryUnavailableError(f"Agent '{settings.AZURE_FOUNDRY_AGENT_NAME}' not found.")
         self._agent_id = agent.id
+        logger.info(f"AI agent '{agent.name}' connected (id: {agent.id})")
 
     def invoke_agent(self, prompt: str, operation: str = "",
                      user_id: int = None, business_id: int = None,
                      order_id: int = None) -> str:
         start = time.time()
         try:
-            thread = self._client.agents.threads.create()
-            self._client.agents.messages.create(
-                thread_id=thread.id, role="user", content=prompt
+            thread_options = AgentThreadCreationOptions(
+                messages=[
+                    ThreadMessageOptions(role="user", content=prompt)
+                ]
             )
-            run = self._client.agents.runs.create_and_process(
-                thread_id=thread.id, assistant_id=self._agent_id
+            run = self._client.agents.create_thread_and_process_run(
+                agent_id=self._agent_id,
+                thread=thread_options
             )
+
             if run.status != "completed":
                 raise FoundryUnavailableError(f"Run status: {run.status}")
 
-            messages = self._client.agents.messages.list(thread_id=thread.id)
+            messages = self._client.agents.messages.list(thread_id=run.thread_id)
             for msg in messages:
                 if msg.role == "assistant":
                     elapsed = time.time() - start

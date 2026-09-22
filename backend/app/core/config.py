@@ -12,7 +12,8 @@ class Settings(BaseSettings):
     # Azure Foundry settings
     AZURE_FOUNDRY_ENDPOINT: str = ""
     AZURE_FOUNDRY_API_KEY: str = ""
-    AZURE_FOUNDRY_AGENT_NAME: str = "tailorsync-agent"
+    AZURE_FOUNDRY_AGENT_NAME: str = "TailorSync-Agent"
+    AZURE_TENANT_ID: str = ""
 
     class Config:
         env_file = ".env"
