@@ -3,7 +3,6 @@ import time
 from azure.ai.projects import AIProjectClient
 from azure.identity import InteractiveBrowserCredential, DefaultAzureCredential
 import os
-from azure.ai.agents.models import AgentThreadCreationOptions, ThreadMessageOptions
 from app.core.config import settings
 
 logger = logging.getLogger(__name__)
@@ -13,8 +12,8 @@ class FoundryUnavailableError(Exception):
 
 class FoundryClient:
     _instance = None
-    _client = None
-    _agent_id = None
+    _project_client = None
+    _openai_client = None
 
     @classmethod
     def get_instance(cls):
@@ -35,54 +34,37 @@ class FoundryClient:
         else:
             logger.info("Running locally, using InteractiveBrowserCredential")
             credential = InteractiveBrowserCredential(tenant_id=settings.AZURE_TENANT_ID)
-        self._client = AIProjectClient(
+            
+        self._project_client = AIProjectClient(
             endpoint=settings.AZURE_FOUNDRY_ENDPOINT,
             credential=credential
         )
-        agents = self._client.agents.list_agents()
-        agent = next((a for a in agents if a.name.strip().lower() == settings.AZURE_FOUNDRY_AGENT_NAME.strip().lower()), None)
-        
-        if agent:
-            self._agent_id = agent.id
-            logger.info(f"AI agent '{agent.name}' connected (id: {agent.id}) via list_agents")
-        else:
-            # Fallback: if list_agents fails to find it (e.g. due to Azure RBAC listing permissions),
-            # try to use an explicit ID from environment, or the known hardcoded one as a last resort.
-            env_agent_id = os.environ.get("AZURE_FOUNDRY_AGENT_ID")
-            known_agent_id = "asst_tDhFnouNbyRKkqxA3CCiQODI"
-            self._agent_id = env_agent_id if env_agent_id else known_agent_id
-            logger.warning(f"Agent '{settings.AZURE_FOUNDRY_AGENT_NAME}' not found in list_agents. Falling back to ID: {self._agent_id}")
+        self._openai_client = self._project_client.get_openai_client()
+        logger.info(f"AI OpenAI client connected to {settings.AZURE_FOUNDRY_ENDPOINT}")
 
     def invoke_agent(self, prompt: str, operation: str = "",
                      user_id: int = None, business_id: int = None,
                      order_id: int = None) -> str:
         start = time.time()
         try:
-            thread_options = AgentThreadCreationOptions(
-                messages=[
-                    ThreadMessageOptions(role="user", content=prompt)
-                ]
+            # Use the new agent_reference approach from Azure AI Projects >=2.1.0
+            my_agent = settings.AZURE_FOUNDRY_AGENT_NAME
+            # In the user's snippet, version was '3', if not provided via env, we default to "3".
+            # Using 'latest' or skipping version might be allowed, but we'll stick to '3' as requested.
+            my_version = "3"
+            
+            response = self._openai_client.responses.create(
+                input=[{"role": "user", "content": prompt}],
+                extra_body={"agent_reference": {"name": my_agent, "version": my_version, "type": "agent_reference"}},
             )
-            run = self._client.agents.create_thread_and_process_run(
-                agent_id=self._agent_id,
-                thread=thread_options
-            )
-
-            if run.status != "completed":
-                raise FoundryUnavailableError(f"Run status: {run.status}")
-
-            messages = self._client.agents.messages.list(thread_id=run.thread_id)
-            for msg in messages:
-                if msg.role == "assistant":
-                    elapsed = time.time() - start
-                    logger.info(f"AI [{operation}] ok business={business_id} "
-                               f"user={user_id} order={order_id} "
-                               f"time={elapsed:.2f}s")
-                    return msg.content[0].text.value
-
-            raise FoundryUnavailableError("No assistant response")
-        except FoundryUnavailableError:
-            raise
+            
+            elapsed = time.time() - start
+            logger.info(f"AI [{operation}] ok business={business_id} "
+                       f"user={user_id} order={order_id} "
+                       f"time={elapsed:.2f}s")
+                       
+            return response.output_text
+            
         except Exception as e:
             elapsed = time.time() - start
             logger.error(f"AI [{operation}] FAIL business={business_id} "
