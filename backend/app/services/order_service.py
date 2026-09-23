@@ -40,15 +40,28 @@ def create_order(db: Session, order: OrderCreate, business_id: int):
     # Create measurements if provided
     if order.measurements:
         from app.models.measurement_field import MeasurementField
+        from app.models.measurement_template import MeasurementTemplate
         for m_data in order.measurements:
             field_id = m_data.field_id
             if not field_id and m_data.field_name:
+                template = db.query(MeasurementTemplate).filter(
+                    MeasurementTemplate.business_id == business_id,
+                    MeasurementTemplate.garment_type_id == db_order.garment_type_id
+                ).first()
+                if not template:
+                    template = MeasurementTemplate(
+                        business_id=business_id,
+                        garment_type_id=db_order.garment_type_id
+                    )
+                    db.add(template)
+                    db.flush()
+                    
                 field = db.query(MeasurementField).filter(
-                    MeasurementField.business_id == business_id,
-                    MeasurementField.name == m_data.field_name
+                    MeasurementField.template_id == template.template_id,
+                    MeasurementField.field_name == m_data.field_name
                 ).first()
                 if not field:
-                    field = MeasurementField(business_id=business_id, name=m_data.field_name)
+                    field = MeasurementField(template_id=template.template_id, field_name=m_data.field_name)
                     db.add(field)
                     db.flush()
                 field_id = field.field_id
