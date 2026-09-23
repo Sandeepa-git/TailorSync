@@ -532,7 +532,6 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
     if (_loadingTemplate) return const Center(child: CircularProgressIndicator(color: Color(0xFF1565C0)));
     
     final fields = (_measurementTemplate?['fields'] as List? ?? []).cast<Map<String, dynamic>>();
-    final priorityFields = fields.where((f) => f['is_required'] == true || ['Shoulder Length', 'Height', 'Height Till Knee', 'Waist'].contains(f['field_name'])).toList();
     
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -545,13 +544,13 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
           ],
         ),
         const SizedBox(height: 8),
-        Text('Provide just the essential measurements. TailorSync AI will predict the rest using our advanced global dataset.', style: GoogleFonts.inter(color: Colors.black87)),
+        Text('Provide the required measurements and any others you know. TailorSync AI will predict the rest using our advanced global dataset.', style: GoogleFonts.inter(color: Colors.black87)),
         const SizedBox(height: 24),
         Expanded(
           child: ListView.builder(
-            itemCount: priorityFields.length,
+            itemCount: fields.length,
             itemBuilder: (ctx, i) {
-              final f = priorityFields[i];
+              final f = fields[i];
               return Container(
                 margin: const EdgeInsets.only(bottom: 16),
                 padding: const EdgeInsets.all(16),
@@ -567,7 +566,8 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(f['field_name'], style: GoogleFonts.inter(fontWeight: FontWeight.w600, color: Colors.black87)),
-                          if (f['is_required'] == true) Text('Required for AI accuracy', style: GoogleFonts.inter(fontSize: 11, color: const Color(0xFF1565C0))),
+                          if (f['is_required'] == true) Text('Required for AI accuracy', style: GoogleFonts.inter(fontSize: 11, color: const Color(0xFF1565C0)))
+                          else Text('Optional', style: GoogleFonts.inter(fontSize: 11, color: Colors.black54)),
                         ],
                       ),
                     ),
