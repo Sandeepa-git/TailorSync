@@ -12,6 +12,8 @@ def predict_measurements(request: MeasurementPredictIn, user_id: int, business_i
     logger.info(f"AI [predict_measurements] called for user {user_id} using Microsoft Foundry")
     client = FoundryClient()
     data = client.predict_measurements(request.garment_type, request.measurements)
+    if "garment_type" not in data:
+        data["garment_type"] = request.garment_type
     return MeasurementPredictOut(**data)
 
 def recommend_fabrics(request: FabricRecommendIn, user_id: int, business_id: int, order_id: int = None) -> FabricRecommendOut:
