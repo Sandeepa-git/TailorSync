@@ -42,8 +42,7 @@ class FoundryClient:
                     SystemMessage(content=system_instruction),
                     UserMessage(content=prompt),
                 ],
-                model=self.model_name,
-                temperature=0.2
+                model=self.model_name
             )
             content = response.choices[0].message.content
             # Basic cleanup in case it returns markdown JSON
