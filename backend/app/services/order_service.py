@@ -39,11 +39,24 @@ def create_order(db: Session, order: OrderCreate, business_id: int):
     
     # Create measurements if provided
     if order.measurements:
+        from app.models.measurement_field import MeasurementField
         for m_data in order.measurements:
+            field_id = m_data.field_id
+            if not field_id and m_data.field_name:
+                field = db.query(MeasurementField).filter(
+                    MeasurementField.business_id == business_id,
+                    MeasurementField.name == m_data.field_name
+                ).first()
+                if not field:
+                    field = MeasurementField(business_id=business_id, name=m_data.field_name)
+                    db.add(field)
+                    db.flush()
+                field_id = field.field_id
+                
             db_measurement = Measurement(
                 customer_id=order.customer_id,
                 order_id=db_order.order_id,
-                field_id=m_data.field_id,
+                field_id=field_id,
                 value=m_data.value,
                 is_ai_generated=m_data.is_ai_generated
             )

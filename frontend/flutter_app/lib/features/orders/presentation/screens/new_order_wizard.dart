@@ -946,7 +946,7 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
       
       final mList = <Map<String, dynamic>>[];
       _confirmedMeasurements.forEach((k, v) {
-          mList.add({'field_id': 1, 'value': double.tryParse(v) ?? 0.0, 'is_ai_generated': _isAiGenerated[k] ?? false});
+          mList.add({'field_name': k, 'value': double.tryParse(v) ?? 0.0, 'is_ai_generated': _isAiGenerated[k] ?? false});
       });
       body['measurements'] = mList;
       

@@ -3,7 +3,8 @@ from typing import Optional, List
 from datetime import datetime
 
 class DynamicMeasurementInput(BaseModel):
-    field_id: int
+    field_id: Optional[int] = None
+    field_name: Optional[str] = None
     value: float
     is_ai_generated: Optional[bool] = False
 
