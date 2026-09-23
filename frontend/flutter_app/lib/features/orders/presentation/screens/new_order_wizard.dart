@@ -327,7 +327,7 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: IconButton(icon: const Icon(Icons.close, color: Colors.black87), onPressed: () { if (context.canPop()) context.pop(); else context.go('/orders'); }),
+        leading: IconButton(icon: const Icon(Icons.close, color: Colors.black87), onPressed: () { context.go('/home'); }),
         title: Text('TailorSync AI Wizard', style: GoogleFonts.outfit(fontWeight: FontWeight.bold, color: Colors.black87)),
         centerTitle: true,
       ),

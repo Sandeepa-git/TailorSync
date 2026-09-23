@@ -1,32 +1,46 @@
 import os
 import json
 import logging
-from groq import Groq
-from dotenv import load_dotenv
+from azure.ai.inference import ChatCompletionsClient
+from azure.ai.inference.models import SystemMessage, UserMessage
+from azure.core.credentials import AzureKeyCredential
 from app.services.dataset_service import DatasetService
 
 logger = logging.getLogger(__name__)
-load_dotenv()
 
-class GroqClient:
+class FoundryClient:
     def __init__(self):
-        self.api_key = os.environ.get("GROQ_API_KEY", "")
+        self.endpoint = os.environ.get("FOUNDRY_ENDPOINT", "")
+        self.api_key = os.environ.get("FOUNDRY_API_KEY", "")
+        self.model_name = os.environ.get("FOUNDRY_MODEL_NAME", "gpt-4o")
+        
+        if not self.endpoint:
+            logger.warning("FOUNDRY_ENDPOINT is not set.")
         if not self.api_key:
-            logger.warning("GROQ_API_KEY is not set.")
-            
-        self.client = Groq(api_key=self.api_key)
-        self.model_name = "openai/gpt-oss-20b"
-        self._dataset_service = DatasetService()
-
-    def _call_groq(self, prompt: str, system_instruction: str) -> str:
-        if not self.api_key:
-            raise ValueError("Groq API key not found")
+            logger.warning("FOUNDRY_API_KEY is not set.")
             
         try:
-            response = self.client.chat.completions.create(
+            # Using API Key authentication
+            credential = AzureKeyCredential(self.api_key)
+            self.client = ChatCompletionsClient(
+                endpoint=self.endpoint,
+                credential=credential,
+            )
+        except Exception as e:
+            logger.error(f"Failed to initialize FoundryClient with Entra ID: {e}")
+            self.client = None
+
+        self._dataset_service = DatasetService()
+
+    def _call_foundry(self, prompt: str, system_instruction: str) -> str:
+        if not self.client:
+            raise ValueError("Foundry client is not initialized properly. Check credentials and endpoint.")
+            
+        try:
+            response = self.client.complete(
                 messages=[
-                    {"role": "system", "content": system_instruction},
-                    {"role": "user", "content": prompt}
+                    SystemMessage(content=system_instruction),
+                    UserMessage(content=prompt),
                 ],
                 model=self.model_name,
                 temperature=0.2
@@ -39,7 +53,7 @@ class GroqClient:
                 content = content.replace("```", "").strip()
             return content
         except Exception as e:
-            logger.error(f"Groq API error: {e}")
+            logger.error(f"Foundry API error: {e}")
             raise e
 
     def predict_measurements(self, garment_type: str, provided_measurements: dict) -> dict:
@@ -83,7 +97,7 @@ Return ONLY a JSON object with this exact structure:
   ]
 }}
 """
-        response_text = self._call_groq(prompt, system_instruction)
+        response_text = self._call_foundry(prompt, system_instruction)
         return json.loads(response_text)
 
     def recommend_fabric(self, garment_type: str, occasion: str, weather: str, fabric_preferences: list, fit: str) -> dict:
@@ -113,7 +127,7 @@ Return ONLY a JSON object with exactly 3 recommendations in this structure:
   ]
 }}
 """
-        response_text = self._call_groq(prompt, system_instruction)
+        response_text = self._call_foundry(prompt, system_instruction)
         return json.loads(response_text)
 
     def estimate_fabric(self, garment_type: str, fabric: str, measurements: dict) -> dict:
@@ -148,5 +162,5 @@ Return ONLY a JSON object in this structure:
   "reason": "Based on the matching height and waist in the dataset..."
 }}
 """
-        response_text = self._call_groq(prompt, system_instruction)
+        response_text = self._call_foundry(prompt, system_instruction)
         return json.loads(response_text)
