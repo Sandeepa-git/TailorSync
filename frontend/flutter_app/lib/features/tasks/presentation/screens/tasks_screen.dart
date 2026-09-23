@@ -75,7 +75,7 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
           if (_user?['role'] == 'staff' || _user?['role'] == 'STAFF') {
             _tasks = _allOrders.where((o) => o['staff_id'] == _user?['id']).toList();
           } else {
-            _tasks = _allOrders.where((o) => o['status'] != 'Delivered').toList();
+            _tasks = List.from(_allOrders);
           }
 
           _loading = false;
