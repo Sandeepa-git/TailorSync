@@ -1,9 +1,9 @@
 import logging
-from app.services.gemini_client import GeminiClient
+from app.services.groq_client import GroqClient
 from app.schemas.ai import (
-    MeasurementPredictIn, MeasurementPredictOut,
-    FabricRecommendIn, FabricRecommendOut,
-    FabricEstimateIn, FabricEstimateOut
+    MeasurementPredictIn, MeasurementPredictOut, MeasurementPredictionItem,
+    FabricRecommendIn, FabricRecommendOut, FabricRecommendationItem,
+    FabricEstimateIn, FabricEstimateOut, EstimatedRange
 )
 
 logger = logging.getLogger(__name__)
@@ -16,45 +16,29 @@ GARMENT_FABRIC_WIDTH = {
 }
 
 def predict_measurements(request: MeasurementPredictIn, user_id: int, business_id: int, order_id: int = None) -> MeasurementPredictOut:
-    client = GeminiClient()
-    
-    # We pass the raw measurements, and GeminiClient + DatasetService handles mapping
-    data = client.predict_measurements(
-        garment_type=request.garment_type,
-        provided_measurements=request.measurements,
-        business_id=business_id,
-        user_id=user_id,
-        order_id=order_id
-    )
-    
+    logger.info(f"AI [predict_measurements] called for user {user_id} using Groq")
+    client = GroqClient()
+    data = client.predict_measurements(request.garment_type, request.measurements)
     return MeasurementPredictOut(**data)
 
 def recommend_fabrics(request: FabricRecommendIn, user_id: int, business_id: int, order_id: int = None) -> FabricRecommendOut:
-    client = GeminiClient()
-    
+    logger.info(f"AI [recommend_fabrics] called for user {user_id} using Groq")
+    client = GroqClient()
     data = client.recommend_fabric(
         garment_type=request.garment_type,
         occasion=request.occasion,
         weather=request.weather,
         fabric_preferences=request.fabric_preferences,
-        fit=request.fit,
-        business_id=business_id,
-        user_id=user_id,
-        order_id=order_id
+        fit=request.fit
     )
-    
     return FabricRecommendOut(**data)
 
 def estimate_fabric(request: FabricEstimateIn, user_id: int, business_id: int, order_id: int = None) -> FabricEstimateOut:
-    client = GeminiClient()
-    
+    logger.info(f"AI [estimate_fabric] called for user {user_id} using Groq")
+    client = GroqClient()
     data = client.estimate_fabric(
         garment_type=request.garment_type,
         fabric=request.fabric,
-        measurements=request.measurements,
-        business_id=business_id,
-        user_id=user_id,
-        order_id=order_id
+        measurements=request.measurements
     )
-    
     return FabricEstimateOut(**data)

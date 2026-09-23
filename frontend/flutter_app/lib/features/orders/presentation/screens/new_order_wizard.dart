@@ -95,17 +95,43 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
   final Map<int, TextEditingController> _measurementControllers = {};
   
   Map<String, dynamic> _getDefaultTemplateForCategory(String cat) {
-      // Basic fallback if API fails
+      List<Map<String, dynamic>> fields = [];
+      
+      if (cat.contains('Shirt')) {
+        fields = [
+          {'id': 1, 'field_name': 'Height', 'unit': 'in', 'is_required': true, 'placeholder': '70'},
+          {'id': 2, 'field_name': 'Chest', 'unit': 'in', 'is_required': true, 'placeholder': '40'},
+          {'id': 3, 'field_name': 'Shoulder', 'unit': 'in', 'is_required': false, 'placeholder': '18'},
+          {'id': 4, 'field_name': 'Collar Size', 'unit': 'in', 'is_required': false, 'placeholder': '15'},
+          {'id': 5, 'field_name': 'Short Sleeve Length', 'unit': 'in', 'is_required': false, 'placeholder': '10'},
+          {'id': 6, 'field_name': 'Long Sleeve Length', 'unit': 'in', 'is_required': false, 'placeholder': '25'},
+          {'id': 7, 'field_name': 'Sleeve Open', 'unit': 'in', 'is_required': false, 'placeholder': '12'},
+        ];
+      } else if (cat.contains('Trouser')) {
+        fields = [
+          {'id': 1, 'field_name': 'Height', 'unit': 'in', 'is_required': true, 'placeholder': '70'},
+          {'id': 2, 'field_name': 'Waist', 'unit': 'in', 'is_required': true, 'placeholder': '32'},
+          {'id': 3, 'field_name': 'Height till Knee', 'unit': 'in', 'is_required': false, 'placeholder': '22'},
+          {'id': 4, 'field_name': 'Round Knee', 'unit': 'in', 'is_required': false, 'placeholder': '16'},
+          {'id': 5, 'field_name': 'Round End', 'unit': 'in', 'is_required': false, 'placeholder': '14'},
+          {'id': 6, 'field_name': 'Seat', 'unit': 'in', 'is_required': false, 'placeholder': '38'},
+          {'id': 7, 'field_name': 'Crotch', 'unit': 'in', 'is_required': false, 'placeholder': '24'},
+        ];
+      } else {
+        // Tops & Full Body
+        fields = [
+          {'id': 1, 'field_name': 'Height', 'unit': 'in', 'is_required': true, 'placeholder': '70'},
+          {'id': 2, 'field_name': 'Chest', 'unit': 'in', 'is_required': true, 'placeholder': '40'},
+          {'id': 3, 'field_name': 'Shoulder', 'unit': 'in', 'is_required': false, 'placeholder': '18'},
+          {'id': 4, 'field_name': 'Waist', 'unit': 'in', 'is_required': false, 'placeholder': '32'},
+          {'id': 5, 'field_name': 'Hips', 'unit': 'in', 'is_required': false, 'placeholder': '40'},
+          {'id': 6, 'field_name': 'Sleeve Length', 'unit': 'in', 'is_required': false, 'placeholder': '25'},
+        ];
+      }
+
       return {
         'category_name': cat,
-        'fields': [
-          {'id': 1, 'field_name': 'Shoulder Length', 'unit': 'cm', 'is_required': true, 'placeholder': '18'},
-          {'id': 2, 'field_name': 'Height', 'unit': 'cm', 'is_required': true, 'placeholder': '175'},
-          {'id': 3, 'field_name': 'Height Till Knee', 'unit': 'cm', 'is_required': true, 'placeholder': '55'},
-          {'id': 4, 'field_name': 'Waist', 'unit': 'cm', 'is_required': true, 'placeholder': '32'},
-          {'id': 5, 'field_name': 'Round Knee', 'unit': 'cm', 'is_required': false, 'placeholder': '20'},
-          {'id': 6, 'field_name': 'Seat', 'unit': 'cm', 'is_required': false, 'placeholder': '38'},
-        ]
+        'fields': fields
       };
   }
 
@@ -164,8 +190,7 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
     if (_currentStep == 2) {
       // Validate Priority Inputs
       final fields = (_measurementTemplate?['fields'] as List? ?? []).cast<Map<String, dynamic>>();
-      final priorityFields = fields.where((f) => f['is_required'] == true || 
-          ['Shoulder Length', 'Height', 'Height Till Knee', 'Waist'].contains(f['field_name'])).toList();
+      final priorityFields = fields.where((f) => f['is_required'] == true).toList();
           
       final missing = <String>[];
       final enteredMeasures = <String, String>{};
