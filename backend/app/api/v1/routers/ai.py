@@ -21,7 +21,7 @@ def predict(payload: MeasurementPredictIn, current_user: User = Depends(rate_lim
         traceback.print_exc()
         raise HTTPException(
             status_code=503,
-            detail="AI prediction is temporarily unavailable."
+            detail=f"AI prediction unavailable: {str(e)}"
         )
 
 @router.post("/recommend-fabric", response_model=FabricRecommendOut)
@@ -34,7 +34,7 @@ def recommend(payload: FabricRecommendIn, current_user: User = Depends(rate_limi
     except Exception as e:
         raise HTTPException(
             status_code=503,
-            detail="Fabric recommendations are temporarily unavailable. Please select a fabric manually."
+            detail=f"AI recommendation unavailable: {str(e)}"
         )
 
 @router.post("/estimate-fabric", response_model=FabricEstimateOut)
@@ -47,5 +47,5 @@ def estimate(payload: FabricEstimateIn, current_user: User = Depends(rate_limit_
     except Exception as e:
         raise HTTPException(
             status_code=503,
-            detail="Automatic fabric estimation is temporarily unavailable. Please enter the required quantity manually."
+            detail=f"AI estimation unavailable: {str(e)}"
         )
