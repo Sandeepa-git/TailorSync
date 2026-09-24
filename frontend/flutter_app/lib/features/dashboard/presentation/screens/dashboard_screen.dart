@@ -270,15 +270,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                         ),
                       ),
                       const SizedBox(width: 10),
-                      Expanded(
-                        child: _StatCard(
-                          label: 'Monthly Rev.',
-                          value: '\$${_stats?['monthly_revenue'] ?? 0}',
-                          icon: Icons.attach_money_rounded,
-                          color: const Color(0xFF2E7D32),
-                          bgColor: const Color(0xFFE8F5E9),
-                          onTap: () => context.go('/reports'),
-                        ),
+                      const Expanded(
+                        child: SizedBox(),
                       ),
                     ],
                   ),
