@@ -52,11 +52,20 @@ class FoundryClient:
                 model=self.model_name
             )
             content = response.choices[0].message.content
-            # Basic cleanup in case it returns markdown JSON
-            if content.startswith("```json"):
-                content = content.replace("```json", "").replace("```", "").strip()
-            elif content.startswith("```"):
-                content = content.replace("```", "").strip()
+            
+            # Robust JSON extraction: Find content between ```json and ``` or first { and last }
+            import re
+            json_match = re.search(r'```(?:json)?\s*(.*?)\s*```', content, re.DOTALL)
+            if json_match:
+                content = json_match.group(1)
+            else:
+                # Fallback to finding outermost brackets
+                start_idx = content.find('{')
+                end_idx = content.rfind('}')
+                if start_idx != -1 and end_idx != -1 and end_idx > start_idx:
+                    content = content[start_idx:end_idx+1]
+                    
+            content = content.strip()
             return content
         except Exception as e:
             logger.error(f"Foundry API error: {e}")
