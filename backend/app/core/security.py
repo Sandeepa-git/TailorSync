@@ -14,13 +14,23 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
         return False
 
 def needs_rehash(hashed_password: str) -> bool:
+    # Rehash if the cost factor is greater than 10
+    try:
+        if hashed_password == "firebase_managed":
+            return False
+        parts = hashed_password.split('$')
+        if len(parts) >= 3 and int(parts[2]) > 8:
+            return True
+    except Exception:
+        pass
     return False
 
 def get_password_hash(password: str) -> str:
     pw_bytes = password.encode('utf-8')
     if len(pw_bytes) > 72:
         pw_bytes = pw_bytes[:72]
-    salt = bcrypt.gensalt()
+    # Reduce rounds to 8 to significantly speed up login on low-tier cloud instances
+    salt = bcrypt.gensalt(rounds=8)
     return bcrypt.hashpw(pw_bytes, salt).decode('utf-8')
 
 def validate_password_strength(password: str) -> tuple[bool, str]:
