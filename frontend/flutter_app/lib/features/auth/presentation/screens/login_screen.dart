@@ -114,6 +114,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   ),
                   const SizedBox(height: 20),
                   TextField(
+                    style: const TextStyle(fontSize: 14),
                     controller: resetEmailController,
                     keyboardType: TextInputType.emailAddress,
                     autofillHints: const [AutofillHints.email],
@@ -361,6 +362,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
                               if (_isSignUp) ...[
                                 TextFormField(
+                                  style: const TextStyle(fontSize: 14),
                                   controller: _name,
                                   autofillHints: const [AutofillHints.name],
                                   decoration: const InputDecoration(
@@ -372,6 +374,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 ),
                                 const SizedBox(height: 16),
                                 TextFormField(
+                                  style: const TextStyle(fontSize: 14),
                                   controller: _phone,
                                   keyboardType: TextInputType.phone,
                                   autofillHints: const [AutofillHints.telephoneNumber],
@@ -384,6 +387,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 ),
                                 const SizedBox(height: 16),
                                 TextFormField(
+                                  style: const TextStyle(fontSize: 14),
                                   controller: _businessName,
                                   decoration: const InputDecoration(
                                     labelText: 'Business / Organization Name',
@@ -394,6 +398,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 ),
                                 const SizedBox(height: 16),
                                 TextFormField(
+                                  style: const TextStyle(fontSize: 14),
                                   controller: _businessRegNumber,
                                   decoration: const InputDecoration(
                                     labelText: 'Business Registered Number',
@@ -404,6 +409,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 ),
                                 const SizedBox(height: 16),
                                 TextFormField(
+                                  style: const TextStyle(fontSize: 14),
                                   controller: _businessContact,
                                   keyboardType: TextInputType.phone,
                                   decoration: const InputDecoration(
@@ -417,6 +423,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               ],
 
                               TextFormField(
+                                  style: const TextStyle(fontSize: 14),
                                 controller: _email,
                                 keyboardType: TextInputType.emailAddress,
                                 autofillHints: const [AutofillHints.email],
@@ -436,6 +443,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               const SizedBox(height: 16),
 
                               TextFormField(
+                                  style: const TextStyle(fontSize: 14),
                                 controller: _password,
                                 obscureText: _obscurePassword,
                                 autofillHints: _isSignUp ? const [AutofillHints.newPassword] : const [AutofillHints.password],
@@ -481,6 +489,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 const SizedBox(height: 16),
 
                                 TextFormField(
+                                  style: const TextStyle(fontSize: 14),
                                   controller: _confirmPassword,
                                   obscureText: _obscureConfirmPassword,
                                   autofillHints: const [AutofillHints.newPassword],
