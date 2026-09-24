@@ -301,8 +301,14 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
           _aiPredictionLoading = false;
         });
       } catch (e) {
+        String errorMsg = "AI unavailable. You can enter manually later.";
+        if (e is DioException && e.response?.data != null && e.response!.data is Map && (e.response!.data as Map).containsKey('detail')) {
+            errorMsg = (e.response!.data as Map)['detail'].toString();
+        } else {
+            errorMsg = e.toString();
+        }
         setState(() {
-          _aiPredictionError = "AI unavailable. You can enter manually later.";
+          _aiPredictionError = errorMsg;
           _aiPredictionLoading = false;
         });
       }
@@ -329,7 +335,11 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
           _fabricRecLoading = false;
         });
       } catch (e) {
-        setState(() { _fabricRecError = "Fabric AI unavailable."; _fabricRecLoading = false; });
+        String errorMsg = "Fabric AI unavailable.";
+        if (e is DioException && e.response?.data != null && e.response!.data is Map && (e.response!.data as Map).containsKey('detail')) {
+            errorMsg = (e.response!.data as Map)['detail'].toString();
+        }
+        setState(() { _fabricRecError = errorMsg; _fabricRecLoading = false; });
       }
       return;
     }
@@ -358,7 +368,11 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
           _fabricEstLoading = false;
         });
       } catch (e) {
-        setState(() { _fabricEstError = "Fabric estimation unavailable."; _fabricEstLoading = false; });
+        String errorMsg = "Fabric estimation unavailable.";
+        if (e is DioException && e.response?.data != null && e.response!.data is Map && (e.response!.data as Map).containsKey('detail')) {
+            errorMsg = (e.response!.data as Map)['detail'].toString();
+        }
+        setState(() { _fabricEstError = errorMsg; _fabricEstLoading = false; });
       }
       return;
     }
