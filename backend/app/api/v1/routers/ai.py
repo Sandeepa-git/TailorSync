@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
-from app.api.deps import get_current_user
+from app.api.deps import get_current_user, rate_limit_ai
 from app.models.user import User
 from app.schemas.ai import (
     MeasurementPredictIn, MeasurementPredictOut,
@@ -10,7 +10,7 @@ from app.schemas.ai import (
 router = APIRouter()
 
 @router.post("/predict-measurements", response_model=MeasurementPredictOut)
-def predict(payload: MeasurementPredictIn, current_user: User = Depends(get_current_user)):
+def predict(payload: MeasurementPredictIn, current_user: User = Depends(rate_limit_ai)):
     try:
         from app.services.ai_service import predict_measurements
         return predict_measurements(
@@ -21,11 +21,11 @@ def predict(payload: MeasurementPredictIn, current_user: User = Depends(get_curr
         traceback.print_exc()
         raise HTTPException(
             status_code=503,
-            detail=f"AI prediction is temporarily unavailable. Error: {str(e)}"
+            detail="AI prediction is temporarily unavailable."
         )
 
 @router.post("/recommend-fabric", response_model=FabricRecommendOut)
-def recommend(payload: FabricRecommendIn, current_user: User = Depends(get_current_user)):
+def recommend(payload: FabricRecommendIn, current_user: User = Depends(rate_limit_ai)):
     try:
         from app.services.ai_service import recommend_fabrics
         return recommend_fabrics(
@@ -38,7 +38,7 @@ def recommend(payload: FabricRecommendIn, current_user: User = Depends(get_curre
         )
 
 @router.post("/estimate-fabric", response_model=FabricEstimateOut)
-def estimate(payload: FabricEstimateIn, current_user: User = Depends(get_current_user)):
+def estimate(payload: FabricEstimateIn, current_user: User = Depends(rate_limit_ai)):
     try:
         from app.services.ai_service import estimate_fabric
         return estimate_fabric(

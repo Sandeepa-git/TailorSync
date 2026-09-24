@@ -43,6 +43,9 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
     for (var ctrl in _measurementControllers.values) {
       ctrl.dispose();
     }
+    for (var ctrl in _customMeasurementControllers.values) {
+      ctrl.dispose();
+    }
     super.dispose();
   }
 
@@ -94,18 +97,31 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
   bool _loadingTemplate = false;
   final Map<int, TextEditingController> _measurementControllers = {};
   
+  // Custom added measurements
+  final List<Map<String, dynamic>> _customMeasurements = [];
+  final Map<int, TextEditingController> _customMeasurementControllers = {};
+  int _customMeasurementCounter = 0;
+  
   Map<String, dynamic> _getDefaultTemplateForCategory(String cat) {
       List<Map<String, dynamic>> fields = [];
       
-      if (cat.contains('Shirt')) {
+      if (cat == 'Short Sleeve Shirt') {
         fields = [
           {'id': 1, 'field_name': 'Height', 'unit': 'in', 'is_required': true, 'placeholder': '70'},
           {'id': 2, 'field_name': 'Chest', 'unit': 'in', 'is_required': true, 'placeholder': '40'},
-          {'id': 3, 'field_name': 'Shoulder', 'unit': 'in', 'is_required': false, 'placeholder': '18'},
-          {'id': 4, 'field_name': 'Collar Size', 'unit': 'in', 'is_required': false, 'placeholder': '15'},
-          {'id': 5, 'field_name': 'Short Sleeve Length', 'unit': 'in', 'is_required': false, 'placeholder': '10'},
-          {'id': 6, 'field_name': 'Long Sleeve Length', 'unit': 'in', 'is_required': false, 'placeholder': '25'},
-          {'id': 7, 'field_name': 'Sleeve Open', 'unit': 'in', 'is_required': false, 'placeholder': '12'},
+          {'id': 3, 'field_name': 'Shoulder', 'unit': 'in', 'is_required': true, 'placeholder': '18'},
+          {'id': 4, 'field_name': 'Collar Size', 'unit': 'in', 'is_required': true, 'placeholder': '15'},
+          {'id': 5, 'field_name': 'Short Sleeve Length', 'unit': 'in', 'is_required': true, 'placeholder': '10'},
+          {'id': 6, 'field_name': 'Sleeve Open', 'unit': 'in', 'is_required': false, 'placeholder': '12'},
+        ];
+      } else if (cat == 'Long Sleeve Shirt') {
+        fields = [
+          {'id': 1, 'field_name': 'Height', 'unit': 'in', 'is_required': true, 'placeholder': '70'},
+          {'id': 2, 'field_name': 'Chest', 'unit': 'in', 'is_required': true, 'placeholder': '40'},
+          {'id': 3, 'field_name': 'Shoulder', 'unit': 'in', 'is_required': true, 'placeholder': '18'},
+          {'id': 4, 'field_name': 'Collar Size', 'unit': 'in', 'is_required': true, 'placeholder': '15'},
+          {'id': 5, 'field_name': 'Long Sleeve Length', 'unit': 'in', 'is_required': true, 'placeholder': '25'},
+          {'id': 6, 'field_name': 'Sleeve Open', 'unit': 'in', 'is_required': false, 'placeholder': '12'},
         ];
       } else if (cat.contains('Trouser')) {
         fields = [
@@ -116,6 +132,36 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
           {'id': 5, 'field_name': 'Round End', 'unit': 'in', 'is_required': false, 'placeholder': '14'},
           {'id': 6, 'field_name': 'Seat', 'unit': 'in', 'is_required': false, 'placeholder': '38'},
           {'id': 7, 'field_name': 'Crotch', 'unit': 'in', 'is_required': false, 'placeholder': '24'},
+        ];
+        if (cat == 'Short Trouser') {
+            fields.removeWhere((f) => f['field_name'] == 'Height till Knee' || f['field_name'] == 'Round End');
+        }
+      } else if (cat == 'Dresses') {
+        fields = [
+          {'id': 1, 'field_name': 'Height', 'unit': 'in', 'is_required': true, 'placeholder': '65'},
+          {'id': 2, 'field_name': 'Bust', 'unit': 'in', 'is_required': true, 'placeholder': '36'},
+          {'id': 3, 'field_name': 'Waist', 'unit': 'in', 'is_required': true, 'placeholder': '28'},
+          {'id': 4, 'field_name': 'Hips', 'unit': 'in', 'is_required': true, 'placeholder': '38'},
+          {'id': 5, 'field_name': 'Shoulder', 'unit': 'in', 'is_required': false, 'placeholder': '16'},
+          {'id': 6, 'field_name': 'Dress Length', 'unit': 'in', 'is_required': true, 'placeholder': '40'},
+        ];
+      } else if (cat == 'Suits') {
+        fields = [
+          {'id': 1, 'field_name': 'Height', 'unit': 'in', 'is_required': true, 'placeholder': '70'},
+          {'id': 2, 'field_name': 'Chest', 'unit': 'in', 'is_required': true, 'placeholder': '42'},
+          {'id': 3, 'field_name': 'Waist', 'unit': 'in', 'is_required': true, 'placeholder': '34'},
+          {'id': 4, 'field_name': 'Shoulder', 'unit': 'in', 'is_required': true, 'placeholder': '19'},
+          {'id': 5, 'field_name': 'Sleeve Length', 'unit': 'in', 'is_required': true, 'placeholder': '26'},
+          {'id': 6, 'field_name': 'Trouser Waist', 'unit': 'in', 'is_required': true, 'placeholder': '34'},
+          {'id': 7, 'field_name': 'Trouser Length', 'unit': 'in', 'is_required': true, 'placeholder': '40'},
+        ];
+      } else if (cat == 'Jackets' || cat == 'Coats') {
+        fields = [
+          {'id': 1, 'field_name': 'Height', 'unit': 'in', 'is_required': true, 'placeholder': '70'},
+          {'id': 2, 'field_name': 'Chest', 'unit': 'in', 'is_required': true, 'placeholder': '42'},
+          {'id': 3, 'field_name': 'Shoulder', 'unit': 'in', 'is_required': true, 'placeholder': '19'},
+          {'id': 4, 'field_name': 'Sleeve Length', 'unit': 'in', 'is_required': true, 'placeholder': '26'},
+          {'id': 5, 'field_name': 'Jacket Length', 'unit': 'in', 'is_required': true, 'placeholder': '30'},
         ];
       } else {
         // Tops & Full Body
@@ -174,13 +220,13 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
     if (_currentStep == 1) {
       if (_selectedGarment == null) { _showSnack('⚠️ Please select a garment'); return; }
       setState(() { _loadingTemplate = true; _currentStep++; });
-      try {
-        final resp = await api.getMeasurementTemplateByCategory(_selectedGarment!);
-        _measurementTemplate = resp.data;
-      } catch (e) {
-        _measurementTemplate = _getDefaultTemplateForCategory(_selectedGarment!);
-      }
+      
+      // Always use the refined client-side template for accurate garment-specific measurements
+      _measurementTemplate = _getDefaultTemplateForCategory(_selectedGarment!);
+      
       _measurementControllers.clear();
+      _customMeasurements.clear();
+      _customMeasurementControllers.clear();
       final fields = _measurementTemplate!['fields'] as List;
       for (var f in fields) { _measurementControllers[f['id']] = TextEditingController(); }
       setState(() { _loadingTemplate = false; });
@@ -211,6 +257,17 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
         final name = f['field_name'] as String;
         final text = _measurementControllers[id]?.text.trim() ?? '';
         if (text.isNotEmpty) {
+          enteredMeasures[name] = text;
+          _confirmedMeasurements[name] = text;
+          _isAiGenerated[name] = false;
+        }
+      }
+      
+      for (var custom in _customMeasurements) {
+        final id = custom['id'] as int;
+        final name = custom['field_name'] as String;
+        final text = _customMeasurementControllers[id]?.text.trim() ?? '';
+        if (name.isNotEmpty && text.isNotEmpty) {
           enteredMeasures[name] = text;
           _confirmedMeasurements[name] = text;
           _isAiGenerated[name] = false;
@@ -351,8 +408,13 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
                 _buildStepper(),
                 Expanded(
                   child: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 300),
-                    transitionBuilder: (w, anim) => FadeTransition(opacity: anim, child: SlideTransition(position: Tween<Offset>(begin: const Offset(0.05, 0), end: Offset.zero).animate(anim), child: w)),
+                    duration: const Duration(milliseconds: 500),
+                    switchInCurve: Curves.easeOutCubic,
+                    switchOutCurve: Curves.easeInCubic,
+                    transitionBuilder: (w, anim) => FadeTransition(
+                      opacity: anim, 
+                      child: SlideTransition(position: Tween<Offset>(begin: const Offset(0.05, 0), end: Offset.zero).animate(anim), child: w)
+                    ),
                     child: Container(
                       key: ValueKey<int>(_currentStep),
                       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
@@ -378,7 +440,14 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text('Step ${_currentStep + 1} of ${_stepTitles.length}', style: GoogleFonts.inter(color: Colors.black54, fontSize: 12, fontWeight: FontWeight.bold)),
-              Text(_stepTitles[_currentStep], style: GoogleFonts.outfit(color: Colors.black87, fontSize: 16, fontWeight: FontWeight.w600)),
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 400),
+                transitionBuilder: (w, anim) => FadeTransition(
+                  opacity: anim, 
+                  child: SlideTransition(position: Tween<Offset>(begin: const Offset(0, 0.5), end: Offset.zero).animate(anim), child: w)
+                ),
+                child: Text(_stepTitles[_currentStep], key: ValueKey<int>(_currentStep), style: GoogleFonts.outfit(color: Colors.black87, fontSize: 16, fontWeight: FontWeight.w600)),
+              ),
             ],
           ),
           const SizedBox(height: 12),
@@ -532,6 +601,8 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
     if (_loadingTemplate) return const Center(child: CircularProgressIndicator(color: Color(0xFF1565C0)));
     
     final fields = (_measurementTemplate?['fields'] as List? ?? []).cast<Map<String, dynamic>>();
+    final requiredFields = fields.where((f) => f['is_required'] == true).toList();
+    final optionalFields = fields.where((f) => f['is_required'] != true).toList();
     
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -540,62 +611,173 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
           children: [
             const Icon(Icons.auto_awesome, color: Color(0xFF1565C0)),
             const SizedBox(width: 12),
-            Text('Smart Input', style: GoogleFonts.outfit(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black87)),
+            Text('Measurements Input', style: GoogleFonts.outfit(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black87)),
           ],
         ),
         const SizedBox(height: 8),
-        Text('Provide the required measurements and any others you know. TailorSync AI will predict the rest using our advanced global dataset.', style: GoogleFonts.inter(color: Colors.black87)),
+        Text('Provide required measurements. Optional ones can be left blank, and AI can suggest them.', style: GoogleFonts.inter(color: Colors.black87)),
         const SizedBox(height: 24),
         Expanded(
-          child: ListView.builder(
-            itemCount: fields.length,
-            itemBuilder: (ctx, i) {
-              final f = fields[i];
-              return Container(
-                margin: const EdgeInsets.only(bottom: 16),
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.05),
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: Colors.black12),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (requiredFields.isNotEmpty) ...[
+                  Text('Required Measurements', style: GoogleFonts.outfit(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87)),
+                  const SizedBox(height: 12),
+                  ...requiredFields.map((f) => _buildMeasurementRow(f, true)).toList(),
+                  const SizedBox(height: 24),
+                ],
+                if (optionalFields.isNotEmpty) ...[
+                  Text('Optional Measurements', style: GoogleFonts.outfit(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87)),
+                  const SizedBox(height: 12),
+                  ...optionalFields.map((f) => _buildMeasurementRow(f, false)).toList(),
+                  const SizedBox(height: 24),
+                ],
+                if (_customMeasurements.isNotEmpty) ...[
+                  Text('Custom Measurements', style: GoogleFonts.outfit(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87)),
+                  const SizedBox(height: 12),
+                  ..._customMeasurements.map((f) => _buildCustomMeasurementRow(f)).toList(),
+                  const SizedBox(height: 24),
+                ],
+                Center(
+                  child: TextButton.icon(
+                    onPressed: () {
+                      setState(() {
+                        _customMeasurementCounter++;
+                        final newId = 1000 + _customMeasurementCounter;
+                        _customMeasurements.add({'id': newId, 'field_name': ''});
+                        _customMeasurementControllers[newId] = TextEditingController();
+                      });
+                    },
+                    icon: const Icon(Icons.add, color: Color(0xFF1565C0)),
+                    label: Text('+ Add Other Measurement', style: GoogleFonts.inter(color: const Color(0xFF1565C0), fontWeight: FontWeight.bold)),
+                  ),
                 ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(f['field_name'], style: GoogleFonts.inter(fontWeight: FontWeight.w600, color: Colors.black87)),
-                          if (f['is_required'] == true) Text('Required for AI accuracy', style: GoogleFonts.inter(fontSize: 11, color: const Color(0xFF1565C0)))
-                          else Text('Optional', style: GoogleFonts.inter(fontSize: 11, color: Colors.black54)),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      width: 100,
-                      child: TextField(
-                        controller: _measurementControllers[f['id']],
-                        keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                        inputFormatters: [
-                          FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
-                        ],
-                        style: const TextStyle(color: Colors.black87, fontWeight: FontWeight.bold),
-                        textAlign: TextAlign.center,
-                        decoration: InputDecoration(
-                          hintText: f['placeholder'] ?? '0.0', hintStyle: const TextStyle(color: Colors.black38),
-                          suffixText: f['unit'], suffixStyle: const TextStyle(color: Colors.black54),
-                          filled: true, fillColor: Colors.grey.shade100,
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: Colors.black12)),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            },
+                const SizedBox(height: 32),
+              ],
+            ),
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildMeasurementRow(Map<String, dynamic> f, bool isRequired) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.black.withOpacity(0.05),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.black12),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Flexible(
+                      child: Text(
+                        f['field_name'], 
+                        style: GoogleFonts.inter(fontWeight: FontWeight.w600, color: Colors.black87),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    if (isRequired) Text(' *', style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: Colors.redAccent)),
+                  ],
+                ),
+                if (isRequired) Text('Required', style: GoogleFonts.inter(fontSize: 11, color: const Color(0xFF1565C0)))
+                else Text('Optional', style: GoogleFonts.inter(fontSize: 11, color: Colors.black54)),
+              ],
+            ),
+          ),
+          const SizedBox(width: 8),
+          SizedBox(
+            width: 110,
+            child: TextField(
+              controller: _measurementControllers[f['id']],
+              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
+              ],
+              style: const TextStyle(color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 14),
+              textAlign: TextAlign.center,
+              decoration: InputDecoration(
+                hintText: f['placeholder'] ?? 'e.g. 10.5', 
+                hintStyle: const TextStyle(color: Colors.black38, fontSize: 13),
+                suffixText: f['unit'], 
+                suffixStyle: const TextStyle(color: Colors.black54, fontSize: 13),
+                filled: true, 
+                fillColor: Colors.grey.shade100,
+                contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: const BorderSide(color: Colors.black12)),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCustomMeasurementRow(Map<String, dynamic> f) {
+    final id = f['id'] as int;
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.black.withOpacity(0.05),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.black12),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: TextField(
+              onChanged: (val) {
+                final idx = _customMeasurements.indexWhere((m) => m['id'] == id);
+                if (idx != -1) _customMeasurements[idx]['field_name'] = val;
+              },
+              style: const TextStyle(color: Colors.black87, fontWeight: FontWeight.w600),
+              decoration: const InputDecoration(
+                hintText: 'Measurement Name',
+                hintStyle: TextStyle(color: Colors.black38),
+                border: InputBorder.none,
+                isDense: true,
+              ),
+            ),
+          ),
+          SizedBox(
+            width: 100,
+            child: TextField(
+              controller: _customMeasurementControllers[id],
+              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
+              ],
+              style: const TextStyle(color: Colors.black87, fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+              decoration: InputDecoration(
+                hintText: '0.0', hintStyle: const TextStyle(color: Colors.black38),
+                filled: true, fillColor: Colors.grey.shade100,
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: Colors.black12)),
+              ),
+            ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.close, color: Colors.black54),
+            onPressed: () {
+              setState(() {
+                _customMeasurements.removeWhere((m) => m['id'] == id);
+                _customMeasurementControllers.remove(id)?.dispose();
+              });
+            },
+          ),
+        ],
+      ),
     );
   }
 
@@ -640,6 +822,8 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
             itemBuilder: (ctx, i) {
               final p = _aiPredictions[i];
               final mName = p['measurement'] as String;
+              final isConfirmed = _confirmedMeasurements.containsKey(mName) && _confirmedMeasurements[mName]!.isNotEmpty;
+              final displayValue = isConfirmed ? _confirmedMeasurements[mName]! : p['recommended'].toString();
               return Container(
                 margin: const EdgeInsets.only(bottom: 16),
                 padding: const EdgeInsets.all(16),
@@ -655,10 +839,37 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(mName, style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: Colors.black87, fontSize: 16)),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                          decoration: BoxDecoration(color: const Color(0xFF1565C0), borderRadius: BorderRadius.circular(20)),
-                          child: Text(_confirmedMeasurements[mName] ?? p['recommended'].toString(), style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold)),
+                        Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                              decoration: BoxDecoration(color: isConfirmed ? const Color(0xFF1565C0) : Colors.grey, borderRadius: BorderRadius.circular(20)),
+                              child: Text(isConfirmed ? displayValue : 'Cleared', style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold)),
+                            ),
+                            if (isConfirmed) ...[
+                              const SizedBox(width: 8),
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    _confirmedMeasurements.remove(mName);
+                                    _isAiGenerated.remove(mName);
+                                  });
+                                },
+                                child: const Icon(Icons.close, color: Colors.redAccent, size: 20),
+                              )
+                            ] else ...[
+                              const SizedBox(width: 8),
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    _confirmedMeasurements[mName] = p['recommended'].toString();
+                                    _isAiGenerated[mName] = true;
+                                  });
+                                },
+                                child: const Icon(Icons.add_circle, color: Color(0xFF1565C0), size: 20),
+                              )
+                            ]
+                          ],
                         ),
                       ],
                     ),
@@ -884,9 +1095,17 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
           padding: const EdgeInsets.only(bottom: 8),
           child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                   Text(k, style: GoogleFonts.inter(color: Colors.black87)),
-                  Text(v, style: GoogleFonts.inter(color: Colors.black87, fontWeight: FontWeight.bold)),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Text(
+                      v, 
+                      style: GoogleFonts.inter(color: Colors.black87, fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.right,
+                    ),
+                  ),
               ]
           )
       );
@@ -894,6 +1113,9 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
 
   // --- Footer ---
   Widget _buildFooter() {
+    bool isLoading = _aiPredictionLoading || _fabricRecLoading || _fabricEstLoading || _loadingInit || _loadingTemplate;
+    if (isLoading) return const SizedBox.shrink();
+
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(

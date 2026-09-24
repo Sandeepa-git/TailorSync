@@ -411,10 +411,11 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
                     final isHighPriority = task['priority'] == 'High';
                     final currentStage = task['status'] ?? 'Order Received';
                     final stageIdx = _stages.indexOf(currentStage);
-                    final isOverdue = task['due_date'] != null &&
+                    final parsedDate = task['due_date'] != null ? DateTime.tryParse(task['due_date'].toString()) : null;
+                    final isOverdue = parsedDate != null &&
                         currentStage != 'Delivered' &&
                         currentStage != 'Ready' &&
-                        DateTime.parse(task['due_date']).isBefore(DateTime.now().subtract(const Duration(days: 1)));
+                        parsedDate.isBefore(DateTime.now().subtract(const Duration(days: 1)));
 
                     return RepaintBoundary(
                       child: _TaskCard(
@@ -436,6 +437,7 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
                         isHighPriority: isHighPriority,
                         isOverdue: isOverdue,
                         onUpdateStage: () => _showUpdateStageDialog(context, task),
+                        onUpdateDueDate: () => _updateDueDateOnly(context, task),
                       ),
                     );
                   },
@@ -447,8 +449,53 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
     );
   }
 
+  Future<void> _updateDueDateOnly(BuildContext context, dynamic task) async {
+    final currentDueDateStr = task['due_date']?.toString();
+    final initialDate = currentDueDateStr != null ? DateTime.tryParse(currentDueDateStr) : DateTime.now().add(const Duration(days: 7));
+    
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: initialDate ?? DateTime.now().add(const Duration(days: 7)),
+      firstDate: DateTime.now().subtract(const Duration(days: 30)),
+      lastDate: DateTime.now().add(const Duration(days: 365)),
+    );
+    
+    if (picked != null) {
+      final newDateIso = picked.toIso8601String();
+      if (currentDueDateStr?.split('T')[0] == newDateIso.split('T')[0]) return; // no change
+      
+      try {
+        final api = ref.read(apiClientProvider);
+        await api.updateOrder(task['id'], {
+          'due_date': newDateIso,
+        });
+        _loadData();
+        if (context.mounted) {
+           ScaffoldMessenger.of(context).showSnackBar(
+             const SnackBar(
+               content: Text('Due date updated'),
+               backgroundColor: Color(0xFF2ECC71),
+               behavior: SnackBarBehavior.floating,
+             ),
+           );
+        }
+      } catch (e) {
+        if (context.mounted) {
+           ScaffoldMessenger.of(context).showSnackBar(
+             const SnackBar(
+               content: Text('Failed to update due date'),
+               backgroundColor: AppTheme.error,
+               behavior: SnackBarBehavior.floating,
+             ),
+           );
+        }
+      }
+    }
+  }
+
   void _showUpdateStageDialog(BuildContext context, dynamic task) {
     final currentStage = task['status'] ?? 'Order Received';
+    String selectedStage = currentStage;
 
     showModalBottomSheet(
       context: context,
@@ -593,11 +640,10 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
 
                           try {
                             final api = ref.read(apiClientProvider);
-                            await api.updateOrder(task['id'], {
+                            final updateData = <String, dynamic>{
                               'status': selectedStage,
-                              'customer_id': task['customer_id'],
-                              'garment_type': task['garment_type'],
-                            });
+                            };
+                            await api.updateOrder(task['id'], updateData);
                             _loadData();
                             if (context.mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(
@@ -718,6 +764,7 @@ class _TaskCard extends StatelessWidget {
   final bool isHighPriority;
   final bool isOverdue;
   final VoidCallback? onUpdateStage;
+  final VoidCallback? onUpdateDueDate;
 
   const _TaskCard({
     super.key,
@@ -734,6 +781,7 @@ class _TaskCard extends StatelessWidget {
     this.isHighPriority = false,
     this.isOverdue = false,
     this.onUpdateStage,
+    this.onUpdateDueDate,
   });
 
   @override
@@ -766,16 +814,34 @@ class _TaskCard extends StatelessWidget {
                           orderId,
                           style: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.bold, color: AppTheme.textCaption),
                         ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: priorityBg,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Text(
-                            priority,
-                            style: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.bold, color: priorityColor),
-                          ),
+                        Row(
+                          children: [
+                            if (isOverdue) ...[
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFFFEBEE),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Text(
+                                  'OVERDUE',
+                                  style: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.bold, color: const Color(0xFFC62828)),
+                                ),
+                              ),
+                              const SizedBox(width: 6),
+                            ],
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: priorityBg,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Text(
+                                priority,
+                                style: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.bold, color: priorityColor),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -833,23 +899,36 @@ class _TaskCard extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         // Due date indicator
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.calendar_today_outlined,
-                              size: 14,
-                              color: isOverdue ? const Color(0xFFC62828) : const Color(0xFF757575),
+                        InkWell(
+                          onTap: onUpdateDueDate,
+                          borderRadius: BorderRadius.circular(4),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 2.0),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.calendar_today_outlined,
+                                  size: 14,
+                                  color: isOverdue ? const Color(0xFFC62828) : const Color(0xFF757575),
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  'Due: $dueDate',
+                                  style: GoogleFonts.inter(
+                                    fontSize: 11,
+                                    fontWeight: isOverdue ? FontWeight.bold : FontWeight.normal,
+                                    color: isOverdue ? const Color(0xFFC62828) : const Color(0xFF757575),
+                                  ),
+                                ),
+                                const SizedBox(width: 4),
+                                Icon(
+                                  Icons.edit_outlined,
+                                  size: 12,
+                                  color: const Color(0xFF757575),
+                                ),
+                              ],
                             ),
-                            const SizedBox(width: 4),
-                            Text(
-                              'Due: $dueDate',
-                              style: GoogleFonts.inter(
-                                fontSize: 11,
-                                fontWeight: isOverdue ? FontWeight.bold : FontWeight.normal,
-                                color: isOverdue ? const Color(0xFFC62828) : const Color(0xFF757575),
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
 
                         // Action buttons

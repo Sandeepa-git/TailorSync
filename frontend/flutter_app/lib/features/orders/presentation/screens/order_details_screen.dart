@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../models/order.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:share_plus/share_plus.dart';
 
 class OrderDetailsScreen extends ConsumerWidget {
   final Order order;
@@ -135,10 +136,24 @@ class OrderDetailsScreen extends ConsumerWidget {
               width: double.infinity,
               child: ElevatedButton.icon(
                 onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Print invoice coming soon!')));
+                  final String orderId = '#ORD-${order.id.toString().padLeft(4, '0')}';
+                  final String customer = order.customerName ?? 'N/A';
+                  final String garment = order.garmentType ?? 'N/A';
+                  final String status = order.status ?? 'N/A';
+                  final String dueDate = order.dueDate != null ? order.dueDate!.toString().split('T')[0] : 'N/A';
+                  
+                  final String shareText = 'TailorSync Order Details\n\n'
+                      'Order ID: $orderId\n'
+                      'Customer: $customer\n'
+                      'Garment: $garment\n'
+                      'Status: $status\n'
+                      'Due Date: $dueDate\n\n'
+                      'Track your order with TailorSync!';
+
+                  Share.share(shareText, subject: 'Order $orderId Details');
                 },
-                icon: const Icon(Icons.print, color: Colors.white),
-                label: const Text('Print Receipt / Invoice', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                icon: const Icon(Icons.share, color: Colors.white),
+                label: const Text('Share Order Details', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF1A237E),
                   padding: const EdgeInsets.symmetric(vertical: 16),

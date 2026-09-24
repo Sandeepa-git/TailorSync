@@ -228,40 +228,59 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               ),
               const SizedBox(height: 24),
 
-              // 3 Compact Stat Cards Row (Active, Due Today, Overdue)
-              Row(
+              // Stat Cards Grid
+              Column(
                 children: [
-                  Expanded(
-                    child: _StatCard(
-                      label: 'Active',
-                      value: '$activeOrders',
-                      icon: Icons.work_outline_rounded,
-                      color: const Color(0xFF1565C0),
-                      bgColor: const Color(0xFFE3F2FD),
-                      onTap: () => context.go('/tasks'),
-                    ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _StatCard(
+                          label: 'Active Orders',
+                          value: '$activeOrders',
+                          icon: Icons.work_outline_rounded,
+                          color: const Color(0xFF1565C0),
+                          bgColor: const Color(0xFFE3F2FD),
+                          onTap: () => context.go('/tasks'),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: _StatCard(
+                          label: 'Due Today',
+                          value: '$dueTodayCount',
+                          icon: Icons.schedule_rounded,
+                          color: const Color(0xFFE65100),
+                          bgColor: const Color(0xFFFFF3E0),
+                          onTap: () => context.go('/tasks'),
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: _StatCard(
-                      label: 'Due Today',
-                      value: '$dueTodayCount',
-                      icon: Icons.schedule_rounded,
-                      color: const Color(0xFFE65100),
-                      bgColor: const Color(0xFFFFF3E0),
-                      onTap: () => context.go('/tasks'),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: _StatCard(
-                      label: 'Overdue',
-                      value: '$overdueCount',
-                      icon: Icons.warning_amber_rounded,
-                      color: overdueCount > 0 ? const Color(0xFFC62828) : const Color(0xFF757575),
-                      bgColor: overdueCount > 0 ? const Color(0xFFFFEBEE) : const Color(0xFFF5F5F5),
-                      onTap: () => context.go('/tasks'),
-                    ),
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _StatCard(
+                          label: 'Overdue',
+                          value: '$overdueCount',
+                          icon: Icons.warning_amber_rounded,
+                          color: overdueCount > 0 ? const Color(0xFFC62828) : const Color(0xFF757575),
+                          bgColor: overdueCount > 0 ? const Color(0xFFFFEBEE) : const Color(0xFFF5F5F5),
+                          onTap: () => context.go('/tasks'),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: _StatCard(
+                          label: 'Monthly Rev.',
+                          value: '\$${_stats?['monthly_revenue'] ?? 0}',
+                          icon: Icons.attach_money_rounded,
+                          color: const Color(0xFF2E7D32),
+                          bgColor: const Color(0xFFE8F5E9),
+                          onTap: () => context.go('/reports'),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -723,18 +742,23 @@ class _ShortcutCard extends StatelessWidget {
                     child: Icon(icon, color: iconColor, size: 18),
                   ),
                   if (badgeText != null)
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
-                      decoration: BoxDecoration(
-                        color: (badgeColor ?? AppTheme.primary).withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Text(
-                        badgeText!,
-                        style: GoogleFonts.inter(
-                          fontSize: 9,
-                          fontWeight: FontWeight.bold,
-                          color: badgeColor ?? AppTheme.primary,
+                    Flexible(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                        margin: const EdgeInsets.only(left: 4),
+                        decoration: BoxDecoration(
+                          color: (badgeColor ?? AppTheme.primary).withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Text(
+                          badgeText!,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.inter(
+                            fontSize: 9,
+                            fontWeight: FontWeight.bold,
+                            color: badgeColor ?? AppTheme.primary,
+                          ),
                         ),
                       ),
                     ),

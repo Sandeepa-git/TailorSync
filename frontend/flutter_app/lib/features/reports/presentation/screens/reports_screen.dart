@@ -46,6 +46,38 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    int sewingCount = 0;
+    int cuttingCount = 0;
+    int readyCount = 0;
+    int otherCount = 0;
+    int thisWeekCount = 0;
+    int thisMonthCount = 0;
+    
+    final now = DateTime.now();
+    final weekAgo = now.subtract(const Duration(days: 7));
+
+    for (var o in _allOrders) {
+      final status = o['status'] ?? 'Other';
+      if (status == 'Sewing') sewingCount++;
+      else if (status == 'Cutting') cuttingCount++;
+      else if (status == 'Ready') readyCount++;
+      else otherCount++;
+
+      if (o['created_at'] != null) {
+        final createdAt = DateTime.tryParse(o['created_at'].toString());
+        if (createdAt != null) {
+          if (createdAt.isAfter(weekAgo)) thisWeekCount++;
+          if (createdAt.year == now.year && createdAt.month == now.month) thisMonthCount++;
+        }
+      }
+    }
+
+    final totalForStatus = _allOrders.length;
+    final sewingPct = totalForStatus > 0 ? ((sewingCount / totalForStatus) * 100).round() : 0;
+    final cuttingPct = totalForStatus > 0 ? ((cuttingCount / totalForStatus) * 100).round() : 0;
+    final readyPct = totalForStatus > 0 ? ((readyCount / totalForStatus) * 100).round() : 0;
+    final otherPct = totalForStatus > 0 ? ((otherCount / totalForStatus) * 100).round() : 0;
+
     return Scaffold(
       backgroundColor: AppTheme.scaffoldBg,
       appBar: AppBar(
@@ -146,8 +178,11 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(6),
                     child: Row(
-                      children: [
-                        Expanded(child: Container(height: 10, color: AppTheme.divider)), // Empty
+                      children: totalForStatus == 0 ? [ Expanded(child: Container(height: 10, color: AppTheme.divider)) ] : [
+                        if (sewingCount > 0) Expanded(flex: sewingCount, child: Container(height: 10, color: AppTheme.primary)),
+                        if (cuttingCount > 0) Expanded(flex: cuttingCount, child: Container(height: 10, color: AppTheme.secondary)),
+                        if (otherCount > 0) Expanded(flex: otherCount, child: Container(height: 10, color: const Color(0xFF9FA8DA))),
+                        if (readyCount > 0) Expanded(flex: readyCount, child: Container(height: 10, color: AppTheme.divider)),
                       ],
                     ),
                   ),
@@ -156,23 +191,23 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                   // Legend
                   Row(
                     children: [
-                      Expanded(child: _LegendItem(color: AppTheme.primary, label: 'Sewing (0%)')),
-                      Expanded(child: _LegendItem(color: AppTheme.secondary, label: 'Cutting (0%)')),
+                      Expanded(child: _LegendItem(color: AppTheme.primary, label: 'Sewing ($sewingPct%)')),
+                      Expanded(child: _LegendItem(color: AppTheme.secondary, label: 'Cutting ($cuttingPct%)')),
                     ],
                   ),
                   const SizedBox(height: 8),
                   Row(
                     children: [
-                      Expanded(child: _LegendItem(color: const Color(0xFF9FA8DA), label: 'Other (0%)')),
-                      Expanded(child: _LegendItem(color: AppTheme.divider, label: 'Ready (0%)')),
+                      Expanded(child: _LegendItem(color: const Color(0xFF9FA8DA), label: 'Other ($otherPct%)')),
+                      Expanded(child: _LegendItem(color: AppTheme.divider, label: 'Ready ($readyPct%)')),
                     ],
                   ),
                   const SizedBox(height: 24),
                   
                   // Rows
-                  _InsightRow(label: 'Orders This Week', value: '0', color: const Color(0xFFE3F2FD)),
+                  _InsightRow(label: 'Orders This Week', value: '$thisWeekCount', color: const Color(0xFFE3F2FD)),
                   const SizedBox(height: 12),
-                  _InsightRow(label: 'Orders This Month', value: '0', color: const Color(0xFFF3E5F5)),
+                  _InsightRow(label: 'Orders This Month', value: '$thisMonthCount', color: const Color(0xFFF3E5F5)),
                 ],
               ),
             ),

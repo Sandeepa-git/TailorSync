@@ -42,3 +42,18 @@ def get_current_user(db: Session = Depends(get_db), token: str = Depends(oauth2_
         raise HTTPException(status_code=400, detail="Inactive user")
     return user
 
+import time
+from collections import defaultdict
+
+# Simple in-memory rate limiter: dict of {user_id: [timestamps]}
+rate_limits = defaultdict(list)
+
+def rate_limit_ai(user: User = Depends(get_current_user)) -> User:
+    now = time.time()
+    # Keep only timestamps from the last hour (3600 seconds)
+    timestamps = [t for t in rate_limits[user.user_id] if now - t < 3600]
+    if len(timestamps) >= 50:
+        raise HTTPException(status_code=429, detail="Rate limit exceeded for AI endpoints. Please try again later.")
+    timestamps.append(now)
+    rate_limits[user.user_id] = timestamps
+    return user
