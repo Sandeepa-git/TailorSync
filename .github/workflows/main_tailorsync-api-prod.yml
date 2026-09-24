@@ -77,10 +77,7 @@ jobs:
             [
               { "name": "SCM_DO_BUILD_DURING_DEPLOYMENT", "value": "true", "slotSetting": false },
               { "name": "ENABLE_ORYX_BUILD", "value": "true", "slotSetting": false },
-              { "name": "WEBSITES_PORT", "value": "8000", "slotSetting": false },
-              { "name": "FOUNDRY_ENDPOINT", "value": "${{ secrets.FOUNDRY_ENDPOINT }}", "slotSetting": false },
-              { "name": "FOUNDRY_MODEL_NAME", "value": "${{ secrets.FOUNDRY_MODEL_NAME }}", "slotSetting": false },
-              { "name": "FOUNDRY_API_KEY", "value": "${{ secrets.FOUNDRY_API_KEY }}", "slotSetting": false }
+              { "name": "WEBSITES_PORT", "value": "8000", "slotSetting": false }
             ]
             
       - name: Wait for SCM container to restart
