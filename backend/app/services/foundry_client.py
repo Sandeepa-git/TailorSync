@@ -32,6 +32,7 @@ class FoundryClient:
             self.client = ChatCompletionsClient(
                 endpoint=self.endpoint,
                 credential=credential,
+                credential_scopes=["https://cognitiveservices.azure.com/.default"]
             )
         except Exception as e:
             logger.error(f"Failed to initialize FoundryClient: {e}")
