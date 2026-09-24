@@ -83,7 +83,8 @@ def get_stats(db: Session = Depends(get_db), current_user: User = Depends(get_cu
 @router.get("/{order_id}", response_model=OrderRead)
 def get_order(order_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     from app.services.order_service import get_order as svc_get
-    o = svc_get(db, order_id, current_user.business_id)
+    staff_id = current_user.user_id if current_user.role.value == "STAFF" else None
+    o = svc_get(db, order_id, current_user.business_id, staff_id=staff_id)
     if not o:
         raise HTTPException(status_code=404, detail="Order not found")
     assignment = o.staff_assignments[0] if getattr(o, 'staff_assignments', None) else None
@@ -116,7 +117,8 @@ def get_order(order_id: int, db: Session = Depends(get_db), current_user: User =
 @router.put("/{order_id}", response_model=OrderRead)
 def update_order(order_id: int, payload: OrderUpdate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     from app.services.order_service import update_order as svc_update
-    o = svc_update(db, order_id, payload, current_user.business_id)
+    staff_id = current_user.user_id if current_user.role.value == "STAFF" else None
+    o = svc_update(db, order_id, payload, current_user.business_id, staff_id=staff_id)
     if not o:
         raise HTTPException(status_code=404, detail="Order not found")
         

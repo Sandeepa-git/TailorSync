@@ -8,6 +8,9 @@ from app.schemas.token import Token
 from app.services import auth_service
 from app.api.deps import get_current_user
 from app.models.user import User
+import random
+from app.services.email_service import send_email_async
+from app.core.security import validate_password_strength, get_password_hash
 
 router = APIRouter()
 
@@ -96,6 +99,9 @@ def signup(payload: EmailSignupIn, request: Request, db: Session = Depends(get_d
             _record_failed_attempt(rate_key)
         raise e
 
+_otp_store = {}
+OTP_EXPIRY_SECONDS = 300
+
 @router.post("/forgot-password")
 def forgot_password(payload: ForgotPasswordIn, db: Session = Depends(get_db)):
     """
@@ -104,11 +110,49 @@ def forgot_password(payload: ForgotPasswordIn, db: Session = Depends(get_db)):
     normalized = payload.email.strip().lower()
     user = db.query(User).filter(User.email == normalized).first()
     if user:
-        # In production, an email with a secure reset link/token would be dispatched here.
-        pass
+        otp = str(random.randint(100000, 999999))
+        _otp_store[normalized] = (otp, time.time())
+        subject = "TailorSync - Password Reset OTP"
+        content = f"Your OTP for password reset is: {otp}\n\nIt expires in 5 minutes."
+        send_email_async(normalized, subject, content)
     return {
         "message": "If an account associated with this email exists, password reset instructions have been sent."
     }
+
+class ResetPasswordIn(BaseModel):
+    email: str
+    otp: str
+    new_password: str
+
+@router.post("/reset-password")
+def reset_password(payload: ResetPasswordIn, db: Session = Depends(get_db)):
+    normalized = payload.email.strip().lower()
+    
+    if normalized not in _otp_store:
+        raise HTTPException(status_code=400, detail="Invalid or expired OTP")
+        
+    otp, timestamp = _otp_store[normalized]
+    if time.time() - timestamp > OTP_EXPIRY_SECONDS:
+        del _otp_store[normalized]
+        raise HTTPException(status_code=400, detail="Invalid or expired OTP")
+        
+    if otp != payload.otp:
+        raise HTTPException(status_code=400, detail="Invalid OTP")
+        
+    user = db.query(User).filter(User.email == normalized).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+        
+    is_valid, msg = validate_password_strength(payload.new_password)
+    if not is_valid:
+        raise HTTPException(status_code=400, detail=msg)
+        
+    user.hashed_password = get_password_hash(payload.new_password)
+    db.commit()
+    
+    del _otp_store[normalized]
+    
+    return {"message": "Password updated successfully"}
 
 @router.post("/google", response_model=Token)
 def google_login(payload: GoogleLoginIn, db: Session = Depends(get_db)):

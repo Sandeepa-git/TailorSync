@@ -24,8 +24,10 @@ class MainLayout extends ConsumerWidget {
     if (isStaff) {
       if (location.startsWith('/tasks')) {
         currentIndex = 0;
-      } else if (location.startsWith('/profile')) {
+      } else if (location.startsWith('/orders')) {
         currentIndex = 1;
+      } else if (location.startsWith('/profile')) {
+        currentIndex = 2;
       }
     } else {
       if (location.startsWith('/orders')) {
@@ -44,6 +46,8 @@ class MainLayout extends ConsumerWidget {
         if (index == 0) {
           context.go('/tasks');
         } else if (index == 1) {
+          context.go('/orders');
+        } else if (index == 2) {
           context.go('/profile');
         }
       } else {
@@ -128,6 +132,11 @@ class MainLayout extends ConsumerWidget {
                           icon: Icon(Icons.assignment_outlined),
                           selectedIcon: Icon(Icons.assignment),
                           label: 'Tasks',
+                        ),
+                        NavigationDestination(
+                          icon: Icon(Icons.shopping_bag_outlined),
+                          selectedIcon: Icon(Icons.shopping_bag),
+                          label: 'Orders',
                         ),
                         NavigationDestination(
                           icon: Icon(Icons.person_outline),

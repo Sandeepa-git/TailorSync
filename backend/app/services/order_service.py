@@ -115,16 +115,24 @@ def create_order(db: Session, order: OrderCreate, business_id: int):
     db.refresh(db_order)
     return db_order
 
-def get_order(db: Session, order_id: int, business_id: int):
-    return db.query(Order).options(
+def get_order(db: Session, order_id: int, business_id: int, staff_id: int = None):
+    query = db.query(Order).options(
         joinedload(Order.customer),
         joinedload(Order.measurements).joinedload(Measurement.field),
         joinedload(Order.staff_assignments).joinedload(StaffAssignment.staff),
         joinedload(Order.notes),
-    ).filter(Order.order_id == order_id, Order.business_id == business_id).first()
+    ).filter(Order.order_id == order_id, Order.business_id == business_id)
+    
+    if staff_id:
+        query = query.join(StaffAssignment).filter(StaffAssignment.staff_id == staff_id)
+        
+    return query.first()
 
-def update_order(db: Session, order_id: int, updates: OrderUpdate, business_id: int):
-    order = db.query(Order).filter(Order.order_id == order_id, Order.business_id == business_id).first()
+def update_order(db: Session, order_id: int, updates: OrderUpdate, business_id: int, staff_id: int = None):
+    query = db.query(Order).filter(Order.order_id == order_id, Order.business_id == business_id)
+    if staff_id:
+        query = query.join(StaffAssignment).filter(StaffAssignment.staff_id == staff_id)
+    order = query.first()
     if not order:
         return None
     

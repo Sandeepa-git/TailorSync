@@ -71,7 +71,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   void _showForgotPasswordDialog() {
     final resetEmailController = TextEditingController(text: _email.text.trim());
+    final otpController = TextEditingController();
+    final newPasswordController = TextEditingController();
     bool isResetting = false;
+    bool isOtpStep = false;
 
     showModalBottomSheet(
       context: context,
@@ -98,7 +101,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Reset Password',
+                        isOtpStep ? 'Enter OTP' : 'Reset Password',
                         style: GoogleFonts.inter(fontSize: 20, fontWeight: FontWeight.bold, color: const Color(0xFF1A237E)),
                       ),
                       IconButton(
@@ -109,21 +112,47 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Enter your registered email address and we will send you password reset instructions.',
+                    isOtpStep
+                        ? 'Enter the 6-digit OTP sent to your email and your new password.'
+                        : 'Enter your registered email address and we will send you password reset instructions.',
                     style: GoogleFonts.inter(fontSize: 14, color: Colors.grey[700]),
                   ),
                   const SizedBox(height: 20),
-                  TextField(
-                    style: const TextStyle(fontSize: 14),
-                    controller: resetEmailController,
-                    keyboardType: TextInputType.emailAddress,
-                    autofillHints: const [AutofillHints.email],
-                    decoration: InputDecoration(
-                      labelText: 'Email Address',
-                      prefixIcon: const Icon(Icons.email_outlined),
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                  if (!isOtpStep) ...[
+                    TextField(
+                      style: const TextStyle(fontSize: 14),
+                      controller: resetEmailController,
+                      keyboardType: TextInputType.emailAddress,
+                      autofillHints: const [AutofillHints.email],
+                      decoration: InputDecoration(
+                        labelText: 'Email Address',
+                        prefixIcon: const Icon(Icons.email_outlined),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                      ),
                     ),
-                  ),
+                  ] else ...[
+                    TextField(
+                      style: const TextStyle(fontSize: 14),
+                      controller: otpController,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        labelText: 'OTP (6 digits)',
+                        prefixIcon: const Icon(Icons.security),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    TextField(
+                      style: const TextStyle(fontSize: 14),
+                      controller: newPasswordController,
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        labelText: 'New Password',
+                        prefixIcon: const Icon(Icons.lock_outline),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                      ),
+                    ),
+                  ],
                   const SizedBox(height: 24),
                   SizedBox(
                     width: double.infinity,
@@ -132,34 +161,89 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       onPressed: isResetting
                           ? null
                           : () async {
-                              final emailText = resetEmailController.text.trim();
-                              if (emailText.isEmpty || !emailText.contains('@')) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('Please enter a valid email address.')),
-                                );
-                                return;
-                              }
-                              setModalState(() => isResetting = true);
-                              try {
-                                final api = ref.read(apiClientProvider);
-                                await api.dio.post('/auth/forgot-password', data: {'email': emailText});
-                                if (ctx.mounted) {
-                                  Navigator.pop(ctx);
-                                  ScaffoldMessenger.of(ctx).showSnackBar(
-                                    SnackBar(
-                                      content: Text('If an account exists for $emailText, reset instructions have been sent.'),
-                                      backgroundColor: const Color(0xFF2E7D32),
-                                      behavior: SnackBarBehavior.floating,
-                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                                    ),
+                              if (!isOtpStep) {
+                                final emailText = resetEmailController.text.trim();
+                                if (emailText.isEmpty || !emailText.contains('@')) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text('Please enter a valid email address.')),
                                   );
+                                  return;
                                 }
-                              } catch (_) {
-                                if (ctx.mounted) {
-                                  Navigator.pop(ctx);
-                                  ScaffoldMessenger.of(ctx).showSnackBar(
-                                    const SnackBar(content: Text('Failed to process request. Please try again later.')),
+                                setModalState(() => isResetting = true);
+                                try {
+                                  final api = ref.read(apiClientProvider);
+                                  await api.dio.post('/auth/forgot-password', data: {'email': emailText});
+                                  setModalState(() {
+                                    isOtpStep = true;
+                                    isResetting = false;
+                                  });
+                                  if (ctx.mounted) {
+                                    ScaffoldMessenger.of(ctx).showSnackBar(
+                                      SnackBar(
+                                        content: Text('If an account exists, OTP has been sent to $emailText.'),
+                                        backgroundColor: const Color(0xFF2E7D32),
+                                        behavior: SnackBarBehavior.floating,
+                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                      ),
+                                    );
+                                  }
+                                } catch (_) {
+                                  setModalState(() => isResetting = false);
+                                  if (ctx.mounted) {
+                                    ScaffoldMessenger.of(ctx).showSnackBar(
+                                      const SnackBar(content: Text('Failed to send OTP. Please try again later.')),
+                                    );
+                                  }
+                                }
+                              } else {
+                                final emailText = resetEmailController.text.trim();
+                                final otpText = otpController.text.trim();
+                                final newPasswordText = newPasswordController.text.trim();
+                                
+                                if (otpText.isEmpty || newPasswordText.isEmpty) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text('Please fill all fields.')),
                                   );
+                                  return;
+                                }
+                                
+                                setModalState(() => isResetting = true);
+                                try {
+                                  final api = ref.read(apiClientProvider);
+                                  await api.dio.post('/auth/reset-password', data: {
+                                    'email': emailText,
+                                    'otp': otpText,
+                                    'new_password': newPasswordText,
+                                  });
+                                  if (ctx.mounted) {
+                                    Navigator.pop(ctx);
+                                    ScaffoldMessenger.of(ctx).showSnackBar(
+                                      SnackBar(
+                                        content: const Text('Password updated successfully. You can now login.'),
+                                        backgroundColor: const Color(0xFF2E7D32),
+                                        behavior: SnackBarBehavior.floating,
+                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                      ),
+                                    );
+                                  }
+                                } on DioException catch (e) {
+                                  setModalState(() => isResetting = false);
+                                  String error = 'Failed to reset password.';
+                                  if (e.response != null && e.response?.data is Map && e.response?.data['detail'] != null) {
+                                    error = e.response?.data['detail'].toString() ?? error;
+                                  }
+                                  if (ctx.mounted) {
+                                    ScaffoldMessenger.of(ctx).showSnackBar(
+                                      SnackBar(content: Text(error)),
+                                    );
+                                  }
+                                } catch (_) {
+                                  setModalState(() => isResetting = false);
+                                  if (ctx.mounted) {
+                                    ScaffoldMessenger.of(ctx).showSnackBar(
+                                      const SnackBar(content: Text('Failed to reset password. Please try again.')),
+                                    );
+                                  }
                                 }
                               }
                             },
@@ -169,7 +253,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       ),
                       child: isResetting
                           ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                          : Text('Send Reset Instructions', style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold)),
+                          : Text(isOtpStep ? 'Verify OTP & Reset Password' : 'Send Reset Instructions', style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold)),
                     ),
                   ),
                 ],

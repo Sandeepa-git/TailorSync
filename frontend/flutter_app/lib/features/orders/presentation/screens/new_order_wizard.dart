@@ -118,71 +118,71 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
       
       if (cat == 'Short Sleeve Shirt') {
         fields = [
-          {'id': 1, 'field_name': 'Height', 'unit': 'in', 'is_required': true, 'placeholder': '70'},
-          {'id': 2, 'field_name': 'Chest', 'unit': 'in', 'is_required': true, 'placeholder': '40'},
-          {'id': 3, 'field_name': 'Shoulder', 'unit': 'in', 'is_required': true, 'placeholder': '18'},
-          {'id': 4, 'field_name': 'Collar Size', 'unit': 'in', 'is_required': true, 'placeholder': '15'},
-          {'id': 5, 'field_name': 'Short Sleeve Length', 'unit': 'in', 'is_required': true, 'placeholder': '10'},
-          {'id': 6, 'field_name': 'Sleeve Open', 'unit': 'in', 'is_required': false, 'placeholder': '12'},
+          {'id': 1, 'field_name': 'Height', 'unit': 'in', 'is_required': true, 'placeholder': '10-90', 'min': 10.0, 'max': 90.0},
+          {'id': 2, 'field_name': 'Chest', 'unit': 'in', 'is_required': true, 'placeholder': '20-60', 'min': 20.0, 'max': 60.0},
+          {'id': 3, 'field_name': 'Shoulder', 'unit': 'in', 'is_required': true, 'placeholder': '10-30', 'min': 10.0, 'max': 30.0},
+          {'id': 4, 'field_name': 'Collar Size', 'unit': 'in', 'is_required': true, 'placeholder': '10-25', 'min': 10.0, 'max': 25.0},
+          {'id': 5, 'field_name': 'Short Sleeve Length', 'unit': 'in', 'is_required': true, 'placeholder': '5-25', 'min': 5.0, 'max': 25.0},
+          {'id': 6, 'field_name': 'Sleeve Open', 'unit': 'in', 'is_required': false, 'placeholder': '5-20', 'min': 5.0, 'max': 20.0},
         ];
       } else if (cat == 'Long Sleeve Shirt') {
         fields = [
-          {'id': 1, 'field_name': 'Height', 'unit': 'in', 'is_required': true, 'placeholder': '70'},
-          {'id': 2, 'field_name': 'Chest', 'unit': 'in', 'is_required': true, 'placeholder': '40'},
-          {'id': 3, 'field_name': 'Shoulder', 'unit': 'in', 'is_required': true, 'placeholder': '18'},
-          {'id': 4, 'field_name': 'Collar Size', 'unit': 'in', 'is_required': true, 'placeholder': '15'},
-          {'id': 5, 'field_name': 'Long Sleeve Length', 'unit': 'in', 'is_required': true, 'placeholder': '25'},
-          {'id': 6, 'field_name': 'Sleeve Open', 'unit': 'in', 'is_required': false, 'placeholder': '12'},
+          {'id': 1, 'field_name': 'Height', 'unit': 'in', 'is_required': true, 'placeholder': '10-90', 'min': 10.0, 'max': 90.0},
+          {'id': 2, 'field_name': 'Chest', 'unit': 'in', 'is_required': true, 'placeholder': '20-60', 'min': 20.0, 'max': 60.0},
+          {'id': 3, 'field_name': 'Shoulder', 'unit': 'in', 'is_required': true, 'placeholder': '10-30', 'min': 10.0, 'max': 30.0},
+          {'id': 4, 'field_name': 'Collar Size', 'unit': 'in', 'is_required': true, 'placeholder': '10-25', 'min': 10.0, 'max': 25.0},
+          {'id': 5, 'field_name': 'Long Sleeve Length', 'unit': 'in', 'is_required': true, 'placeholder': '10-40', 'min': 10.0, 'max': 40.0},
+          {'id': 6, 'field_name': 'Sleeve Open', 'unit': 'in', 'is_required': false, 'placeholder': '5-20', 'min': 5.0, 'max': 20.0},
         ];
       } else if (cat.contains('Trouser')) {
         fields = [
-          {'id': 1, 'field_name': 'Height', 'unit': 'in', 'is_required': true, 'placeholder': '70'},
-          {'id': 2, 'field_name': 'Waist', 'unit': 'in', 'is_required': true, 'placeholder': '32'},
-          {'id': 3, 'field_name': 'Height till Knee', 'unit': 'in', 'is_required': false, 'placeholder': '22'},
-          {'id': 4, 'field_name': 'Round Knee', 'unit': 'in', 'is_required': false, 'placeholder': '16'},
-          {'id': 5, 'field_name': 'Round End', 'unit': 'in', 'is_required': false, 'placeholder': '14'},
-          {'id': 6, 'field_name': 'Seat', 'unit': 'in', 'is_required': false, 'placeholder': '38'},
-          {'id': 7, 'field_name': 'Crotch', 'unit': 'in', 'is_required': false, 'placeholder': '24'},
+          {'id': 1, 'field_name': 'Height', 'unit': 'in', 'is_required': true, 'placeholder': '10-90', 'min': 10.0, 'max': 90.0},
+          {'id': 2, 'field_name': 'Waist', 'unit': 'in', 'is_required': true, 'placeholder': '20-60', 'min': 20.0, 'max': 60.0},
+          {'id': 3, 'field_name': 'Height till Knee', 'unit': 'in', 'is_required': false, 'placeholder': '10-40', 'min': 10.0, 'max': 40.0},
+          {'id': 4, 'field_name': 'Round Knee', 'unit': 'in', 'is_required': false, 'placeholder': '10-35', 'min': 10.0, 'max': 35.0},
+          {'id': 5, 'field_name': 'Round End', 'unit': 'in', 'is_required': false, 'placeholder': '5-30', 'min': 5.0, 'max': 30.0},
+          {'id': 6, 'field_name': 'Seat', 'unit': 'in', 'is_required': false, 'placeholder': '20-70', 'min': 20.0, 'max': 70.0},
+          {'id': 7, 'field_name': 'Crotch', 'unit': 'in', 'is_required': false, 'placeholder': '5-30', 'min': 5.0, 'max': 30.0},
         ];
         if (cat == 'Short Trouser') {
             fields.removeWhere((f) => f['field_name'] == 'Height till Knee' || f['field_name'] == 'Round End');
         }
       } else if (cat == 'Dresses') {
         fields = [
-          {'id': 1, 'field_name': 'Height', 'unit': 'in', 'is_required': true, 'placeholder': '65'},
-          {'id': 2, 'field_name': 'Bust', 'unit': 'in', 'is_required': true, 'placeholder': '36'},
-          {'id': 3, 'field_name': 'Waist', 'unit': 'in', 'is_required': true, 'placeholder': '28'},
-          {'id': 4, 'field_name': 'Hips', 'unit': 'in', 'is_required': true, 'placeholder': '38'},
-          {'id': 5, 'field_name': 'Shoulder', 'unit': 'in', 'is_required': false, 'placeholder': '16'},
-          {'id': 6, 'field_name': 'Dress Length', 'unit': 'in', 'is_required': true, 'placeholder': '40'},
+          {'id': 1, 'field_name': 'Height', 'unit': 'in', 'is_required': true, 'placeholder': '10-90', 'min': 10.0, 'max': 90.0},
+          {'id': 2, 'field_name': 'Bust', 'unit': 'in', 'is_required': true, 'placeholder': '20-60', 'min': 20.0, 'max': 60.0},
+          {'id': 3, 'field_name': 'Waist', 'unit': 'in', 'is_required': true, 'placeholder': '20-60', 'min': 20.0, 'max': 60.0},
+          {'id': 4, 'field_name': 'Hips', 'unit': 'in', 'is_required': true, 'placeholder': '20-70', 'min': 20.0, 'max': 70.0},
+          {'id': 5, 'field_name': 'Shoulder', 'unit': 'in', 'is_required': false, 'placeholder': '10-30', 'min': 10.0, 'max': 30.0},
+          {'id': 6, 'field_name': 'Dress Length', 'unit': 'in', 'is_required': true, 'placeholder': '10-70', 'min': 10.0, 'max': 70.0},
         ];
       } else if (cat == 'Suits') {
         fields = [
-          {'id': 1, 'field_name': 'Height', 'unit': 'in', 'is_required': true, 'placeholder': '70'},
-          {'id': 2, 'field_name': 'Chest', 'unit': 'in', 'is_required': true, 'placeholder': '42'},
-          {'id': 3, 'field_name': 'Waist', 'unit': 'in', 'is_required': true, 'placeholder': '34'},
-          {'id': 4, 'field_name': 'Shoulder', 'unit': 'in', 'is_required': true, 'placeholder': '19'},
-          {'id': 5, 'field_name': 'Sleeve Length', 'unit': 'in', 'is_required': true, 'placeholder': '26'},
-          {'id': 6, 'field_name': 'Trouser Waist', 'unit': 'in', 'is_required': true, 'placeholder': '34'},
-          {'id': 7, 'field_name': 'Trouser Length', 'unit': 'in', 'is_required': true, 'placeholder': '40'},
+          {'id': 1, 'field_name': 'Height', 'unit': 'in', 'is_required': true, 'placeholder': '10-90', 'min': 10.0, 'max': 90.0},
+          {'id': 2, 'field_name': 'Chest', 'unit': 'in', 'is_required': true, 'placeholder': '20-60', 'min': 20.0, 'max': 60.0},
+          {'id': 3, 'field_name': 'Waist', 'unit': 'in', 'is_required': true, 'placeholder': '20-60', 'min': 20.0, 'max': 60.0},
+          {'id': 4, 'field_name': 'Shoulder', 'unit': 'in', 'is_required': true, 'placeholder': '10-30', 'min': 10.0, 'max': 30.0},
+          {'id': 5, 'field_name': 'Sleeve Length', 'unit': 'in', 'is_required': true, 'placeholder': '10-40', 'min': 10.0, 'max': 40.0},
+          {'id': 6, 'field_name': 'Trouser Waist', 'unit': 'in', 'is_required': true, 'placeholder': '20-60', 'min': 20.0, 'max': 60.0},
+          {'id': 7, 'field_name': 'Trouser Length', 'unit': 'in', 'is_required': true, 'placeholder': '10-50', 'min': 10.0, 'max': 50.0},
         ];
       } else if (cat == 'Jackets' || cat == 'Coats') {
         fields = [
-          {'id': 1, 'field_name': 'Height', 'unit': 'in', 'is_required': true, 'placeholder': '70'},
-          {'id': 2, 'field_name': 'Chest', 'unit': 'in', 'is_required': true, 'placeholder': '42'},
-          {'id': 3, 'field_name': 'Shoulder', 'unit': 'in', 'is_required': true, 'placeholder': '19'},
-          {'id': 4, 'field_name': 'Sleeve Length', 'unit': 'in', 'is_required': true, 'placeholder': '26'},
-          {'id': 5, 'field_name': 'Jacket Length', 'unit': 'in', 'is_required': true, 'placeholder': '30'},
+          {'id': 1, 'field_name': 'Height', 'unit': 'in', 'is_required': true, 'placeholder': '10-90', 'min': 10.0, 'max': 90.0},
+          {'id': 2, 'field_name': 'Chest', 'unit': 'in', 'is_required': true, 'placeholder': '20-60', 'min': 20.0, 'max': 60.0},
+          {'id': 3, 'field_name': 'Shoulder', 'unit': 'in', 'is_required': true, 'placeholder': '10-30', 'min': 10.0, 'max': 30.0},
+          {'id': 4, 'field_name': 'Sleeve Length', 'unit': 'in', 'is_required': true, 'placeholder': '10-40', 'min': 10.0, 'max': 40.0},
+          {'id': 5, 'field_name': 'Jacket Length', 'unit': 'in', 'is_required': true, 'placeholder': '10-60', 'min': 10.0, 'max': 60.0},
         ];
       } else {
         // Tops & Full Body
         fields = [
-          {'id': 1, 'field_name': 'Height', 'unit': 'in', 'is_required': true, 'placeholder': '70'},
-          {'id': 2, 'field_name': 'Chest', 'unit': 'in', 'is_required': true, 'placeholder': '40'},
-          {'id': 3, 'field_name': 'Shoulder', 'unit': 'in', 'is_required': false, 'placeholder': '18'},
-          {'id': 4, 'field_name': 'Waist', 'unit': 'in', 'is_required': false, 'placeholder': '32'},
-          {'id': 5, 'field_name': 'Hips', 'unit': 'in', 'is_required': false, 'placeholder': '40'},
-          {'id': 6, 'field_name': 'Sleeve Length', 'unit': 'in', 'is_required': false, 'placeholder': '25'},
+          {'id': 1, 'field_name': 'Height', 'unit': 'in', 'is_required': true, 'placeholder': '10-90', 'min': 10.0, 'max': 90.0},
+          {'id': 2, 'field_name': 'Chest', 'unit': 'in', 'is_required': true, 'placeholder': '20-60', 'min': 20.0, 'max': 60.0},
+          {'id': 3, 'field_name': 'Shoulder', 'unit': 'in', 'is_required': false, 'placeholder': '10-30', 'min': 10.0, 'max': 30.0},
+          {'id': 4, 'field_name': 'Waist', 'unit': 'in', 'is_required': false, 'placeholder': '20-60', 'min': 20.0, 'max': 60.0},
+          {'id': 5, 'field_name': 'Hips', 'unit': 'in', 'is_required': false, 'placeholder': '20-70', 'min': 20.0, 'max': 70.0},
+          {'id': 6, 'field_name': 'Sleeve Length', 'unit': 'in', 'is_required': false, 'placeholder': '10-40', 'min': 10.0, 'max': 40.0},
         ];
       }
 
@@ -266,8 +266,18 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
       for (var f in fields) {
         final id = f['id'] as int;
         final name = f['field_name'] as String;
+        final min = f['min'] as double?;
+        final max = f['max'] as double?;
         final text = _measurementControllers[id]?.text.trim() ?? '';
+        
         if (text.isNotEmpty) {
+          final val = double.tryParse(text);
+          if (val != null && min != null && max != null) {
+            if (val < min || val > max) {
+              _showSnack('⚠️ $name must be between $min and $max');
+              return;
+            }
+          }
           enteredMeasures[name] = text;
           _confirmedMeasurements[name] = text;
           _isAiGenerated[name] = false;
