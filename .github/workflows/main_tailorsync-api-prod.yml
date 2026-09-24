@@ -77,7 +77,9 @@ jobs:
             [
               { "name": "SCM_DO_BUILD_DURING_DEPLOYMENT", "value": "true", "slotSetting": false },
               { "name": "ENABLE_ORYX_BUILD", "value": "true", "slotSetting": false },
-              { "name": "WEBSITES_PORT", "value": "8000", "slotSetting": false }
+              { "name": "WEBSITES_PORT", "value": "8000", "slotSetting": false },
+              { "name": "FOUNDRY_ENDPOINT", "value": "https://tailorsync-ai-resource.services.ai.azure.com/models", "slotSetting": false },
+              { "name": "FOUNDRY_MODEL_NAME", "value": "gpt-5-mini", "slotSetting": false }
             ]
             
       - name: Wait for SCM container to restart
