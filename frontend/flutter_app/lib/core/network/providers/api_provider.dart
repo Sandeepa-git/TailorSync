@@ -28,4 +28,8 @@ final apiClientProvider = Provider((ref) {
   return client;
 });
 
-final secureStorageProvider = Provider((ref) => const FlutterSecureStorage());
+final secureStorageProvider = Provider((ref) => const FlutterSecureStorage(
+  aOptions: AndroidOptions(
+    encryptedSharedPreferences: true,
+  ),
+));
