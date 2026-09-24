@@ -20,14 +20,21 @@ class FoundryClient:
             logger.warning("FOUNDRY_API_KEY is not set.")
             
         try:
-            # Using API Key authentication
-            credential = AzureKeyCredential(self.api_key)
+            if self.api_key:
+                # Local dev: Using API Key authentication
+                from azure.core.credentials import AzureKeyCredential
+                credential = AzureKeyCredential(self.api_key)
+            else:
+                # Production: Using Managed Identity
+                from azure.identity import DefaultAzureCredential
+                credential = DefaultAzureCredential()
+
             self.client = ChatCompletionsClient(
                 endpoint=self.endpoint,
                 credential=credential,
             )
         except Exception as e:
-            logger.error(f"Failed to initialize FoundryClient with Entra ID: {e}")
+            logger.error(f"Failed to initialize FoundryClient: {e}")
             self.client = None
 
         self._dataset_service = DatasetService()
