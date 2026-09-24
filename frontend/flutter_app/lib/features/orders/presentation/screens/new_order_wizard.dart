@@ -950,7 +950,27 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
 
   // --- Step 6: Fabric Rec ---
   Widget _buildFabricRecStep() {
-    if (_fabricRecLoading) return const Center(child: CircularProgressIndicator(color: Color(0xFF1565C0)));
+    if (_fabricRecLoading) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            FadeTransition(
+              opacity: _pulseController,
+              child: Container(
+                width: 100, height: 100,
+                decoration: BoxDecoration(shape: BoxShape.circle, color: const Color(0xFF9B59B6).withOpacity(0.3), boxShadow: [BoxShadow(color: const Color(0xFF9B59B6).withOpacity(0.5), blurRadius: 30)]),
+                child: const Icon(Icons.style, color: Colors.white, size: 50),
+              ),
+            ),
+            const SizedBox(height: 32),
+            Text('Analyzing Preferences...', style: GoogleFonts.outfit(fontSize: 20, color: Colors.black87, fontWeight: FontWeight.w600)),
+            const SizedBox(height: 8),
+            Text('Curating the best fabric options for your style.', style: GoogleFonts.inter(color: Colors.black54), textAlign: TextAlign.center),
+          ],
+        ),
+      );
+    }
     if (_fabricRecError != null) return Center(child: Text(_fabricRecError!, style: const TextStyle(color: Colors.red)));
 
     return Column(
@@ -1006,7 +1026,27 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
 
   // --- Step 7: Estimation ---
   Widget _buildEstimationStep() {
-    if (_fabricEstLoading) return const Center(child: CircularProgressIndicator(color: Color(0xFF1565C0)));
+    if (_fabricEstLoading) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            FadeTransition(
+              opacity: _pulseController,
+              child: Container(
+                width: 100, height: 100,
+                decoration: BoxDecoration(shape: BoxShape.circle, color: const Color(0xFF4CAF50).withOpacity(0.3), boxShadow: [BoxShadow(color: const Color(0xFF4CAF50).withOpacity(0.5), blurRadius: 30)]),
+                child: const Icon(Icons.straighten, color: Colors.white, size: 50),
+              ),
+            ),
+            const SizedBox(height: 32),
+            Text('Estimating Required Fabric...', style: GoogleFonts.outfit(fontSize: 20, color: Colors.black87, fontWeight: FontWeight.w600)),
+            const SizedBox(height: 8),
+            Text('Calculating exact meterage based on measurements.', style: GoogleFonts.inter(color: Colors.black54), textAlign: TextAlign.center),
+          ],
+        ),
+      );
+    }
     
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -1049,9 +1089,10 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
 
   // --- Step 8: Assign ---
   Widget _buildAssignStep() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
         Text('Assign & Save', style: GoogleFonts.outfit(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black87)),
         const SizedBox(height: 24),
         Container(
@@ -1072,21 +1113,24 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
         const SizedBox(height: 24),
         Text('Assign to Staff', style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: Colors.black87)),
         const SizedBox(height: 12),
-        DropdownButtonFormField<int>(
-          value: _selectedStaffId,
-          dropdownColor: const Color(0xFFF8FAFC),
-          style: const TextStyle(color: Colors.black87),
-          decoration: InputDecoration(
-            filled: true, fillColor: Colors.black.withOpacity(0.05),
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: Colors.black12)),
-          ),
-          items: _staffList.map((s) => DropdownMenuItem<int>(
-            value: s['id'],
-            child: Text(s['name'], style: const TextStyle(color: Colors.black87)),
-          )).toList(),
-          onChanged: (v) => setState(() => _selectedStaffId = v),
-        ),
+        _staffList.isEmpty 
+          ? Text('No staff available', style: GoogleFonts.inter(color: Colors.redAccent))
+          : DropdownButtonFormField<int>(
+              value: _staffList.any((s) => s['id'] == _selectedStaffId) ? _selectedStaffId : null,
+              dropdownColor: const Color(0xFFF8FAFC),
+              style: const TextStyle(color: Colors.black87),
+              decoration: InputDecoration(
+                filled: true, fillColor: Colors.black.withOpacity(0.05),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: Colors.black12)),
+              ),
+              items: _staffList.map((s) => DropdownMenuItem<int>(
+                value: s['id'],
+                child: Text(s['name'] ?? 'Unknown', style: const TextStyle(color: Colors.black87)),
+              )).toList(),
+              onChanged: (v) => setState(() => _selectedStaffId = v),
+            ),
       ],
+      ),
     );
   }
 
