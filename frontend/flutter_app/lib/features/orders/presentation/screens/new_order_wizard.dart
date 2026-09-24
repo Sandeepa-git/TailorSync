@@ -57,7 +57,18 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
       if (mounted) {
         setState(() {
           _user = userResp.data;
-          _staffList = staffResp.data;
+          List<dynamic> fetchedStaff = staffResp.data ?? [];
+          
+          // Ensure current user is in the assignable list
+          if (_user != null) {
+            bool userInList = fetchedStaff.any((s) => s['id'] == _user!['id']);
+            if (!userInList) {
+               fetchedStaff.insert(0, _user!);
+            }
+          }
+          
+          _staffList = fetchedStaff;
+
           if (_user?['role'] == 'staff' || _user?['role'] == 'STAFF') {
             _selectedStaffId = _user?['id'];
           } else if (_staffList.isNotEmpty) {
@@ -1125,7 +1136,7 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
               ),
               items: _staffList.map((s) => DropdownMenuItem<int>(
                 value: s['id'],
-                child: Text(s['name'] ?? 'Unknown', style: const TextStyle(color: Colors.black87)),
+                child: Text(s['full_name'] ?? s['name'] ?? 'Unknown', style: const TextStyle(color: Colors.black87)),
               )).toList(),
               onChanged: (v) => setState(() => _selectedStaffId = v),
             ),
