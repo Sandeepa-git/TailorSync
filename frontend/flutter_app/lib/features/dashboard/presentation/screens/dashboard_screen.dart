@@ -137,6 +137,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       return due.isBefore(DateTime.now().subtract(const Duration(days: 1)));
     }).length;
 
+    final completedCount = _tasks.where((t) => t['status'] == 'Delivered' || t['status'] == 'Ready').length;
+
     return Scaffold(
       backgroundColor: AppTheme.scaffoldBg,
       appBar: AppBar(
@@ -270,8 +272,15 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                         ),
                       ),
                       const SizedBox(width: 10),
-                      const Expanded(
-                        child: SizedBox(),
+                      Expanded(
+                        child: _StatCard(
+                          label: 'Completed',
+                          value: '$completedCount',
+                          icon: Icons.check_circle_outline_rounded,
+                          color: const Color(0xFF2E7D32),
+                          bgColor: const Color(0xFFE8F5E9),
+                          onTap: () => context.go('/tasks'),
+                        ),
                       ),
                     ],
                   ),
