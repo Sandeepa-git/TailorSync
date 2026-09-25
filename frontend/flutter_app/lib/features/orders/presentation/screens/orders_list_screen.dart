@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../providers/orders_provider.dart';
 import '../../models/order.dart';
 import '../../../../core/network/providers/api_provider.dart';
+import '../../../../core/network/providers/user_provider.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/skeleton_loading.dart';
 import 'package:dio/dio.dart';
@@ -83,6 +84,8 @@ class _OrdersListScreenState extends ConsumerState<OrdersListScreen> {
   @override
   Widget build(BuildContext context) {
     final asyncOrders = ref.watch(ordersProvider);
+    final asyncUser = ref.watch(userProvider);
+    final isOwner = asyncUser.value?['role'] == 'OWNER';
 
     return Scaffold(
       backgroundColor: AppTheme.scaffoldBg,
@@ -251,6 +254,7 @@ class _OrdersListScreenState extends ConsumerState<OrdersListScreen> {
                           progressFraction: progress,
                           stageIndex: stageIdx >= 0 ? stageIdx : 0,
                           totalStages: _stages.length,
+                          isOwner: isOwner,
                           onTap: () => context.go('/orders/details', extra: o),
                           onDelete: () => _confirmDeleteOrder(context, ref, o),
                         );
@@ -348,6 +352,7 @@ class _OrderCardItem extends StatelessWidget {
   final double progressFraction;
   final int stageIndex;
   final int totalStages;
+  final bool isOwner;
   final VoidCallback onTap;
   final VoidCallback onDelete;
 
@@ -358,6 +363,7 @@ class _OrderCardItem extends StatelessWidget {
     required this.progressFraction,
     required this.stageIndex,
     required this.totalStages,
+    required this.isOwner,
     required this.onTap,
     required this.onDelete,
   });
@@ -412,15 +418,16 @@ class _OrderCardItem extends StatelessWidget {
                             style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.bold, color: AppTheme.textCaption),
                           ),
                           const SizedBox(width: 8),
-                          Tooltip(
-                            message: 'Delete Order',
-                            child: IconButton(
-                              icon: const Icon(Icons.delete_outline, color: AppTheme.error, size: 18),
-                              onPressed: onDelete,
-                              padding: EdgeInsets.zero,
-                              constraints: const BoxConstraints(),
+                          if (isOwner)
+                            Tooltip(
+                              message: 'Delete Order',
+                              child: IconButton(
+                                icon: const Icon(Icons.delete_outline, color: AppTheme.error, size: 18),
+                                onPressed: onDelete,
+                                padding: EdgeInsets.zero,
+                                constraints: const BoxConstraints(),
+                              ),
                             ),
-                          ),
                         ],
                       ),
                       const SizedBox(height: 12),

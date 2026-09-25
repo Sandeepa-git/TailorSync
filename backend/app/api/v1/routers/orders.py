@@ -151,6 +151,8 @@ def update_order(order_id: int, payload: OrderUpdate, db: Session = Depends(get_
 
 @router.delete("/{order_id}")
 def delete_order(order_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
+    if current_user.role.value != "OWNER":
+        raise HTTPException(status_code=403, detail="Only the owner can delete orders")
     from app.services.order_service import delete_order as svc_delete
     success = svc_delete(db, order_id, current_user.business_id)
     if not success:
