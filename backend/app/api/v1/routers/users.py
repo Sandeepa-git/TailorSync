@@ -6,7 +6,7 @@ from app.schemas.user import UserRead, UserUpdate
 from app.core.security import get_password_hash, verify_password
 from jose import jwt
 from app.core.config import settings
-from app.api.deps import get_current_user
+from app.api.deps import get_current_user, get_current_active_user
 from app.models.business import Business
 from app.models.user import RoleEnum
 
@@ -34,7 +34,7 @@ class ChangePasswordIn(BaseModel):
     new_password: str
 
 @router.put("/me/password")
-def change_password(payload: ChangePasswordIn, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+def change_password(payload: ChangePasswordIn, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
     """Change password with current password verification and strength check."""
     user = current_user
     if not user:
@@ -56,7 +56,7 @@ def change_password(payload: ChangePasswordIn, db: Session = Depends(get_db), cu
     return {"status": "success", "detail": "Password changed successfully"}
 
 @router.put("/me")
-def update_me(payload: UserUpdate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+def update_me(payload: UserUpdate, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
     """Update current user's profile."""
     user = current_user
     if not user:
@@ -101,7 +101,7 @@ class DeleteAccountIn(BaseModel):
     password: str
 
 @router.post("/me/delete")
-def delete_my_account(payload: DeleteAccountIn, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+def delete_my_account(payload: DeleteAccountIn, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
     """Delete current user account (and business if owner), verifying with password."""
     user = current_user
     if not user:

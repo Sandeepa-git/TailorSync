@@ -4,7 +4,7 @@ from sqlalchemy import or_
 from typing import List
 
 from app.database.session import get_db
-from app.api.deps import get_current_user
+from app.api.deps import get_current_user, get_current_active_user
 from app.models.user import User
 from app.models.measurement_template import MeasurementTemplate
 from app.models.measurement_field import MeasurementField
@@ -74,7 +74,7 @@ def get_template_by_category(category_name: str, db: Session = Depends(get_db), 
     return template
 
 @router.post("/", response_model=MeasurementTemplateRead)
-def create_template(payload: MeasurementTemplateCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+def create_template(payload: MeasurementTemplateCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
     # Check if a template for this category already exists for the business
     existing = db.query(MeasurementTemplate).filter(
         MeasurementTemplate.category_name == payload.category_name,
@@ -108,7 +108,7 @@ def create_template(payload: MeasurementTemplateCreate, db: Session = Depends(ge
     return template
 
 @router.put("/{template_id}", response_model=MeasurementTemplateRead)
-def update_template(template_id: int, payload: MeasurementTemplateUpdate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+def update_template(template_id: int, payload: MeasurementTemplateUpdate, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
     template = db.query(MeasurementTemplate).filter(
         MeasurementTemplate.template_id == template_id,
         MeasurementTemplate.business_id == current_user.business_id
@@ -127,7 +127,7 @@ def update_template(template_id: int, payload: MeasurementTemplateUpdate, db: Se
     return template
 
 @router.delete("/{template_id}")
-def delete_template(template_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+def delete_template(template_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
     template = db.query(MeasurementTemplate).filter(
         MeasurementTemplate.template_id == template_id,
         MeasurementTemplate.business_id == current_user.business_id

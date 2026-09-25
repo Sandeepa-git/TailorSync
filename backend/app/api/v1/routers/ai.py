@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
-from app.api.deps import get_current_user, rate_limit_ai
+from app.api.deps import get_current_user, get_current_active_user, rate_limit_ai
 from app.models.user import User
 from app.schemas.ai import (
     MeasurementPredictIn, MeasurementPredictOut,

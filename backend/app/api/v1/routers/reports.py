@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from typing import List
 from app.schemas.report import ReportList, ReportSummary
-from app.api.deps import get_current_user
+from app.api.deps import get_current_user, get_current_active_user
 from app.models.user import User
 
 router = APIRouter()

@@ -38,9 +38,12 @@ def get_current_user(db: Session = Depends(get_db), token: str = Depends(oauth2_
     if user is None:
         logger.warning(f"Token valid but user {user_id} not found in database")
         raise credentials_exception
-    if not user.is_active:
-        raise HTTPException(status_code=400, detail="Inactive user")
     return user
+
+def get_current_active_user(current_user: User = Depends(get_current_user)) -> User:
+    if not current_user.is_active:
+        raise HTTPException(status_code=403, detail="Inactive user cannot perform this action")
+    return current_user
 
 import time
 from collections import defaultdict

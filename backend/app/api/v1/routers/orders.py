@@ -3,7 +3,7 @@ from typing import List, Optional
 from sqlalchemy.orm import Session
 from app.schemas.order import OrderCreate, OrderRead, OrderUpdate
 from app.database.session import get_db
-from app.api.deps import get_current_user
+from app.api.deps import get_current_user, get_current_active_user
 from app.models.user import User
 
 router = APIRouter()
@@ -45,7 +45,7 @@ def list_orders(status: Optional[str] = None, db: Session = Depends(get_db), cur
     return result
 
 @router.post("/", response_model=OrderRead)
-def create_order(payload: OrderCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+def create_order(payload: OrderCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
     from app.services.order_service import create_order as svc_create
     o = svc_create(db, payload, current_user.business_id)
     
@@ -115,7 +115,7 @@ def get_order(order_id: int, db: Session = Depends(get_db), current_user: User =
     }
 
 @router.put("/{order_id}", response_model=OrderRead)
-def update_order(order_id: int, payload: OrderUpdate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+def update_order(order_id: int, payload: OrderUpdate, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
     from app.services.order_service import update_order as svc_update
     staff_id = current_user.user_id if current_user.role.value == "STAFF" else None
     o = svc_update(db, order_id, payload, current_user.business_id, staff_id=staff_id)
@@ -150,7 +150,7 @@ def update_order(order_id: int, payload: OrderUpdate, db: Session = Depends(get_
     }
 
 @router.delete("/{order_id}")
-def delete_order(order_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+def delete_order(order_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
     from app.services.order_service import delete_order as svc_delete
     success = svc_delete(db, order_id, current_user.business_id)
     if not success:

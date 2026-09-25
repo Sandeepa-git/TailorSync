@@ -4,7 +4,7 @@ from app.database.session import get_db
 from app.models.user import User, RoleEnum
 from app.schemas.user import UserRead, UserCreate
 from app.core.security import get_password_hash
-from app.api.deps import get_current_user
+from app.api.deps import get_current_user, get_current_active_user
 
 router = APIRouter()
 
@@ -21,7 +21,7 @@ def list_staff(db: Session = Depends(get_db), current_user: User = Depends(get_c
     return staff
 
 @router.post("/", response_model=UserRead)
-def add_staff(payload: UserCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+def add_staff(payload: UserCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
     """Add a new staff member to the current user's business."""
     if not current_user or not current_user.business_id:
         raise HTTPException(status_code=400, detail="You must have a business to add staff")
@@ -53,7 +53,7 @@ def add_staff(payload: UserCreate, db: Session = Depends(get_db), current_user: 
     return new_staff
 
 @router.delete("/{staff_id}")
-def delete_staff(staff_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+def delete_staff(staff_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
     """Delete a staff member and their assignments/notes."""
     if not current_user or not current_user.business_id:
         raise HTTPException(status_code=403, detail="Not authorized")
@@ -91,7 +91,7 @@ def delete_staff(staff_id: int, db: Session = Depends(get_db), current_user: Use
     return {"status": "success", "message": "Staff member deleted"}
 
 @router.patch("/{staff_id}/deactivate")
-def deactivate_staff(staff_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+def deactivate_staff(staff_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
     """Deactivate a staff member (suspend access)."""
     if not current_user or not current_user.business_id:
         raise HTTPException(status_code=403, detail="Not authorized")
@@ -116,7 +116,7 @@ def deactivate_staff(staff_id: int, db: Session = Depends(get_db), current_user:
     return {"status": "success", "message": "Staff deactivated"}
 
 @router.patch("/{staff_id}/reactivate")
-def reactivate_staff(staff_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+def reactivate_staff(staff_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
     """Reactivate a suspended staff member."""
     if not current_user or not current_user.business_id:
         raise HTTPException(status_code=403, detail="Not authorized")

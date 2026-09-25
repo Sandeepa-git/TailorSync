@@ -4,7 +4,7 @@ from app.database.session import get_db
 from app.models.business import Business
 from app.models.user import User
 from app.schemas.business import BusinessRead, BusinessUpdate
-from app.api.deps import get_current_user
+from app.api.deps import get_current_user, get_current_active_user
 
 router = APIRouter()
 
@@ -29,7 +29,7 @@ def get_business(db: Session = Depends(get_db), current_user: User = Depends(get
     return business
 
 @router.put("/me", response_model=BusinessRead)
-def update_my_business(payload: BusinessUpdate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+def update_my_business(payload: BusinessUpdate, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
     """Update the business of the current user."""
     if not current_user or not current_user.business_id:
         raise HTTPException(status_code=404, detail="Business not found")

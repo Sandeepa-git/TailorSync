@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from app.database.session import get_db
 from app.schemas.token import Token
 from app.services import auth_service
-from app.api.deps import get_current_user
+from app.api.deps import get_current_user, get_current_active_user
 from app.models.user import User
 import random
 from app.services.email_service import send_email_async

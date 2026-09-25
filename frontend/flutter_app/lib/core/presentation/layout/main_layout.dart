@@ -18,6 +18,7 @@ class MainLayout extends ConsumerWidget {
     final String location = GoRouterState.of(context).location;
 
     final userAsync = ref.watch(userProvider);
+    final isActive = userAsync.valueOrNull?['is_active'] ?? true;
     final isStaff = userAsync.valueOrNull?['role'] == 'staff' || userAsync.valueOrNull?['role'] == 'STAFF';
 
     int currentIndex = 0;
@@ -73,7 +74,25 @@ class MainLayout extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: AppTheme.scaffoldBg,
-      body: child,
+      body: Column(
+        children: [
+          if (!isActive)
+            Container(
+              width: double.infinity,
+              color: Colors.red.shade100,
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+              child: SafeArea(
+                bottom: false,
+                child: Text(
+                  'Your access is deactivated. You are in read-only mode.',
+                  style: GoogleFonts.inter(color: Colors.red.shade900, fontWeight: FontWeight.w600),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+          Expanded(child: child),
+        ],
+      ),
       bottomNavigationBar: SafeArea(
         child: Container(
           margin: const EdgeInsets.fromLTRB(16, 0, 16, 12),
