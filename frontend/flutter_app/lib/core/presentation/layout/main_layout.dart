@@ -84,7 +84,7 @@ class MainLayout extends ConsumerWidget {
               child: SafeArea(
                 bottom: false,
                 child: Text(
-                  'Your access is deactivated. You are in read-only mode.',
+                  'Your account is currently inactive. You can still look around in read-only mode.',
                   style: GoogleFonts.inter(color: Colors.red.shade900, fontWeight: FontWeight.w600),
                   textAlign: TextAlign.center,
                 ),

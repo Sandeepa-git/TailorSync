@@ -140,7 +140,7 @@ class _OrdersListScreenState extends ConsumerState<OrdersListScreen> {
                     child: TextField(
                       controller: _searchController,
                       decoration: InputDecoration(
-                        hintText: 'Search by Order ID, Customer, or Garment',
+                        hintText: 'Find an order, customer, or garment...',
                         hintStyle: GoogleFonts.inter(fontSize: 13, color: const Color(0xFF9E9E9E)),
                         prefixIcon: const Icon(Icons.search_rounded, color: Color(0xFF9E9E9E), size: 20),
                         suffixIcon: _searchController.text.isNotEmpty
@@ -217,15 +217,18 @@ class _OrdersListScreenState extends ConsumerState<OrdersListScreen> {
                             ),
                             const SizedBox(height: 16),
                             Text(
-                              items.isEmpty ? 'No orders yet' : 'No matching orders found',
-                              style: GoogleFonts.inter(color: AppTheme.primary, fontSize: 16, fontWeight: FontWeight.bold),
+                              items.isEmpty ? 'It\'s quiet in here...' : 'Hmm, we couldn\'t find that.',
+                              style: GoogleFonts.inter(color: AppTheme.primary, fontSize: 18, fontWeight: FontWeight.bold),
                             ),
-                            const SizedBox(height: 4),
+                            const SizedBox(height: 8),
                             Text(
-                              items.isEmpty ? 'Create your first order to get started.' : 'Try adjusting your search query or filters.',
-                              style: GoogleFonts.inter(fontSize: 12, color: const Color(0xFF9E9E9E)),
+                              items.isEmpty 
+                                  ? 'Looks like you don\'t have any orders yet.\nLet\'s create your first one and get to work!' 
+                                  : 'Try adjusting your search query or filters to find what you need.',
+                              textAlign: TextAlign.center,
+                              style: GoogleFonts.inter(fontSize: 14, color: const Color(0xFF757575), height: 1.5),
                             ),
-                            const SizedBox(height: 16),
+                            const SizedBox(height: 24),
                             ElevatedButton.icon(
                               onPressed: () => context.go('/orders/new'),
                               icon: const Icon(Icons.add),

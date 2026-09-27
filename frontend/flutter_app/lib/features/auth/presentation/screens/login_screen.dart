@@ -6,6 +6,7 @@ import '../../../../core/network/providers/user_provider.dart';
 import 'package:dio/dio.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/network/providers/api_provider.dart';
+import '../../../../core/theme/app_theme.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -392,285 +393,311 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xFFF8F9FA), Color(0xFFE8EAF6)],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
+          color: AppTheme.scaffoldBg,
         ),
         child: Center(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(24.0),
             child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 420),
+              constraints: const BoxConstraints(maxWidth: 440),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset(
-                    'assets/icon.png',
-                    height: 90,
+                  // App Logo & Header
+                  Hero(
+                    tag: 'app_logo',
+                    child: Image.asset('assets/icon.png', height: 80),
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 16),
                   Text(
                     'TailorSync',
-                    style: GoogleFonts.outfit(fontWeight: FontWeight.bold, fontSize: 24, color: const Color(0xFF1A237E)),
+                    style: GoogleFonts.outfit(fontWeight: FontWeight.w800, fontSize: 28, color: AppTheme.primary, letterSpacing: -0.5),
                   ),
-                  const SizedBox(height: 6),
+                  const SizedBox(height: 8),
                   Text(
                     'Elevate Your Craft',
-                    style: GoogleFonts.inter(fontSize: 12, color: const Color(0xFF5C6BC0), fontWeight: FontWeight.w500),
+                    style: GoogleFonts.inter(fontSize: 14, color: AppTheme.textCaption, fontWeight: FontWeight.w500),
                   ),
-                  const SizedBox(height: 28),
-                  Card(
-                    elevation: 6,
-                    shadowColor: const Color(0xFF1A237E).withOpacity(0.12),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                  const SizedBox(height: 48), // 8pt scale
+
+                  // Glassmorphism/Soft Card
+                  Container(
+                    decoration: BoxDecoration(
+                      color: AppTheme.surface,
+                      borderRadius: BorderRadius.circular(24),
+                      boxShadow: AppTheme.cardShadow,
+                      border: Border.all(color: Colors.white.withValues(alpha: 0.6), width: 1.5),
+                    ),
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+                      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 32),
                       child: Form(
                         key: _formKey,
                         child: AutofillGroup(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                _isSignUp ? 'Create Account' : 'Welcome Back',
-                                style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.bold, color: const Color(0xFF1A237E)),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                _isSignUp ? 'Fill in your details to get started' : 'Sign in to access your dashboard',
-                                style: GoogleFonts.inter(fontSize: 12, color: Colors.grey[600]),
-                              ),
-                              const SizedBox(height: 20),
-
-                              if (_isSignUp) ...[
-                                TextFormField(
-                                  style: const TextStyle(fontSize: 14),
-                                  controller: _name,
-                                  autofillHints: const [AutofillHints.name],
-                                  decoration: const InputDecoration(
-                                    labelText: 'Full Name', 
-                                    prefixIcon: Icon(Icons.person_outline),
-                                    contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-                                  ),
-                                  validator: (v) => v == null || v.trim().isEmpty ? 'Full name is required' : null,
-                                ),
-                                const SizedBox(height: 16),
-                                TextFormField(
-                                  style: const TextStyle(fontSize: 14),
-                                  controller: _phone,
-                                  keyboardType: TextInputType.phone,
-                                  autofillHints: const [AutofillHints.telephoneNumber],
-                                  decoration: const InputDecoration(
-                                    labelText: 'Mobile Number', 
-                                    prefixIcon: Icon(Icons.phone_outlined),
-                                    contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-                                  ),
-                                  validator: (v) => v == null || v.trim().isEmpty ? 'Mobile number is required' : null,
-                                ),
-                                const SizedBox(height: 16),
-                                TextFormField(
-                                  style: const TextStyle(fontSize: 14),
-                                  controller: _businessName,
-                                  decoration: const InputDecoration(
-                                    labelText: 'Business / Organization Name',
-                                    prefixIcon: Icon(Icons.business),
-                                    contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-                                  ),
-                                  validator: (v) => v == null || v.trim().isEmpty ? 'Business name is required' : null,
-                                ),
-                                const SizedBox(height: 16),
-                                TextFormField(
-                                  style: const TextStyle(fontSize: 14),
-                                  controller: _businessRegNumber,
-                                  decoration: const InputDecoration(
-                                    labelText: 'Business Registered Number',
-                                    prefixIcon: Icon(Icons.receipt_long),
-                                    contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-                                  ),
-                                  validator: (v) => v == null || v.trim().isEmpty ? 'Registration number is required' : null,
-                                ),
-                                const SizedBox(height: 16),
-                                TextFormField(
-                                  style: const TextStyle(fontSize: 14),
-                                  controller: _businessContact,
-                                  keyboardType: TextInputType.phone,
-                                  decoration: const InputDecoration(
-                                    labelText: 'Business Contact Number',
-                                    prefixIcon: Icon(Icons.phone),
-                                    contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-                                  ),
-                                  validator: (v) => v == null || v.trim().isEmpty ? 'Business contact is required' : null,
-                                ),
-                                const SizedBox(height: 16),
-                              ],
-
-                              TextFormField(
-                                  style: const TextStyle(fontSize: 14),
-                                controller: _email,
-                                keyboardType: TextInputType.emailAddress,
-                                autofillHints: const [AutofillHints.email],
-                                decoration: const InputDecoration(
-                                  labelText: 'Email Address', 
-                                  prefixIcon: Icon(Icons.email_outlined),
-                                  contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-                                ),
-                                validator: (v) {
-                                  if (v == null || v.trim().isEmpty) return 'Email address is required';
-                                  if (!RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(v.trim())) {
-                                    return 'Enter a valid email address';
-                                  }
-                                  return null;
-                                },
-                              ),
-                              const SizedBox(height: 16),
-
-                              TextFormField(
-                                  style: const TextStyle(fontSize: 14),
-                                controller: _password,
-                                obscureText: _obscurePassword,
-                                autofillHints: _isSignUp ? const [AutofillHints.newPassword] : const [AutofillHints.password],
-                                decoration: InputDecoration(
-                                  labelText: 'Password',
-                                  prefixIcon: const Icon(Icons.lock_outline),
-                                  contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-                                  suffixIcon: IconButton(
-                                    icon: Icon(_obscurePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined),
-                                    onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
-                                  ),
-                                ),
-                                validator: (v) {
-                                  if (v == null || v.isEmpty) return 'Password is required';
-                                  if (_isSignUp && !_isPasswordValid) return 'Password does not meet requirements';
-                                  return null;
-                                },
-                              ),
-
-                              if (_isSignUp) ...[
-                                const SizedBox(height: 12),
-                                // Real-time Password Checklist Container
-                                Container(
-                                  padding: const EdgeInsets.all(12),
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xFFF4F6FB),
-                                    borderRadius: BorderRadius.circular(12),
-                                    border: Border.all(color: const Color(0xFFE2E6F0)),
-                                  ),
+                          child: AnimatedSize(
+                            duration: const Duration(milliseconds: 400),
+                            curve: Curves.easeOutCubic,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                AnimatedSwitcher(
+                                  duration: const Duration(milliseconds: 300),
+                                  transitionBuilder: (child, animation) => FadeTransition(opacity: animation, child: child),
                                   child: Column(
+                                    key: ValueKey<bool>(_isSignUp),
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text('Password Requirements:', style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.bold, color: const Color(0xFF1A237E))),
-                                      const SizedBox(height: 6),
-                                      _buildChecklistItem('Minimum 8 characters', _hasMinLength),
-                                      _buildChecklistItem('At least one uppercase letter (A-Z)', _hasUppercase),
-                                      _buildChecklistItem('At least one lowercase letter (a-z)', _hasLowercase),
-                                      _buildChecklistItem('At least one number (0-9)', _hasDigit),
-                                      _buildChecklistItem('At least one special character (!@#\$%...)', _hasSpecialChar),
+                                      Text(
+                                        _isSignUp ? 'Let\'s Get Started' : 'Welcome Back',
+                                        style: GoogleFonts.inter(fontSize: 24, fontWeight: FontWeight.bold, color: AppTheme.textPrimary, letterSpacing: -0.5),
+                                      ),
+                                      const SizedBox(height: 8),
+                                      Text(
+                                        _isSignUp ? 'Join TailorSync and streamline your business.' : 'We\'re excited to see you again. Ready to work?',
+                                        style: GoogleFonts.inter(fontSize: 14, color: AppTheme.textBody, height: 1.4),
+                                      ),
                                     ],
                                   ),
                                 ),
+                                const SizedBox(height: 32),
+
+                                if (_isSignUp) ...[
+                                  TextFormField(
+                                    style: GoogleFonts.inter(fontSize: 14),
+                                    controller: _name,
+                                    autofillHints: const [AutofillHints.name],
+                                    decoration: const InputDecoration(labelText: 'Full Name', prefixIcon: Icon(Icons.person_outline)),
+                                    validator: (v) => v == null || v.trim().isEmpty ? 'Full name is required' : null,
+                                  ),
+                                  const SizedBox(height: 16),
+                                  TextFormField(
+                                    style: GoogleFonts.inter(fontSize: 14),
+                                    controller: _phone,
+                                    keyboardType: TextInputType.phone,
+                                    autofillHints: const [AutofillHints.telephoneNumber],
+                                    decoration: const InputDecoration(labelText: 'Mobile Number', prefixIcon: Icon(Icons.phone_outlined)),
+                                    validator: (v) => v == null || v.trim().isEmpty ? 'Mobile number is required' : null,
+                                  ),
+                                  const SizedBox(height: 16),
+                                  TextFormField(
+                                    style: GoogleFonts.inter(fontSize: 14),
+                                    controller: _businessName,
+                                    decoration: const InputDecoration(labelText: 'Business Name', prefixIcon: Icon(Icons.business_outlined)),
+                                    validator: (v) => v == null || v.trim().isEmpty ? 'Business name is required' : null,
+                                  ),
+                                  const SizedBox(height: 16),
+                                  TextFormField(
+                                    style: GoogleFonts.inter(fontSize: 14),
+                                    controller: _businessRegNumber,
+                                    decoration: const InputDecoration(labelText: 'Registration Number', prefixIcon: Icon(Icons.receipt_long_outlined)),
+                                    validator: (v) => v == null || v.trim().isEmpty ? 'Registration number is required' : null,
+                                  ),
+                                  const SizedBox(height: 16),
+                                  TextFormField(
+                                    style: GoogleFonts.inter(fontSize: 14),
+                                    controller: _businessContact,
+                                    keyboardType: TextInputType.phone,
+                                    decoration: const InputDecoration(labelText: 'Business Contact', prefixIcon: Icon(Icons.contact_phone_outlined)),
+                                    validator: (v) => v == null || v.trim().isEmpty ? 'Business contact is required' : null,
+                                  ),
+                                  const SizedBox(height: 16),
+                                ],
+
+                                TextFormField(
+                                  style: GoogleFonts.inter(fontSize: 14),
+                                  controller: _email,
+                                  keyboardType: TextInputType.emailAddress,
+                                  autofillHints: const [AutofillHints.email],
+                                  decoration: const InputDecoration(labelText: 'Email Address', prefixIcon: Icon(Icons.email_outlined)),
+                                  validator: (v) {
+                                    if (v == null || v.trim().isEmpty) return 'Email address is required';
+                                    if (!RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(v.trim())) {
+                                      return 'Enter a valid email address';
+                                    }
+                                    return null;
+                                  },
+                                ),
                                 const SizedBox(height: 16),
 
                                 TextFormField(
-                                  style: const TextStyle(fontSize: 14),
-                                  controller: _confirmPassword,
-                                  obscureText: _obscureConfirmPassword,
-                                  autofillHints: const [AutofillHints.newPassword],
+                                  style: GoogleFonts.inter(fontSize: 14),
+                                  controller: _password,
+                                  obscureText: _obscurePassword,
+                                  autofillHints: _isSignUp ? const [AutofillHints.newPassword] : const [AutofillHints.password],
                                   decoration: InputDecoration(
-                                    labelText: 'Confirm Password',
-                                    prefixIcon: const Icon(Icons.lock_reset_outlined),
-                                    contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                                    labelText: 'Password',
+                                    prefixIcon: const Icon(Icons.lock_outline),
                                     suffixIcon: IconButton(
-                                      icon: Icon(_obscureConfirmPassword ? Icons.visibility_off_outlined : Icons.visibility_outlined),
-                                      onPressed: () => setState(() => _obscureConfirmPassword = !_obscureConfirmPassword),
+                                      icon: Icon(_obscurePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined),
+                                      onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+                                      splashRadius: 24,
                                     ),
                                   ),
                                   validator: (v) {
-                                    if (v == null || v.isEmpty) return 'Please confirm your password';
-                                    if (v != _password.text) return 'Passwords do not match';
+                                    if (v == null || v.isEmpty) return 'Password is required';
+                                    if (_isSignUp && !_isPasswordValid) return 'Password does not meet requirements';
                                     return null;
                                   },
                                 ),
 
-                                if (_confirmPassword.text.isNotEmpty) ...[
-                                  const SizedBox(height: 8),
-                                  Row(
-                                    children: [
-                                      Icon(
-                                        _passwordsMatch ? Icons.check_circle : Icons.error,
-                                        size: 16,
-                                        color: _passwordsMatch ? const Color(0xFF2E7D32) : const Color(0xFFD32F2F),
+                                // Progressive Disclosure: Only show password requirements when signing up and typing
+                                if (_isSignUp) ...[
+                                  AnimatedSize(
+                                    duration: const Duration(milliseconds: 300),
+                                    curve: Curves.easeOutCubic,
+                                    child: _password.text.isEmpty
+                                        ? const SizedBox.shrink()
+                                        : Container(
+                                            margin: const EdgeInsets.only(top: 16),
+                                            padding: const EdgeInsets.all(16),
+                                            decoration: BoxDecoration(
+                                              color: AppTheme.scaffoldBg,
+                                              borderRadius: BorderRadius.circular(16),
+                                              border: Border.all(color: AppTheme.divider),
+                                            ),
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text('Password Security:', style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.bold, color: AppTheme.textPrimary)),
+                                                const SizedBox(height: 8),
+                                                _buildChecklistItem('Minimum 8 characters', _hasMinLength),
+                                                _buildChecklistItem('One uppercase letter', _hasUppercase),
+                                                _buildChecklistItem('One lowercase letter', _hasLowercase),
+                                                _buildChecklistItem('One number', _hasDigit),
+                                                _buildChecklistItem('One special character', _hasSpecialChar),
+                                              ],
+                                            ),
+                                          ),
+                                  ),
+                                  const SizedBox(height: 16),
+
+                                  TextFormField(
+                                    style: GoogleFonts.inter(fontSize: 14),
+                                    controller: _confirmPassword,
+                                    obscureText: _obscureConfirmPassword,
+                                    autofillHints: const [AutofillHints.newPassword],
+                                    decoration: InputDecoration(
+                                      labelText: 'Confirm Password',
+                                      prefixIcon: const Icon(Icons.lock_reset_outlined),
+                                      suffixIcon: IconButton(
+                                        icon: Icon(_obscureConfirmPassword ? Icons.visibility_off_outlined : Icons.visibility_outlined),
+                                        onPressed: () => setState(() => _obscureConfirmPassword = !_obscureConfirmPassword),
+                                        splashRadius: 24,
                                       ),
-                                      const SizedBox(width: 6),
-                                      Text(
-                                        _passwordsMatch ? 'Passwords match' : 'Passwords do not match',
-                                        style: GoogleFonts.inter(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w600,
-                                          color: _passwordsMatch ? const Color(0xFF2E7D32) : const Color(0xFFD32F2F),
-                                        ),
-                                      ),
-                                    ],
+                                    ),
+                                    validator: (v) {
+                                      if (v == null || v.isEmpty) return 'Please confirm your password';
+                                      if (v != _password.text) return 'Passwords do not match';
+                                      return null;
+                                    },
+                                  ),
+
+                                  AnimatedSize(
+                                    duration: const Duration(milliseconds: 300),
+                                    curve: Curves.easeOutCubic,
+                                    child: _confirmPassword.text.isEmpty
+                                        ? const SizedBox.shrink()
+                                        : Padding(
+                                            padding: const EdgeInsets.only(top: 8),
+                                            child: Row(
+                                              children: [
+                                                Icon(
+                                                  _passwordsMatch ? Icons.check_circle : Icons.error,
+                                                  size: 16,
+                                                  color: _passwordsMatch ? Colors.green.shade700 : AppTheme.error,
+                                                ),
+                                                const SizedBox(width: 8),
+                                                Text(
+                                                  _passwordsMatch ? 'Passwords match' : 'Passwords do not match',
+                                                  style: GoogleFonts.inter(
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.w600,
+                                                    color: _passwordsMatch ? Colors.green.shade700 : AppTheme.error,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
                                   ),
                                 ],
-                              ],
 
-                              if (!_isSignUp) ...[
-                                const SizedBox(height: 4),
-                                Align(
-                                  alignment: Alignment.centerRight,
+                                if (!_isSignUp) ...[
+                                  const SizedBox(height: 8),
+                                  Align(
+                                    alignment: Alignment.centerRight,
+                                    child: TextButton(
+                                      onPressed: _showForgotPasswordDialog,
+                                      style: TextButton.styleFrom(
+                                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                        minimumSize: Size.zero,
+                                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                      ),
+                                      child: Text(
+                                        'Forgot Password?',
+                                        style: GoogleFonts.inter(fontSize: 13, color: AppTheme.primary, fontWeight: FontWeight.w600),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+
+                                const SizedBox(height: 32),
+
+                                // Primary Action Button
+                                SizedBox(
+                                  width: double.infinity,
+                                  height: 56, // 8pt scale tap target
+                                  child: ElevatedButton(
+                                    onPressed: canSubmit ? _submit : null,
+                                    style: ElevatedButton.styleFrom(
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                                      elevation: canSubmit ? 4 : 0,
+                                      shadowColor: AppTheme.primary.withValues(alpha: 0.4),
+                                      disabledBackgroundColor: AppTheme.divider,
+                                    ),
+                                    child: AnimatedSwitcher(
+                                      duration: const Duration(milliseconds: 200),
+                                      child: _loading
+                                          ? const SizedBox(height: 24, width: 24, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2.5))
+                                          : Text(
+                                              _isSignUp ? 'Create Account' : 'Sign In',
+                                              key: ValueKey(_isSignUp),
+                                              style: GoogleFonts.inter(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+                                            ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 24),
+
+                                // Secondary Action
+                                Center(
                                   child: TextButton(
-                                    onPressed: _showForgotPasswordDialog,
-                                    style: TextButton.styleFrom(padding: EdgeInsets.zero),
-                                    child: Text(
-                                      'Forgot Password?',
-                                      style: GoogleFonts.inter(fontSize: 13, color: const Color(0xFF1A237E), fontWeight: FontWeight.w600),
+                                    onPressed: () => setState(() {
+                                      _isSignUp = !_isSignUp;
+                                      _name.clear();
+                                      _email.clear();
+                                      _phone.clear();
+                                      _password.clear();
+                                      _confirmPassword.clear();
+                                    }),
+                                    style: TextButton.styleFrom(
+                                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                    ),
+                                    child: RichText(
+                                      text: TextSpan(
+                                        style: GoogleFonts.inter(fontSize: 14, color: AppTheme.textBody),
+                                        children: [
+                                          TextSpan(text: _isSignUp ? 'Already have an account? ' : 'Need an account? '),
+                                          TextSpan(
+                                            text: _isSignUp ? 'Sign In' : 'Create Account',
+                                            style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: AppTheme.primary),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
                               ],
-
-                              const SizedBox(height: 24),
-
-                              SizedBox(
-                                width: double.infinity,
-                                height: 48,
-                                child: ElevatedButton(
-                                  onPressed: canSubmit ? _submit : null,
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color(0xFF1A237E),
-                                    disabledBackgroundColor: Colors.grey[300],
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                                    elevation: canSubmit ? 2 : 0,
-                                  ),
-                                  child: _loading
-                                      ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                                      : Text(
-                                          _isSignUp ? 'Create Account' : 'Sign In',
-                                          style: GoogleFonts.inter(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
-                                        ),
-                                ),
-                              ),
-                              const SizedBox(height: 16),
-
-                              Center(
-                                child: TextButton(
-                                  onPressed: () => setState(() {
-                                    _isSignUp = !_isSignUp;
-                                    _name.clear();
-                                    _email.clear();
-                                    _phone.clear();
-                                    _password.clear();
-                                    _confirmPassword.clear();
-                                  }),
-                                  child: Text(
-                                    _isSignUp ? 'Already have an account? Sign In' : 'Need an account? Create Account',
-                                    style: GoogleFonts.inter(fontSize: 14, color: const Color(0xFF1A237E), fontWeight: FontWeight.w600),
-                                  ),
-                                ),
-                              ),
-                            ],
+                            ),
                           ),
                         ),
                       ),
