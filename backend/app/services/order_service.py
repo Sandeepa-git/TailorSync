@@ -5,7 +5,7 @@ from app.models.staff_assignment import StaffAssignment
 from app.schemas.order import OrderCreate, OrderUpdate
 from datetime import datetime
 
-def list_orders(db: Session, business_id: int, skip: int = 0, limit: int = 100, status: str = None, staff_id: int = None):
+def list_orders(db: Session, business_id: int, skip: int = 0, limit: int = 1000, status: str = None, staff_id: int = None):
     query = db.query(Order).filter(Order.business_id == business_id).options(
         joinedload(Order.customer),
         joinedload(Order.staff_assignments).joinedload(StaffAssignment.staff),

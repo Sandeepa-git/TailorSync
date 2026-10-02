@@ -9,10 +9,10 @@ from app.models.user import User
 router = APIRouter()
 
 @router.get("/", response_model=List[OrderRead])
-def list_orders(status: Optional[str] = None, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+def list_orders(skip: int = 0, limit: int = 1000, status: Optional[str] = None, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     from app.services.order_service import list_orders as svc_list
     staff_id = current_user.user_id if current_user.role.value == "STAFF" else None
-    orders = svc_list(db, current_user.business_id, status=status, staff_id=staff_id)
+    orders = svc_list(db, current_user.business_id, skip=skip, limit=limit, status=status, staff_id=staff_id)
     result = []
     for o in orders:
         assignment = o.staff_assignments[0] if o.staff_assignments else None
@@ -117,10 +117,29 @@ def get_order(order_id: int, db: Session = Depends(get_db), current_user: User =
 @router.put("/{order_id}", response_model=OrderRead)
 def update_order(order_id: int, payload: OrderUpdate, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
     from app.services.order_service import update_order as svc_update
+    from app.services.order_service import get_order as svc_get
+    
     staff_id = current_user.user_id if current_user.role.value == "STAFF" else None
+    
+    old_o = svc_get(db, order_id, current_user.business_id, staff_id=staff_id)
+    if not old_o:
+        raise HTTPException(status_code=404, detail="Order not found")
+    
+    old_status = old_o.status.value if hasattr(old_o.status, 'value') else old_o.status
+    
     o = svc_update(db, order_id, payload, current_user.business_id, staff_id=staff_id)
     if not o:
         raise HTTPException(status_code=404, detail="Order not found")
+        
+    if payload.status is not None:
+        new_status = payload.status.value if hasattr(payload.status, 'value') else payload.status
+        if new_status in ["Ready", "Delivered"] and old_status not in ["Ready", "Delivered"]:
+            if o.customer and o.customer.email:
+                try:
+                    from app.services.email_service import send_order_finished_email
+                    send_order_finished_email(o.customer.email, o.customer.full_name, o.order_number or str(o.order_id), new_status)
+                except Exception:
+                    pass
         
     if payload.staff_id is not None:
         try:

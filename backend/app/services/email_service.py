@@ -110,3 +110,16 @@ Best regards,
 TailorSync Team
 """
     send_email_async(email, subject, content)
+
+def send_order_finished_email(email: str, customer_name: str, order_number: str, status: str):
+    subject = f"TailorSync - Order {order_number} is {status}"
+    content = f"""Hello {customer_name},
+
+Great news! Your order #{order_number} is now marked as {status}.
+
+Please contact us if you have any questions or when you would like to pick it up.
+
+Best regards,
+TailorSync Team
+"""
+    send_email_async(email, subject, content)

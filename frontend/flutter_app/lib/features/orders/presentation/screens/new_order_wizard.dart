@@ -26,7 +26,7 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
   late AnimationController _pulseController;
   
   final List<String> _stepTitles = [
-    'Customer', 'Garment', 'Priority Input', 'AI Prediction', 
+    'Customer', 'Garment', 'Priority Input', 'Prediction Method', 'AI Prediction', 
     'Preferences', 'Fabric Rec.', 'Estimation', 'Review & Assign'
   ];
 
@@ -93,14 +93,8 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
   // Step 2: Garment
   String? _selectedGarment;
   final List<Map<String, dynamic>> _garmentTypes = [
-    {'name': 'Short Sleeve Shirt', 'icon': Icons.checkroom, 'color': Color(0xFF6C63FF)},
-    {'name': 'Long Sleeve Shirt', 'icon': Icons.dry_cleaning, 'color': Color(0xFF4CAF50)},
-    {'name': 'Short Trouser', 'icon': Icons.straighten, 'color': Color(0xFFFF6584)},
-    {'name': 'Long Trouser', 'icon': Icons.straighten, 'color': Color(0xFFFF9F43)},
-    {'name': 'Dresses', 'icon': Icons.woman, 'color': Color(0xFF9B59B6)},
-    {'name': 'Suits', 'icon': Icons.work, 'color': Color(0xFF34495E)},
-    {'name': 'Jackets', 'icon': Icons.layers, 'color': Color(0xFFE67E22)},
-    {'name': 'Coats', 'icon': Icons.ac_unit, 'color': Color(0xFF2980B9)},
+    {'name': 'Shirt', 'icon': Icons.checkroom, 'color': Color(0xFF6C63FF)},
+    {'name': 'Trouser', 'icon': Icons.straighten, 'color': Color(0xFFFF9F43)},
   ];
 
   // Step 3: Priority Measurements
@@ -113,83 +107,22 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
   final Map<int, TextEditingController> _customMeasurementControllers = {};
   int _customMeasurementCounter = 0;
   
-  Map<String, dynamic> _getDefaultTemplateForCategory(String cat) {
+    Map<String, dynamic> _getDefaultTemplateForCategory(String cat) {
       List<Map<String, dynamic>> fields = [];
-      
-      if (cat == 'Short Sleeve Shirt') {
+      if (cat == 'Shirt') {
         fields = [
-          {'id': 1, 'field_name': 'Height', 'unit': 'in', 'is_required': true, 'placeholder': '10-90', 'min': 10.0, 'max': 90.0},
-          {'id': 2, 'field_name': 'Chest', 'unit': 'in', 'is_required': true, 'placeholder': '20-60', 'min': 20.0, 'max': 60.0},
-          {'id': 3, 'field_name': 'Shoulder', 'unit': 'in', 'is_required': true, 'placeholder': '10-30', 'min': 10.0, 'max': 30.0},
-          {'id': 4, 'field_name': 'Collar Size', 'unit': 'in', 'is_required': true, 'placeholder': '10-25', 'min': 10.0, 'max': 25.0},
-          {'id': 5, 'field_name': 'Short Sleeve Length', 'unit': 'in', 'is_required': true, 'placeholder': '5-25', 'min': 5.0, 'max': 25.0},
-          {'id': 6, 'field_name': 'Sleeve Open', 'unit': 'in', 'is_required': false, 'placeholder': '5-20', 'min': 5.0, 'max': 20.0},
+          {'id': 1, 'field_name': 'Shoulder', 'unit': 'in', 'is_required': true, 'placeholder': 'e.g. 18.0'},
+          {'id': 2, 'field_name': 'Height', 'unit': 'in', 'is_required': true, 'placeholder': 'e.g. 68.0'},
+          {'id': 3, 'field_name': 'Chest', 'unit': 'in', 'is_required': true, 'placeholder': 'e.g. 40.0'},
         ];
-      } else if (cat == 'Long Sleeve Shirt') {
+      } else if (cat == 'Trouser') {
         fields = [
-          {'id': 1, 'field_name': 'Height', 'unit': 'in', 'is_required': true, 'placeholder': '10-90', 'min': 10.0, 'max': 90.0},
-          {'id': 2, 'field_name': 'Chest', 'unit': 'in', 'is_required': true, 'placeholder': '20-60', 'min': 20.0, 'max': 60.0},
-          {'id': 3, 'field_name': 'Shoulder', 'unit': 'in', 'is_required': true, 'placeholder': '10-30', 'min': 10.0, 'max': 30.0},
-          {'id': 4, 'field_name': 'Collar Size', 'unit': 'in', 'is_required': true, 'placeholder': '10-25', 'min': 10.0, 'max': 25.0},
-          {'id': 5, 'field_name': 'Long Sleeve Length', 'unit': 'in', 'is_required': true, 'placeholder': '10-40', 'min': 10.0, 'max': 40.0},
-          {'id': 6, 'field_name': 'Sleeve Open', 'unit': 'in', 'is_required': false, 'placeholder': '5-20', 'min': 5.0, 'max': 20.0},
-        ];
-      } else if (cat.contains('Trouser')) {
-        fields = [
-          {'id': 1, 'field_name': 'Height', 'unit': 'in', 'is_required': true, 'placeholder': '10-90', 'min': 10.0, 'max': 90.0},
-          {'id': 2, 'field_name': 'Waist', 'unit': 'in', 'is_required': true, 'placeholder': '20-60', 'min': 20.0, 'max': 60.0},
-          {'id': 3, 'field_name': 'Height till Knee', 'unit': 'in', 'is_required': false, 'placeholder': '10-40', 'min': 10.0, 'max': 40.0},
-          {'id': 4, 'field_name': 'Round Knee', 'unit': 'in', 'is_required': false, 'placeholder': '10-35', 'min': 10.0, 'max': 35.0},
-          {'id': 5, 'field_name': 'Round End', 'unit': 'in', 'is_required': false, 'placeholder': '5-30', 'min': 5.0, 'max': 30.0},
-          {'id': 6, 'field_name': 'Seat', 'unit': 'in', 'is_required': false, 'placeholder': '20-70', 'min': 20.0, 'max': 70.0},
-          {'id': 7, 'field_name': 'Crotch', 'unit': 'in', 'is_required': false, 'placeholder': '5-30', 'min': 5.0, 'max': 30.0},
-        ];
-        if (cat == 'Short Trouser') {
-            fields.removeWhere((f) => f['field_name'] == 'Height till Knee' || f['field_name'] == 'Round End');
-        }
-      } else if (cat == 'Dresses') {
-        fields = [
-          {'id': 1, 'field_name': 'Height', 'unit': 'in', 'is_required': true, 'placeholder': '10-90', 'min': 10.0, 'max': 90.0},
-          {'id': 2, 'field_name': 'Bust', 'unit': 'in', 'is_required': true, 'placeholder': '20-60', 'min': 20.0, 'max': 60.0},
-          {'id': 3, 'field_name': 'Waist', 'unit': 'in', 'is_required': true, 'placeholder': '20-60', 'min': 20.0, 'max': 60.0},
-          {'id': 4, 'field_name': 'Hips', 'unit': 'in', 'is_required': true, 'placeholder': '20-70', 'min': 20.0, 'max': 70.0},
-          {'id': 5, 'field_name': 'Shoulder', 'unit': 'in', 'is_required': false, 'placeholder': '10-30', 'min': 10.0, 'max': 30.0},
-          {'id': 6, 'field_name': 'Dress Length', 'unit': 'in', 'is_required': true, 'placeholder': '10-70', 'min': 10.0, 'max': 70.0},
-        ];
-      } else if (cat == 'Suits') {
-        fields = [
-          {'id': 1, 'field_name': 'Height', 'unit': 'in', 'is_required': true, 'placeholder': '10-90', 'min': 10.0, 'max': 90.0},
-          {'id': 2, 'field_name': 'Chest', 'unit': 'in', 'is_required': true, 'placeholder': '20-60', 'min': 20.0, 'max': 60.0},
-          {'id': 3, 'field_name': 'Waist', 'unit': 'in', 'is_required': true, 'placeholder': '20-60', 'min': 20.0, 'max': 60.0},
-          {'id': 4, 'field_name': 'Shoulder', 'unit': 'in', 'is_required': true, 'placeholder': '10-30', 'min': 10.0, 'max': 30.0},
-          {'id': 5, 'field_name': 'Sleeve Length', 'unit': 'in', 'is_required': true, 'placeholder': '10-40', 'min': 10.0, 'max': 40.0},
-          {'id': 6, 'field_name': 'Trouser Waist', 'unit': 'in', 'is_required': true, 'placeholder': '20-60', 'min': 20.0, 'max': 60.0},
-          {'id': 7, 'field_name': 'Trouser Length', 'unit': 'in', 'is_required': true, 'placeholder': '10-50', 'min': 10.0, 'max': 50.0},
-        ];
-      } else if (cat == 'Jackets' || cat == 'Coats') {
-        fields = [
-          {'id': 1, 'field_name': 'Height', 'unit': 'in', 'is_required': true, 'placeholder': '10-90', 'min': 10.0, 'max': 90.0},
-          {'id': 2, 'field_name': 'Chest', 'unit': 'in', 'is_required': true, 'placeholder': '20-60', 'min': 20.0, 'max': 60.0},
-          {'id': 3, 'field_name': 'Shoulder', 'unit': 'in', 'is_required': true, 'placeholder': '10-30', 'min': 10.0, 'max': 30.0},
-          {'id': 4, 'field_name': 'Sleeve Length', 'unit': 'in', 'is_required': true, 'placeholder': '10-40', 'min': 10.0, 'max': 40.0},
-          {'id': 5, 'field_name': 'Jacket Length', 'unit': 'in', 'is_required': true, 'placeholder': '10-60', 'min': 10.0, 'max': 60.0},
-        ];
-      } else {
-        // Tops & Full Body
-        fields = [
-          {'id': 1, 'field_name': 'Height', 'unit': 'in', 'is_required': true, 'placeholder': '10-90', 'min': 10.0, 'max': 90.0},
-          {'id': 2, 'field_name': 'Chest', 'unit': 'in', 'is_required': true, 'placeholder': '20-60', 'min': 20.0, 'max': 60.0},
-          {'id': 3, 'field_name': 'Shoulder', 'unit': 'in', 'is_required': false, 'placeholder': '10-30', 'min': 10.0, 'max': 30.0},
-          {'id': 4, 'field_name': 'Waist', 'unit': 'in', 'is_required': false, 'placeholder': '20-60', 'min': 20.0, 'max': 60.0},
-          {'id': 5, 'field_name': 'Hips', 'unit': 'in', 'is_required': false, 'placeholder': '20-70', 'min': 20.0, 'max': 70.0},
-          {'id': 6, 'field_name': 'Sleeve Length', 'unit': 'in', 'is_required': false, 'placeholder': '10-40', 'min': 10.0, 'max': 40.0},
+          {'id': 1, 'field_name': 'Height', 'unit': 'in', 'is_required': true, 'placeholder': 'e.g. 68.0'},
+          {'id': 2, 'field_name': 'Waist', 'unit': 'in', 'is_required': true, 'placeholder': 'e.g. 34.0'},
+          {'id': 3, 'field_name': 'Seat', 'unit': 'in', 'is_required': true, 'placeholder': 'e.g. 40.0'},
         ];
       }
-
-      return {
-        'category_name': cat,
-        'fields': fields
-      };
+      return {'category_name': cat, 'fields': fields};
   }
 
   // Step 4: AI Predictions
@@ -197,6 +130,7 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
   Map<String, String> _confirmedMeasurements = {};
   Map<String, bool> _isAiGenerated = {};
   bool _aiPredictionLoading = false;
+  int? _selectedOptionIndex;
   String? _aiPredictionError;
 
   // Step 5: Style Preferences
@@ -232,8 +166,23 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
       if (_selectedGarment == null) { _showSnack('⚠️ Please select a garment'); return; }
       setState(() { _loadingTemplate = true; _currentStep++; });
       
-      // Always use the refined client-side template for accurate garment-specific measurements
       _measurementTemplate = _getDefaultTemplateForCategory(_selectedGarment!);
+      
+      try {
+         final rangesResp = await api.getMeasurementInputRanges(_selectedGarment!.toLowerCase());
+         final ranges = rangesResp.data['ranges'] as Map<String, dynamic>;
+         for (var f in _measurementTemplate!['fields']) {
+             final fieldName = (f['field_name'] as String).toLowerCase();
+             final rangeData = ranges[fieldName];
+             if (rangeData != null) {
+                 f['min'] = rangeData['min'];
+                 f['max'] = rangeData['max'];
+                 f['placeholder'] = '${rangeData['min']} - ${rangeData['max']}';
+             }
+         }
+      } catch(e) {
+         print("Failed to fetch ranges: $e");
+      }
       
       _measurementControllers.clear();
       _customMeasurements.clear();
@@ -244,8 +193,7 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
       return;
     }
     
-    if (_currentStep == 2) {
-      // Validate Priority Inputs
+        if (_currentStep == 2) {
       final fields = (_measurementTemplate?['fields'] as List? ?? []).cast<Map<String, dynamic>>();
       final priorityFields = fields.where((f) => f['is_required'] == true).toList();
           
@@ -274,7 +222,7 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
           final val = double.tryParse(text);
           if (val != null && min != null && max != null) {
             if (val < min || val > max) {
-              _showSnack('⚠️ $name must be between $min and $max');
+              _showSnack('⚠️ $name must be between $min and $max inches.');
               return;
             }
           }
@@ -294,42 +242,16 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
           _isAiGenerated[name] = false;
         }
       }
-
-      setState(() { _aiPredictionLoading = true; _aiPredictionError = null; _currentStep++; });
-      try {
-        final resp = await api.predictMeasurements({'garment_type': _selectedGarment, 'measurements': enteredMeasures});
-        setState(() {
-          _aiPredictions = List<Map<String, dynamic>>.from(resp.data['predictions'] ?? []);
-          // Auto-confirm AI predictions
-          for (var p in _aiPredictions) {
-             final m = p['measurement'] as String;
-             if (!_confirmedMeasurements.containsKey(m)) {
-                _confirmedMeasurements[m] = p['recommended'].toString();
-                _isAiGenerated[m] = true;
-             }
-          }
-          _aiPredictionLoading = false;
-        });
-      } catch (e) {
-        String errorMsg = "AI unavailable. You can enter manually later.";
-        if (e is DioException && e.response?.data != null && e.response!.data is Map && (e.response!.data as Map).containsKey('detail')) {
-            errorMsg = (e.response!.data as Map)['detail'].toString();
-        } else {
-            errorMsg = e.toString();
-        }
-        setState(() {
-          _aiPredictionError = errorMsg;
-          _aiPredictionLoading = false;
-        });
-      }
+      
+      setState(() { _currentStep++; });
       return;
     }
     
-    if (_currentStep == 3) {
+    if (_currentStep == 4) {
        // Validate that all necessary measurements are filled (either manual or AI)
     }
 
-    if (_currentStep == 4) {
+    if (_currentStep == 5) {
       setState(() { _fabricRecLoading = true; _fabricRecError = null; _currentStep++; });
       try {
         final resp = await api.recommendFabric({
@@ -354,7 +276,7 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
       return;
     }
 
-    if (_currentStep == 5) {
+    if (_currentStep == 6) {
       if (_selectedFabricIndex == null && _fabricRecError == null) {
         _showSnack('⚠️ Please select a fabric recommendation'); return;
       }
@@ -387,7 +309,7 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
       return;
     }
 
-    if (_currentStep == 6) {
+    if (_currentStep == 7) {
         if (_manualQuantityCtrl.text.isEmpty || double.tryParse(_manualQuantityCtrl.text) == null) {
             _showSnack('⚠️ Please enter a valid quantity'); return;
         }
@@ -512,11 +434,12 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
       case 0: return _buildCustomerStep();
       case 1: return _buildGarmentStep();
       case 2: return _buildPriorityInputStep();
-      case 3: return _buildAiPredictionStep();
-      case 4: return _buildPreferencesStep();
-      case 5: return _buildFabricRecStep();
-      case 6: return _buildEstimationStep();
-      case 7: return _buildAssignStep();
+      case 3: return _buildPredictionMethodStep();
+      case 4: return _buildAiPredictionStep();
+      case 5: return _buildPreferencesStep();
+      case 6: return _buildFabricRecStep();
+      case 7: return _buildEstimationStep();
+      case 8: return _buildAssignStep();
       default: return const SizedBox.shrink();
     }
   }
@@ -816,7 +739,128 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
     );
   }
 
-  // --- Step 4: AI Prediction Review ---
+
+  // --- Step 4: Prediction Method ---
+  Widget _buildPredictionMethodStep() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Select Prediction Model', style: GoogleFonts.outfit(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black87)),
+        const SizedBox(height: 8),
+        Text('Choose how you want AI to assist with measurements.', style: GoogleFonts.inter(color: Colors.black87)),
+        const SizedBox(height: 24),
+        
+        // Fast ML Predict
+        GestureDetector(
+          onTap: () async {
+            setState(() { _aiPredictionLoading = true; _aiPredictionError = null; _currentStep++; });
+            try {
+              final api = ref.read(apiClientProvider);
+              final req = <String, dynamic>{'garment_type': _selectedGarment!.toLowerCase()};
+              
+              // Pass the exact lowercase names required by ML
+              _confirmedMeasurements.forEach((k, v) { req[k.toLowerCase()] = double.parse(v); });
+              
+              final resp = await api.predictMeasurements(req);
+              setState(() {
+                _aiPredictions = List<Map<String, dynamic>>.from(resp.data['options'] ?? []);
+                _aiPredictionLoading = false;
+              });
+            } catch (e) {
+              setState(() {
+                _aiPredictionError = "Prediction failed: $e";
+                _aiPredictionLoading = false;
+              });
+            }
+          },
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: const Color(0xFF1565C0).withOpacity(0.1),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: const Color(0xFF1565C0)),
+            ),
+            child: Row(
+              children: [
+                const Icon(Icons.flash_on, size: 40, color: Color(0xFF1565C0)),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Predict', style: GoogleFonts.outfit(fontSize: 22, fontWeight: FontWeight.bold, color: const Color(0xFF1565C0))),
+                      const SizedBox(height: 4),
+                      Text('Fast measurement prediction using the trained local Machine Learning model.', style: GoogleFonts.inter(color: Colors.black87, fontSize: 13)),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 24),
+        
+        // Gen AI Help
+        GestureDetector(
+          onTap: () async {
+            setState(() { _aiPredictionLoading = true; _aiPredictionError = null; _currentStep++; });
+            try {
+              final api = ref.read(apiClientProvider);
+              final req = {'garment_type': _selectedGarment, 'measurements': _confirmedMeasurements};
+              final resp = await api.predictMeasurementsFoundry(req);
+              
+              setState(() {
+                List<Map<String, dynamic>> preds = List<Map<String, dynamic>>.from(resp.data['predictions'] ?? []);
+                _aiPredictions = [];
+                for (var p in preds) {
+                    Map<String, dynamic> measurements = {};
+                    measurements[p['measurement']] = double.tryParse(p['recommended'].toString()) ?? 0.0;
+                    _aiPredictions.add({
+                        'option_number': 1,
+                        'source': 'Foundry Gen AI',
+                        'support_percent': null,
+                        'measurements': measurements
+                    });
+                }
+                _aiPredictionLoading = false;
+              });
+            } catch (e) {
+              setState(() {
+                _aiPredictionError = "Gen AI Help failed: $e";
+                _aiPredictionLoading = false;
+              });
+            }
+          },
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Colors.black.withOpacity(0.05),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: Colors.black12),
+            ),
+            child: Row(
+              children: [
+                const Icon(Icons.psychology, size: 40, color: Colors.black54),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Gen AI Help', style: GoogleFonts.outfit(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black87)),
+                      const SizedBox(height: 4),
+                      Text('Advanced measurement assistance using Microsoft Foundry. This may take up to a minute.', style: GoogleFonts.inter(color: Colors.black54, fontSize: 13)),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  // --- Step 5: AI Prediction Review ---
   Widget _buildAiPredictionStep() {
     if (_aiPredictionLoading) {
       return Center(
@@ -832,9 +876,9 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
               ),
             ),
             const SizedBox(height: 32),
-            Text('Synthesizing Dataset...', style: GoogleFonts.outfit(fontSize: 20, color: Colors.black87)),
+            Text('Generating Predictions...', style: GoogleFonts.outfit(fontSize: 20, color: Colors.black87)),
             const SizedBox(height: 8),
-            Text('Matching your inputs against standard global patterns.', style: GoogleFonts.inter(color: Colors.black87)),
+            Text('Using AI to predict the best measurements.', style: GoogleFonts.inter(color: Colors.black87)),
           ],
         ),
       );
@@ -847,92 +891,108 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('AI Predictions Review', style: GoogleFonts.outfit(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black87)),
+        Text('Prediction Results', style: GoogleFonts.outfit(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black87)),
         const SizedBox(height: 8),
-        Text("You are in control. Adjust any predicted value if it doesn't look right.", style: GoogleFonts.inter(color: Colors.black87)),
+        Text("Select an option below. You can edit the values after selecting.", style: GoogleFonts.inter(color: Colors.black87)),
         const SizedBox(height: 24),
         Expanded(
+          flex: 3,
           child: ListView.builder(
             itemCount: _aiPredictions.length,
             itemBuilder: (ctx, i) {
               final p = _aiPredictions[i];
-              final mName = p['measurement'] as String;
-              final isConfirmed = _confirmedMeasurements.containsKey(mName) && _confirmedMeasurements[mName]!.isNotEmpty;
-              final displayValue = isConfirmed ? _confirmedMeasurements[mName]! : p['recommended'].toString();
-              return Container(
-                margin: const EdgeInsets.only(bottom: 16),
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(colors: [const Color(0xFF1565C0).withOpacity(0.1), Colors.black.withOpacity(0.02)]),
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: const Color(0xFF1565C0).withOpacity(0.3)),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(mName, style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: Colors.black87, fontSize: 16)),
-                        Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                              decoration: BoxDecoration(color: isConfirmed ? const Color(0xFF1565C0) : Colors.grey, borderRadius: BorderRadius.circular(20)),
-                              child: Text(isConfirmed ? displayValue : 'Cleared', style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold)),
-                            ),
-                            if (isConfirmed) ...[
-                              const SizedBox(width: 8),
-                              GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    _confirmedMeasurements.remove(mName);
-                                    _isAiGenerated.remove(mName);
-                                  });
-                                },
-                                child: const Icon(Icons.close, color: Colors.redAccent, size: 20),
-                              )
-                            ] else ...[
-                              const SizedBox(width: 8),
-                              GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    _confirmedMeasurements[mName] = p['recommended'].toString();
-                                    _isAiGenerated[mName] = true;
-                                  });
-                                },
-                                child: const Icon(Icons.add_circle, color: Color(0xFF1565C0), size: 20),
-                              )
-                            ]
-                          ],
-                        ),
+              final measurements = p['measurements'] as Map<String, dynamic>;
+              final isSelected = _selectedOptionIndex == i;
+              
+              return GestureDetector(
+                onTap: () {
+                   setState(() {
+                       _selectedOptionIndex = i;
+                       measurements.forEach((k, v) {
+                           _confirmedMeasurements[k] = v.toString();
+                           _isAiGenerated[k] = true;
+                       });
+                   });
+                },
+                child: Container(
+                  margin: const EdgeInsets.only(bottom: 12),
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: isSelected ? const Color(0xFF1565C0).withOpacity(0.1) : Colors.black.withOpacity(0.02),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: isSelected ? const Color(0xFF1565C0) : Colors.black12, width: isSelected ? 2 : 1),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('Option ${p['option_number']} - ${p['source']}', style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: isSelected ? const Color(0xFF1565C0) : Colors.black87, fontSize: 16)),
+                          if (isSelected) const Icon(Icons.check_circle, color: Color(0xFF1565C0)),
+                        ],
+                      ),
+                      if (p['support_percent'] != null) ...[
+                        const SizedBox(height: 4),
+                        Text('Support: ${p['support_percent']}%', style: GoogleFonts.inter(color: Colors.black54, fontSize: 12)),
                       ],
-                    ),
-                    const SizedBox(height: 8),
-                    Text(p['reason'] ?? 'AI predicted standard value.', style: GoogleFonts.inter(color: Colors.black54, fontSize: 12)),
-                    const SizedBox(height: 12),
-                    Row(
-                      children: [
-                        Text('Alternatives: ', style: GoogleFonts.inter(color: Colors.black87, fontSize: 12)),
-                        ...(p['alternatives'] as List? ?? []).map((alt) => Padding(
-                          padding: const EdgeInsets.only(right: 8),
-                          child: GestureDetector(
-                            onTap: () => setState(() => _confirmedMeasurements[mName] = alt.toString()),
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                              decoration: BoxDecoration(color: Colors.black12, borderRadius: BorderRadius.circular(8)),
-                              child: Text(alt.toString(), style: const TextStyle(color: Colors.black87)),
-                            ),
-                          ),
-                        )),
-                      ],
-                    ),
-                  ],
+                      const SizedBox(height: 12),
+                      Wrap(
+                        spacing: 12,
+                        runSpacing: 8,
+                        children: measurements.entries.map((e) => Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(6), border: Border.all(color: Colors.black12)),
+                          child: Text('${e.key.replaceAll('_', ' ').toUpperCase()}: ${e.value}', style: GoogleFonts.inter(color: Colors.black87, fontSize: 12, fontWeight: FontWeight.w600)),
+                        )).toList(),
+                      ),
+                    ],
+                  ),
                 ),
               );
             },
           ),
         ),
+        if (_selectedOptionIndex != null) ...[
+           const SizedBox(height: 16),
+           Text('Edit Selected Measurements', style: GoogleFonts.outfit(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87)),
+           const SizedBox(height: 12),
+           Expanded(
+             flex: 2,
+             child: ListView(
+               children: _confirmedMeasurements.keys.map((k) {
+                 if (_measurementTemplate?['fields']?.any((f) => f['field_name'].toString().toLowerCase() == k.toLowerCase()) ?? false) {
+                     return const SizedBox.shrink();
+                 }
+                 return Padding(
+                   padding: const EdgeInsets.only(bottom: 8.0),
+                   child: Row(
+                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                     children: [
+                       Text(k.replaceAll('_', ' ').toUpperCase(), style: GoogleFonts.inter(color: Colors.black87, fontWeight: FontWeight.w600)),
+                       SizedBox(
+                         width: 100,
+                         child: TextFormField(
+                           initialValue: _confirmedMeasurements[k],
+                           keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                           style: const TextStyle(color: Colors.black87),
+                           decoration: InputDecoration(
+                             isDense: true,
+                             filled: true, fillColor: Colors.black.withOpacity(0.05),
+                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
+                           ),
+                           onChanged: (val) {
+                              _confirmedMeasurements[k] = val;
+                           },
+                         ),
+                       ),
+                     ],
+                   ),
+                 );
+               }).toList(),
+             ),
+           ),
+        ],
       ],
     );
   }
@@ -1193,7 +1253,7 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
   // --- Footer ---
   Widget _buildFooter() {
     bool isLoading = _aiPredictionLoading || _fabricRecLoading || _fabricEstLoading || _loadingInit || _loadingTemplate;
-    if (isLoading) return const SizedBox.shrink();
+    if (isLoading || _currentStep == 3) return const SizedBox.shrink();
 
     return Container(
       padding: const EdgeInsets.all(24),

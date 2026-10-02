@@ -7,10 +7,35 @@ from app.schemas.ai import (
     FabricEstimateIn, FabricEstimateOut,
 )
 
+from app.schemas.ml import MLPredictIn, MLPredictOut, InputRangesOut
+from app.services.ml_service import ml_service
+
 router = APIRouter()
 
-@router.post("/predict-measurements", response_model=MeasurementPredictOut)
-def predict(payload: MeasurementPredictIn, current_user: User = Depends(rate_limit_ai)):
+@router.get("/input-ranges/{garment_type}", response_model=InputRangesOut)
+def get_input_ranges(garment_type: str, current_user: User = Depends(get_current_active_user)):
+    try:
+        ranges = ml_service.get_input_ranges(garment_type.lower())
+        return InputRangesOut(garment_type=garment_type, ranges=ranges)
+    except ValueError as e:
+        raise HTTPException(status_code=422, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/predict-measurements", response_model=MLPredictOut)
+def predict_ml(payload: MLPredictIn, current_user: User = Depends(get_current_active_user)):
+    try:
+        options = ml_service.predict_measurements(payload)
+        return MLPredictOut(options=options)
+    except ValueError as e:
+        raise HTTPException(status_code=422, detail=str(e))
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/foundry-predict", response_model=MeasurementPredictOut)
+def predict_foundry(payload: MeasurementPredictIn, current_user: User = Depends(rate_limit_ai)):
     try:
         from app.services.ai_service import predict_measurements
         return predict_measurements(

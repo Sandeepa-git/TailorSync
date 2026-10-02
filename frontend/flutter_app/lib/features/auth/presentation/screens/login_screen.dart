@@ -7,7 +7,10 @@ import 'package:dio/dio.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/network/providers/api_provider.dart';
 import '../../../../core/theme/app_theme.dart';
-
+import '../../../../core/widgets/tailorsync_text_field.dart';
+import '../../../../core/widgets/tailorsync_password_field.dart';
+import '../../../../core/widgets/tailorsync_button.dart';
+import '../../../../core/widgets/tailorsync_password_requirements.dart';
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
@@ -360,81 +363,82 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     }
   }
 
-  Widget _buildChecklistItem(String label, bool isSatisfied) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 3.0),
-      child: Row(
-        children: [
-          Icon(
-            isSatisfied ? Icons.check_circle_rounded : Icons.radio_button_unchecked,
-            size: 16,
-            color: isSatisfied ? const Color(0xFF2E7D32) : Colors.grey[400],
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              label,
-              style: GoogleFonts.inter(
-                fontSize: 12.5,
-                color: isSatisfied ? const Color(0xFF2E7D32) : Colors.grey[600],
-                fontWeight: isSatisfied ? FontWeight.w600 : FontWeight.normal,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final bool canSubmit = !_loading && (!_isSignUp || (_isPasswordValid && _passwordsMatch));
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isSmallPhone = screenWidth < 360;
+    
+    // Responsive padding
+    final horizontalPadding = isSmallPhone ? 16.0 : (screenWidth < 600 ? 20.0 : 24.0);
+    final cardPadding = isSmallPhone ? 20.0 : 24.0;
+    
+    // Responsive spacing
+    final headerSpacing = isSmallPhone ? 24.0 : 32.0;
+    final fieldSpacing = isSmallPhone ? 12.0 : 16.0;
 
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          color: AppTheme.scaffoldBg,
-        ),
+      backgroundColor: AppTheme.scaffoldBg,
+      body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.all(24.0),
+            padding: EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: 24.0),
             child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 440),
+              constraints: const BoxConstraints(maxWidth: 500),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   // App Logo & Header
                   Hero(
                     tag: 'app_logo',
-                    child: Image.asset('assets/icon.png', height: 80),
+                    child: Image.asset(
+                      'assets/icon.png', 
+                      height: isSmallPhone ? 64 : 80,
+                      fit: BoxFit.contain,
+                    ),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 12),
                   Text(
                     'TailorSync',
-                    style: GoogleFonts.outfit(fontWeight: FontWeight.w800, fontSize: 28, color: AppTheme.primary, letterSpacing: -0.5),
+                    style: GoogleFonts.outfit(
+                      fontWeight: FontWeight.w800, 
+                      fontSize: isSmallPhone ? 26 : 28, 
+                      color: AppTheme.primary, 
+                      letterSpacing: -0.5
+                    ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 4),
                   Text(
                     'Elevate Your Craft',
-                    style: GoogleFonts.inter(fontSize: 14, color: AppTheme.textCaption, fontWeight: FontWeight.w500),
+                    style: GoogleFonts.inter(
+                      fontSize: 14, 
+                      color: AppTheme.textCaption, 
+                      fontWeight: FontWeight.w500
+                    ),
                   ),
-                  const SizedBox(height: 48), // 8pt scale
+                  SizedBox(height: headerSpacing),
 
-                  // Glassmorphism/Soft Card
+                  // Registration / Login Card
                   Container(
                     decoration: BoxDecoration(
                       color: AppTheme.surface,
-                      borderRadius: BorderRadius.circular(24),
-                      boxShadow: AppTheme.cardShadow,
-                      border: Border.all(color: Colors.white.withValues(alpha: 0.6), width: 1.5),
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppTheme.primary.withValues(alpha: 0.04),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                      border: Border.all(color: AppTheme.divider, width: 1.0),
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 32),
+                      padding: EdgeInsets.all(cardPadding),
                       child: Form(
                         key: _formKey,
                         child: AutofillGroup(
                           child: AnimatedSize(
-                            duration: const Duration(milliseconds: 400),
+                            duration: const Duration(milliseconds: 300),
                             curve: Curves.easeOutCubic,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -447,67 +451,73 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        _isSignUp ? 'Let\'s Get Started' : 'Welcome Back',
-                                        style: GoogleFonts.inter(fontSize: 24, fontWeight: FontWeight.bold, color: AppTheme.textPrimary, letterSpacing: -0.5),
+                                        _isSignUp ? 'Create Account' : 'Welcome Back',
+                                        style: GoogleFonts.inter(
+                                          fontSize: isSmallPhone ? 22 : 24, 
+                                          fontWeight: FontWeight.bold, 
+                                          color: AppTheme.textPrimary, 
+                                          letterSpacing: -0.5
+                                        ),
                                       ),
-                                      const SizedBox(height: 8),
+                                      const SizedBox(height: 6),
                                       Text(
-                                        _isSignUp ? 'Join TailorSync and streamline your business.' : 'We\'re excited to see you again. Ready to work?',
-                                        style: GoogleFonts.inter(fontSize: 14, color: AppTheme.textBody, height: 1.4),
+                                        _isSignUp ? 'Fill in your details to get started.' : 'We\'re excited to see you again. Ready to work?',
+                                        style: GoogleFonts.inter(
+                                          fontSize: 14, 
+                                          color: AppTheme.textBody, 
+                                          height: 1.4
+                                        ),
                                       ),
                                     ],
                                   ),
                                 ),
-                                const SizedBox(height: 32),
+                                SizedBox(height: headerSpacing),
 
                                 if (_isSignUp) ...[
-                                  TextFormField(
-                                    style: GoogleFonts.inter(fontSize: 14),
+                                  TailorSyncTextField(
+                                    label: 'Full Name',
                                     controller: _name,
-                                    autofillHints: const [AutofillHints.name],
-                                    decoration: const InputDecoration(labelText: 'Full Name', prefixIcon: Icon(Icons.person_outline)),
+                                    icon: Icons.person_outline,
                                     validator: (v) => v == null || v.trim().isEmpty ? 'Full name is required' : null,
                                   ),
-                                  const SizedBox(height: 16),
-                                  TextFormField(
-                                    style: GoogleFonts.inter(fontSize: 14),
+                                  SizedBox(height: fieldSpacing),
+                                  TailorSyncTextField(
+                                    label: 'Mobile Number',
                                     controller: _phone,
+                                    icon: Icons.phone_outlined,
                                     keyboardType: TextInputType.phone,
-                                    autofillHints: const [AutofillHints.telephoneNumber],
-                                    decoration: const InputDecoration(labelText: 'Mobile Number', prefixIcon: Icon(Icons.phone_outlined)),
                                     validator: (v) => v == null || v.trim().isEmpty ? 'Mobile number is required' : null,
                                   ),
-                                  const SizedBox(height: 16),
-                                  TextFormField(
-                                    style: GoogleFonts.inter(fontSize: 14),
+                                  SizedBox(height: fieldSpacing),
+                                  TailorSyncTextField(
+                                    label: 'Business / Organization',
                                     controller: _businessName,
-                                    decoration: const InputDecoration(labelText: 'Business Name', prefixIcon: Icon(Icons.business_outlined)),
+                                    icon: Icons.business_outlined,
                                     validator: (v) => v == null || v.trim().isEmpty ? 'Business name is required' : null,
                                   ),
-                                  const SizedBox(height: 16),
-                                  TextFormField(
-                                    style: GoogleFonts.inter(fontSize: 14),
+                                  SizedBox(height: fieldSpacing),
+                                  TailorSyncTextField(
+                                    label: 'Business Registration No.',
                                     controller: _businessRegNumber,
-                                    decoration: const InputDecoration(labelText: 'Registration Number', prefixIcon: Icon(Icons.receipt_long_outlined)),
+                                    icon: Icons.receipt_long_outlined,
                                     validator: (v) => v == null || v.trim().isEmpty ? 'Registration number is required' : null,
                                   ),
-                                  const SizedBox(height: 16),
-                                  TextFormField(
-                                    style: GoogleFonts.inter(fontSize: 14),
+                                  SizedBox(height: fieldSpacing),
+                                  TailorSyncTextField(
+                                    label: 'Business Contact Number',
                                     controller: _businessContact,
+                                    icon: Icons.contact_phone_outlined,
                                     keyboardType: TextInputType.phone,
-                                    decoration: const InputDecoration(labelText: 'Business Contact', prefixIcon: Icon(Icons.contact_phone_outlined)),
                                     validator: (v) => v == null || v.trim().isEmpty ? 'Business contact is required' : null,
                                   ),
-                                  const SizedBox(height: 16),
+                                  SizedBox(height: fieldSpacing),
                                 ],
 
-                                TextFormField(
-                                  style: GoogleFonts.inter(fontSize: 14),
+                                TailorSyncTextField(
+                                  label: 'Email Address',
                                   controller: _email,
+                                  icon: Icons.email_outlined,
                                   keyboardType: TextInputType.emailAddress,
-                                  autofillHints: const [AutofillHints.email],
-                                  decoration: const InputDecoration(labelText: 'Email Address', prefixIcon: Icon(Icons.email_outlined)),
                                   validator: (v) {
                                     if (v == null || v.trim().isEmpty) return 'Email address is required';
                                     if (!RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(v.trim())) {
@@ -516,22 +526,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                     return null;
                                   },
                                 ),
-                                const SizedBox(height: 16),
+                                SizedBox(height: fieldSpacing),
 
-                                TextFormField(
-                                  style: GoogleFonts.inter(fontSize: 14),
+                                TailorSyncPasswordField(
+                                  label: 'Password',
                                   controller: _password,
-                                  obscureText: _obscurePassword,
-                                  autofillHints: _isSignUp ? const [AutofillHints.newPassword] : const [AutofillHints.password],
-                                  decoration: InputDecoration(
-                                    labelText: 'Password',
-                                    prefixIcon: const Icon(Icons.lock_outline),
-                                    suffixIcon: IconButton(
-                                      icon: Icon(_obscurePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined),
-                                      onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
-                                      splashRadius: 24,
-                                    ),
-                                  ),
                                   validator: (v) {
                                     if (v == null || v.isEmpty) return 'Password is required';
                                     if (_isSignUp && !_isPasswordValid) return 'Password does not meet requirements';
@@ -539,84 +538,27 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                   },
                                 ),
 
-                                // Progressive Disclosure: Only show password requirements when signing up and typing
                                 if (_isSignUp) ...[
                                   AnimatedSize(
                                     duration: const Duration(milliseconds: 300),
                                     curve: Curves.easeOutCubic,
                                     child: _password.text.isEmpty
                                         ? const SizedBox.shrink()
-                                        : Container(
-                                            margin: const EdgeInsets.only(top: 16),
-                                            padding: const EdgeInsets.all(16),
-                                            decoration: BoxDecoration(
-                                              color: AppTheme.scaffoldBg,
-                                              borderRadius: BorderRadius.circular(16),
-                                              border: Border.all(color: AppTheme.divider),
-                                            ),
-                                            child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Text('Password Security:', style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.bold, color: AppTheme.textPrimary)),
-                                                const SizedBox(height: 8),
-                                                _buildChecklistItem('Minimum 8 characters', _hasMinLength),
-                                                _buildChecklistItem('One uppercase letter', _hasUppercase),
-                                                _buildChecklistItem('One lowercase letter', _hasLowercase),
-                                                _buildChecklistItem('One number', _hasDigit),
-                                                _buildChecklistItem('One special character', _hasSpecialChar),
-                                              ],
-                                            ),
+                                        : Padding(
+                                            padding: const EdgeInsets.only(top: 12, bottom: 16),
+                                            child: TailorSyncPasswordRequirements(password: _password.text),
                                           ),
                                   ),
-                                  const SizedBox(height: 16),
+                                  if (_password.text.isEmpty) SizedBox(height: fieldSpacing),
 
-                                  TextFormField(
-                                    style: GoogleFonts.inter(fontSize: 14),
+                                  TailorSyncPasswordField(
+                                    label: 'Confirm Password',
                                     controller: _confirmPassword,
-                                    obscureText: _obscureConfirmPassword,
-                                    autofillHints: const [AutofillHints.newPassword],
-                                    decoration: InputDecoration(
-                                      labelText: 'Confirm Password',
-                                      prefixIcon: const Icon(Icons.lock_reset_outlined),
-                                      suffixIcon: IconButton(
-                                        icon: Icon(_obscureConfirmPassword ? Icons.visibility_off_outlined : Icons.visibility_outlined),
-                                        onPressed: () => setState(() => _obscureConfirmPassword = !_obscureConfirmPassword),
-                                        splashRadius: 24,
-                                      ),
-                                    ),
                                     validator: (v) {
                                       if (v == null || v.isEmpty) return 'Please confirm your password';
                                       if (v != _password.text) return 'Passwords do not match';
                                       return null;
                                     },
-                                  ),
-
-                                  AnimatedSize(
-                                    duration: const Duration(milliseconds: 300),
-                                    curve: Curves.easeOutCubic,
-                                    child: _confirmPassword.text.isEmpty
-                                        ? const SizedBox.shrink()
-                                        : Padding(
-                                            padding: const EdgeInsets.only(top: 8),
-                                            child: Row(
-                                              children: [
-                                                Icon(
-                                                  _passwordsMatch ? Icons.check_circle : Icons.error,
-                                                  size: 16,
-                                                  color: _passwordsMatch ? Colors.green.shade700 : AppTheme.error,
-                                                ),
-                                                const SizedBox(width: 8),
-                                                Text(
-                                                  _passwordsMatch ? 'Passwords match' : 'Passwords do not match',
-                                                  style: GoogleFonts.inter(
-                                                    fontSize: 12,
-                                                    fontWeight: FontWeight.w600,
-                                                    color: _passwordsMatch ? Colors.green.shade700 : AppTheme.error,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
                                   ),
                                 ],
 
@@ -633,39 +575,25 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                       ),
                                       child: Text(
                                         'Forgot Password?',
-                                        style: GoogleFonts.inter(fontSize: 13, color: AppTheme.primary, fontWeight: FontWeight.w600),
+                                        style: GoogleFonts.inter(
+                                          fontSize: 13, 
+                                          color: AppTheme.primary, 
+                                          fontWeight: FontWeight.w600
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ],
 
-                                const SizedBox(height: 32),
+                                SizedBox(height: isSmallPhone ? 24 : 32),
 
                                 // Primary Action Button
-                                SizedBox(
-                                  width: double.infinity,
-                                  height: 56, // 8pt scale tap target
-                                  child: ElevatedButton(
-                                    onPressed: canSubmit ? _submit : null,
-                                    style: ElevatedButton.styleFrom(
-                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                                      elevation: canSubmit ? 4 : 0,
-                                      shadowColor: AppTheme.primary.withValues(alpha: 0.4),
-                                      disabledBackgroundColor: AppTheme.divider,
-                                    ),
-                                    child: AnimatedSwitcher(
-                                      duration: const Duration(milliseconds: 200),
-                                      child: _loading
-                                          ? const SizedBox(height: 24, width: 24, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2.5))
-                                          : Text(
-                                              _isSignUp ? 'Create Account' : 'Sign In',
-                                              key: ValueKey(_isSignUp),
-                                              style: GoogleFonts.inter(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
-                                            ),
-                                    ),
-                                  ),
+                                TailorSyncButton(
+                                  text: _isSignUp ? 'Create Account' : 'Sign In',
+                                  onPressed: canSubmit ? _submit : null,
+                                  isLoading: _loading,
                                 ),
-                                const SizedBox(height: 24),
+                                const SizedBox(height: 20),
 
                                 // Secondary Action
                                 Center(

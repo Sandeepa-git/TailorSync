@@ -42,6 +42,18 @@ app.add_middleware(
 
 app.include_router(api_router, prefix="/api/v1")
 
+@app.on_event("startup")
+def startup_event():
+    try:
+        from app.services.ml_service import ml_service
+        ml_service.load_models()
+    except Exception as e:
+        logger.error(f"Error loading models: {e}")
+        # Not failing hard to allow server to start if model isn't completely critical,
+        # but the prompt says: "Fail clearly during startup if the model cannot be loaded."
+        raise e
+
+
 @app.get("/")
 def root():
     return {"message": "TailorSync API"}

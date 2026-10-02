@@ -205,6 +205,14 @@ class ApiClient {
     return dio.post('/ai/predict-measurements', data: payload);
   }
 
+  Future<Response> predictMeasurementsFoundry(Map<String, dynamic> payload) async {
+    return dio.post('/ai/foundry-predict', data: payload);
+  }
+
+  Future<Response> getMeasurementInputRanges(String garmentType) async {
+    return dio.get('/ai/input-ranges/$garmentType');
+  }
+
   // Measurement Templates
   Future<Response> getMeasurementTemplates() async {
     return dio.get('/measurement-templates/');

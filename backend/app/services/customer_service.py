@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from app.models.customer import Customer
 from app.schemas.customer import CustomerCreate, CustomerUpdate
 
-def list_customers(db: Session, business_id: int, skip: int = 0, limit: int = 100):
+def list_customers(db: Session, business_id: int, skip: int = 0, limit: int = 1000):
     return db.query(Customer).filter(Customer.business_id == business_id).offset(skip).limit(limit).all()
 
 def create_customer(db: Session, customer: CustomerCreate, business_id: int):
