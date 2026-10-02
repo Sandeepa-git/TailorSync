@@ -134,13 +134,14 @@ def update_order(order_id: int, payload: OrderUpdate, db: Session = Depends(get_
         
     if payload.status is not None:
         new_status = payload.status.value if hasattr(payload.status, 'value') else payload.status
-        if new_status in ["Ready", "Delivered"] and old_status not in ["Ready", "Delivered"]:
-            if o.customer and o.customer.email:
-                try:
-                    from app.services.email_service import send_order_finished_email
-                    send_order_finished_email(o.customer.email, o.customer.full_name, o.order_number or str(o.order_id), new_status)
-                except Exception:
-                    pass
+        if new_status in ["Ready", "Delivered"]:
+            if new_status != old_status:
+                if o.customer and o.customer.email:
+                    try:
+                        from app.services.email_service import send_order_finished_email
+                        send_order_finished_email(o.customer.email, o.customer.full_name, o.order_number or str(o.order_id), new_status)
+                    except Exception as e:
+                        pass
         
     if payload.staff_id is not None:
         try:

@@ -398,8 +398,18 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
   // --- Build Methods ---
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white, // Premium Dark Mode Base
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
+        if (_currentStep > 0) {
+          _prevStep();
+        } else {
+          context.go('/home');
+        }
+      },
+      child: Scaffold(
+        backgroundColor: Colors.white, // Premium Dark Mode Base
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -447,7 +457,7 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
           ),
         ],
       ),
-    );
+    ));
   }
 
   Widget _buildStepper() {
@@ -949,7 +959,12 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('Option ${p['option_number']} - ${p['source']}', style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: isSelected ? const Color(0xFF1565C0) : Colors.black87, fontSize: 16)),
+                          Text(
+                            _predictionMethod == 'FOUNDRY' 
+                                ? 'Foundry AI Recommended Measurements' 
+                                : 'Option ${p['option_number']} - ${p['source']}', 
+                            style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: isSelected ? const Color(0xFF1565C0) : Colors.black87, fontSize: 16)
+                          ),
                           if (isSelected) const Icon(Icons.check_circle, color: Color(0xFF1565C0)),
                         ],
                       ),
