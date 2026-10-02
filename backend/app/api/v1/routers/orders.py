@@ -134,14 +134,25 @@ def update_order(order_id: int, payload: OrderUpdate, db: Session = Depends(get_
         
     if payload.status is not None:
         new_status = payload.status.value if hasattr(payload.status, 'value') else payload.status
-        if new_status in ["Ready", "Delivered"]:
-            if new_status != old_status:
-                if o.customer and o.customer.email:
-                    try:
-                        from app.services.email_service import send_order_finished_email
-                        send_order_finished_email(o.customer.email, o.customer.full_name, o.order_number or str(o.order_id), new_status)
-                    except Exception as e:
-                        pass
+        
+        # Notify the customer only when the order transitions into Ready.
+        # This prevents duplicate emails when other order fields are updated,
+        # and explicitly avoids sending emails for 'Delivered' or 'Completed' statuses.
+        if new_status == "Ready" and new_status != old_status:
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.info(f"Order {order_id} status changed to Ready. Attempting customer ready notification.")
+            
+            if o.customer and o.customer.email:
+                logger.info(f"Customer email found for order {order_id}.")
+                try:
+                    from app.services.email_service import send_order_finished_email
+                    send_order_finished_email(o.customer.email, o.customer.full_name, o.order_number or str(o.order_id), new_status)
+                    logger.info(f"Ready notification sent successfully for order {order_id}.")
+                except Exception as e:
+                    logger.error(f"Failed to send Ready notification for order {order_id}: {e}")
+            else:
+                logger.info(f"No customer email found for order {order_id}. Skipping notification.")
         
     if payload.staff_id is not None:
         try:
