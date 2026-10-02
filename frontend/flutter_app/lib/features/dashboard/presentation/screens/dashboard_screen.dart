@@ -67,6 +67,12 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
+    ref.listen(refreshTriggerProvider, (prev, next) {
+      if (next != prev && mounted) {
+        _loadData();
+      }
+    });
+
     if (_loading) {
       return Scaffold(
         backgroundColor: AppTheme.scaffoldBg,

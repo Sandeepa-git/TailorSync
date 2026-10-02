@@ -8,3 +8,5 @@ final ordersProvider = FutureProvider.autoDispose<List<Order>>((ref) async {
   final data = resp.data as List<dynamic>;
   return data.map((e) => Order.fromJson(e as Map<String, dynamic>)).toList();
 });
+
+final refreshTriggerProvider = StateProvider<int>((ref) => 0);

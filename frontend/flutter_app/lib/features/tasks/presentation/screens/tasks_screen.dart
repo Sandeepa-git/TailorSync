@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../orders/presentation/providers/orders_provider.dart';
 import '../../../../core/network/providers/api_provider.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/skeleton_loading.dart';
@@ -469,6 +470,7 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
         await api.updateOrder(task['id'], {
           'due_date': newDateIso,
         });
+        ref.read(refreshTriggerProvider.notifier).state++;
         _loadData();
         if (context.mounted) {
            ScaffoldMessenger.of(context).showSnackBar(
@@ -644,6 +646,7 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
                               'status': selectedStage,
                             };
                             await api.updateOrder(task['id'], updateData);
+                            ref.read(refreshTriggerProvider.notifier).state++;
                             _loadData();
                             if (context.mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(
