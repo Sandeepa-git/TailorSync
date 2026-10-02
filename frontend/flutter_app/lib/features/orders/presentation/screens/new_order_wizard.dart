@@ -26,9 +26,10 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
   late AnimationController _pulseController;
   
   final List<String> _stepTitles = [
-    'Customer', 'Garment', 'Priority Input', 'Prediction Method', 'AI Prediction', 
+    'Customer', 'Prediction Method', 'Garment', 'Priority Input', 'AI Prediction', 
     'Preferences', 'Fabric Rec.', 'Estimation', 'Review & Assign'
   ];
+  String? _predictionMethod;
 
   @override
   void initState() {
@@ -92,10 +93,22 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
 
   // Step 2: Garment
   String? _selectedGarment;
-  final List<Map<String, dynamic>> _garmentTypes = [
-    {'name': 'Shirt', 'icon': Icons.checkroom, 'color': Color(0xFF6C63FF)},
-    {'name': 'Trouser', 'icon': Icons.straighten, 'color': Color(0xFFFF9F43)},
+  final List<Map<String, dynamic>> _allGarmentTypes = [
+    {'name': 'Long Sleeve Shirt', 'icon': Icons.checkroom, 'color': Color(0xFF6C63FF)},
+    {'name': 'Short Sleeve Shirt', 'icon': Icons.checkroom, 'color': Color(0xFF6C63FF)},
+    {'name': 'Long Trouser', 'icon': Icons.straighten, 'color': Color(0xFFFF9F43)},
+    {'name': 'Short Trouser', 'icon': Icons.straighten, 'color': Color(0xFFFF9F43)},
+    {'name': 'Jacket', 'icon': Icons.accessibility_new, 'color': Color(0xFFE91E63)},
+    {'name': 'Dress', 'icon': Icons.woman, 'color': Color(0xFF9C27B0)},
+    {'name': 'Skirt', 'icon': Icons.dry_cleaning, 'color': Color(0xFF00BCD4)},
   ];
+
+  List<Map<String, dynamic>> get _garmentTypes {
+      if (_predictionMethod == 'CUSTOM_ML') {
+          return _allGarmentTypes.where((g) => g['name'].contains('Shirt') || g['name'].contains('Trouser')).toList();
+      }
+      return _allGarmentTypes;
+  }
 
   // Step 3: Priority Measurements
   Map<String, dynamic>? _measurementTemplate;
@@ -109,13 +122,13 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
   
     Map<String, dynamic> _getDefaultTemplateForCategory(String cat) {
       List<Map<String, dynamic>> fields = [];
-      if (cat == 'Shirt') {
+      if (cat.contains('Shirt')) {
         fields = [
           {'id': 1, 'field_name': 'Shoulder', 'unit': 'in', 'is_required': true, 'placeholder': 'e.g. 18.0'},
           {'id': 2, 'field_name': 'Height', 'unit': 'in', 'is_required': true, 'placeholder': 'e.g. 68.0'},
           {'id': 3, 'field_name': 'Chest', 'unit': 'in', 'is_required': true, 'placeholder': 'e.g. 40.0'},
         ];
-      } else if (cat == 'Trouser') {
+      } else if (cat.contains('Trouser')) {
         fields = [
           {'id': 1, 'field_name': 'Height', 'unit': 'in', 'is_required': true, 'placeholder': 'e.g. 68.0'},
           {'id': 2, 'field_name': 'Waist', 'unit': 'in', 'is_required': true, 'placeholder': 'e.g. 34.0'},
@@ -154,6 +167,46 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
   // Step 8: Assign
   int? _selectedStaffId = 1; 
 
+  Future<void> _runPrediction() async {
+    setState(() { _aiPredictionLoading = true; _aiPredictionError = null; _currentStep++; });
+    try {
+      final api = ref.read(apiClientProvider);
+      if (_predictionMethod == 'CUSTOM_ML') {
+          String mlType = _selectedGarment!.contains('Shirt') ? 'shirt' : 'trouser';
+          final req = <String, dynamic>{'garment_type': mlType};
+          _confirmedMeasurements.forEach((k, v) { req[k.toLowerCase()] = double.parse(v); });
+          final resp = await api.predictMeasurements(req);
+          setState(() {
+            _aiPredictions = List<Map<String, dynamic>>.from(resp.data['options'] ?? []);
+            _aiPredictionLoading = false;
+          });
+      } else {
+          final req = {'garment_type': _selectedGarment, 'measurements': _confirmedMeasurements};
+          final resp = await api.predictMeasurementsFoundry(req);
+          setState(() {
+            List<Map<String, dynamic>> preds = List<Map<String, dynamic>>.from(resp.data['predictions'] ?? []);
+            _aiPredictions = [];
+            for (var p in preds) {
+                Map<String, dynamic> measurements = {};
+                measurements[p['measurement']] = double.tryParse(p['recommended'].toString()) ?? 0.0;
+                _aiPredictions.add({
+                    'option_number': 1,
+                    'source': 'Foundry Gen AI',
+                    'support_percent': null,
+                    'measurements': measurements
+                });
+            }
+            _aiPredictionLoading = false;
+          });
+      }
+    } catch (e) {
+      setState(() {
+        _aiPredictionError = "Prediction failed: $e";
+        _aiPredictionLoading = false;
+      });
+    }
+  }
+
   // --- Step Navigation Logic ---
   Future<void> _nextStep() async {
     final api = ref.read(apiClientProvider);
@@ -163,13 +216,22 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
     } 
     
     if (_currentStep == 1) {
+       if (_predictionMethod == null) {
+          _showSnack('⚠️ Please select a prediction method'); return;
+       }
+       setState(() { _currentStep++; });
+       return;
+    }
+    
+    if (_currentStep == 2) {
       if (_selectedGarment == null) { _showSnack('⚠️ Please select a garment'); return; }
       setState(() { _loadingTemplate = true; _currentStep++; });
       
       _measurementTemplate = _getDefaultTemplateForCategory(_selectedGarment!);
       
       try {
-         final rangesResp = await api.getMeasurementInputRanges(_selectedGarment!.toLowerCase());
+         String mlType = _selectedGarment!.contains('Shirt') ? 'shirt' : (_selectedGarment!.contains('Trouser') ? 'trouser' : _selectedGarment!.toLowerCase());
+         final rangesResp = await api.getMeasurementInputRanges(mlType);
          final ranges = rangesResp.data['ranges'] as Map<String, dynamic>;
          for (var f in _measurementTemplate!['fields']) {
              final fieldName = (f['field_name'] as String).toLowerCase();
@@ -193,7 +255,7 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
       return;
     }
     
-        if (_currentStep == 2) {
+    if (_currentStep == 3) {
       final fields = (_measurementTemplate?['fields'] as List? ?? []).cast<Map<String, dynamic>>();
       final priorityFields = fields.where((f) => f['is_required'] == true).toList();
           
@@ -243,7 +305,7 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
         }
       }
       
-      setState(() { _currentStep++; });
+      _runPrediction();
       return;
     }
     
@@ -432,9 +494,9 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
   Widget _buildStepContent() {
     switch (_currentStep) {
       case 0: return _buildCustomerStep();
-      case 1: return _buildGarmentStep();
-      case 2: return _buildPriorityInputStep();
-      case 3: return _buildPredictionMethodStep();
+      case 1: return _buildPredictionMethodStep();
+      case 2: return _buildGarmentStep();
+      case 3: return _buildPriorityInputStep();
       case 4: return _buildAiPredictionStep();
       case 5: return _buildPreferencesStep();
       case 6: return _buildFabricRecStep();
@@ -548,6 +610,85 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
                 ),
               );
             },
+          ),
+        ),
+      ],
+    );
+  }
+
+  // --- Step 1: Prediction Method ---
+  Widget _buildPredictionMethodStep() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Select Prediction Model', style: GoogleFonts.outfit(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black87)),
+        const SizedBox(height: 8),
+        Text('Choose how you want AI to assist with measurements.', style: GoogleFonts.inter(color: Colors.black87)),
+        const SizedBox(height: 24),
+        
+        // Foundry
+        GestureDetector(
+          onTap: () => setState(() => _predictionMethod = 'FOUNDRY'),
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: _predictionMethod == 'FOUNDRY' ? const Color(0xFF1565C0).withOpacity(0.1) : Colors.black.withOpacity(0.05),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: _predictionMethod == 'FOUNDRY' ? const Color(0xFF1565C0) : Colors.black12, width: _predictionMethod == 'FOUNDRY' ? 2 : 1),
+            ),
+            child: Row(
+              children: [
+                Icon(Icons.psychology, size: 40, color: _predictionMethod == 'FOUNDRY' ? const Color(0xFF1565C0) : Colors.black54),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('AI Foundry', style: GoogleFonts.outfit(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black87)),
+                      const SizedBox(height: 4),
+                      Text('Full clothing prediction. Uses existing AI model with all supported clothing categories.', style: GoogleFonts.inter(color: Colors.black54, fontSize: 13)),
+                    ],
+                  ),
+                ),
+                if (_predictionMethod == 'FOUNDRY') const Icon(Icons.check_circle, color: Color(0xFF1565C0)),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 24),
+
+        // Custom ML
+        GestureDetector(
+          onTap: () => setState(() {
+             _predictionMethod = 'CUSTOM_ML';
+             if (!(_selectedGarment?.contains('Shirt') ?? false) && !(_selectedGarment?.contains('Trouser') ?? false)) {
+                 _selectedGarment = null;
+             }
+          }),
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: _predictionMethod == 'CUSTOM_ML' ? const Color(0xFF1565C0).withOpacity(0.1) : Colors.black.withOpacity(0.05),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: _predictionMethod == 'CUSTOM_ML' ? const Color(0xFF1565C0) : Colors.black12, width: _predictionMethod == 'CUSTOM_ML' ? 2 : 1),
+            ),
+            child: Row(
+              children: [
+                Icon(Icons.flash_on, size: 40, color: _predictionMethod == 'CUSTOM_ML' ? const Color(0xFF1565C0) : Colors.black54),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Custom ML Model', style: GoogleFonts.outfit(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black87)),
+                      const SizedBox(height: 4),
+                      Text('Our trained internal model. Currently supports ONLY Shirts and Trousers.', style: GoogleFonts.inter(color: Colors.black54, fontSize: 13)),
+                    ],
+                  ),
+                ),
+                if (_predictionMethod == 'CUSTOM_ML') const Icon(Icons.check_circle, color: Color(0xFF1565C0)),
+              ],
+            ),
           ),
         ),
       ],
@@ -739,126 +880,6 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
     );
   }
 
-
-  // --- Step 4: Prediction Method ---
-  Widget _buildPredictionMethodStep() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('Select Prediction Model', style: GoogleFonts.outfit(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black87)),
-        const SizedBox(height: 8),
-        Text('Choose how you want AI to assist with measurements.', style: GoogleFonts.inter(color: Colors.black87)),
-        const SizedBox(height: 24),
-        
-        // Fast ML Predict
-        GestureDetector(
-          onTap: () async {
-            setState(() { _aiPredictionLoading = true; _aiPredictionError = null; _currentStep++; });
-            try {
-              final api = ref.read(apiClientProvider);
-              final req = <String, dynamic>{'garment_type': _selectedGarment!.toLowerCase()};
-              
-              // Pass the exact lowercase names required by ML
-              _confirmedMeasurements.forEach((k, v) { req[k.toLowerCase()] = double.parse(v); });
-              
-              final resp = await api.predictMeasurements(req);
-              setState(() {
-                _aiPredictions = List<Map<String, dynamic>>.from(resp.data['options'] ?? []);
-                _aiPredictionLoading = false;
-              });
-            } catch (e) {
-              setState(() {
-                _aiPredictionError = "Prediction failed: $e";
-                _aiPredictionLoading = false;
-              });
-            }
-          },
-          child: Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: const Color(0xFF1565C0).withOpacity(0.1),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: const Color(0xFF1565C0)),
-            ),
-            child: Row(
-              children: [
-                const Icon(Icons.flash_on, size: 40, color: Color(0xFF1565C0)),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Predict', style: GoogleFonts.outfit(fontSize: 22, fontWeight: FontWeight.bold, color: const Color(0xFF1565C0))),
-                      const SizedBox(height: 4),
-                      Text('Fast measurement prediction using the trained local Machine Learning model.', style: GoogleFonts.inter(color: Colors.black87, fontSize: 13)),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-        const SizedBox(height: 24),
-        
-        // Gen AI Help
-        GestureDetector(
-          onTap: () async {
-            setState(() { _aiPredictionLoading = true; _aiPredictionError = null; _currentStep++; });
-            try {
-              final api = ref.read(apiClientProvider);
-              final req = {'garment_type': _selectedGarment, 'measurements': _confirmedMeasurements};
-              final resp = await api.predictMeasurementsFoundry(req);
-              
-              setState(() {
-                List<Map<String, dynamic>> preds = List<Map<String, dynamic>>.from(resp.data['predictions'] ?? []);
-                _aiPredictions = [];
-                for (var p in preds) {
-                    Map<String, dynamic> measurements = {};
-                    measurements[p['measurement']] = double.tryParse(p['recommended'].toString()) ?? 0.0;
-                    _aiPredictions.add({
-                        'option_number': 1,
-                        'source': 'Foundry Gen AI',
-                        'support_percent': null,
-                        'measurements': measurements
-                    });
-                }
-                _aiPredictionLoading = false;
-              });
-            } catch (e) {
-              setState(() {
-                _aiPredictionError = "Gen AI Help failed: $e";
-                _aiPredictionLoading = false;
-              });
-            }
-          },
-          child: Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.05),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: Colors.black12),
-            ),
-            child: Row(
-              children: [
-                const Icon(Icons.psychology, size: 40, color: Colors.black54),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Gen AI Help', style: GoogleFonts.outfit(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black87)),
-                      const SizedBox(height: 4),
-                      Text('Advanced measurement assistance using Microsoft Foundry. This may take up to a minute.', style: GoogleFonts.inter(color: Colors.black54, fontSize: 13)),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
 
   // --- Step 5: AI Prediction Review ---
   Widget _buildAiPredictionStep() {
@@ -1199,6 +1220,7 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
                  Text('Order Summary', style: GoogleFonts.inter(color: Colors.black54, fontWeight: FontWeight.bold)),
                  const SizedBox(height: 12),
                  _summaryRow('Customer', _selectedCustomerName ?? ''),
+                 _summaryRow('Prediction Model', _predictionMethod == 'FOUNDRY' ? 'AI Foundry' : 'Custom ML Model'),
                  _summaryRow('Garment', _selectedGarment ?? ''),
                  _summaryRow('Fabric', _fabricRecommendations.isNotEmpty && _selectedFabricIndex != null ? _fabricRecommendations[_selectedFabricIndex!]['fabric_name'] : 'N/A'),
                  _summaryRow('Quantity', '${_manualQuantityCtrl.text} meters'),
@@ -1253,7 +1275,7 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
   // --- Footer ---
   Widget _buildFooter() {
     bool isLoading = _aiPredictionLoading || _fabricRecLoading || _fabricEstLoading || _loadingInit || _loadingTemplate;
-    if (isLoading || _currentStep == 3) return const SizedBox.shrink();
+    if (isLoading) return const SizedBox.shrink();
 
     return Container(
       padding: const EdgeInsets.all(24),
@@ -1300,6 +1322,7 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
       final body = <String, dynamic>{
         'customer_id': _selectedCustomerId,
         'garment_type': _selectedGarment,
+        'prediction_method': _predictionMethod,
         'priority': 'Medium',
         'style_preferences': {'occasion': _occasion, 'weather': _weather, 'fabric_feel': _fabricPreferences, 'fit': _fit},
       };

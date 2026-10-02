@@ -20,6 +20,7 @@ class OrderCreate(BaseModel):
     staff_id: Optional[int] = None
     selected_fabric: Optional[str] = None
     fabric_estimation: Optional[dict] = None
+    prediction_method: Optional[str] = None
 
 class OrderRead(BaseModel):
     id: int
@@ -37,6 +38,7 @@ class OrderRead(BaseModel):
     customer_phone: Optional[str] = None
     staff_id: Optional[int] = None
     staff_name: Optional[str] = None
+    prediction_method: Optional[str] = None
     measurements: List[dict] = []
 
     class Config:

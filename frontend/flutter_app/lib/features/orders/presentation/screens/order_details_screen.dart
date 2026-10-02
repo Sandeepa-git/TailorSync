@@ -70,6 +70,10 @@ class OrderDetailsScreen extends ConsumerWidget {
                   _DetailRow(icon: Icons.calendar_today, label: 'Due Date', value: order.dueDate != null ? order.dueDate!.split('T')[0] : 'Not Set'),
                   const SizedBox(height: 8),
                   _DetailRow(icon: Icons.priority_high, label: 'Priority', value: order.priority ?? 'Normal'),
+                  if (order.predictionMethod != null) ...[
+                      const SizedBox(height: 8),
+                      _DetailRow(icon: Icons.model_training, label: 'Prediction', value: order.predictionMethod == 'FOUNDRY' ? 'AI Foundry' : 'Custom Machine Learning Model'),
+                  ],
                 ],
               ),
             ),

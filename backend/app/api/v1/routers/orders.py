@@ -32,6 +32,7 @@ def list_orders(skip: int = 0, limit: int = 1000, status: Optional[str] = None, 
             "customer_phone": o.customer.phone if o.customer else None,
             "staff_id": assignment.staff_id if assignment else None,
             "staff_name": assignment.staff.full_name if assignment and assignment.staff else None,
+            "prediction_method": o.prediction_method,
             "measurements": [
                 {
                     "field_id": m.field_id,

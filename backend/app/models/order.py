@@ -38,6 +38,7 @@ class Order(Base):
     total_price = Column(Numeric(10, 2), nullable=True)
     customer_instructions = Column(Text, nullable=True)
     tailor_remarks = Column(Text, nullable=True)
+    prediction_method = Column(String, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
     

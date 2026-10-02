@@ -12,6 +12,7 @@ class Order {
   final String? customerInstructions;
   final String? customerName;
   final String? customerPhone;
+  final String? predictionMethod;
   final List<dynamic>? measurements;
 
   Order({
@@ -28,6 +29,7 @@ class Order {
     this.customerInstructions,
     this.customerName,
     this.customerPhone,
+    this.predictionMethod,
     this.measurements,
   });
 
@@ -45,6 +47,7 @@ class Order {
         customerInstructions: json['customer_instructions'],
         customerName: json['customer_name'],
         customerPhone: json['customer_phone'],
+        predictionMethod: json['prediction_method'],
         measurements: json['measurements'],
       );
 }

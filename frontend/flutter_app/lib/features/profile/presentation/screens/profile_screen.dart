@@ -531,6 +531,115 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 ),
               ),
             ],
+            const SizedBox(height: 24),
+            
+            // Support Section
+            Text('Support', style: GoogleFonts.outfit(fontSize: 15, fontWeight: FontWeight.bold, color: AppTheme.primary, letterSpacing: -0.3)),
+            const SizedBox(height: 12),
+            Container(
+              decoration: BoxDecoration(
+                color: AppTheme.surface,
+                borderRadius: BorderRadius.circular(18),
+                boxShadow: AppTheme.softShadow,
+              ),
+              child: Column(
+                children: [
+                  _SettingsListTile(
+                    leadingIcon: Icons.description_outlined,
+                    leadingColor: const Color(0xFF607D8B),
+                    title: 'Privacy Policy',
+                    trailingIcon: Icons.chevron_right,
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                          title: Text('Privacy Policy', style: GoogleFonts.outfit(fontWeight: FontWeight.bold)),
+                          content: const Text('Your privacy is important to us. All personal and business data is securely stored and never shared with third parties without consent. (Placeholder for full policy)'),
+                          actions: [
+                            TextButton(onPressed: () => Navigator.pop(context), child: const Text('Close')),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                  Divider(height: 1, color: AppTheme.divider.withValues(alpha: 0.5), indent: 52),
+                  _SettingsListTile(
+                    leadingIcon: Icons.headset_mic_outlined,
+                    leadingColor: const Color(0xFF009688),
+                    title: 'Contact Support',
+                    trailingIcon: Icons.chevron_right,
+                    onTap: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('Need Help?', style: GoogleFonts.inter(fontWeight: FontWeight.bold, fontSize: 14)),
+                              const SizedBox(height: 4),
+                              Text('Reach out to us at: agsvwimalasiri@gmail.com', style: GoogleFonts.inter(fontSize: 13)),
+                            ],
+                          ),
+                          behavior: SnackBarBehavior.floating,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          duration: const Duration(seconds: 5),
+                          action: SnackBarAction(
+                            label: 'Dismiss',
+                            textColor: Colors.white,
+                            onPressed: () {},
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  Divider(height: 1, color: AppTheme.divider.withValues(alpha: 0.5), indent: 52),
+                  _SettingsListTile(
+                    leadingIcon: Icons.info_outline_rounded,
+                    leadingColor: const Color(0xFF3F51B5),
+                    title: 'About',
+                    trailingIcon: Icons.chevron_right,
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                          title: Text('About TailorSync', style: GoogleFonts.outfit(fontWeight: FontWeight.bold)),
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('TailorSync is a comprehensive tailoring management solution designed to streamline measurements, orders, and customer relationships.', style: GoogleFonts.inter()),
+                              const SizedBox(height: 16),
+                              Text('Developer Details:', style: GoogleFonts.inter(fontWeight: FontWeight.bold)),
+                              const SizedBox(height: 8),
+                              Text('A.G.S.V. Wimalasiri', style: GoogleFonts.inter()),
+                              Text('W.A.E.M. Wijayarathna', style: GoogleFonts.inter()),
+                              Text('N.D.H.A. Madubhashitha', style: GoogleFonts.inter()),
+                              Text('D.M.J.B. Disanayake', style: GoogleFonts.inter()),
+                              Text('Manuwendra Rajapaksha', style: GoogleFonts.inter()),
+                              Text('K.P.N.D. Ashokarathna', style: GoogleFonts.inter()),
+                              const SizedBox(height: 12),
+                              Text('Contact: agsvwimalasiri@gmail.com', style: GoogleFonts.inter()),
+                            ],
+                          ),
+                          actions: [
+                            TextButton(onPressed: () => Navigator.pop(context), child: const Text('Close')),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                  Divider(height: 1, color: AppTheme.divider.withValues(alpha: 0.5), indent: 52),
+                  _SettingsListTile(
+                    leadingIcon: Icons.local_offer_outlined,
+                    leadingColor: const Color(0xFF795548),
+                    title: 'Version',
+                    trailingWidget: Text('1.0.0', style: GoogleFonts.inter(fontSize: 14, color: AppTheme.textCaption, fontWeight: FontWeight.w500)),
+                  ),
+                ],
+              ),
+            ),
             const SizedBox(height: 32),
 
             // Logout
@@ -570,9 +679,10 @@ class _SettingsListTile extends StatelessWidget {
   final String title;
   final Color? titleColor;
   final String? subtitle;
-  final IconData trailingIcon;
+  final IconData? trailingIcon;
   final Color? trailingColor;
-  final VoidCallback onTap;
+  final Widget? trailingWidget;
+  final VoidCallback? onTap;
 
   const _SettingsListTile({
     this.leadingIcon,
@@ -580,9 +690,10 @@ class _SettingsListTile extends StatelessWidget {
     required this.title,
     this.titleColor,
     this.subtitle,
-    required this.trailingIcon,
+    this.trailingIcon,
     this.trailingColor,
-    required this.onTap,
+    this.trailingWidget,
+    this.onTap,
   });
 
   @override
@@ -618,15 +729,18 @@ class _SettingsListTile extends StatelessWidget {
                 ],
               ),
             ),
-            Container(
-              width: 28,
-              height: 28,
-              decoration: BoxDecoration(
-                color: AppTheme.divider.withValues(alpha: 0.5),
-                borderRadius: BorderRadius.circular(8),
+            if (trailingWidget != null)
+              trailingWidget!
+            else if (trailingIcon != null)
+              Container(
+                width: 28,
+                height: 28,
+                decoration: BoxDecoration(
+                  color: AppTheme.divider.withValues(alpha: 0.5),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(trailingIcon, color: trailingColor ?? AppTheme.primary, size: 16),
               ),
-              child: Icon(trailingIcon, color: trailingColor ?? AppTheme.primary, size: 16),
-            ),
           ],
         ),
       ),
