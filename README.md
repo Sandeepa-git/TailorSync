@@ -2,7 +2,6 @@
 
 <div align="center">
   <h3>An AI-Powered Unified Business Management Platform for the Tailoring Industry</h3>
-  <p><i>A Final Year University Software Engineering Project</i></p>
 </div>
 
 ---
