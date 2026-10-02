@@ -954,7 +954,7 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
             ),
             const SizedBox(height: 48),
             Text(
-              _predictionMethod == 'FOUNDRY' ? 'Azure AI is Thinking...' : 'Running Custom ML...',
+              _predictionMethod == 'FOUNDRY' ? 'Microsoft Foundry is Thinking...' : 'Running Custom ML...',
               style: GoogleFonts.outfit(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black87),
             ),
             const SizedBox(height: 8),
