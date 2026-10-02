@@ -898,18 +898,76 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            FadeTransition(
-              opacity: _pulseController,
-              child: Container(
-                width: 100, height: 100,
-                decoration: BoxDecoration(shape: BoxShape.circle, color: const Color(0xFF1565C0).withOpacity(0.3), boxShadow: [BoxShadow(color: const Color(0xFF1565C0).withOpacity(0.5), blurRadius: 30)]),
-                child: const Icon(Icons.auto_awesome, color: Colors.white, size: 50),
+            AnimatedBuilder(
+              animation: _pulseController,
+              builder: (context, child) {
+                final isFoundry = _predictionMethod == 'FOUNDRY';
+                final primaryColor = isFoundry ? const Color(0xFF6A1B9A) : const Color(0xFF00695C);
+                final secondaryColor = isFoundry ? const Color(0xFFAB47BC) : const Color(0xFF26A69A);
+
+                return Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    for (int i = 0; i < 3; i++)
+                      Transform.scale(
+                        scale: 1.0 + ((_pulseController.value + (i * 0.33)) % 1.0) * 0.8,
+                        child: Container(
+                          width: 120, height: 120,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: primaryColor.withOpacity(1.0 - ((_pulseController.value + (i * 0.33)) % 1.0)),
+                              width: 3,
+                            ),
+                          ),
+                        ),
+                      ),
+                    Container(
+                      width: 100, height: 100,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: LinearGradient(
+                          colors: [primaryColor, secondaryColor],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: primaryColor.withOpacity(0.6 * _pulseController.value),
+                            blurRadius: 30,
+                            spreadRadius: 10 * _pulseController.value,
+                          )
+                        ],
+                      ),
+                      child: Transform.rotate(
+                        angle: isFoundry ? _pulseController.value * 2 * 3.14159 : 0,
+                        child: Icon(
+                          isFoundry ? Icons.auto_awesome : Icons.memory,
+                          color: Colors.white,
+                          size: 48,
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
+            const SizedBox(height: 48),
+            Text(
+              _predictionMethod == 'FOUNDRY' ? 'Azure AI is Thinking...' : 'Running Custom ML...',
+              style: GoogleFonts.outfit(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black87),
+            ),
+            const SizedBox(height: 8),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 32),
+              child: Text(
+                _predictionMethod == 'FOUNDRY' 
+                    ? 'Analyzing dataset context to generate perfect measurements.' 
+                    : 'Processing garment features through the predictive model.',
+                style: GoogleFonts.inter(color: Colors.black54, fontSize: 14),
+                textAlign: TextAlign.center,
               ),
             ),
-            const SizedBox(height: 32),
-            Text('Generating Predictions...', style: GoogleFonts.outfit(fontSize: 20, color: Colors.black87)),
-            const SizedBox(height: 8),
-            Text('Using AI to predict the best measurements.', style: GoogleFonts.inter(color: Colors.black87)),
           ],
         ),
       );
