@@ -231,6 +231,6 @@ The application rejects standard, boring material templates in favor of a **Prem
 
 ## 11. License & Academic Integrity
 
-This software system was developed as a Final Year University Project. All source code, machine learning models, and architectural designs are proprietary to the student engineering team. 
+This software system was developed as a Third Year University Project. All source code, machine learning models, and architectural designs are proprietary to the student engineering team. 
 
 **Academic Declaration:** We hereby declare that this project is our own original work. Where external libraries, open-source frameworks, or cloud APIs have been utilized, they have been properly cited and implemented according to their respective open-source licenses.
