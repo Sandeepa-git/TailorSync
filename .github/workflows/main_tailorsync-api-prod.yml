@@ -69,6 +69,15 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_14307D14834F4C779BACFE63CCA18262 }}
           allow-no-subscriptions: true
 
+      - name: 'Deploy to Azure Web App'
+        uses: azure/webapps-deploy@v3
+        id: deploy-to-webapp
+        with:
+          app-name: 'tailorsync-api-prod'
+          slot-name: 'Production'
+          package: .
+          startup-command: 'uvicorn app.main:app --host 0.0.0.0 --port 8000'
+
       - name: Configure Azure Web App Settings
         uses: azure/appservice-settings@v1
         with:
@@ -81,15 +90,3 @@ jobs:
               { "name": "FOUNDRY_ENDPOINT", "value": "https://tailorsync-ai-resource.services.ai.azure.com/models", "slotSetting": false },
               { "name": "FOUNDRY_MODEL_NAME", "value": "gpt-5-mini", "slotSetting": false }
             ]
-            
-      - name: Wait for SCM container to restart
-        run: sleep 30
-            
-      - name: 'Deploy to Azure Web App'
-        uses: azure/webapps-deploy@v3
-        id: deploy-to-webapp
-        with:
-          app-name: 'tailorsync-api-prod'
-          slot-name: 'Production'
-          package: .
-          startup-command: 'uvicorn app.main:app --host 0.0.0.0 --port 8000'
