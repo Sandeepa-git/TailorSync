@@ -940,8 +940,10 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
                    setState(() {
                        _selectedOptionIndex = i;
                        measurements.forEach((k, v) {
-                           _confirmedMeasurements[k] = v.toString();
-                           _isAiGenerated[k] = true;
+                           if (v.toString() != '0' && v.toString() != '0.0') {
+                               _confirmedMeasurements[k] = v.toString();
+                               _isAiGenerated[k] = true;
+                           }
                        });
                    });
                 },
@@ -961,7 +963,7 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
                         children: [
                           Text(
                             _predictionMethod == 'FOUNDRY' 
-                                ? 'Foundry AI Recommended Measurements' 
+                                ? 'Recommended Measurements' 
                                 : 'Option ${p['option_number']} - ${p['source']}', 
                             style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: isSelected ? const Color(0xFF1565C0) : Colors.black87, fontSize: 16)
                           ),
@@ -976,7 +978,9 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
                       Wrap(
                         spacing: 12,
                         runSpacing: 8,
-                        children: measurements.entries.map((e) => Container(
+                        children: measurements.entries
+                            .where((e) => e.value.toString() != '0' && e.value.toString() != '0.0')
+                            .map((e) => Container(
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                           decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(6), border: Border.all(color: Colors.black12)),
                           child: Text('${e.key.replaceAll('_', ' ').toUpperCase()}: ${e.value}', style: GoogleFonts.inter(color: Colors.black87, fontSize: 12, fontWeight: FontWeight.w600)),
@@ -991,45 +995,107 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
         ),
         if (_selectedOptionIndex != null) ...[
            const SizedBox(height: 16),
-           Text('Edit Selected Measurements', style: GoogleFonts.outfit(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87)),
-           const SizedBox(height: 12),
-           Expanded(
-             flex: 2,
-             child: ListView(
-               children: _confirmedMeasurements.keys.map((k) {
-                 if (_measurementTemplate?['fields']?.any((f) => f['field_name'].toString().toLowerCase() == k.toLowerCase()) ?? false) {
-                     return const SizedBox.shrink();
-                 }
-                 return Padding(
-                   padding: const EdgeInsets.only(bottom: 8.0),
-                   child: Row(
-                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                     children: [
-                       Text(k.replaceAll('_', ' ').toUpperCase(), style: GoogleFonts.inter(color: Colors.black87, fontWeight: FontWeight.w600)),
-                       SizedBox(
-                         width: 100,
-                         child: TextFormField(
-                           initialValue: _confirmedMeasurements[k],
-                           keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                           style: const TextStyle(color: Colors.black87),
-                           decoration: InputDecoration(
-                             isDense: true,
-                             filled: true, fillColor: Colors.black.withOpacity(0.05),
-                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
-                           ),
-                           onChanged: (val) {
-                              _confirmedMeasurements[k] = val;
-                           },
-                         ),
-                       ),
-                     ],
-                   ),
-                 );
-               }).toList(),
+           SizedBox(
+             width: double.infinity,
+             child: OutlinedButton.icon(
+               onPressed: _showEditMeasurementsDialog,
+               icon: const Icon(Icons.edit, color: Color(0xFF1565C0)),
+               label: Text('Edit Measurements', style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: const Color(0xFF1565C0))),
+               style: OutlinedButton.styleFrom(
+                 padding: const EdgeInsets.symmetric(vertical: 14),
+                 side: const BorderSide(color: Color(0xFF1565C0), width: 1.5),
+                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+               ),
              ),
            ),
         ],
       ],
+    );
+  }
+
+  void _showEditMeasurementsDialog() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
+      builder: (ctx) {
+        return StatefulBuilder(
+          builder: (modalCtx, setModalState) {
+            return Padding(
+              padding: EdgeInsets.only(bottom: MediaQuery.of(modalCtx).viewInsets.bottom),
+              child: Container(
+                padding: const EdgeInsets.all(24),
+                constraints: BoxConstraints(maxHeight: MediaQuery.of(modalCtx).size.height * 0.8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('Edit Measurements', style: GoogleFonts.outfit(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.black87)),
+                        IconButton(icon: const Icon(Icons.close), onPressed: () => Navigator.pop(modalCtx)),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Text('Adjust the AI recommendations manually if needed.', style: GoogleFonts.inter(color: Colors.black54)),
+                    const SizedBox(height: 16),
+                    Expanded(
+                      child: ListView(
+                        shrinkWrap: true,
+                        children: _confirmedMeasurements.keys.map((k) {
+                          if (_measurementTemplate?['fields']?.any((f) => f['field_name'].toString().toLowerCase() == k.toLowerCase()) ?? false) {
+                              return const SizedBox.shrink();
+                          }
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 12.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(k.replaceAll('_', ' ').toUpperCase(), style: GoogleFonts.inter(color: Colors.black87, fontWeight: FontWeight.w600)),
+                                SizedBox(
+                                  width: 120,
+                                  child: TextFormField(
+                                    initialValue: _confirmedMeasurements[k],
+                                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                                    style: const TextStyle(color: Colors.black87, fontWeight: FontWeight.bold),
+                                    decoration: InputDecoration(
+                                      isDense: true,
+                                      hintText: 'Rec: ${_confirmedMeasurements[k]}',
+                                      hintStyle: const TextStyle(color: Colors.black38, fontSize: 12),
+                                      filled: true, fillColor: Colors.black.withOpacity(0.05),
+                                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
+                                    ),
+                                    onChanged: (val) {
+                                       setState(() {
+                                           _confirmedMeasurements[k] = val;
+                                       });
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () => Navigator.pop(modalCtx),
+                        style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF1565C0), padding: const EdgeInsets.symmetric(vertical: 16), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
+                        child: Text('Done', style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: Colors.white)),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 
