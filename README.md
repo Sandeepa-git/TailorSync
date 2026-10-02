@@ -13,12 +13,11 @@
 3. [System Architecture](#3-system-architecture)
 4. [Technology Stack](#4-technology-stack)
 5. [The Dual AI & Machine Learning Engine](#5-the-dual-ai--machine-learning-engine)
-6. [Team Roles & Responsibilities (6-Member Team)](#6-team-roles--responsibilities-6-member-team)
-7. [Core Modules & Features](#7-core-modules--features)
-8. [Database Schema & Architecture](#8-database-schema--architecture)
-9. [UI/UX & Design Philosophy](#9-uiux--design-philosophy)
-10. [Setup & Installation Instructions](#10-setup--installation-instructions)
-11. [License & Academic Integrity](#11-license--academic-integrity)
+6. [Core Modules & Features](#6-core-modules--features)
+7. [Database Schema & Architecture](#7-database-schema--architecture)
+8. [UI/UX & Design Philosophy](#8-uiux--design-philosophy)
+9. [Setup & Installation Instructions](#9-setup--installation-instructions)
+10. [License & Academic Integrity](#10-license--academic-integrity)
 
 ---
 
@@ -101,49 +100,7 @@ TailorSync stands out by utilizing a **Dual-Engine Predictive Architecture** to 
 
 ---
 
-## 6. Team Roles & Responsibilities (6-Member Team)
-
-This system was architected and developed collaboratively. The division of labor was strictly defined to simulate a professional enterprise engineering environment:
-
-### Member 1: Backend & Azure Integration Engineer
-* Architected the FastAPI backend framework and API endpoint routers.
-* Integrated the SQLAlchemy ORM to bridge Python objects to PostgreSQL.
-* Configured the Microsoft Azure App Service environment and handled server deployments.
-* **Viva Focus:** API lifecycle, asynchronous Python, Azure cloud infrastructure, REST principles.
-
-### Member 2: Flutter Frontend Engineer
-* Developed the entire cross-platform mobile application.
-* Implemented complex state management using Riverpod.
-* Handled Dio API consumption, error handling, and JSON deserialization.
-* **Viva Focus:** Widget lifecycle, declarative UI, Riverpod state injection, async UI updates.
-
-### Member 3: Database & Data Engineer
-* Designed the PostgreSQL entity-relationship model.
-* Enforced strict foreign-key constraints (e.g., cascading deletes for Orders when a Customer is removed).
-* Handled Alembic migration scripts and database initialization.
-* **Viva Focus:** Relational algebra, indexing, ACID compliance, data normalization.
-
-### Member 4: AI & Machine Learning Engineer
-* Designed the Data Science pipeline (cleaning datasets, feature engineering).
-* Trained the Scikit-Learn `.joblib` models for measurement predictions.
-* Engineered the system prompts and parameter tuning for the Microsoft Foundry AI integration.
-* **Viva Focus:** Machine learning algorithms, model serialization, prompt engineering, data preprocessing.
-
-### Member 5: Business Logic & Order Management Engineer
-* Defined the core application workflows (e.g., The New Order Wizard step-by-step logic).
-* Built the automated SMTP Email Notification system (triggering specific customer emails when an order transitions to "Ready").
-* Designed the algorithms that calculate the real-time Dashboard statistics.
-* **Viva Focus:** SMTP integration, state transition validation, business rule enforcement.
-
-### Member 6: QA, Integration & DevOps Engineer
-* Managed the Git version control branching strategy and pull request reviews.
-* Configured GitHub Actions for CI/CD automated testing and deployment.
-* Wrote integration tests ensuring the FastAPI backend and Flutter frontend communicated without CORS errors or payload mismatches.
-* **Viva Focus:** Continuous Integration, deployment pipelines, testing methodologies, API contract validation.
-
----
-
-## 7. Core Modules & Features
+## 6. Core Modules & Features
 
 1. **Dashboard & Analytics:** Real-time visibility into active orders, pending orders, completed orders, and staff workload.
 2. **New Order Wizard:** A seamless, multi-step Flutter form capturing Customer Info → Garment Type → AI Measurements → Fabric Preferences.
@@ -154,7 +111,7 @@ This system was architected and developed collaboratively. The division of labor
 
 ---
 
-## 8. Database Schema & Architecture
+## 7. Database Schema & Architecture
 
 The system utilizes a heavily normalized relational database to prevent data anomalies:
 * **Users Table:** Handles both `OWNER` and `STAFF` roles with RBAC (Role-Based Access Control).
@@ -165,7 +122,7 @@ The system utilizes a heavily normalized relational database to prevent data ano
 
 ---
 
-## 9. UI/UX & Design Philosophy
+## 8. UI/UX & Design Philosophy
 
 The application rejects standard, boring material templates in favor of a **Premium, Modern Aesthetic**:
 * **Animations:** Features custom "scanning" and "pulsing ripple" animations during AI loading states to provide visual feedback and delight the user.
@@ -175,7 +132,7 @@ The application rejects standard, boring material templates in favor of a **Prem
 
 ---
 
-## 10. Setup & Installation Instructions
+## 9. Setup & Installation Instructions
 
 ### Prerequisites
 * **Flutter SDK:** `>=3.0.0`
@@ -229,7 +186,7 @@ The application rejects standard, boring material templates in favor of a **Prem
 
 ---
 
-## 11. License & Academic Integrity
+## 10. License & Academic Integrity
 
 This software system was developed as a Third Year University Project. All source code, machine learning models, and architectural designs are proprietary to the student engineering team. 
 
