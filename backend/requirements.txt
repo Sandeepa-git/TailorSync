@@ -16,4 +16,3 @@ pytest==7.4.2
 firebase-admin==6.2.0
 azure-ai-inference
 azure-identity
-azure-ai-projects>=2.1.0
