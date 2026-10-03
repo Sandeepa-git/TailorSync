@@ -5,7 +5,6 @@ from fastapi import APIRouter, UploadFile, File, Form, HTTPException, Response
 from typing import Optional
 from starlette.concurrency import run_in_threadpool
 from PIL import Image
-from google import genai
 
 logger = logging.getLogger(__name__)
 
@@ -60,30 +59,56 @@ def get_styles():
     colors = [{"id": k, "label": v} for k, v in COLORS.items()]
     return {"garments": garments, "colors": colors}
 
+import requests
+import base64
+
 def call_gemini_blocking(img: Image.Image, prompt: str):
     api_key = os.environ.get("GEMINI_API_KEY")
     model_name = os.environ.get("GEMINI_IMAGE_MODEL", "gemini-3.1-flash-lite-image")
     if not api_key:
         raise ValueError("GEMINI_API_KEY is missing")
     
-    client = genai.Client(api_key=api_key)
-    response = client.models.generate_content(
-        model=model_name,
-        contents=[img, prompt]
-    )
+    img_byte_arr = io.BytesIO()
+    img.save(img_byte_arr, format='JPEG')
+    b64_img = base64.b64encode(img_byte_arr.getvalue()).decode('utf-8')
     
-    # Try different ways google-genai might return the image part
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:predict"
+    # Note: Depending on the specific image editing API format. 
+    # For a general fallback to standard generateContent:
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={api_key}"
+    
+    payload = {
+        "contents": [
+            {
+                "parts": [
+                    {"text": prompt},
+                    {
+                        "inline_data": {
+                            "mime_type": "image/jpeg",
+                            "data": b64_img
+                        }
+                    }
+                ]
+            }
+        ],
+        "generationConfig": {
+             # No specific config, defaults are usually fine.
+        }
+    }
+    
+    response = requests.post(url, json=payload, timeout=90)
+    response.raise_for_status()
+    data = response.json()
+    
     try:
-        parts = response.candidates[0].content.parts
+        parts = data["candidates"][0]["content"]["parts"]
         for part in parts:
-            if hasattr(part, "inline_data") and part.inline_data:
-                return part.inline_data.data
-            elif hasattr(part, "image") and part.image:
-                return part.image.image_bytes
-            elif hasattr(part, "image_bytes") and part.image_bytes:
-                return part.image_bytes
-    except Exception as e:
-        logger.error(f"Failed to parse Gemini response: {e}")
+            if "inlineData" in part:
+                return base64.b64decode(part["inlineData"]["data"])
+            elif "image" in part:
+                return base64.b64decode(part["image"]["imageBytes"])
+    except (KeyError, IndexError) as e:
+        logger.error(f"Failed to parse Gemini response: {e}, Response: {data}")
         
     raise ValueError("No image returned from model.")
 
