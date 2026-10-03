@@ -43,20 +43,28 @@ class FoundryClient:
             self.client = None
 
         # Initialize Agent Client
+        self._agent_init_error = None
         try:
             if self.use_foundry_agent and self.project_endpoint:
                 from azure.ai.projects import AIProjectClient
                 from azure.identity import DefaultAzureCredential
+                logger.info(f"Initializing AIProjectClient with endpoint: {self.project_endpoint}")
                 self.project_client = AIProjectClient(
                     endpoint=self.project_endpoint, 
                     credential=DefaultAzureCredential()
                 )
+                logger.info("AIProjectClient created, getting OpenAI client...")
                 self.agent_client = self.project_client.get_openai_client()
+                logger.info("Agent OpenAI client initialized successfully.")
             else:
                 self.project_client = None
                 self.agent_client = None
+                if self.use_foundry_agent and not self.project_endpoint:
+                    self._agent_init_error = "USE_FOUNDRY_AGENT is true but FOUNDRY_PROJECT_ENDPOINT is empty"
+                    logger.error(self._agent_init_error)
         except Exception as e:
-            logger.error(f"Failed to initialize AIProjectClient (agent): {e}")
+            self._agent_init_error = f"Failed to initialize AIProjectClient: {e}"
+            logger.error(self._agent_init_error, exc_info=True)
             self.project_client = None
             self.agent_client = None
 
@@ -88,7 +96,8 @@ class FoundryClient:
 
     def _call_foundry_agent(self, prompt: str) -> str:
         if not self.agent_client:
-            raise ValueError("Foundry Agent client is not initialized. Check credentials and endpoint.")
+            detail = self._agent_init_error or "Check credentials and endpoint."
+            raise ValueError(f"Foundry Agent client is not initialized. {detail}")
             
         agent_ref = {
             "name": self.agent_name,
