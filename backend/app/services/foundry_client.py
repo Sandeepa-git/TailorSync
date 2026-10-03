@@ -95,10 +95,6 @@ class FoundryClient:
         return extracted
 
     def _call_foundry_agent(self, prompt: str) -> str:
-        if not self.agent_client:
-            detail = self._agent_init_error or "Check credentials and endpoint."
-            raise ValueError(f"Foundry Agent client is not initialized. {detail}")
-            
         agent_ref = {
             "name": self.agent_name,
             "type": "agent_reference"
@@ -107,26 +103,43 @@ class FoundryClient:
             agent_ref["version"] = self.agent_version
             
         start_time = time.time()
+        
+        # We will use the REST API directly because the SDK sometimes throws 403 
+        # on managed identities due to strict workspace-level role checks.
+        import requests
+        from azure.identity import DefaultAzureCredential
+        
         try:
-            response = self.agent_client.responses.create(
-                input=prompt,
-                extra_body={
-                    "agent_reference": agent_ref
-                },
-                timeout=90.0
-            )
-            elapsed = time.time() - start_time
-            logger.info(f"Agent response time: {elapsed:.2f}s")
+            cred = DefaultAzureCredential()
+            token = cred.get_token("https://cognitiveservices.azure.com/.default").token
             
-            if hasattr(response, 'usage') and response.usage:
-                usage = response.usage
-                prompt_tokens = getattr(usage, 'prompt_tokens', 'N/A')
-                completion_tokens = getattr(usage, 'completion_tokens', 'N/A')
-                total_tokens = getattr(usage, 'total_tokens', 'N/A')
-                logger.info(f"Agent Usage - Prompt: {prompt_tokens}, Completion: {completion_tokens}, Total: {total_tokens}")
-
-            raw_text = response.output_text
+            # The fallback endpoint format
+            endpoint = f"{self.project_endpoint}/agents/{self.agent_name}/endpoint/protocols/openai/responses"
+            
+            headers = {
+                "Authorization": f"Bearer {token}",
+                "Content-Type": "application/json"
+            }
+            
+            payload = {
+                "input": prompt,
+                "agent_reference": agent_ref
+            }
+            
+            resp = requests.post(endpoint, json=payload, headers=headers, timeout=90.0)
+            
+            if resp.status_code != 200:
+                raise ValueError(f"Foundry Agent request failed: {resp.status_code} {resp.text}")
+                
+            elapsed = time.time() - start_time
+            logger.info(f"Agent response time (REST API): {elapsed:.2f}s")
+            
+            raw_text = resp.json().get("output_text", "")
             return self._extract_json(raw_text, raw_original=raw_text)
+            
+        except Exception as e:
+            logger.error(f"Foundry API Agent error: {e}")
+            raise ValueError(f"Foundry Agent request failed: {e}")
         except Exception as e:
             logger.error(f"Agent API error: {e}")
             raise ValueError(f"Foundry Agent request failed: {e}")
