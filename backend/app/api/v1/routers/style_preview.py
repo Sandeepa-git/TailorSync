@@ -111,7 +111,7 @@ def process_image(contents: bytes) -> Image.Image:
 
 def call_gemini_blocking(images: list[Image.Image], prompt: str):
     api_key = os.environ.get("GEMINI_API_KEY")
-    model_name = os.environ.get("GEMINI_IMAGE_MODEL", "gemini-3.1-flash-lite-image")
+    model_name = os.environ.get("GEMINI_IMAGE_MODEL", "gemini-3.8-flash")
     if not api_key:
         raise ValueError("GEMINI_API_KEY is missing")
     
