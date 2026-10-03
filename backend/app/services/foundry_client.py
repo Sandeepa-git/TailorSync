@@ -10,95 +10,69 @@ logger = logging.getLogger(__name__)
 
 class FoundryClient:
     def __init__(self):
-        self.endpoint = os.environ.get("FOUNDRY_ENDPOINT", "")
-        self.api_key = os.environ.get("FOUNDRY_API_KEY", "")
-        self.model_name = os.environ.get("FOUNDRY_MODEL_NAME", "gpt-4o")
+        self.use_foundry_agent = True
+        self.project_endpoint = "https://tailorsync-ai-resource.services.ai.azure.com/api/projects/tailorsync-ai"
+        self.agent_name = "ts-ai-agent"
+        self.agent_version = "3"
         
-        if not self.endpoint:
-            logger.warning("FOUNDRY_ENDPOINT is not set.")
-        if not self.api_key:
-            logger.warning("FOUNDRY_API_KEY is not set.")
-            
         try:
-            if self.api_key:
-                # Local dev: Using API Key authentication
-                from azure.core.credentials import AzureKeyCredential
-                credential = AzureKeyCredential(self.api_key)
-            else:
-                # Production: Using Managed Identity
-                from azure.identity import DefaultAzureCredential
-                credential = DefaultAzureCredential()
-
-            self.client = ChatCompletionsClient(
-                endpoint=self.endpoint,
-                credential=credential,
-                credential_scopes=["https://cognitiveservices.azure.com/.default"]
+            from azure.identity import DefaultAzureCredential
+            from azure.ai.projects import AIProjectClient
+            
+            project_client = AIProjectClient(
+                endpoint=self.project_endpoint,
+                credential=DefaultAzureCredential(),
             )
+            self.openai_client = project_client.get_openai_client()
         except Exception as e:
-            logger.error(f"Failed to initialize FoundryClient: {e}")
-            self.client = None
+            logger.error(f"Failed to initialize AIProjectClient: {e}")
+            self.openai_client = None
 
         self._dataset_service = DatasetService()
 
-    def _call_foundry(self, prompt: str, system_instruction: str) -> str:
-        if not self.client:
-            raise ValueError("Foundry client is not initialized properly. Check credentials and endpoint.")
-            
-        try:
-            response = self.client.complete(
-                messages=[
-                    SystemMessage(content=system_instruction),
-                    UserMessage(content=prompt),
-                ],
-                model=self.model_name
-            )
-            content = response.choices[0].message.content
-            
-            # Robust JSON extraction: Find content between ```json and ``` or first { and last }
-            import re
-            json_match = re.search(r'```(?:json)?\s*(.*?)\s*```', content, re.DOTALL)
-            if json_match:
-                content = json_match.group(1)
-            else:
-                # Fallback to finding outermost brackets
-                start_idx = content.find('{')
-                end_idx = content.rfind('}')
-                if start_idx != -1 and end_idx != -1 and end_idx > start_idx:
-                    content = content[start_idx:end_idx+1]
-                    
-            content = content.strip()
-            return content
-        except Exception as e:
-            logger.error(f"Foundry API error: {e}")
-            raise e
-
+    def _call_foundry_agent(self, prompt: str) -> str:
+        if not self.openai_client:
+            raise ValueError("Foundry agent client is not initialized.")
+        
+        response = self.openai_client.responses.create(
+            input=[{"role": "user", "content": prompt}],
+            extra_body={
+                "agent_reference": {
+                    "name": self.agent_name, 
+                    "version": self.agent_version, 
+                    "type": "agent_reference"
+                }
+            },
+        )
+        content = response.output_text
+        
+        import re
+        json_match = re.search(r'```(?:json)?\s*(.*?)\s*```', content, re.DOTALL)
+        if json_match:
+            content = json_match.group(1)
+        else:
+            start_idx = content.find('{')
+            end_idx = content.rfind('}')
+            if start_idx != -1 and end_idx != -1 and end_idx > start_idx:
+                content = content[start_idx:end_idx+1]
+                
+        return content.strip()
     def predict_measurements(self, garment_type: str, provided_measurements: dict) -> dict:
         exact_match = self._dataset_service.get_exact_match(garment_type, provided_measurements)
         context = self._dataset_service.get_dataset_context(garment_type)
-        
-        system_instruction = f"""
-You are the AI intelligence engine for TailorSync.
-Role: Predict missing measurements for a garment.
-Rules:
-1. Analyze the provided dataset context.
-2. If an EXACT MATCH is provided, use its values as the primary recommendation.
-3. Look for variation in similar records to provide alternatives.
-4. Output strict JSON exactly matching the requested format.
-5. IMPORTANT: Never return empty strings for measurements. You MUST provide a concrete numerical prediction for every missing measurement.
-
-Dataset Context:
-{context}
-"""
         
         exact_match_str = ""
         if exact_match:
             exact_match_str = f"Found an exact match in the dataset: {json.dumps(exact_match)}\nUse these values as the primary 'recommended' predictions where possible."
 
         prompt = f"""
+Task: predict_measurements
 Garment Type: {garment_type}
 Tailor's Provided Measurements:
 {json.dumps(provided_measurements, indent=2)}
 
+Dataset Context:
+{context}
 {exact_match_str}
 
 Predict ALL the missing measurements appropriate for a {garment_type} based on the dataset.
@@ -115,26 +89,19 @@ Return ONLY a JSON object with this exact structure:
   ]
 }}
 """
-        response_text = self._call_foundry(prompt, system_instruction)
+        response_text = self._call_foundry_agent(prompt)
         result = json.loads(response_text)
         
-        # Sanitize the output to guarantee no empty measurements
         if "predictions" in result:
             for p in result["predictions"]:
                 if not p.get("recommended") or p.get("recommended").strip() == "":
-                    p["recommended"] = "0" # Safe fallback
+                    p["recommended"] = "0" 
         
         return result
 
     def recommend_fabric(self, garment_type: str, occasion: str, weather: str, fabric_preferences: list, fit: str) -> dict:
-        system_instruction = """
-You are the AI fabric advisor for TailorSync.
-Rules:
-1. Recommend exactly 3 fabrics based on garment, occasion, weather, and preferences.
-2. Provide a 'suitability_percentage' (e.g. 91).
-3. Return strict JSON.
-"""
         prompt = f"""
+Task: recommend_fabric
 Recommend fabrics for a {garment_type}.
 Preferences:
 - Occasion: {occasion}
@@ -153,30 +120,24 @@ Return ONLY a JSON object with exactly 3 recommendations in this structure:
   ]
 }}
 """
-        response_text = self._call_foundry(prompt, system_instruction)
+        response_text = self._call_foundry_agent(prompt)
         return json.loads(response_text)
 
     def estimate_fabric(self, garment_type: str, fabric: str, measurements: dict) -> dict:
         context = self._dataset_service.get_dataset_context(garment_type)
-        system_instruction = f"""
-You are the AI fabric estimator for TailorSync.
-Rules:
-1. Estimate fabric in meters based on the dataset.
-2. For short trousers, use 'Fabric estimation_short in meter'.
-3. For long trousers, use 'Fabric estimation_long in meter'.
-4. Note that shirt datasets are based on 45-inch width, and trousers on 60-inch width.
-5. Return strict JSON.
-
-Dataset Context:
-{context}
-"""
+        
         prompt = f"""
+Task: estimate_fabric
 Garment Type: {garment_type}
 Selected Fabric: {fabric}
 Confirmed Measurements:
 {json.dumps(measurements, indent=2)}
 
+Dataset Context:
+{context}
+
 Estimate the required fabric quantity in meters based on the dataset.
+Note that shirt datasets are based on 45-inch width, and trousers on 60-inch width.
 Return ONLY a JSON object in this structure:
 {{
   "recommended_quantity_meters": 2.10,
@@ -188,5 +149,5 @@ Return ONLY a JSON object in this structure:
   "reason": "Based on the matching height and waist in the dataset..."
 }}
 """
-        response_text = self._call_foundry(prompt, system_instruction)
+        response_text = self._call_foundry_agent(prompt)
         return json.loads(response_text)
