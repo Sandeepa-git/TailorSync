@@ -14,6 +14,12 @@ class Settings(BaseSettings):
     AZURE_FOUNDRY_API_KEY: str = ""
     AZURE_FOUNDRY_AGENT_NAME: str = "TailorSync-Agent"
     AZURE_TENANT_ID: str = ""
+    
+    # New Foundry Agent Settings
+    FOUNDRY_PROJECT_ENDPOINT: str = ""
+    FOUNDRY_AGENT_NAME: str = "ts-ai-agent"
+    FOUNDRY_AGENT_VERSION: str = ""
+    USE_FOUNDRY_AGENT: bool = False
 
     class Config:
         env_file = ".env"
