@@ -84,6 +84,7 @@ Rules:
 2. If an EXACT MATCH is provided, use its values as the primary recommendation.
 3. Look for variation in similar records to provide alternatives.
 4. Output strict JSON exactly matching the requested format.
+5. IMPORTANT: Never return empty strings for measurements. You MUST provide a concrete numerical prediction for every missing measurement.
 
 Dataset Context:
 {context}
@@ -100,13 +101,14 @@ Tailor's Provided Measurements:
 
 {exact_match_str}
 
-Predict the missing measurements appropriate for a {garment_type} based on the dataset.
+Predict ALL the missing measurements appropriate for a {garment_type} based on the dataset.
+Ensure NO measurement is left empty.
 Return ONLY a JSON object with this exact structure:
 {{
   "predictions": [
     {{
       "measurement": "Name of missing measurement",
-      "recommended": "Value as string",
+      "recommended": "Value as string (e.g. '32')",
       "alternatives": ["Alternative 1", "Alternative 2"],
       "reason": "Brief explanation"
     }}
