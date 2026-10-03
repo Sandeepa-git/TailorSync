@@ -88,5 +88,8 @@ jobs:
               { "name": "ENABLE_ORYX_BUILD", "value": "true", "slotSetting": false },
               { "name": "WEBSITES_PORT", "value": "8000", "slotSetting": false },
               { "name": "FOUNDRY_ENDPOINT", "value": "https://tailorsync-ai-resource.services.ai.azure.com/models", "slotSetting": false },
-              { "name": "FOUNDRY_MODEL_NAME", "value": "gpt-5-mini", "slotSetting": false }
+              { "name": "FOUNDRY_MODEL_NAME", "value": "gpt-5-mini", "slotSetting": false },
+              { "name": "USE_FOUNDRY_AGENT", "value": "true", "slotSetting": false },
+              { "name": "FOUNDRY_PROJECT_ENDPOINT", "value": "https://tailorsync-ai-resource.services.ai.azure.com/api/projects/tailorsync-ai", "slotSetting": false },
+              { "name": "FOUNDRY_AGENT_NAME", "value": "ts-ai-agent", "slotSetting": false }
             ]
