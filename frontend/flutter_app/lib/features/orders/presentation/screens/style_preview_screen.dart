@@ -208,7 +208,7 @@ class _StylePreviewScreenState extends ConsumerState<StylePreviewScreen> {
         title: const Text('Try Your Style'),
         leading: IconButton(
           icon: const Icon(Icons.close),
-          onPressed: () => context.pop(),
+          onPressed: () => context.go('/home'),
         ),
       ),
       body: _isLoading
