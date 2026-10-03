@@ -898,23 +898,6 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              _predictionMethod == 'FOUNDRY' ? 'Microsoft Foundry is Thinking...' : 'Running Custom ML...',
-              style: GoogleFonts.outfit(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black87),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 8),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 32),
-              child: Text(
-                _predictionMethod == 'FOUNDRY' 
-                    ? 'Analyzing dataset context to generate perfect measurements.' 
-                    : 'Processing garment features through the predictive model.',
-                style: GoogleFonts.inter(color: Colors.black54, fontSize: 14),
-                textAlign: TextAlign.center,
-              ),
-            ),
-            const SizedBox(height: 48),
             AnimatedBuilder(
               animation: _pulseController,
               builder: (context, child) {
@@ -968,6 +951,22 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
                   ],
                 );
               },
+            ),
+            const SizedBox(height: 48),
+            Text(
+              _predictionMethod == 'FOUNDRY' ? 'Microsoft Foundry is Thinking...' : 'Running Custom ML...',
+              style: GoogleFonts.outfit(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black87),
+            ),
+            const SizedBox(height: 8),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 32),
+              child: Text(
+                _predictionMethod == 'FOUNDRY' 
+                    ? 'Analyzing dataset context to generate perfect measurements.' 
+                    : 'Processing garment features through the predictive model.',
+                style: GoogleFonts.inter(color: Colors.black54, fontSize: 14),
+                textAlign: TextAlign.center,
+              ),
             ),
           ],
         ),

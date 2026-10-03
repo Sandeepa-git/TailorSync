@@ -48,7 +48,7 @@ TailorSync employs a modern, scalable, and decoupled **Client-Server Architectur
 
 * **Presentation Layer (Frontend):** A cross-platform Flutter application providing a responsive, native-like experience for both shop owners and staff.
 * **Application Layer (Backend):** A high-performance Python FastAPI REST API that handles business logic, data validation, authentication, and orchestrates calls to external AI services.
-* **Data Layer:** A relational Neon DB (PostgreSQL) database ensuring ACID compliance and data integrity across complex Customer ↔ Order ↔ Measurement relationships.
+* **Data Layer:** A relational PostgreSQL database ensuring ACID compliance and data integrity across complex Customer ↔ Order ↔ Measurement relationships.
 * **AI/ML Layer:** A hybrid predictive engine utilizing both local `.joblib` Scikit-Learn models and cloud-based Microsoft Foundry LLMs.
 * **Infrastructure:** Cloud-hosted on Azure App Services with continuous integration via GitHub Actions.
 
@@ -76,7 +76,7 @@ TailorSync employs a modern, scalable, and decoupled **Client-Server Architectur
 * **Data Processing:** Pandas, NumPy
 
 ### Infrastructure & DevOps
-* **Database Hosting:** Neon DB (Serverless PostgreSQL)
+* **Database Hosting:** PostgreSQL
 * **Backend Hosting:** Microsoft Azure App Service
 * **Version Control:** Git & GitHub
 * **CI/CD:** GitHub Actions
@@ -136,7 +136,7 @@ The application rejects standard, boring material templates in favor of a **Prem
 ### Prerequisites
 * **Flutter SDK:** `>=3.0.0`
 * **Python:** `>=3.10`
-* **Neon DB / PostgreSQL:** `>=14.0`
+* **PostgreSQL:** `>=14.0`
 
 ### Backend Initialization (FastAPI)
 1. Clone the repository and navigate to the backend:
