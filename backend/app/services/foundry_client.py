@@ -116,7 +116,15 @@ Return ONLY a JSON object with this exact structure:
 }}
 """
         response_text = self._call_foundry(prompt, system_instruction)
-        return json.loads(response_text)
+        result = json.loads(response_text)
+        
+        # Sanitize the output to guarantee no empty measurements
+        if "predictions" in result:
+            for p in result["predictions"]:
+                if not p.get("recommended") or p.get("recommended").strip() == "":
+                    p["recommended"] = "0" # Safe fallback
+        
+        return result
 
     def recommend_fabric(self, garment_type: str, occasion: str, weather: str, fabric_preferences: list, fit: str) -> dict:
         system_instruction = """
