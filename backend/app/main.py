@@ -40,7 +40,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+from app.api.v1.routers import style_preview
+
 app.include_router(api_router, prefix="/api/v1")
+app.include_router(style_preview.router, prefix="/api", tags=["Style Preview"])
 
 @app.on_event("startup")
 def startup_event():
