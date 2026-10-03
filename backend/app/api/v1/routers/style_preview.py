@@ -50,7 +50,7 @@ COLORS = {
     "beige": "beige"
 }
 
-@router.get("/style-preview/styles")
+@router.get("/styles")
 def get_styles():
     garments = [
         {"id": k, "label": v["label"], "needs_full_body": v["needs_full_body"]}
@@ -112,7 +112,7 @@ def call_gemini_blocking(img: Image.Image, prompt: str):
         
     raise ValueError("No image returned from model.")
 
-@router.post("/style-preview")
+@router.post("/")
 async def generate_style_preview(
     photo: UploadFile = File(...),
     garment_id: str = Form(...),

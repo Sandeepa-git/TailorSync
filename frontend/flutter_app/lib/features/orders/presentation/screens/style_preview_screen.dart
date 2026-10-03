@@ -45,7 +45,7 @@ class _StylePreviewScreenState extends ConsumerState<StylePreviewScreen> {
     setState(() => _isLoading = true);
     try {
       final api = ref.read(apiClientProvider);
-      final response = await api.dio.get('/api/style-preview/styles');
+      final response = await api.dio.get('/style-preview/styles');
       if (response.statusCode == 200) {
         setState(() {
           _garments = response.data['garments'];
@@ -105,7 +105,7 @@ class _StylePreviewScreenState extends ConsumerState<StylePreviewScreen> {
       // Using Dio with extended timeout for image generation
       final api = ref.read(apiClientProvider);
       final response = await api.dio.post(
-        '/api/style-preview',
+        '/style-preview/',
         data: formData,
         options: Options(
           responseType: ResponseType.bytes,
