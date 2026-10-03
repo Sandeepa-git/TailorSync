@@ -14,5 +14,5 @@ api_router.include_router(ai.router, prefix="/ai", tags=["ai"])
 api_router.include_router(business.router, prefix="/business", tags=["business"])
 api_router.include_router(templates.router, prefix="/measurement-templates", tags=["templates"])
 
-from app.api.v1.routers import style_preview
-api_router.include_router(style_preview.router, prefix="/style-preview", tags=["Style Preview"])
+
+

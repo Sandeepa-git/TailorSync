@@ -9,7 +9,6 @@ import '../features/customers/presentation/screens/customer_form_screen.dart';
 import '../features/orders/presentation/screens/orders_list_screen.dart';
 import '../features/orders/presentation/screens/new_order_wizard.dart';
 import '../features/orders/presentation/screens/order_details_screen.dart';
-import '../features/orders/presentation/screens/style_preview_screen.dart';
 import '../features/orders/models/order.dart';
 import '../features/tasks/presentation/screens/tasks_screen.dart';
 import '../features/reports/presentation/screens/reports_screen.dart';
@@ -43,11 +42,7 @@ final GoRouter appRouter = GoRouter(
       parentNavigatorKey: _rootNavigatorKey,
       builder: (BuildContext context, GoRouterState state) => const NewOrderWizard(),
     ),
-    GoRoute(
-      path: '/style-preview',
-      parentNavigatorKey: _rootNavigatorKey,
-      builder: (BuildContext context, GoRouterState state) => const StylePreviewScreen(),
-    ),
+
 
     // Main app with bottom nav
     ShellRoute(

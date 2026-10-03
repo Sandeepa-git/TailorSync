@@ -11,6 +11,7 @@ import '../../../../core/widgets/tailorsync_text_field.dart';
 import '../../../../core/widgets/tailorsync_password_field.dart';
 import '../../../../core/widgets/tailorsync_button.dart';
 import '../../../../core/widgets/tailorsync_password_requirements.dart';
+import 'terms_and_conditions_screen.dart';
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
@@ -34,6 +35,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   bool _isSignUp = false;
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
+  bool _acceptedTerms = false;
 
   @override
   void initState() {
@@ -271,7 +273,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   void _submit() async {
     if (!_formKey.currentState!.validate()) return;
-    if (_isSignUp && (!_isPasswordValid || !_passwordsMatch)) return;
+    if (_isSignUp && (!_isPasswordValid || !_passwordsMatch || !_acceptedTerms)) return;
 
     setState(() => _loading = true);
     final api = ref.read(apiClientProvider);
@@ -365,7 +367,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final bool canSubmit = !_loading && (!_isSignUp || (_isPasswordValid && _passwordsMatch));
+    final bool canSubmit = !_loading && (!_isSignUp || (_isPasswordValid && _passwordsMatch && _acceptedTerms));
     final screenWidth = MediaQuery.of(context).size.width;
     final isSmallPhone = screenWidth < 360;
     
@@ -559,6 +561,51 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                       if (v != _password.text) return 'Passwords do not match';
                                       return null;
                                     },
+                                  ),
+                                  const SizedBox(height: 16),
+                                  Row(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      SizedBox(
+                                        width: 24,
+                                        height: 24,
+                                        child: Checkbox(
+                                          value: _acceptedTerms,
+                                          onChanged: (val) {
+                                            setState(() {
+                                              _acceptedTerms = val ?? false;
+                                            });
+                                          },
+                                          activeColor: AppTheme.primary,
+                                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Expanded(
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => const TermsAndConditionsScreen(),
+                                              ),
+                                            );
+                                          },
+                                          child: RichText(
+                                            text: TextSpan(
+                                              style: GoogleFonts.inter(fontSize: 13, color: AppTheme.textBody),
+                                              children: [
+                                                const TextSpan(text: 'I agree to the '),
+                                                TextSpan(
+                                                  text: 'Terms and Conditions',
+                                                  style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: AppTheme.primary, decoration: TextDecoration.underline),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ],
 

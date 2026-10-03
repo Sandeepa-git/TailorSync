@@ -296,68 +296,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
               // Hero "New Order" Card
               _NewOrderHeroCard(onTap: () => context.go('/orders/new')),
-              const SizedBox(height: 12),
-              
-              // Try Your Style Card
-              GestureDetector(
-                onTap: () => context.go('/style-preview'),
-                child: Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFF9C27B0), Color(0xFF6A1B9A)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.circular(24),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFF6A1B9A).withValues(alpha: 0.25),
-                        blurRadius: 20,
-                        offset: const Offset(0, 10),
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 46,
-                        height: 46,
-                        decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.15),
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                        child: const Icon(Icons.auto_awesome, color: Colors.white, size: 24),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Try Your Style',
-                              style: GoogleFonts.outfit(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                            ),
-                            Text(
-                              'Preview how a style could look on you',
-                              style: GoogleFonts.inter(
-                                fontSize: 13,
-                                color: Colors.white.withValues(alpha: 0.75),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const Icon(Icons.arrow_forward_rounded, color: Colors.white, size: 20),
-                    ],
-                  ),
-                ),
-              ),
               const SizedBox(height: 24),
 
               // Shortcut Grid (SliverGridDelegateWithMaxCrossAxisExtent 180, mainAxisExtent 112)
