@@ -126,8 +126,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
         } on DioException catch (e) {
           debugPrint('Token verification error: $e');
           if (e.response?.statusCode == 401) {
-            api.clearToken();
-            await storage.delete(key: 'auth_token');
+            // api.clearToken();
+            // await storage.delete(key: 'auth_token');
+            destination = '/home'; // Proceed anyway
           } else {
             // Network glitch / timeout — assume token is present and proceed to home
             destination = '/home';

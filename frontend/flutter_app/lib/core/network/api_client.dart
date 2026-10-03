@@ -34,12 +34,12 @@ class ApiClient {
       },
       onError: (DioException e, handler) {
         if (e.response?.statusCode == 401) {
-          final path = e.requestOptions.path;
-          if (!path.contains('/auth/login') &&
-              !path.contains('/auth/signup') &&
-              !path.contains('/auth/verify')) {
-            client.onUnauthorized?.call();
-          }
+          // final path = e.requestOptions.path;
+          // if (!path.contains('/auth/login') &&
+          //     !path.contains('/auth/signup') &&
+          //     !path.contains('/auth/verify')) {
+          //   client.onUnauthorized?.call();
+          // }
         }
         return handler.next(e);
       },
