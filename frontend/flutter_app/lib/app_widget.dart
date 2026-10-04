@@ -28,7 +28,6 @@ class _AppWidgetState extends State<AppWidget> {
       child: MaterialApp.router(
         title: 'TailorSync',
         theme: TsTheme.light(),
-        darkTheme: TsTheme.dark(),
         themeMode: ThemeMode.light, // App is designed to run in light mode
         themeAnimationDuration: Motion.long,
         themeAnimationCurve: Motion.standard,
