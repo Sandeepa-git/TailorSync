@@ -1,42 +1,46 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'routes/app_router.dart';
-import 'core/theme/app_theme.dart';
 
-class AppWidget extends StatelessWidget {
+import 'routes/app_router.dart';
+import 'ui/theme/app_theme.dart';
+import 'ui/theme/motion.dart';
+
+class AppWidget extends StatefulWidget {
   const AppWidget({super.key});
+
+  @override
+  State<AppWidget> createState() => _AppWidgetState();
+}
+
+class _AppWidgetState extends State<AppWidget> {
+  @override
+  void initState() {
+    super.initState();
+    // Edge-to-edge: draw behind transparent status & navigation bars
+    // (works with both gesture and 3-button navigation).
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+  }
 
   @override
   Widget build(BuildContext context) {
     return ProviderScope(
       child: MaterialApp.router(
         title: 'TailorSync',
-        theme: AppTheme.lightTheme,
+        theme: TsTheme.light(),
+        darkTheme: TsTheme.dark(),
+        themeMode: ThemeMode.system,
+        themeAnimationDuration: Motion.long,
+        themeAnimationCurve: Motion.standard,
         routerConfig: appRouter,
         debugShowCheckedModeBanner: false,
         builder: (context, child) {
-          return Container(
-            color: const Color(0xFFE8EAF6), // Subtle indigo-tinted desktop background
-            child: Center(
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  final double effectiveWidth = constraints.maxWidth > 430 ? 430 : constraints.maxWidth;
-                  final double effectiveHeight = constraints.maxHeight;
-                  final currentMediaQuery = MediaQuery.of(context);
-
-                  return MediaQuery(
-                    data: currentMediaQuery.copyWith(
-                      size: Size(effectiveWidth, effectiveHeight),
-                    ),
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 430),
-                      child: ClipRect(
-                        child: child ?? const SizedBox.shrink(),
-                      ),
-                    ),
-                  );
-                },
-              ),
+          final brightness = Theme.of(context).brightness;
+          return AnnotatedRegion<SystemUiOverlayStyle>(
+            value: TsTheme.overlayStyle(brightness),
+            child: ColoredBox(
+              color: Theme.of(context).colorScheme.surface,
+              child: child ?? const SizedBox.shrink(),
             ),
           );
         },

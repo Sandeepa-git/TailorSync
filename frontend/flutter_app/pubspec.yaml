@@ -20,6 +20,10 @@ dependencies:
   firebase_core: ^4.11.0
   firebase_auth: ^6.5.4
   share_plus: ^12.0.2
+  path_provider: ^2.1.6
+  # UI redesign: declarative micro-animations + Material motion patterns
+  flutter_animate: ^4.5.2
+  animations: ^2.0.11
 
 dev_dependencies:
   flutter_test:

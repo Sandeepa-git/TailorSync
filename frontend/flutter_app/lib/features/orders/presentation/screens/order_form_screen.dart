@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/network/providers/api_provider.dart';
+import '../../../../ui/ui.dart';
 import '../providers/orders_provider.dart';
 import '../../../customers/presentation/providers/customers_provider.dart';
 
@@ -16,7 +17,6 @@ class _OrderFormScreenState extends ConsumerState<OrderFormScreen> {
   final _description = TextEditingController();
   int? _selectedCustomerId;
   bool _loading = false;
-
   void _save() async {
     if (_description.text.isEmpty || _selectedCustomerId == null) return;
     setState(() => _loading = true);
@@ -44,45 +44,41 @@ class _OrderFormScreenState extends ConsumerState<OrderFormScreen> {
 
     return Scaffold(
       appBar: AppBar(title: const Text('New Order')),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
-        child: Card(
-          child: Padding(
-            padding: const EdgeInsets.all(24),
+      body: TsFormBody(
+        children: [
+          TsCard(
+            padding: const EdgeInsets.all(Space.lg),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 customersAsync.when(
                   data: (customers) {
                     if (customers.isEmpty) {
-                      return const Text('Please add a customer first.', style: TextStyle(color: Colors.redAccent));
+                      return Text('Please add a customer first.', style: TextStyle(color: context.colors.error));
                     }
                     return DropdownButtonFormField<int>(
-                      decoration: const InputDecoration(labelText: 'Select Customer'),
+                      decoration: const InputDecoration(labelText: 'Select Customer', prefixIcon: Icon(Icons.person_outline_rounded)),
                       value: _selectedCustomerId,
-                      items: customers.map((c) => DropdownMenuItem(value: c.id, child: Text(c.name))).toList(),
+                      isExpanded: true,
+                      items: customers.map((c) => DropdownMenuItem(value: c.id, child: Text(c.name, overflow: TextOverflow.ellipsis))).toList(),
                       onChanged: (val) => setState(() => _selectedCustomerId = val),
                     );
                   },
                   loading: () => const Center(child: CircularProgressIndicator()),
                   error: (e, st) => Text('Error loading customers: $e'),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: Space.md),
                 TextField(
                   controller: _description,
-                  decoration: const InputDecoration(labelText: 'Garment Type', hintText: 'e.g. Navy Blue Suit'),
+                  decoration: const InputDecoration(labelText: 'Garment Type', hintText: 'e.g. Navy Blue Suit', prefixIcon: Icon(Icons.checkroom_rounded)),
                   maxLines: 1,
                 ),
-                const SizedBox(height: 32),
-                ElevatedButton(
-                  onPressed: _loading ? null : _save,
-                  style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF8C52FF)),
-                  child: _loading ? const CircularProgressIndicator(color: Colors.white) : const Text('Create Order', style: TextStyle(color: Colors.white)),
-                )
+                const SizedBox(height: Space.xl),
+                TsButton(label: 'Create Order', loading: _loading, onPressed: _loading ? null : _save),
               ],
             ),
           ),
-        ),
+        ],
       ),
     );
   }

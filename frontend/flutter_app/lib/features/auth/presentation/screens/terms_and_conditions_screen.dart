@@ -1,78 +1,53 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import '../../../../core/theme/app_theme.dart';
+
+import '../../../../ui/ui.dart';
 
 class TermsAndConditionsScreen extends StatelessWidget {
   const TermsAndConditionsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppTheme.scaffoldBg,
-      appBar: AppBar(
-        backgroundColor: AppTheme.primary,
-        foregroundColor: Colors.white,
-        elevation: 0,
-        title: Text(
-          'Terms and Conditions',
-          style: GoogleFonts.inter(
-            fontWeight: FontWeight.w700,
-            fontSize: 18,
+    final cs = context.colors;
+    return TsScrollPage(
+      title: 'Terms & Conditions',
+      maxWidth: MaxWidth.form + 120,
+      slivers: [
+        SliverToBoxAdapter(
+          child: EntranceFade(
+            child: TsCard(
+              padding: const EdgeInsets.all(Space.lg),
+              gradient: Gradients.hero(cs),
+              shadow: true,
+              child: Row(
+                children: [
+                  ClipRRect(
+                    borderRadius: Radii.brMd,
+                    child: Image.asset('assets/icon.png', width: 56, height: 56, fit: BoxFit.cover, semanticLabel: 'TailorSync logo'),
+                  ),
+                  const SizedBox(width: Space.md),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('TailorSync', style: context.text.titleLarge?.copyWith(color: Colors.white)),
+                        const SizedBox(height: 2),
+                        Text(
+                          'Last updated: October 2026',
+                          style: context.text.bodySmall?.copyWith(color: Colors.white.withValues(alpha: 0.8)),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
-        centerTitle: true,
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Container(
-          decoration: BoxDecoration(
-            color: AppTheme.surface,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: AppTheme.divider),
-            boxShadow: AppTheme.softShadow,
-          ),
-          padding: const EdgeInsets.all(24),
+        const SliverToBoxAdapter(child: SizedBox(height: Space.lg)),
+        SliverToBoxAdapter(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Header
-              Center(
-                child: Column(
-                  children: [
-                    Image.asset('assets/icon.png', height: 56),
-                    const SizedBox(height: 10),
-                    Text(
-                      'TailorSync',
-                      style: GoogleFonts.outfit(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w800,
-                        color: AppTheme.primary,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      'Terms and Conditions',
-                      style: GoogleFonts.inter(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: AppTheme.textBody,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      'Last updated: October 2026',
-                      style: GoogleFonts.inter(
-                        fontSize: 12,
-                        color: Colors.grey[500],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 24),
-              const Divider(),
-              const SizedBox(height: 16),
-
               _buildSection(
                 '1. Acceptance of Terms',
                 'By creating an account, accessing, or using TailorSync ("the App"), you agree to be bound by these Terms and Conditions ("Terms"). If you do not agree to all of these Terms, you must not use the App.\n\n'
@@ -210,55 +185,85 @@ class TermsAndConditionsScreen extends StatelessWidget {
                 '• Email: support@tailorsync.app\n'
                 '• In-App: Settings > Help & Support',
               ),
-
-              const SizedBox(height: 24),
-              const Divider(),
-              const SizedBox(height: 16),
-
-              // Footer
+              const SizedBox(height: Space.md),
               Center(
                 child: Text(
                   '© 2026 TailorSync. All rights reserved.',
-                  style: GoogleFonts.inter(
-                    fontSize: 12,
-                    color: Colors.grey[500],
-                    fontWeight: FontWeight.w500,
-                  ),
+                  style: context.text.labelSmall?.copyWith(color: cs.onSurfaceVariant),
                 ),
               ),
-              const SizedBox(height: 12),
             ],
           ),
         ),
-      ),
+      ],
     );
   }
 
   Widget _buildSection(String title, String content) {
+    return _TermsSection(title: title, content: content);
+  }
+}
+
+/// Expandable, readable section card.
+class _TermsSection extends StatefulWidget {
+  final String title;
+  final String content;
+  const _TermsSection({required this.title, required this.content});
+
+  @override
+  State<_TermsSection> createState() => _TermsSectionState();
+}
+
+class _TermsSectionState extends State<_TermsSection> {
+  bool _open = true;
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = context.colors;
     return Padding(
-      padding: const EdgeInsets.only(bottom: 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: GoogleFonts.inter(
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
-              color: AppTheme.primary,
-              height: 1.4,
+      padding: const EdgeInsets.only(bottom: Space.sm),
+      child: TsCard(
+        padding: EdgeInsets.zero,
+        shadow: false,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            InkWell(
+              borderRadius: Radii.brLg,
+              onTap: () => setState(() => _open = !_open),
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(Space.md, Space.sm, Space.xs, Space.sm),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(widget.title, style: context.text.titleSmall?.copyWith(color: cs.primary)),
+                    ),
+                    AnimatedRotation(
+                      turns: _open ? 0.5 : 0,
+                      duration: Motion.of(context, Motion.short),
+                      curve: Motion.standard,
+                      child: const Padding(
+                        padding: EdgeInsets.all(Space.sm),
+                        child: Icon(Icons.keyboard_arrow_down_rounded),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            content,
-            style: GoogleFonts.inter(
-              fontSize: 13.5,
-              color: AppTheme.textBody,
-              height: 1.65,
+            AnimatedSize(
+              duration: Motion.of(context, Motion.medium),
+              curve: Motion.emphasized,
+              alignment: Alignment.topCenter,
+              child: _open
+                  ? Padding(
+                      padding: const EdgeInsets.fromLTRB(Space.md, 0, Space.md, Space.md),
+                      child: Text(widget.content, style: context.text.bodyMedium?.copyWith(height: 1.6)),
+                    )
+                  : const SizedBox(width: double.infinity),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

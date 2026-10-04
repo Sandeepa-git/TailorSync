@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:dio/dio.dart';
 import '../../../../core/network/providers/api_provider.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/skeleton_loading.dart';
+import '../../../../ui/ui.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
@@ -17,13 +17,11 @@ class ProfileScreen extends ConsumerStatefulWidget {
 class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   Map<String, dynamic>? _user;
   bool _loading = true;
-
   @override
   void initState() {
     super.initState();
     _loadProfile();
   }
-
   Future<void> _loadProfile() async {
     try {
       final api = ref.read(apiClientProvider);
@@ -38,26 +36,23 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       if (mounted) setState(() => _loading = false);
     }
   }
-
   Future<void> _logout() async {
-    final confirm = await showDialog<bool>(
+    final confirm = await showTsDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Logout', style: GoogleFonts.outfit(fontWeight: FontWeight.bold, color: AppTheme.primary, letterSpacing: -0.3)),
-        content: Text('Are you sure you want to log out?', style: GoogleFonts.inter(color: AppTheme.textCaption)),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Text('Logout'),
+        content: Text('Are you sure you want to log out?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: Text('No', style: GoogleFonts.inter(color: AppTheme.textCaption)),
+            child: Text('No'),
           ),
           ElevatedButton(
             onPressed: () => Navigator.of(context).pop(true),
             style: ElevatedButton.styleFrom(
               backgroundColor: AppTheme.error,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             ),
-            child: Text('Yes', style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold)),
+            child: Text('Yes'),
           ),
         ],
       ),
@@ -79,17 +74,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           Icon(
             isSatisfied ? Icons.check_circle_rounded : Icons.radio_button_unchecked,
             size: 16,
-            color: isSatisfied ? const Color(0xFF2E7D32) : Colors.grey[400],
+            color: isSatisfied ? const Color(0xFF2E7D32) : Theme.of(context).colorScheme.outline,
           ),
           const SizedBox(width: 8),
           Expanded(
             child: Text(
               label,
-              style: GoogleFonts.inter(
-                fontSize: 12.5,
-                color: isSatisfied ? const Color(0xFF2E7D32) : Colors.grey[600],
-                fontWeight: isSatisfied ? FontWeight.w600 : FontWeight.normal,
-              ),
             ),
           ),
         ],
@@ -106,7 +96,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     bool obscureConfirm = true;
     bool saving = false;
 
-    showDialog(
+    showTsDialog(
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (context, setDialogState) {
@@ -120,10 +110,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           bool passwordsMatch = newPwText.isNotEmpty && newPwText == confirmPasswordCtrl.text;
 
           return AlertDialog(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
             title: Text(
               'Change Password',
-              style: GoogleFonts.outfit(fontWeight: FontWeight.bold, color: AppTheme.primary, letterSpacing: -0.3),
             ),
             content: SingleChildScrollView(
               child: Column(
@@ -158,14 +146,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFF4F6FB),
+                      color: Theme.of(context).colorScheme.surfaceContainerHigh,
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: const Color(0xFFE2E6F0)),
+                      border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Password Requirements:', style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.bold, color: const Color(0xFF1A237E))),
+                        Text('Password Requirements:'),
                         const SizedBox(height: 6),
                         _buildChecklistItem('Minimum 8 characters', hasMinLength),
                         _buildChecklistItem('At least one uppercase letter (A-Z)', hasUppercase),
@@ -200,11 +188,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         const SizedBox(width: 6),
                         Text(
                           passwordsMatch ? 'Passwords match' : 'Passwords do not match',
-                          style: GoogleFonts.inter(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            color: passwordsMatch ? const Color(0xFF2E7D32) : const Color(0xFFD32F2F),
-                          ),
                         ),
                       ],
                     ),
@@ -215,7 +198,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             actions: [
               TextButton(
                 onPressed: saving ? null : () => Navigator.pop(ctx),
-                child: Text('Cancel', style: GoogleFonts.inter(color: Colors.grey)),
+                child: Text('Cancel'),
               ),
               ElevatedButton(
                 onPressed: saving || !isPasswordValid || !passwordsMatch
@@ -270,7 +253,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 ),
                 child: saving
                     ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                    : Text('Update Password', style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold)),
+                    : Text('Update Password'),
               ),
             ],
           );
@@ -283,12 +266,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final nameCtrl = TextEditingController(text: _user?['full_name'] ?? '');
     bool saving = false;
 
-    showDialog(
+    showTsDialog(
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (context, setDialogState) => AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          title: Text('Edit Name', style: GoogleFonts.outfit(fontWeight: FontWeight.bold, color: AppTheme.primary, letterSpacing: -0.3)),
+          title: Text('Edit Name'),
           content: TextField(
             controller: nameCtrl,
             decoration: const InputDecoration(labelText: 'Full Name'),
@@ -314,8 +296,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         setDialogState(() => saving = false);
                       }
                     },
-              style: ElevatedButton.styleFrom(backgroundColor: AppTheme.primary),
-              child: Text('Save', style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold)),
+              child: Text('Save'),
             ),
           ],
         ),
@@ -327,12 +308,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final phoneCtrl = TextEditingController(text: _user?['phone'] ?? '');
     bool saving = false;
 
-    showDialog(
+    showTsDialog(
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (context, setDialogState) => AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          title: Text('Edit Phone Number', style: GoogleFonts.outfit(fontWeight: FontWeight.bold, color: AppTheme.primary, letterSpacing: -0.3)),
+          title: Text('Edit Phone Number'),
           content: TextField(
             controller: phoneCtrl,
             decoration: const InputDecoration(labelText: 'Phone Number'),
@@ -358,8 +338,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         setDialogState(() => saving = false);
                       }
                     },
-              style: ElevatedButton.styleFrom(backgroundColor: AppTheme.primary),
-              child: Text('Save', style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold)),
+              child: Text('Save'),
             ),
           ],
         ),
@@ -371,190 +350,116 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   Widget build(BuildContext context) {
     if (_loading) {
       return const Scaffold(
-        backgroundColor: AppTheme.scaffoldBg,
         body: SafeArea(child: ProfileSkeleton()),
       );
     }
 
-    return Scaffold(
-      backgroundColor: AppTheme.scaffoldBg,
-      appBar: AppBar(
-        backgroundColor: AppTheme.scaffoldBg,
-        elevation: 0,
-        centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppTheme.primary),
-          onPressed: () => context.go('/home'),
-        ),
-        title: Text(
-          'Profile & Settings',
-          style: GoogleFonts.outfit(
-            fontWeight: FontWeight.bold,
-            color: AppTheme.primary,
-            fontSize: 19,
-            letterSpacing: -0.3,
-          ),
-        ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16),
-            child: Container(
-              padding: const EdgeInsets.all(2),
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: LinearGradient(
-                  colors: [AppTheme.primary, AppTheme.secondary],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-              ),
-              child: CircleAvatar(
-                radius: 15,
-                backgroundColor: AppTheme.surface,
-                child: Text(
-                  (_user?['full_name'] ?? 'U')[0].toUpperCase(),
-                  style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.bold, color: AppTheme.primary),
-                ),
-              ),
-            ),
-          ),
-        ],
+    final cs = context.colors;
+    final st = context.status;
+    final isOwnerSide = _user?['role'] != 'staff' && _user?['role'] != 'STAFF';
+    final name = (_user?['full_name'] ?? 'User').toString();
+
+    int idx = 0;
+    Widget section(Widget child) => EntranceFade(delay: Motion.stagger(idx++), child: child);
+
+    return TsScrollPage(
+      title: 'Profile & Settings',
+      leading: IconButton(
+        tooltip: 'Back',
+        icon: const Icon(Icons.arrow_back_rounded),
+        onPressed: () => context.go('/home'),
       ),
-      body: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 720),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Profile', style: GoogleFonts.outfit(fontSize: 15, fontWeight: FontWeight.bold, color: AppTheme.primary, letterSpacing: -0.3)),
-                const SizedBox(height: 12),
-                Container(
-                  decoration: BoxDecoration(
-                    color: AppTheme.surface,
-                    borderRadius: BorderRadius.circular(18),
-                    boxShadow: AppTheme.softShadow,
+      slivers: [
+        SliverToBoxAdapter(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              section(_ProfileHeader(
+                name: name,
+                email: _user?['email']?.toString(),
+                role: _user?['role']?.toString(),
+              )),
+              const SectionHeader(title: 'Profile'),
+              section(_SettingsGroup(children: [
+                _SettingsListTile(
+                  leadingIcon: Icons.person_outline_rounded,
+                  leadingColor: st.info,
+                  title: 'Edit Name',
+                  subtitle: _user?['full_name'] ?? 'Update Name',
+                  trailingIcon: Icons.chevron_right_rounded,
+                  onTap: _showEditNameDialog,
+                ),
+                _SettingsListTile(
+                  leadingIcon: Icons.phone_outlined,
+                  leadingColor: st.success,
+                  title: 'Edit Phone Number',
+                  subtitle: _user?['phone'] ?? 'Update Phone',
+                  trailingIcon: Icons.chevron_right_rounded,
+                  onTap: _showEditPhoneDialog,
+                ),
+                _SettingsListTile(
+                  leadingIcon: Icons.lock_outline_rounded,
+                  leadingColor: cs.tertiary,
+                  title: 'Change Password',
+                  trailingIcon: Icons.chevron_right_rounded,
+                  onTap: _showChangePasswordDialog,
+                ),
+              ])),
+
+              if (isOwnerSide) ...[
+                const SectionHeader(title: 'Business Settings'),
+                section(_SettingsGroup(children: [
+                  _SettingsListTile(
+                    leadingIcon: Icons.storefront_rounded,
+                    leadingColor: st.warning,
+                    title: 'Business Profile',
+                    subtitle: 'Edit business details and settings',
+                    trailingIcon: Icons.chevron_right_rounded,
+                    onTap: () => context.push('/profile/business'),
                   ),
-                  child: Column(
+                  _SettingsListTile(
+                    leadingIcon: Icons.straighten_rounded,
+                    leadingColor: st.success,
+                    title: 'Measurement Templates',
+                    subtitle: 'Configure dynamic garmanent measurements',
+                    trailingIcon: Icons.chevron_right_rounded,
+                    onTap: () => context.push('/profile/templates'),
+                  ),
+                ])),
+                Padding(
+                  padding: const EdgeInsets.only(top: Space.lg, bottom: Space.sm),
+                  child: Row(
                     children: [
-                      _SettingsListTile(
-                        leadingIcon: Icons.person_outline_rounded,
-                        leadingColor: const Color(0xFF1565C0),
-                        title: 'Edit Name',
-                        subtitle: _user?['full_name'] ?? 'Update Name',
-                        trailingIcon: Icons.chevron_right,
-                        onTap: _showEditNameDialog,
-                      ),
-                      Divider(height: 1, color: AppTheme.divider.withValues(alpha: 0.5), indent: 52),
-                      _SettingsListTile(
-                        leadingIcon: Icons.phone_outlined,
-                        leadingColor: const Color(0xFF00695C),
-                        title: 'Edit Phone Number',
-                        subtitle: _user?['phone'] ?? 'Update Phone',
-                        trailingIcon: Icons.chevron_right,
-                        onTap: _showEditPhoneDialog,
-                      ),
-                      Divider(height: 1, color: AppTheme.divider.withValues(alpha: 0.5), indent: 52),
-                      _SettingsListTile(
-                        leadingIcon: Icons.lock_outline_rounded,
-                        leadingColor: const Color(0xFF6A1B9A),
-                        title: 'Change Password',
-                        trailingIcon: Icons.chevron_right,
-                        onTap: _showChangePasswordDialog,
-                      ),
+                      Flexible(child: Text('Staff Management', style: context.text.titleMedium)),
+                      const SizedBox(width: Space.xs),
+                      StatusPill(label: 'Owner Only', color: cs.primary, icon: Icons.verified_user_outlined, dense: true),
                     ],
                   ),
                 ),
-            const SizedBox(height: 24),
-
-            if (_user?['role'] != 'staff' && _user?['role'] != 'STAFF') ...[
-              // Business Settings Section
-              Text('Business Settings', style: GoogleFonts.outfit(fontSize: 15, fontWeight: FontWeight.bold, color: AppTheme.primary, letterSpacing: -0.3)),
-              const SizedBox(height: 12),
-              Container(
-                decoration: BoxDecoration(
-                  color: AppTheme.surface,
-                  borderRadius: BorderRadius.circular(18),
-                  boxShadow: AppTheme.softShadow,
-                ),
-                child: Column(
-                  children: [
-                    _SettingsListTile(
-                      leadingIcon: Icons.store_rounded,
-                      leadingColor: const Color(0xFFE65100),
-                      title: 'Business Profile',
-                      subtitle: 'Edit business details and settings',
-                      trailingIcon: Icons.chevron_right,
-                      onTap: () => context.push('/profile/business'),
-                    ),
-                    Divider(height: 1, color: AppTheme.divider.withValues(alpha: 0.5), indent: 52),
-                    _SettingsListTile(
-                      leadingIcon: Icons.straighten_rounded,
-                      leadingColor: const Color(0xFF2E7D32),
-                      title: 'Measurement Templates',
-                      subtitle: 'Configure dynamic garmanent measurements',
-                      trailingIcon: Icons.chevron_right,
-                      onTap: () => context.push('/profile/templates'),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 24),
-
-              // Staff Management Section
-              Row(
-                children: [
-                  Text('Staff Management', style: GoogleFonts.outfit(fontSize: 15, fontWeight: FontWeight.bold, color: AppTheme.primary, letterSpacing: -0.3)),
-                  const SizedBox(width: 8),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(color: AppTheme.tertiary, borderRadius: BorderRadius.circular(20)),
-                    child: Text('Owner Only', style: GoogleFonts.inter(fontSize: 10, color: AppTheme.textCaption, fontWeight: FontWeight.w600)),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              Container(
-                decoration: BoxDecoration(
-                  color: AppTheme.surface,
-                  borderRadius: BorderRadius.circular(18),
-                  boxShadow: AppTheme.softShadow,
-                ),
-                child: _SettingsListTile(
-                  leadingIcon: Icons.groups_rounded,
-                  leadingColor: const Color(0xFF6A1B9A),
-                  title: 'Manage Staff',
-                  subtitle: 'Add or remove employees',
-                  trailingIcon: Icons.chevron_right,
-                  onTap: () => context.push('/profile/staff'),
-                ),
-              ),
-            ],
-            const SizedBox(height: 24),
-            
-            // Support Section
-            Text('Support', style: GoogleFonts.outfit(fontSize: 15, fontWeight: FontWeight.bold, color: AppTheme.primary, letterSpacing: -0.3)),
-            const SizedBox(height: 12),
-            Container(
-              decoration: BoxDecoration(
-                color: AppTheme.surface,
-                borderRadius: BorderRadius.circular(18),
-                boxShadow: AppTheme.softShadow,
-              ),
-              child: Column(
-                children: [
+                section(_SettingsGroup(children: [
                   _SettingsListTile(
-                    leadingIcon: Icons.description_outlined,
-                    leadingColor: const Color(0xFF607D8B),
-                    title: 'Privacy Policy',
-                    trailingIcon: Icons.chevron_right,
-                    onTap: () {
-                      showDialog(
+                    leadingIcon: Icons.groups_rounded,
+                    leadingColor: cs.tertiary,
+                    title: 'Manage Staff',
+                    subtitle: 'Add or remove employees',
+                    trailingIcon: Icons.chevron_right_rounded,
+                    onTap: () => context.push('/profile/staff'),
+                  ),
+                ])),
+              ],
+
+              const SectionHeader(title: 'Support'),
+              section(_SettingsGroup(children: [
+                _SettingsListTile(
+                  leadingIcon: Icons.privacy_tip_outlined,
+                  leadingColor: cs.onSurfaceVariant,
+                  title: 'Privacy Policy',
+                  trailingIcon: Icons.chevron_right_rounded,
+                  onTap: () {
+                      showTsDialog(
                         context: context,
                         builder: (context) => AlertDialog(
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                          title: Text('Privacy Policy', style: GoogleFonts.outfit(fontWeight: FontWeight.bold)),
+                          title: Text('Privacy Policy'),
                           content: const Text('Your privacy is important to us. All personal and business data is securely stored and never shared with third parties without consent. (Placeholder for full policy)'),
                           actions: [
                             TextButton(onPressed: () => Navigator.pop(context), child: const Text('Close')),
@@ -562,65 +467,60 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         ),
                       );
                     },
-                  ),
-                  Divider(height: 1, color: AppTheme.divider.withValues(alpha: 0.5), indent: 52),
-                  _SettingsListTile(
-                    leadingIcon: Icons.headset_mic_outlined,
-                    leadingColor: const Color(0xFF009688),
-                    title: 'Contact Support',
-                    trailingIcon: Icons.chevron_right,
-                    onTap: () {
+                ),
+                _SettingsListTile(
+                  leadingIcon: Icons.headset_mic_outlined,
+                  leadingColor: st.success,
+                  title: 'Contact Support',
+                  trailingIcon: Icons.chevron_right_rounded,
+                  onTap: () {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Column(
                             mainAxisSize: MainAxisSize.min,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('Need Help?', style: GoogleFonts.inter(fontWeight: FontWeight.bold, fontSize: 14)),
+                              Text('Need Help?'),
                               const SizedBox(height: 4),
-                              Text('Reach out to us at: agsvwimalasiri@gmail.com', style: GoogleFonts.inter(fontSize: 13)),
+                              Text('Reach out to us at: agsvwimalasiri@gmail.com'),
                             ],
                           ),
                           behavior: SnackBarBehavior.floating,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                           duration: const Duration(seconds: 5),
                           action: SnackBarAction(
                             label: 'Dismiss',
-                            textColor: Colors.white,
                             onPressed: () {},
                           ),
                         ),
                       );
                     },
-                  ),
-                  Divider(height: 1, color: AppTheme.divider.withValues(alpha: 0.5), indent: 52),
-                  _SettingsListTile(
-                    leadingIcon: Icons.info_outline_rounded,
-                    leadingColor: const Color(0xFF3F51B5),
-                    title: 'About',
-                    trailingIcon: Icons.chevron_right,
-                    onTap: () {
-                      showDialog(
+                ),
+                _SettingsListTile(
+                  leadingIcon: Icons.info_outline_rounded,
+                  leadingColor: cs.primary,
+                  title: 'About',
+                  trailingIcon: Icons.chevron_right_rounded,
+                  onTap: () {
+                      showTsDialog(
                         context: context,
                         builder: (context) => AlertDialog(
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                          title: Text('About TailorSync', style: GoogleFonts.outfit(fontWeight: FontWeight.bold)),
+                          title: Text('About TailorSync'),
                           content: Column(
                             mainAxisSize: MainAxisSize.min,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('TailorSync is a comprehensive tailoring management solution designed to streamline measurements, orders, and customer relationships.', style: GoogleFonts.inter()),
+                              Text('TailorSync is a comprehensive tailoring management solution designed to streamline measurements, orders, and customer relationships.'),
                               const SizedBox(height: 16),
-                              Text('Developer Details:', style: GoogleFonts.inter(fontWeight: FontWeight.bold)),
+                              Text('Developer Details:'),
                               const SizedBox(height: 8),
-                              Text('A.G.S.V. Wimalasiri', style: GoogleFonts.inter()),
-                              Text('W.A.E.M. Wijayarathna', style: GoogleFonts.inter()),
-                              Text('N.D.H.A. Madubhashitha', style: GoogleFonts.inter()),
-                              Text('D.M.J.B. Disanayake', style: GoogleFonts.inter()),
-                              Text('Manuwendra Rajapaksha', style: GoogleFonts.inter()),
-                              Text('K.P.N.D. Ashokarathna', style: GoogleFonts.inter()),
+                              Text('A.G.S.V. Wimalasiri'),
+                              Text('W.A.E.M. Wijayarathna'),
+                              Text('N.D.H.A. Madubhashitha'),
+                              Text('D.M.J.B. Disanayake'),
+                              Text('Manuwendra Rajapaksha'),
+                              Text('K.P.N.D. Ashokarathna'),
                               const SizedBox(height: 12),
-                              Text('Contact: agsvwimalasiri@gmail.com', style: GoogleFonts.inter()),
+                              Text('Contact: agsvwimalasiri@gmail.com'),
                             ],
                           ),
                           actions: [
@@ -629,58 +529,113 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         ),
                       );
                     },
+                ),
+                _SettingsListTile(
+                  leadingIcon: Icons.local_offer_outlined,
+                  leadingColor: st.warning,
+                  title: 'Version',
+                  trailingWidget: Text('1.0.0', style: context.text.labelLarge?.copyWith(color: cs.onSurfaceVariant)),
+                ),
+              ])),
+              const SizedBox(height: Space.xl),
+              section(TsButton(
+                label: 'Logout',
+                icon: Icons.logout_rounded,
+                variant: TsButtonVariant.secondary,
+                onPressed: _logout,
+              )),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ProfileHeader extends StatelessWidget {
+  final String name;
+  final String? email;
+  final String? role;
+  const _ProfileHeader({required this.name, this.email, this.role});
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = context.colors;
+    return TsCard(
+      gradient: Gradients.hero(cs),
+      padding: const EdgeInsets.all(Space.lg),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(3),
+            decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.white.withValues(alpha: 0.25)),
+            child: CircleAvatar(
+              radius: context.isSmallPhone ? 28 : 34,
+              backgroundColor: Colors.white,
+              child: Text(
+                name.isNotEmpty ? name[0].toUpperCase() : 'U',
+                style: context.text.headlineSmall?.copyWith(color: cs.primary),
+              ),
+            ),
+          ),
+          const SizedBox(width: Space.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(name, style: context.text.titleLarge?.copyWith(color: Colors.white), maxLines: 1, overflow: TextOverflow.ellipsis),
+                if (email != null && email!.isNotEmpty)
+                  Text(
+                    email!,
+                    style: context.text.bodySmall?.copyWith(color: Colors.white.withValues(alpha: 0.8)),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  Divider(height: 1, color: AppTheme.divider.withValues(alpha: 0.5), indent: 52),
-                  _SettingsListTile(
-                    leadingIcon: Icons.local_offer_outlined,
-                    leadingColor: const Color(0xFF795548),
-                    title: 'Version',
-                    trailingWidget: Text('1.0.0', style: GoogleFonts.inter(fontSize: 14, color: AppTheme.textCaption, fontWeight: FontWeight.w500)),
+                if (role != null) ...[
+                  const SizedBox(height: Space.xs),
+                  StatusPill(
+                    label: role!.toUpperCase(),
+                    color: Colors.white,
+                    background: Colors.white.withValues(alpha: 0.18),
+                    icon: Icons.badge_outlined,
+                    dense: true,
                   ),
                 ],
-              ),
+              ],
             ),
-            const SizedBox(height: 32),
-
-            // Logout
-            SizedBox(
-              width: double.infinity,
-              child: OutlinedButton(
-                onPressed: _logout,
-                style: OutlinedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                  side: BorderSide(color: AppTheme.error.withValues(alpha: 0.3)),
-                  backgroundColor: AppTheme.error.withValues(alpha: 0.04),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.logout, color: AppTheme.error, size: 18),
-                    const SizedBox(width: 8),
-                    Text('Logout', style: GoogleFonts.inter(color: AppTheme.error, fontWeight: FontWeight.bold)),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 24),
-          ],
-        ),
+          ),
+        ],
       ),
-    ),
-  ),
-);
+    );
+  }
 }
+
+class _SettingsGroup extends StatelessWidget {
+  final List<Widget> children;
+  const _SettingsGroup({required this.children});
+
+  @override
+  Widget build(BuildContext context) {
+    return TsCard(
+      padding: const EdgeInsets.symmetric(vertical: Space.xxs),
+      child: Column(
+        children: [
+          for (var i = 0; i < children.length; i++) ...[
+            children[i],
+            if (i < children.length - 1) const Divider(indent: 64, endIndent: Space.md),
+          ],
+        ],
+      ),
+    );
+  }
 }
 
 class _SettingsListTile extends StatelessWidget {
   final IconData? leadingIcon;
   final Color? leadingColor;
   final String title;
-  final Color? titleColor;
   final String? subtitle;
   final IconData? trailingIcon;
-  final Color? trailingColor;
   final Widget? trailingWidget;
   final VoidCallback? onTap;
 
@@ -688,60 +643,46 @@ class _SettingsListTile extends StatelessWidget {
     this.leadingIcon,
     this.leadingColor,
     required this.title,
-    this.titleColor,
     this.subtitle,
     this.trailingIcon,
-    this.trailingColor,
     this.trailingWidget,
     this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
+    final cs = context.colors;
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(18),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          children: [
-            if (leadingIcon != null) ...[
-              Container(
-                width: 36,
-                height: 36,
-                decoration: BoxDecoration(
-                  color: (leadingColor ?? AppTheme.secondary).withValues(alpha: 0.10),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Icon(leadingIcon, color: leadingColor ?? AppTheme.secondary, size: 18),
-              ),
-              const SizedBox(width: 14),
-            ],
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(title, style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w600, color: titleColor ?? AppTheme.primary)),
-                  if (subtitle != null) ...[
-                    const SizedBox(height: 3),
-                    Text(subtitle!, style: GoogleFonts.inter(fontSize: 11, color: const Color(0xFF757575))),
+      borderRadius: Radii.brLg,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(minHeight: 60),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: Space.md, vertical: Space.sm),
+          child: Row(
+            children: [
+              if (leadingIcon != null) ...[
+                IconBadge(icon: leadingIcon!, color: leadingColor ?? cs.primary, size: 36),
+                const SizedBox(width: Space.sm + 2),
+              ],
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(title, style: context.text.titleSmall),
+                    if (subtitle != null) ...[
+                      const SizedBox(height: 2),
+                      Text(subtitle!, style: context.text.bodySmall, maxLines: 2, overflow: TextOverflow.ellipsis),
+                    ],
                   ],
-                ],
-              ),
-            ),
-            if (trailingWidget != null)
-              trailingWidget!
-            else if (trailingIcon != null)
-              Container(
-                width: 28,
-                height: 28,
-                decoration: BoxDecoration(
-                  color: AppTheme.divider.withValues(alpha: 0.5),
-                  borderRadius: BorderRadius.circular(8),
                 ),
-                child: Icon(trailingIcon, color: trailingColor ?? AppTheme.primary, size: 16),
               ),
-          ],
+              if (trailingWidget != null)
+                trailingWidget!
+              else if (trailingIcon != null)
+                Icon(trailingIcon, color: cs.onSurfaceVariant, size: 22),
+            ],
+          ),
         ),
       ),
     );

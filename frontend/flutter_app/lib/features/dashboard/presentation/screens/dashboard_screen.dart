@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/network/providers/api_provider.dart';
-import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/skeleton_loading.dart';
+import '../../../../ui/ui.dart';
 import '../../../orders/presentation/providers/orders_provider.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
@@ -22,13 +20,11 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   List<dynamic> _tasks = [];
   bool _loading = true;
   bool _error = false;
-
   @override
   void initState() {
     super.initState();
     _loadData();
   }
-
   Future<void> _loadData() async {
     setState(() {
       _loading = true;
@@ -57,7 +53,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       }
     }
   }
-
   String _getGreeting() {
     final hour = DateTime.now().hour;
     if (hour < 12) return 'Good Morning';
@@ -74,54 +69,16 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     });
 
     if (_loading) {
-      return Scaffold(
-        backgroundColor: AppTheme.scaffoldBg,
-        appBar: AppBar(
-          backgroundColor: AppTheme.scaffoldBg,
-          elevation: 0,
-          automaticallyImplyLeading: false,
-          title: Text(
-            'TailorSync',
-            style: GoogleFonts.outfit(fontWeight: FontWeight.bold, color: AppTheme.primary, fontSize: 20, letterSpacing: -0.3),
-          ),
-          centerTitle: true,
-        ),
-        body: const DashboardSkeleton(),
-      );
+      return const Scaffold(body: DashboardSkeleton());
     }
 
     if (_error) {
       return Scaffold(
-        backgroundColor: AppTheme.scaffoldBg,
-        appBar: AppBar(
-          backgroundColor: AppTheme.scaffoldBg,
-          elevation: 0,
-          automaticallyImplyLeading: false,
-          title: Text('TailorSync', style: GoogleFonts.outfit(fontWeight: FontWeight.bold, color: AppTheme.primary, fontSize: 20, letterSpacing: -0.3)),
-          centerTitle: true,
-        ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                width: 64,
-                height: 64,
-                decoration: BoxDecoration(
-                  color: AppTheme.error.withValues(alpha: 0.08),
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(Icons.error_outline, size: 32, color: AppTheme.error),
-              ),
-              const SizedBox(height: 16),
-              Text('Failed to load dashboard', style: GoogleFonts.inter(fontSize: 16, color: AppTheme.primary, fontWeight: FontWeight.bold)),
-              const SizedBox(height: 16),
-              ElevatedButton.icon(
-                onPressed: _loadData,
-                icon: const Icon(Icons.refresh),
-                label: const Text('Retry'),
-              ),
-            ],
+        body: SafeArea(
+          child: ErrorState(
+            title: 'Failed to load dashboard',
+            message: 'Check your connection and try again.',
+            onRetry: _loadData,
           ),
         ),
       );
@@ -145,550 +102,328 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
     final completedCount = _tasks.where((t) => t['status'] == 'Delivered' || t['status'] == 'Ready').length;
 
+    final cs = context.colors;
+    final st = context.status;
+    final pad = context.pagePadding;
+    final gap = context.gridGap;
+    final isStaffUser = _user?['role'] == 'staff' || _user?['role'] == 'STAFF';
+
+    final stats = [
+      _StatData('Active Orders', activeOrders is num ? activeOrders : int.tryParse('$activeOrders') ?? 0,
+          Icons.work_outline_rounded, st.info, () => context.go('/tasks')),
+      _StatData('Due Today', dueTodayCount, Icons.schedule_rounded, st.warning, () => context.go('/tasks')),
+      _StatData('Overdue', overdueCount, Icons.warning_amber_rounded,
+          overdueCount > 0 ? st.danger : cs.onSurfaceVariant, () => context.go('/tasks')),
+      _StatData('Completed', completedCount, Icons.check_circle_outline_rounded, st.success, () => context.go('/tasks')),
+    ];
+
+    final shortcuts = [
+      _ShortcutData(Icons.shopping_bag_outlined, 'Orders', 'Track and update orders', st.info,
+          badge: '$activeOrders active', onTap: () => context.go('/orders')),
+      _ShortcutData(Icons.people_outline_rounded, 'Customers', 'Manage client records',
+          context.isDark ? const Color(0xFF7FDCCF) : const Color(0xFF00796B), onTap: () => context.go('/customers')),
+      _ShortcutData(Icons.assignment_outlined, 'My Tasks', 'View assigned work', st.warning,
+          badge: overdueCount > 0 ? '$overdueCount overdue' : null,
+          badgeColor: overdueCount > 0 ? st.danger : null,
+          onTap: () => context.go('/tasks')),
+      if (!isStaffUser)
+        _ShortcutData(Icons.bar_chart_rounded, 'Reports', 'Business insights', cs.tertiary,
+            onTap: () => context.go('/reports')),
+    ];
+
     return Scaffold(
-      backgroundColor: AppTheme.scaffoldBg,
-      appBar: AppBar(
-        backgroundColor: AppTheme.scaffoldBg,
-        elevation: 0,
-        automaticallyImplyLeading: false,
-        title: Text(
-          'TailorSync',
-          style: GoogleFonts.outfit(fontWeight: FontWeight.bold, color: AppTheme.primary, fontSize: 20, letterSpacing: -0.3),
-        ),
-        centerTitle: true,
-      ),
       body: RefreshIndicator(
         onRefresh: _loadData,
-        color: AppTheme.primary,
-        child: SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          padding: EdgeInsets.only(
-            left: 20,
-            right: 20,
-            top: 8,
-            bottom: MediaQuery.of(context).padding.bottom + 84,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Header with time-based greeting & user avatar
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        edgeOffset: MediaQuery.paddingOf(context).top + kToolbarHeight,
+        child: CustomScrollView(
+          physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+          slivers: [
+            _BrandAppBar(
+              initial: firstName.isNotEmpty ? firstName[0].toUpperCase() : 'T',
+              onProfile: () => context.push('/profile'),
+            ),
+            SliverPadding(
+              padding: EdgeInsets.symmetric(horizontal: pad),
+              sliver: SliverList.list(
                 children: [
-                  Expanded(
+                  MaxWidthBox(
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        Text(
-                          '${_getGreeting()} 👋',
-                          style: GoogleFonts.inter(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            color: AppTheme.textCaption,
+                        EntranceFade(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(_getGreeting(), style: context.text.bodyMedium),
+                              Text(
+                                firstName,
+                                style: context.text.headlineMedium,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
                           ),
                         ),
-                        const SizedBox(height: 2),
-                        Text(
-                          firstName,
-                          style: GoogleFonts.outfit(
-                            fontSize: 26,
-                            fontWeight: FontWeight.bold,
-                            color: AppTheme.primary,
-                            letterSpacing: -0.5,
+                        const SizedBox(height: Space.md),
+                        EntranceFade(
+                          delay: Motion.staggerStep,
+                          child: _NewOrderHeroCard(
+                            activeOrders: stats.first.value,
+                            onTap: () => context.go('/orders/new'),
                           ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
                         ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  GestureDetector(
-                    onTap: () => context.push('/profile'),
-                    child: Container(
-                      padding: const EdgeInsets.all(3),
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: const LinearGradient(
-                          colors: [AppTheme.primary, AppTheme.secondary],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppTheme.primary.withValues(alpha: 0.25),
-                            blurRadius: 12,
-                            offset: const Offset(0, 4),
+                        const SectionHeader(title: 'Today at a glance'),
+                        GridView.builder(
+                          shrinkWrap: true,
+                          padding: EdgeInsets.zero,
+                          physics: const NeverScrollableScrollPhysics(),
+                          gridDelegate: adaptiveGrid(
+                            maxTileWidth: context.isWide ? 220 : 240,
+                            mainAxisExtent: context.isSmallPhone ? 104 : 112,
+                            spacing: gap,
                           ),
-                        ],
-                      ),
-                      child: CircleAvatar(
-                        radius: 22,
-                        backgroundColor: AppTheme.surface,
-                        child: Text(
-                          firstName.isNotEmpty ? firstName[0].toUpperCase() : 'T',
-                          style: GoogleFonts.outfit(color: AppTheme.primary, fontWeight: FontWeight.bold, fontSize: 18),
+                          itemCount: stats.length,
+                          itemBuilder: (context, i) => EntranceFade.indexed(i + 2, child: _StatCard(data: stats[i])),
                         ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 24),
-
-              // Stat Cards Grid
-              Column(
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: _StatCard(
-                          label: 'Active Orders',
-                          value: '$activeOrders',
-                          icon: Icons.work_outline_rounded,
-                          color: const Color(0xFF1565C0),
-                          bgColor: const Color(0xFFE3F2FD),
-                          onTap: () => context.go('/tasks'),
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: _StatCard(
-                          label: 'Due Today',
-                          value: '$dueTodayCount',
-                          icon: Icons.schedule_rounded,
-                          color: const Color(0xFFE65100),
-                          bgColor: const Color(0xFFFFF3E0),
-                          onTap: () => context.go('/tasks'),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: _StatCard(
-                          label: 'Overdue',
-                          value: '$overdueCount',
-                          icon: Icons.warning_amber_rounded,
-                          color: overdueCount > 0 ? const Color(0xFFC62828) : const Color(0xFF757575),
-                          bgColor: overdueCount > 0 ? const Color(0xFFFFEBEE) : const Color(0xFFF5F5F5),
-                          onTap: () => context.go('/tasks'),
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: _StatCard(
-                          label: 'Completed',
-                          value: '$completedCount',
-                          icon: Icons.check_circle_outline_rounded,
-                          color: const Color(0xFF2E7D32),
-                          bgColor: const Color(0xFFE8F5E9),
-                          onTap: () => context.go('/tasks'),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              const SizedBox(height: 24),
-
-              // Hero "New Order" Card
-              _NewOrderHeroCard(onTap: () => context.go('/orders/new')),
-              const SizedBox(height: 24),
-
-              // Shortcut Grid (SliverGridDelegateWithMaxCrossAxisExtent 180, mainAxisExtent 112)
-              GridView(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                  maxCrossAxisExtent: 180,
-                  mainAxisExtent: 118,
-                  crossAxisSpacing: 12,
-                  mainAxisSpacing: 12,
-                ),
-                children: [
-                  _ShortcutCard(
-                    icon: Icons.shopping_bag_outlined,
-                    title: 'Orders',
-                    subtitle: 'Track and update orders',
-                    badgeText: '$activeOrders active',
-                    iconColor: const Color(0xFF1565C0),
-                    iconBgColor: const Color(0xFFE3F2FD),
-                    onTap: () => context.go('/orders'),
-                  ),
-                  _ShortcutCard(
-                    icon: Icons.people_outline_rounded,
-                    title: 'Customers',
-                    subtitle: 'Manage client records',
-                    iconColor: const Color(0xFF00695C),
-                    iconBgColor: const Color(0xFFE0F2F1),
-                    onTap: () => context.go('/customers'),
-                  ),
-                  _ShortcutCard(
-                    icon: Icons.assignment_outlined,
-                    title: 'My Tasks',
-                    subtitle: 'View assigned work',
-                    badgeText: overdueCount > 0 ? '$overdueCount overdue' : null,
-                    badgeColor: overdueCount > 0 ? const Color(0xFFC62828) : null,
-                    iconColor: const Color(0xFFE65100),
-                    iconBgColor: const Color(0xFFFFF3E0),
-                    onTap: () => context.go('/tasks'),
-                  ),
-                  if (_user?['role'] != 'staff' && _user?['role'] != 'STAFF')
-                    _ShortcutCard(
-                      icon: Icons.bar_chart_rounded,
-                      title: 'Reports',
-                      subtitle: 'Business insights',
-                      iconColor: const Color(0xFF6A1B9A),
-                      iconBgColor: const Color(0xFFF3E5F5),
-                      onTap: () => context.go('/reports'),
-                    ),
-                ],
-              ),
-              const SizedBox(height: 28),
-
-              // Recent Orders Section Header
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Recent Orders',
-                    style: GoogleFonts.outfit(fontSize: 18, fontWeight: FontWeight.bold, color: AppTheme.primary, letterSpacing: -0.3),
-                  ),
-                  TextButton(
-                    onPressed: () => context.go('/orders'),
-                    child: Text(
-                      'View All',
-                      style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w600, color: AppTheme.secondary),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-
-              // Recent Orders List (Max 3 items with empty state fallback)
-              Consumer(
-                builder: (context, ref, child) {
-                  final ordersAsync = ref.watch(ordersProvider);
-                  return ordersAsync.when(
-                    data: (orders) {
-                      if (orders.isEmpty) {
-                        return Container(
-                          padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 20),
-                          decoration: BoxDecoration(
-                            color: AppTheme.surface,
-                            borderRadius: BorderRadius.circular(20),
-                            boxShadow: AppTheme.softShadow,
+                        const SectionHeader(title: 'Shortcuts'),
+                        GridView.builder(
+                          shrinkWrap: true,
+                          padding: EdgeInsets.zero,
+                          physics: const NeverScrollableScrollPhysics(),
+                          gridDelegate: adaptiveGrid(
+                            maxTileWidth: context.isWide ? 220 : 240,
+                            mainAxisExtent: context.isSmallPhone ? 122 : 128,
+                            spacing: gap,
                           ),
-                          child: Center(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Container(
-                                  width: 56,
-                                  height: 56,
-                                  decoration: BoxDecoration(
-                                    color: AppTheme.tertiary,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: const Icon(Icons.receipt_long_outlined, size: 28, color: AppTheme.secondary),
-                                ),
-                                const SizedBox(height: 12),
-                                Text(
-                                  'No recent orders yet',
-                                  style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w600, color: AppTheme.secondary),
-                                ),
-                                const SizedBox(height: 14),
-                                OutlinedButton.icon(
-                                  onPressed: () => context.go('/orders/new'),
-                                  icon: const Icon(Icons.add, size: 16),
-                                  label: const Text('Create First Order'),
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      }
-                      final recent = orders.take(3).toList();
-                      return Column(
-                        children: recent.map((o) {
-                          final initials = o.customerName != null && o.customerName!.isNotEmpty
-                              ? o.customerName!.split(' ').map((e) => e[0]).take(2).join('').toUpperCase()
-                              : 'C';
-                          return Container(
-                            margin: const EdgeInsets.only(bottom: 12),
-                            decoration: BoxDecoration(
-                              color: AppTheme.surface,
-                              borderRadius: BorderRadius.circular(18),
-                              boxShadow: AppTheme.softShadow,
-                            ),
-                            child: InkWell(
-                              onTap: () => context.go('/orders/details', extra: o),
-                              borderRadius: BorderRadius.circular(18),
-                              child: Padding(
-                                padding: const EdgeInsets.all(14),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      width: 42,
-                                      height: 42,
-                                      decoration: BoxDecoration(
-                                        gradient: LinearGradient(
-                                          colors: [AppTheme.primary, AppTheme.secondary],
-                                          begin: Alignment.topLeft,
-                                          end: Alignment.bottomRight,
-                                        ),
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      child: Center(
-                                        child: Text(initials, style: GoogleFonts.inter(fontWeight: FontWeight.bold, fontSize: 13, color: Colors.white)),
-                                      ),
-                                    ),
-                                    const SizedBox(width: 14),
-                                    Expanded(
+                          itemCount: shortcuts.length,
+                          itemBuilder: (context, i) => EntranceFade.indexed(i + 4, child: _ShortcutCard(data: shortcuts[i])),
+                        ),
+                        SectionHeader(
+                          title: 'Recent Orders',
+                          actionLabel: 'View All',
+                          onAction: () => context.go('/orders'),
+                        ),
+                        Consumer(
+                          builder: (context, ref, child) {
+                            final ordersAsync = ref.watch(ordersProvider);
+                            return AnimatedSwitcher(
+                              duration: Motion.of(context, Motion.medium),
+                              child: ordersAsync.when(
+                                data: (orders) {
+                                  if (orders.isEmpty) {
+                                    return TsCard(
+                                      key: const ValueKey('empty'),
+                                      padding: const EdgeInsets.symmetric(vertical: Space.lg, horizontal: Space.md),
                                       child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          Text(
-                                            o.customerName ?? 'Customer #${o.customerId}',
-                                            style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: AppTheme.primary, fontSize: 14),
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                          const SizedBox(height: 2),
-                                          Text(
-                                            '${o.garmentType} • #ORD-${o.id.toString().padLeft(4, '0')}',
-                                            style: GoogleFonts.inter(fontSize: 12, color: AppTheme.textCaption),
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
+                                          const FloatingIllustration(icon: Icons.receipt_long_outlined, size: 72),
+                                          const SizedBox(height: Space.xs),
+                                          Text('No recent orders yet', style: context.text.titleSmall),
+                                          const SizedBox(height: Space.md),
+                                          TsButton.secondary(
+                                            label: 'Create First Order',
+                                            icon: Icons.add_rounded,
+                                            expand: false,
+                                            onPressed: () => context.go('/orders/new'),
                                           ),
                                         ],
                                       ),
-                                    ),
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                                      decoration: BoxDecoration(
-                                        color: AppTheme.primary.withValues(alpha: 0.08),
-                                        borderRadius: BorderRadius.circular(20),
-                                      ),
-                                      child: Text(
-                                        o.status ?? 'Draft',
-                                        style: GoogleFonts.inter(
-                                          fontSize: 11,
-                                          fontWeight: FontWeight.bold,
-                                          color: AppTheme.primary,
+                                    );
+                                  }
+                                  final recent = orders.take(3).toList();
+                                  return Column(
+                                    key: const ValueKey('data'),
+                                    children: [
+                                      for (var i = 0; i < recent.length; i++)
+                                        Padding(
+                                          padding: const EdgeInsets.only(bottom: Space.sm),
+                                          child: EntranceFade.indexed(
+                                            i,
+                                            child: _RecentOrderTile(
+                                              title: recent[i].customerName ?? 'Customer #${recent[i].customerId}',
+                                              subtitle:
+                                                  '${recent[i].garmentType} • #ORD-${recent[i].id.toString().padLeft(4, '0')}',
+                                              status: recent[i].status,
+                                              onTap: () => context.go('/orders/details', extra: recent[i]),
+                                            ),
+                                          ),
                                         ),
-                                      ),
-                                    ),
-                                  ],
+                                    ],
+                                  );
+                                },
+                                loading: () => const Shimmer(
+                                  key: ValueKey('loading'),
+                                  child: Column(
+                                    children: [
+                                      SkeletonListTile(),
+                                      SizedBox(height: Space.sm),
+                                      SkeletonListTile(),
+                                    ],
+                                  ),
+                                ),
+                                error: (e, st) => ErrorState(
+                                  key: const ValueKey('error'),
+                                  title: 'Error loading orders',
+                                  onRetry: () => ref.invalidate(ordersProvider),
                                 ),
                               ),
-                            ),
-                          );
-                        }).toList(),
-                      );
-                    },
-                    loading: () => const Shimmer(
-                      child: Column(
-                        children: [
-                          SkeletonContainer(height: 64, borderRadius: 18),
-                          SizedBox(height: 12),
-                          SkeletonContainer(height: 64, borderRadius: 18),
-                        ],
-                      ),
-                    ),
-                    error: (e, st) => const Center(child: Text('Error loading orders')),
-                  );
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _StatCard extends StatelessWidget {
-  final String label;
-  final String value;
-  final IconData icon;
-  final Color color;
-  final Color bgColor;
-  final VoidCallback onTap;
-
-  const _StatCard({
-    required this.label,
-    required this.value,
-    required this.icon,
-    required this.color,
-    required this.bgColor,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppTheme.surface,
-        borderRadius: BorderRadius.circular(18),
-        boxShadow: AppTheme.softShadow,
-      ),
-      child: InkWell(
-        onTap: () {
-          HapticFeedback.selectionClick();
-          onTap();
-        },
-        borderRadius: BorderRadius.circular(18),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: 32,
-                height: 32,
-                decoration: BoxDecoration(
-                  color: bgColor,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Icon(icon, size: 16, color: color),
-              ),
-              const SizedBox(height: 10),
-              Text(
-                value,
-                style: GoogleFonts.outfit(fontSize: 22, fontWeight: FontWeight.bold, color: color),
-              ),
-              const SizedBox(height: 2),
-              Text(
-                label,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.inter(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600,
-                  color: color.withValues(alpha: 0.7),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _NewOrderHeroCard extends StatefulWidget {
-  final VoidCallback onTap;
-
-  const _NewOrderHeroCard({required this.onTap});
-
-  @override
-  State<_NewOrderHeroCard> createState() => _NewOrderHeroCardState();
-}
-
-class _NewOrderHeroCardState extends State<_NewOrderHeroCard> {
-  bool _isPressed = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTapDown: (_) => setState(() => _isPressed = true),
-      onTapUp: (_) => setState(() => _isPressed = false),
-      onTapCancel: () => setState(() => _isPressed = false),
-      onTap: () {
-        HapticFeedback.selectionClick();
-        widget.onTap();
-      },
-      child: AnimatedScale(
-        scale: _isPressed ? 0.97 : 1.0,
-        duration: const Duration(milliseconds: 120),
-        curve: Curves.easeOut,
-        child: Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(22),
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              colors: [Color(0xFF283593), Color(0xFF1A237E), Color(0xFF0D1042)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            borderRadius: BorderRadius.circular(22),
-            boxShadow: [
-              BoxShadow(
-                color: const Color(0xFF1A237E).withValues(alpha: 0.30),
-                blurRadius: 20,
-                offset: const Offset(0, 8),
-              ),
-              BoxShadow(
-                color: const Color(0xFF1A237E).withValues(alpha: 0.12),
-                blurRadius: 6,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
-          child: Stack(
-            children: [
-              // Decorative watermark
-              Positioned(
-                right: -10,
-                bottom: -14,
-                child: Icon(
-                  Icons.content_cut_rounded,
-                  size: 80,
-                  color: Colors.white.withValues(alpha: 0.05),
-                ),
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          width: 46,
-                          height: 46,
-                          decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.15),
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                          child: const Icon(Icons.add_rounded, color: Colors.white, size: 24),
-                        ),
-                        const SizedBox(height: 14),
-                        Text(
-                          'New Order',
-                          style: GoogleFonts.outfit(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            letterSpacing: -0.3,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          'Create a customer order quickly.',
-                          style: GoogleFonts.inter(
-                            fontSize: 13,
-                            color: Colors.white.withValues(alpha: 0.75),
-                          ),
+                            );
+                          },
                         ),
                       ],
                     ),
                   ),
-                  Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.12),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: const Icon(Icons.arrow_forward_rounded, color: Colors.white, size: 20),
-                  ),
                 ],
               ),
-            ],
+            ),
+            SliverToBoxAdapter(child: SizedBox(height: MediaQuery.paddingOf(context).bottom + Space.xl)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Frosted pinned app bar with the existing logo + wordmark and avatar.
+class _BrandAppBar extends StatelessWidget {
+  final String initial;
+  final VoidCallback onProfile;
+  const _BrandAppBar({required this.initial, required this.onProfile});
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = context.colors;
+    return SliverAppBar(
+      pinned: true,
+      automaticallyImplyLeading: false,
+      backgroundColor: cs.surface.withValues(alpha: 0.9),
+      titleSpacing: context.pagePadding,
+      title: Row(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(9),
+            child: Hero(
+              tag: 'app-logo',
+              child: Image.asset('assets/icon.png', width: 32, height: 32, fit: BoxFit.cover, semanticLabel: 'TailorSync logo'),
+            ),
+          ),
+          const SizedBox(width: Space.sm),
+          Flexible(
+            child: Text('TailorSync', style: context.text.titleLarge?.copyWith(color: cs.primary), overflow: TextOverflow.ellipsis),
+          ),
+        ],
+      ),
+      actions: [
+        Padding(
+          padding: EdgeInsets.only(right: context.pagePadding - 4),
+          child: Semantics(
+            button: true,
+            label: 'Open profile',
+            child: Pressable(
+              onTap: onProfile,
+              haptic: true,
+              child: Container(
+                width: kMinTouch,
+                height: kMinTouch,
+                padding: const EdgeInsets.all(3),
+                decoration: BoxDecoration(shape: BoxShape.circle, gradient: Gradients.accent(cs)),
+                child: CircleAvatar(
+                  backgroundColor: cs.surface,
+                  child: Text(initial, style: context.text.titleMedium?.copyWith(color: cs.primary, fontWeight: FontWeight.w800)),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// Gradient hero CTA with a slow ambient shimmer and decorative needle arc.
+class _NewOrderHeroCard extends StatelessWidget {
+  final num activeOrders;
+  final VoidCallback onTap;
+  const _NewOrderHeroCard({required this.activeOrders, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = context.colors;
+    final compact = context.isSmallPhone;
+    return Semantics(
+      button: true,
+      label: 'Create new order',
+      child: Pressable(
+        onTap: onTap,
+        haptic: true,
+        child: ClipRRect(
+          borderRadius: Radii.brXl,
+          child: Container(
+            decoration: BoxDecoration(gradient: Gradients.hero(cs), boxShadow: Shadows.raised(cs)),
+            child: Stack(
+              children: [
+                const Positioned.fill(child: _HeroGlow()),
+                Positioned(
+                  right: -24,
+                  bottom: -28,
+                  child: Icon(Icons.content_cut_rounded, size: 140, color: Colors.white.withValues(alpha: 0.07)),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(compact ? Space.md : Space.lg),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            StatusPill(
+                              label: 'AI-assisted measurements',
+                              icon: Icons.auto_awesome_rounded,
+                              color: Colors.white,
+                              background: Colors.white.withValues(alpha: 0.16),
+                              dense: true,
+                            ),
+                            const SizedBox(height: Space.sm),
+                            Text('New Order', style: context.text.headlineSmall?.copyWith(color: Colors.white)),
+                            const SizedBox(height: 2),
+                            Row(
+                              children: [
+                                AnimatedCount(
+                                  value: activeOrders,
+                                  style: context.text.bodyMedium?.copyWith(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w800,
+                                  ),
+                                ),
+                                Flexible(
+                                  child: Text(
+                                    ' orders in progress',
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: context.text.bodyMedium?.copyWith(color: Colors.white.withValues(alpha: 0.8)),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: Space.sm),
+                      Container(
+                        width: compact ? 48 : 56,
+                        height: compact ? 48 : 56,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: Radii.brLg,
+                          boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.18), blurRadius: 12, offset: const Offset(0, 6))],
+                        ),
+                        child: Icon(Icons.add_rounded, color: cs.primary, size: 30),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -696,106 +431,178 @@ class _NewOrderHeroCardState extends State<_NewOrderHeroCard> {
   }
 }
 
-class _ShortcutCard extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String subtitle;
-  final String? badgeText;
-  final Color? badgeColor;
-  final Color iconColor;
-  final Color iconBgColor;
-  final VoidCallback onTap;
+/// Slow drifting radial glow inside the hero card.
+class _HeroGlow extends StatefulWidget {
+  const _HeroGlow();
 
-  const _ShortcutCard({
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-    this.badgeText,
-    this.badgeColor,
-    required this.iconColor,
-    required this.iconBgColor,
-    required this.onTap,
-  });
+  @override
+  State<_HeroGlow> createState() => _HeroGlowState();
+}
+
+class _HeroGlowState extends State<_HeroGlow> with SingleTickerProviderStateMixin {
+  late final AnimationController _c = AnimationController(vsync: this, duration: const Duration(seconds: 8));
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (Motion.reduced(context)) {
+      _c.stop();
+    } else if (!_c.isAnimating) {
+      _c.repeat(reverse: true);
+    }
+  }
+
+  @override
+  void dispose() {
+    _c.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppTheme.surface,
-        borderRadius: BorderRadius.circular(18),
-        boxShadow: AppTheme.softShadow,
-      ),
-      child: InkWell(
-        onTap: () {
-          HapticFeedback.selectionClick();
-          onTap();
+    return RepaintBoundary(
+      child: AnimatedBuilder(
+        animation: _c,
+        builder: (context, _) {
+          final t = Curves.easeInOut.transform(_c.value);
+          return DecoratedBox(
+            decoration: BoxDecoration(
+              gradient: RadialGradient(
+                center: Alignment(-0.9 + 1.4 * t, -0.8 + 0.6 * t),
+                radius: 1.1,
+                colors: [const Color(0xFF8C9EFF).withValues(alpha: 0.35), Colors.transparent],
+              ),
+            ),
+          );
         },
-        borderRadius: BorderRadius.circular(18),
-        child: Padding(
-          padding: const EdgeInsets.all(14),
-          child: Column(
+      ),
+    );
+  }
+}
+
+class _StatData {
+  final String label;
+  final num value;
+  final IconData icon;
+  final Color color;
+  final VoidCallback onTap;
+  _StatData(this.label, this.value, this.icon, this.color, this.onTap);
+}
+
+class _StatCard extends StatelessWidget {
+  final _StatData data;
+  const _StatCard({required this.data});
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      button: true,
+      label: '${data.label}: ${data.value}',
+      excludeSemantics: true,
+      child: TsCard(
+        onTap: data.onTap,
+        padding: const EdgeInsets.all(Space.md - 2),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                IconBadge(icon: data.icon, color: data.color, size: 36),
+                const Spacer(),
+                Icon(Icons.arrow_outward_rounded, size: 16, color: context.colors.onSurfaceVariant),
+              ],
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                AnimatedCount(value: data.value, style: context.text.headlineSmall),
+                Text(data.label, style: context.text.bodySmall, maxLines: 1, overflow: TextOverflow.ellipsis),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ShortcutData {
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final Color color;
+  final String? badge;
+  final Color? badgeColor;
+  final VoidCallback onTap;
+  _ShortcutData(this.icon, this.title, this.subtitle, this.color, {this.badge, this.badgeColor, required this.onTap});
+}
+
+class _ShortcutCard extends StatelessWidget {
+  final _ShortcutData data;
+  const _ShortcutCard({required this.data});
+
+  @override
+  Widget build(BuildContext context) {
+    return TsCard(
+      onTap: data.onTap,
+      padding: const EdgeInsets.all(Space.md - 2),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
             crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    width: 36,
-                    height: 36,
-                    decoration: BoxDecoration(
-                      color: iconBgColor,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Icon(icon, color: iconColor, size: 18),
-                  ),
-                  if (badgeText != null)
-                    Flexible(
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
-                        margin: const EdgeInsets.only(left: 4),
-                        decoration: BoxDecoration(
-                          color: (badgeColor ?? AppTheme.primary).withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Text(
-                          badgeText!,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: GoogleFonts.inter(
-                            fontSize: 9,
-                            fontWeight: FontWeight.bold,
-                            color: badgeColor ?? AppTheme.primary,
-                          ),
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              Text(
-                title,
-                style: GoogleFonts.inter(
-                  fontSize: 13,
-                  fontWeight: FontWeight.bold,
-                  color: AppTheme.primary,
+              IconBadge(icon: data.icon, color: data.color, size: 40),
+              const Spacer(),
+              if (data.badge != null)
+                Flexible(
+                  flex: 3,
+                  child: StatusPill(label: data.badge!, color: data.badgeColor ?? data.color, dense: true),
                 ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              const SizedBox(height: 2),
-              Text(
-                subtitle,
-                style: GoogleFonts.inter(
-                  fontSize: 11,
-                  color: AppTheme.textCaption,
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
             ],
           ),
-        ),
+          const Spacer(),
+          Text(data.title, style: context.text.titleSmall, maxLines: 1, overflow: TextOverflow.ellipsis),
+          Text(data.subtitle, style: context.text.bodySmall, maxLines: 1, overflow: TextOverflow.ellipsis),
+        ],
+      ),
+    );
+  }
+}
+
+class _RecentOrderTile extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  final String? status;
+  final VoidCallback onTap;
+  const _RecentOrderTile({required this.title, required this.subtitle, required this.status, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return TsCard(
+      onTap: onTap,
+      padding: const EdgeInsets.all(Space.sm + 2),
+      child: Row(
+        children: [
+          InitialsAvatar(name: title),
+          const SizedBox(width: Space.sm),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title, style: context.text.titleSmall, maxLines: 1, overflow: TextOverflow.ellipsis),
+                const SizedBox(height: 2),
+                Text(subtitle, style: context.text.bodySmall, maxLines: 1, overflow: TextOverflow.ellipsis),
+              ],
+            ),
+          ),
+          const SizedBox(width: Space.xs),
+          ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: context.screenWidth * 0.32),
+            child: StagePill(status: status, dense: true),
+          ),
+        ],
       ),
     );
   }

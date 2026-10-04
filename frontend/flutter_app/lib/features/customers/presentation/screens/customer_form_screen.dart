@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/network/providers/api_provider.dart';
+import '../../../../core/widgets/tailorsync_text_field.dart';
+import '../../../../ui/ui.dart';
 import '../providers/customers_provider.dart';
 import '../../models/customer.dart';
 
@@ -20,7 +21,6 @@ class _CustomerFormScreenState extends ConsumerState<CustomerFormScreen> {
   final _email = TextEditingController();
   final _phone = TextEditingController();
   bool _loading = false;
-
   @override
   void initState() {
     super.initState();
@@ -30,7 +30,6 @@ class _CustomerFormScreenState extends ConsumerState<CustomerFormScreen> {
       _phone.text = widget.customer!.phone ?? '';
     }
   }
-
   void _save() async {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _loading = true);
@@ -61,49 +60,101 @@ class _CustomerFormScreenState extends ConsumerState<CustomerFormScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isEdit = widget.customer != null;
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FA),
       appBar: AppBar(
-        title: Text(widget.customer == null ? 'New Customer' : 'Edit Customer', style: GoogleFonts.inter(fontWeight: FontWeight.bold)),
-        centerTitle: true,
+        title: Text(isEdit ? 'Edit Customer' : 'New Customer'),
+        leading: IconButton(
+          tooltip: 'Back',
+          icon: const Icon(Icons.arrow_back_rounded),
+          onPressed: () => context.pop(),
+        ),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
-        child: Card(
-          child: Padding(
-            padding: const EdgeInsets.all(24),
+      body: TsFormBody(
+        children: [
+          EntranceFade(
+            child: Center(
+              child: Hero(
+                tag: 'customer-${widget.customer?.id}',
+                child: ValueListenableBuilder<TextEditingValue>(
+                  valueListenable: _name,
+                  builder: (context, v, _) => v.text.trim().isEmpty
+                      ? IconBadge(icon: Icons.person_add_alt_1_rounded, size: 72)
+                      : InitialsAvatar(name: v.text, size: 72),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: Space.sm),
+          Text(
+            isEdit ? 'Update client details' : 'Add a new client',
+            textAlign: TextAlign.center,
+            style: context.text.titleMedium,
+          ),
+          const SizedBox(height: Space.lg),
+          TsCard(
+            padding: const EdgeInsets.all(Space.lg),
             child: Form(
               key: _formKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  TextFormField(
-                    controller: _name, 
-                    decoration: const InputDecoration(labelText: 'Full Name', prefixIcon: Icon(Icons.person)),
-                    validator: (v) => v == null || v.isEmpty ? 'Name is required' : null,
+                  EntranceFade.indexed(
+                    1,
+                    child: TailorSyncTextField(
+                      label: 'Full Name',
+                      controller: _name,
+                      icon: Icons.person_outline_rounded,
+                      textCapitalization: TextCapitalization.words,
+                      autofillHints: const [AutofillHints.name],
+                      validator: (v) => v == null || v.isEmpty ? 'Name is required' : null,
+                    ),
                   ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _email, 
-                    decoration: const InputDecoration(labelText: 'Email Address', prefixIcon: Icon(Icons.email)),
-                    readOnly: widget.customer != null, // Lock email field when editing
+                  const SizedBox(height: Space.md),
+                  EntranceFade.indexed(
+                    2,
+                    child: TextFormField(
+                      controller: _email,
+                      readOnly: widget.customer != null, // Lock email field when editing
+                      keyboardType: TextInputType.emailAddress,
+                      textInputAction: TextInputAction.next,
+                      autofillHints: const [AutofillHints.email],
+                      style: context.text.bodyLarge,
+                      decoration: InputDecoration(
+                        labelText: 'Email Address',
+                        prefixIcon: const Icon(Icons.alternate_email_rounded, size: 20),
+                        suffixIcon: isEdit ? const Tooltip(message: 'Email can\'t be changed', child: Icon(Icons.lock_outline_rounded, size: 18)) : null,
+                        helperText: isEdit ? 'Email is locked after creation' : null,
+                      ),
+                    ),
                   ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _phone, 
-                    decoration: const InputDecoration(labelText: 'Phone Number', prefixIcon: Icon(Icons.phone)),
-                    keyboardType: TextInputType.phone,
+                  const SizedBox(height: Space.md),
+                  EntranceFade.indexed(
+                    3,
+                    child: TailorSyncTextField(
+                      label: 'Phone Number',
+                      controller: _phone,
+                      icon: Icons.phone_outlined,
+                      keyboardType: TextInputType.phone,
+                      autofillHints: const [AutofillHints.telephoneNumber],
+                      textInputAction: TextInputAction.done,
+                      onFieldSubmitted: (_) {
+                        if (!_loading) _save();
+                      },
+                    ),
                   ),
-                  const SizedBox(height: 32),
-                  ElevatedButton(
+                  const SizedBox(height: Space.xl),
+                  TsButton(
+                    label: 'Save Customer',
+                    icon: Icons.check_rounded,
+                    loading: _loading,
                     onPressed: _loading ? null : _save,
-                    child: _loading ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white)) : Text('Save Customer', style: GoogleFonts.inter(fontWeight: FontWeight.bold)),
-                  )
+                  ),
                 ],
               ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }

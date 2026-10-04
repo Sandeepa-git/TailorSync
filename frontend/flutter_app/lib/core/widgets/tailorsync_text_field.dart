@@ -1,13 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import '../theme/app_theme.dart';
+import 'package:flutter/services.dart';
 
+import '../../ui/theme/app_theme.dart';
+
+/// Themed text field. Styling comes from the global InputDecorationTheme so
+/// focus colours animate and dark mode works automatically.
 class TailorSyncTextField extends StatelessWidget {
   final String label;
   final TextEditingController controller;
   final IconData? icon;
   final TextInputType? keyboardType;
   final String? Function(String?)? validator;
+  final TextInputAction? textInputAction;
+  final ValueChanged<String>? onFieldSubmitted;
+  final FocusNode? focusNode;
+  final Iterable<String>? autofillHints;
+  final TextCapitalization textCapitalization;
+  final List<TextInputFormatter>? inputFormatters;
+  final String? hint;
+  final bool enabled;
+  final int maxLines;
 
   const TailorSyncTextField({
     super.key,
@@ -16,55 +28,38 @@ class TailorSyncTextField extends StatelessWidget {
     this.icon,
     this.keyboardType,
     this.validator,
+    this.textInputAction,
+    this.onFieldSubmitted,
+    this.focusNode,
+    this.autofillHints,
+    this.textCapitalization = TextCapitalization.none,
+    this.inputFormatters,
+    this.hint,
+    this.enabled = true,
+    this.maxLines = 1,
   });
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controller,
+      focusNode: focusNode,
       keyboardType: keyboardType,
       validator: validator,
-      style: GoogleFonts.inter(
-        fontSize: 15,
-        fontWeight: FontWeight.w400,
-        color: AppTheme.textPrimary,
-      ),
+      enabled: enabled,
+      maxLines: maxLines,
+      textInputAction: textInputAction ?? (maxLines > 1 ? TextInputAction.newline : TextInputAction.next),
+      onFieldSubmitted: onFieldSubmitted,
+      autofillHints: autofillHints,
+      textCapitalization: textCapitalization,
+      inputFormatters: inputFormatters,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
+      scrollPadding: const EdgeInsets.only(bottom: 120),
+      style: context.text.bodyLarge,
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: GoogleFonts.inter(
-          fontSize: 14,
-          color: AppTheme.textCaption,
-        ),
-        prefixIcon: icon != null
-            ? Icon(
-                icon,
-                size: 20,
-                color: AppTheme.secondary,
-              )
-            : null,
-        filled: true,
-        fillColor: AppTheme.surface,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: AppTheme.divider, width: 1.0),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: AppTheme.divider, width: 1.0),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: AppTheme.primary, width: 1.5),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: AppTheme.error, width: 1.0),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: AppTheme.error, width: 1.5),
-        ),
+        hintText: hint,
+        prefixIcon: icon != null ? Icon(icon, size: 20) : null,
       ),
     );
   }

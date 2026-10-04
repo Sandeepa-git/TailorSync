@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/network/providers/api_provider.dart';
 import '../../../../core/widgets/skeleton_loading.dart';
+import '../../../../ui/ui.dart';
 import 'package:dio/dio.dart';
 
 class StaffManagementScreen extends ConsumerStatefulWidget {
@@ -15,13 +15,11 @@ class StaffManagementScreen extends ConsumerStatefulWidget {
 class _StaffManagementScreenState extends ConsumerState<StaffManagementScreen> {
   bool _loading = true;
   List<dynamic> _staffList = [];
-
   @override
   void initState() {
     super.initState();
     _loadStaff();
   }
-
   Future<void> _loadStaff() async {
     try {
       final api = ref.read(apiClientProvider);
@@ -36,19 +34,17 @@ class _StaffManagementScreenState extends ConsumerState<StaffManagementScreen> {
       if (mounted) setState(() => _loading = false);
     }
   }
-
   void _deactivateStaff(int id) async {
-    final confirm = await showDialog<bool>(
+    final confirm = await showTsDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Deactivate Staff', style: GoogleFonts.outfit(fontWeight: FontWeight.bold, color: const Color(0xFF1A237E))),
+        title: Text('Deactivate Staff'),
         content: const Text('Are you sure you want to deactivate this staff member? They will not be able to log in, but their data will be kept.'),
         actions: [
           TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancel')),
           ElevatedButton(
             onPressed: () => Navigator.pop(context, true),
-            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF1A237E), foregroundColor: Colors.white),
-            child: const Text('Deactivate'),
+                        child: const Text('Deactivate'),
           ),
         ],
       ),
@@ -67,17 +63,16 @@ class _StaffManagementScreenState extends ConsumerState<StaffManagementScreen> {
   }
 
   void _reactivateStaff(int id) async {
-    final confirm = await showDialog<bool>(
+    final confirm = await showTsDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Reactivate Staff', style: GoogleFonts.outfit(fontWeight: FontWeight.bold, color: const Color(0xFF1A237E))),
+        title: Text('Reactivate Staff'),
         content: const Text('Are you sure you want to reactivate this staff member? They will regain access to their account.'),
         actions: [
           TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancel')),
           ElevatedButton(
             onPressed: () => Navigator.pop(context, true),
-            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF1A237E), foregroundColor: Colors.white),
-            child: const Text('Reactivate'),
+                        child: const Text('Reactivate'),
           ),
         ],
       ),
@@ -96,10 +91,10 @@ class _StaffManagementScreenState extends ConsumerState<StaffManagementScreen> {
   }
 
   void _removeStaff(int id) async {
-    final confirm = await showDialog<bool>(
+    final confirm = await showTsDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Remove Staff', style: GoogleFonts.outfit(fontWeight: FontWeight.bold, color: Colors.red)),
+        title: Text('Remove Staff'),
         content: const Text('Are you sure you want to permanently remove this staff member? This will delete their assignments and cannot be undone.'),
         actions: [
           TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancel')),
@@ -137,17 +132,15 @@ class _StaffManagementScreenState extends ConsumerState<StaffManagementScreen> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.transparent,
+      useSafeArea: true,
+      showDragHandle: true,
       builder: (context) => StatefulBuilder(
         builder: (context, setModalState) {
           final bottomInset = MediaQuery.of(context).viewInsets.bottom;
           return Container(
-            margin: EdgeInsets.only(bottom: bottomInset, top: 40),
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(topLeft: Radius.circular(24), topRight: Radius.circular(24)),
-            ),
+            margin: EdgeInsets.only(bottom: bottomInset),
+            padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+            constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.9),
             child: Form(
               key: formKey,
               child: SingleChildScrollView(
@@ -155,9 +148,9 @@ class _StaffManagementScreenState extends ConsumerState<StaffManagementScreen> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Add New Staff', style: GoogleFonts.inter(fontSize: 22, fontWeight: FontWeight.bold, color: const Color(0xFF1A237E))),
+                    Text('Add New Staff', style: Theme.of(context).textTheme.headlineSmall),
                     const SizedBox(height: 8),
-                    Text('Fill in the details below to invite a new staff member.', style: GoogleFonts.inter(fontSize: 13, color: Colors.grey[600])),
+                    Text('Fill in the details below to invite a new staff member.', style: Theme.of(context).textTheme.bodyMedium),
                     const SizedBox(height: 24),
 
                     TextFormField(
@@ -165,7 +158,6 @@ class _StaffManagementScreenState extends ConsumerState<StaffManagementScreen> {
                       decoration: const InputDecoration(
                         labelText: 'Full Name', 
                         prefixIcon: Icon(Icons.person_outline),
-                        contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
                       ),
                       validator: (v) => v == null || v.trim().isEmpty ? 'Full name is required' : null,
                     ),
@@ -177,7 +169,6 @@ class _StaffManagementScreenState extends ConsumerState<StaffManagementScreen> {
                       decoration: const InputDecoration(
                         labelText: 'Email Address', 
                         prefixIcon: Icon(Icons.email_outlined),
-                        contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
                       ),
                       validator: (v) {
                         if (v == null || v.trim().isEmpty) return 'Email is required';
@@ -193,7 +184,6 @@ class _StaffManagementScreenState extends ConsumerState<StaffManagementScreen> {
                       decoration: const InputDecoration(
                         labelText: 'Confirm Email Address', 
                         prefixIcon: Icon(Icons.mark_email_read_outlined),
-                        contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
                       ),
                       validator: (v) {
                         if (v == null || v.trim().isEmpty) return 'Please confirm email';
@@ -209,7 +199,6 @@ class _StaffManagementScreenState extends ConsumerState<StaffManagementScreen> {
                       decoration: const InputDecoration(
                         labelText: 'Phone Number', 
                         prefixIcon: Icon(Icons.phone_outlined),
-                        contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
                       ),
                       validator: (v) => v == null || v.trim().isEmpty ? 'Phone number is required' : null,
                     ),
@@ -225,7 +214,6 @@ class _StaffManagementScreenState extends ConsumerState<StaffManagementScreen> {
                           icon: Icon(obscurePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined),
                           onPressed: () => setModalState(() => obscurePassword = !obscurePassword),
                         ),
-                        contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
                       ),
                       validator: (v) => v == null || v.length < 6 ? 'Password must be at least 6 characters' : null,
                     ),
@@ -267,14 +255,9 @@ class _StaffManagementScreenState extends ConsumerState<StaffManagementScreen> {
                                   setModalState(() => saving = false);
                                 }
                               },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF1A237E),
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                        ),
                         child: saving 
-                            ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white)) 
-                            : Text('Send Invitation', style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: Colors.white)),
+                            ? SizedBox(width: 22, height: 22, child: CircularProgressIndicator(strokeWidth: 2.5, color: Theme.of(context).colorScheme.onPrimary)) 
+                            : Text('Send Invitation'),
                       ),
                     ),
                     const SizedBox(height: 16),
@@ -282,7 +265,7 @@ class _StaffManagementScreenState extends ConsumerState<StaffManagementScreen> {
                       width: double.infinity,
                       child: TextButton(
                         onPressed: () => Navigator.pop(context),
-                        child: Text('Cancel', style: GoogleFonts.inter(color: Colors.grey[600], fontWeight: FontWeight.bold)),
+                        child: Text('Cancel'),
                       ),
                     ),
                   ],
@@ -297,132 +280,130 @@ class _StaffManagementScreenState extends ConsumerState<StaffManagementScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (_loading) {
-      return const Scaffold(
-        backgroundColor: Color(0xFFF8F9FA),
-        body: SafeArea(child: CustomersListSkeleton()),
-      );
-    }
-
-    return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FA),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFFF8F9FA),
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Color(0xFF1A237E)),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: Text(
-          'Staff Management',
-          style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: const Color(0xFF1A237E)),
-        ),
+    final cs = context.colors;
+    final st = context.status;
+    return TsScrollPage(
+      title: 'Staff Management',
+      leading: IconButton(
+        tooltip: 'Back',
+        icon: const Icon(Icons.arrow_back_rounded),
+        onPressed: () => Navigator.pop(context),
       ),
-      body: _staffList.isEmpty
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.people_outline, size: 64, color: Color(0xFF9FA8DA)),
-                  const SizedBox(height: 16),
-                  Text('No staff members yet', style: GoogleFonts.inter(fontSize: 16, color: const Color(0xFF5C6BC0))),
-                  const SizedBox(height: 24),
-                  ElevatedButton.icon(
-                    onPressed: _showAddStaffDialog,
-                    icon: const Icon(Icons.add),
-                    label: const Text('Add Your First Staff Member'),
-                    style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF1A237E), foregroundColor: Colors.white),
-                  ),
-                ],
-              ),
+      onRefresh: _loadStaff,
+      floatingActionButton: _staffList.isNotEmpty
+          ? FloatingActionButton.extended(
+              heroTag: 'fab-staff',
+              onPressed: _showAddStaffDialog,
+              icon: const Icon(Icons.person_add_alt_1_rounded),
+              label: const Text('Add Staff'),
             )
-          : ListView.builder(
-              padding: const EdgeInsets.all(20),
-              itemCount: _staffList.length,
-              itemBuilder: (context, index) {
-                final staff = _staffList[index];
-                return Container(
-                  margin: const EdgeInsets.only(bottom: 12),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: const Color(0xFFE8EAF6)),
-                    boxShadow: [
-                      BoxShadow(color: const Color(0xFF1A237E).withValues(alpha: 0.02), blurRadius: 10, offset: const Offset(0, 4)),
-                    ],
-                  ),
-                  child: ListTile(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    leading: CircleAvatar(
-                      backgroundColor: const Color(0xFF5C6BC0),
-                      child: Text((staff['full_name'] ?? 'S')[0].toUpperCase(), style: const TextStyle(color: Colors.white)),
-                    ),
-                    title: Row(
+          : null,
+      slivers: [
+        if (_loading)
+          const SliverToBoxAdapter(child: CustomersListSkeleton())
+        else if (_staffList.isEmpty)
+          SliverFillRemaining(
+            hasScrollBody: false,
+            child: EmptyState(
+              icon: Icons.groups_rounded,
+              title: 'No staff members yet',
+              message: 'Invite your team to assign and track tasks.',
+              actionLabel: 'Add Your First Staff Member',
+              actionIcon: Icons.add_rounded,
+              onAction: _showAddStaffDialog,
+            ),
+          )
+        else
+          SliverList.separated(
+            itemCount: _staffList.length,
+            separatorBuilder: (_, __) => SizedBox(height: context.gridGap),
+            itemBuilder: (context, index) {
+              final staff = _staffList[index];
+              final active = staff['is_active'] != false;
+              final name = (staff['full_name'] ?? 'Unknown').toString();
+              return EntranceFade.indexed(
+                index,
+                key: ValueKey(staff['id']),
+                child: AnimatedOpacity(
+                  duration: Motion.of(context, Motion.medium),
+                  opacity: active ? 1 : 0.7,
+                  child: TsCard(
+                    padding: const EdgeInsets.fromLTRB(Space.md, Space.sm, Space.xxs, Space.sm),
+                    child: Row(
                       children: [
-                        Text(staff['full_name'] ?? 'Unknown', style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: const Color(0xFF1A237E))),
-                        if (staff['is_active'] == false) ...[
-                          const SizedBox(width: 8),
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                            decoration: BoxDecoration(color: Colors.red.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(4)),
-                            child: Text('Deactivated', style: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.red)),
+                        InitialsAvatar(name: name, size: 46),
+                        const SizedBox(width: Space.sm),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Flexible(
+                                    child: Text(name, style: context.text.titleSmall, maxLines: 1, overflow: TextOverflow.ellipsis),
+                                  ),
+                                  if (!active) ...[
+                                    const SizedBox(width: Space.xs),
+                                    StatusPill(label: 'Deactivated', color: st.danger, dense: true),
+                                  ],
+                                ],
+                              ),
+                              const SizedBox(height: 2),
+                              Text(staff['email'] ?? '', style: context.text.bodySmall, maxLines: 1, overflow: TextOverflow.ellipsis),
+                            ],
                           ),
-                        ],
-                      ],
-                    ),
-                    subtitle: Text(staff['email'] ?? '', style: GoogleFonts.inter(fontSize: 12, color: const Color(0xFF757575))),
-                    trailing: PopupMenuButton<String>(
-                      icon: const Icon(Icons.more_vert, color: Color(0xFF757575)),
-                      onSelected: (value) {
-                        if (value == 'deactivate') {
-                          _deactivateStaff(staff['id']);
-                        } else if (value == 'reactivate') {
-                          _reactivateStaff(staff['id']);
-                        } else if (value == 'remove') {
-                          _removeStaff(staff['id']);
-                        }
-                      },
-                      itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-                        if (staff['is_active'] != false)
-                          const PopupMenuItem<String>(
-                            value: 'deactivate',
-                            child: ListTile(
-                              leading: Icon(Icons.person_off_outlined, color: Colors.orange),
-                              title: Text('Deactivate Access'),
-                              contentPadding: EdgeInsets.zero,
+                        ),
+                        PopupMenuButton<String>(
+                          tooltip: 'Staff actions',
+                          icon: Icon(Icons.more_vert_rounded, color: cs.onSurfaceVariant),
+                          shape: RoundedRectangleBorder(borderRadius: Radii.brMd),
+                          onSelected: (value) {
+                            if (value == 'deactivate') {
+                              _deactivateStaff(staff['id']);
+                            } else if (value == 'reactivate') {
+                              _reactivateStaff(staff['id']);
+                            } else if (value == 'remove') {
+                              _removeStaff(staff['id']);
+                            }
+                          },
+                          itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                            if (staff['is_active'] != false)
+                              PopupMenuItem<String>(
+                                value: 'deactivate',
+                                child: ListTile(
+                                  leading: Icon(Icons.person_off_outlined, color: st.warning),
+                                  title: const Text('Deactivate Access'),
+                                  contentPadding: EdgeInsets.zero,
+                                ),
+                              ),
+                            if (staff['is_active'] == false)
+                              PopupMenuItem<String>(
+                                value: 'reactivate',
+                                child: ListTile(
+                                  leading: Icon(Icons.person_add_alt_1_outlined, color: st.success),
+                                  title: const Text('Reactivate Access'),
+                                  contentPadding: EdgeInsets.zero,
+                                ),
+                              ),
+                            const PopupMenuDivider(),
+                            PopupMenuItem<String>(
+                              value: 'remove',
+                              child: ListTile(
+                                leading: Icon(Icons.delete_outline_rounded, color: st.danger),
+                                title: Text('Remove Permanently', style: TextStyle(color: st.danger)),
+                                contentPadding: EdgeInsets.zero,
+                              ),
                             ),
-                          ),
-                        if (staff['is_active'] == false)
-                          const PopupMenuItem<String>(
-                            value: 'reactivate',
-                            child: ListTile(
-                              leading: Icon(Icons.person_add_alt_1_outlined, color: Colors.green),
-                              title: Text('Reactivate Access'),
-                              contentPadding: EdgeInsets.zero,
-                            ),
-                          ),
-                        const PopupMenuDivider(),
-                        const PopupMenuItem<String>(
-                          value: 'remove',
-                          child: ListTile(
-                            leading: Icon(Icons.delete_outline, color: Colors.red),
-                            title: Text('Remove Permanently', style: TextStyle(color: Colors.red)),
-                            contentPadding: EdgeInsets.zero,
-                          ),
+                          ],
                         ),
                       ],
                     ),
                   ),
-                );
-              },
-            ),
-      floatingActionButton: _staffList.isNotEmpty
-          ? FloatingActionButton(
-              onPressed: _showAddStaffDialog,
-              backgroundColor: const Color(0xFF1A237E),
-              child: const Icon(Icons.add, color: Colors.white),
-            )
-          : null,
+                ),
+              );
+            },
+          ),
+      ],
     );
   }
 }

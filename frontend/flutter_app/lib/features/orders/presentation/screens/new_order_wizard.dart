@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:dio/dio.dart';
 import '../../../../core/network/providers/api_provider.dart';
+import '../../../../ui/ui.dart';
 import '../../../customers/presentation/providers/customers_provider.dart';
 import '../../presentation/providers/orders_provider.dart';
 
@@ -30,7 +30,6 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
     'Preferences', 'Fabric Rec.', 'Estimation', 'Review & Assign'
   ];
   String? _predictionMethod;
-
   @override
   void initState() {
     super.initState();
@@ -49,7 +48,6 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
     }
     super.dispose();
   }
-
   Future<void> _loadInitData() async {
     try {
       final api = ref.read(apiClientProvider);
@@ -84,13 +82,11 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
       if (mounted) setState(() => _loadingInit = false);
     }
   }
-
   // --- State for Steps ---
   // Step 1: Customer
   int? _selectedCustomerId;
   String? _selectedCustomerName;
   String _customerSearch = '';
-
   // Step 2: Garment
   String? _selectedGarment;
   final List<Map<String, dynamic>> _allGarmentTypes = [
@@ -102,22 +98,22 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
     {'name': 'Dress', 'icon': Icons.woman, 'color': Color(0xFF9C27B0)},
     {'name': 'Skirt', 'icon': Icons.dry_cleaning, 'color': Color(0xFF00BCD4)},
   ];
-
   List<Map<String, dynamic>> get _garmentTypes {
       if (_predictionMethod == 'CUSTOM_ML') {
           return _allGarmentTypes.where((g) => g['name'].contains('Shirt') || g['name'].contains('Trouser')).toList();
       }
       return _allGarmentTypes;
   }
-
   // Step 3: Priority Measurements
   Map<String, dynamic>? _measurementTemplate;
   bool _loadingTemplate = false;
-  final Map<int, TextEditingController> _measurementControllers = {};
+  final Map<int, TextEditingController> _measurementControllers = {}
+;
   
   // Custom added measurements
   final List<Map<String, dynamic>> _customMeasurements = [];
-  final Map<int, TextEditingController> _customMeasurementControllers = {};
+  final Map<int, TextEditingController> _customMeasurementControllers = {}
+;
   int _customMeasurementCounter = 0;
   
     Map<String, dynamic> _getDefaultTemplateForCategory(String cat) {
@@ -137,35 +133,33 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
       }
       return {'category_name': cat, 'fields': fields};
   }
-
   // Step 4: AI Predictions
   List<Map<String, dynamic>> _aiPredictions = [];
-  Map<String, String> _confirmedMeasurements = {};
-  Map<String, bool> _isAiGenerated = {};
+  Map<String, String> _confirmedMeasurements = {}
+;
+  Map<String, bool> _isAiGenerated = {}
+;
   bool _aiPredictionLoading = false;
   int? _selectedOptionIndex;
   String? _aiPredictionError;
-
   // Step 5: Style Preferences
   String _occasion = 'Everyday / Casual';
   String _weather = 'Warm';
   final List<String> _fabricPreferences = ['Soft', 'Breathable'];
   String _fit = 'Regular Fit';
-
   // Step 6: Fabric Recommendations
   List<Map<String, dynamic>> _fabricRecommendations = [];
   int? _selectedFabricIndex;
   bool _fabricRecLoading = false;
   String? _fabricRecError;
-
   // Step 7: Fabric Estimation
   Map<String, dynamic>? _fabricEstimation;
   bool _fabricEstLoading = false;
   String? _fabricEstError;
   TextEditingController _manualQuantityCtrl = TextEditingController();
-
   // Step 8: Assign
-  int? _selectedStaffId = 1; 
+  int? _selectedStaffId = 1;
+ 
 
   Future<void> _runPrediction() async {
     setState(() { _aiPredictionLoading = true; _aiPredictionError = null; _currentStep++; });
@@ -206,7 +200,6 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
       });
     }
   }
-
   // --- Step Navigation Logic ---
   Future<void> _nextStep() async {
     final api = ref.read(apiClientProvider);
@@ -379,1056 +372,12 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
 
     setState(() { _currentStep++; });
   }
-
   void _prevStep() {
     if (_currentStep > 0) setState(() => _currentStep--);
   }
 
-  void _showSnack(String msg) {
-    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(msg, style: GoogleFonts.inter(fontWeight: FontWeight.w600)),
-        backgroundColor: Colors.redAccent,
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
-  }
-
-  // --- Build Methods ---
-  @override
-  Widget build(BuildContext context) {
-    return PopScope(
-      canPop: false,
-      onPopInvokedWithResult: (didPop, result) {
-        if (didPop) return;
-        if (_currentStep > 0) {
-          _prevStep();
-        } else {
-          context.go('/home');
-        }
-      },
-      child: Scaffold(
-        backgroundColor: Colors.white, // Premium Dark Mode Base
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(icon: const Icon(Icons.close, color: Colors.black87), onPressed: () { context.go('/home'); }),
-        title: Text('TailorSync AI Wizard', style: GoogleFonts.outfit(fontWeight: FontWeight.bold, color: Colors.black87)),
-        centerTitle: true,
-      ),
-      body: Stack(
-        children: [
-          // Background Gradient
-          Positioned.fill(
-            child: Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft, end: Alignment.bottomRight,
-                  colors: [Colors.white, Color(0xFFF8FAFC)],
-                ),
-              ),
-            ),
-          ),
-          
-          SafeArea(
-            child: Column(
-              children: [
-                _buildStepper(),
-                Expanded(
-                  child: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 500),
-                    switchInCurve: Curves.easeOutCubic,
-                    switchOutCurve: Curves.easeInCubic,
-                    transitionBuilder: (w, anim) => FadeTransition(
-                      opacity: anim, 
-                      child: SlideTransition(position: Tween<Offset>(begin: const Offset(0.05, 0), end: Offset.zero).animate(anim), child: w)
-                    ),
-                    child: Container(
-                      key: ValueKey<int>(_currentStep),
-                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                      child: _buildStepContent(),
-                    ),
-                  ),
-                ),
-                _buildFooter(),
-              ],
-            ),
-          ),
-        ],
-      ),
-    ));
-  }
-
-  Widget _buildStepper() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text('Step ${_currentStep + 1} of ${_stepTitles.length}', style: GoogleFonts.inter(color: Colors.black54, fontSize: 12, fontWeight: FontWeight.bold)),
-              AnimatedSwitcher(
-                duration: const Duration(milliseconds: 400),
-                transitionBuilder: (w, anim) => FadeTransition(
-                  opacity: anim, 
-                  child: SlideTransition(position: Tween<Offset>(begin: const Offset(0, 0.5), end: Offset.zero).animate(anim), child: w)
-                ),
-                child: Text(_stepTitles[_currentStep], key: ValueKey<int>(_currentStep), style: GoogleFonts.outfit(color: Colors.black87, fontSize: 16, fontWeight: FontWeight.w600)),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: List.generate(_stepTitles.length, (index) {
-              final isActive = index <= _currentStep;
-              return Expanded(
-                child: Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 2),
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: isActive ? const Color(0xFF1565C0) : Colors.black.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(2),
-                    boxShadow: isActive ? [BoxShadow(color: const Color(0xFF1565C0).withOpacity(0.5), blurRadius: 4)] : null,
-                  ),
-                ),
-              );
-            }),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildStepContent() {
-    switch (_currentStep) {
-      case 0: return _buildCustomerStep();
-      case 1: return _buildPredictionMethodStep();
-      case 2: return _buildGarmentStep();
-      case 3: return _buildPriorityInputStep();
-      case 4: return _buildAiPredictionStep();
-      case 5: return _buildPreferencesStep();
-      case 6: return _buildFabricRecStep();
-      case 7: return _buildEstimationStep();
-      case 8: return _buildAssignStep();
-      default: return const SizedBox.shrink();
-    }
-  }
-
-  // --- Step 1: Customer ---
-  Widget _buildCustomerStep() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('Who is this order for?', style: GoogleFonts.outfit(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black87)),
-        const SizedBox(height: 8),
-        Text('Select an existing client or create a new profile.', style: GoogleFonts.inter(color: Colors.black87)),
-        const SizedBox(height: 24),
-        TextField(
-          onChanged: (v) => setState(() => _customerSearch = v),
-          style: const TextStyle(color: Colors.black87),
-          decoration: InputDecoration(
-            hintText: 'Search by name or phone...',
-            hintStyle: const TextStyle(color: Colors.black54),
-            prefixIcon: const Icon(Icons.search, color: Colors.black54),
-            filled: true,
-            fillColor: Colors.black.withOpacity(0.05),
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide(color: Colors.black12)),
-          ),
-        ),
-        const SizedBox(height: 24),
-        Expanded(
-          child: Consumer(builder: (ctx, ref, child) {
-            final customersAsync = ref.watch(customersProvider);
-            return customersAsync.when(
-              data: (customers) {
-                final filtered = customers.where((c) => c.name.toLowerCase().contains(_customerSearch.toLowerCase()) || (c.phone ?? '').contains(_customerSearch)).toList();
-                return ListView.builder(
-                  itemCount: filtered.length,
-                  itemBuilder: (ctx, i) {
-                    final c = filtered[i];
-                    final isSelected = _selectedCustomerId == c.id;
-                    return GestureDetector(
-                      onTap: () => setState(() { _selectedCustomerId = c.id; _selectedCustomerName = c.name; }),
-                      child: Container(
-                        margin: const EdgeInsets.only(bottom: 12),
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: isSelected ? const Color(0xFF1565C0).withOpacity(0.2) : Colors.black.withOpacity(0.05),
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: isSelected ? const Color(0xFF1565C0) : Colors.transparent),
-                        ),
-                        child: Row(
-                          children: [
-                            CircleAvatar(backgroundColor: isSelected ? const Color(0xFF1565C0) : Colors.black12, child: Text(c.name[0].toUpperCase(), style: const TextStyle(color: Colors.black87))),
-                            const SizedBox(width: 16),
-                            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                              Text(c.name, style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: Colors.black87)),
-                              Text(c.phone ?? 'No phone', style: GoogleFonts.inter(color: Colors.black54, fontSize: 12)),
-                            ])),
-                            if (isSelected) const Icon(Icons.check_circle, color: Color(0xFF1565C0)),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                );
-              },
-              loading: () => const Center(child: CircularProgressIndicator(color: Color(0xFF1565C0))),
-              error: (e, _) => const Text('Error loading customers', style: TextStyle(color: Colors.black87)),
-            );
-          }),
-        ),
-      ],
-    );
-  }
-
-  // --- Step 2: Garment ---
-  Widget _buildGarmentStep() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('What are we making?', style: GoogleFonts.outfit(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black87)),
-        const SizedBox(height: 8),
-        Text('Our AI will tailor the measurement flow based on this choice.', style: GoogleFonts.inter(color: Colors.black87)),
-        const SizedBox(height: 24),
-        Expanded(
-          child: GridView.builder(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, crossAxisSpacing: 16, mainAxisSpacing: 16, childAspectRatio: 1.1),
-            itemCount: _garmentTypes.length,
-            itemBuilder: (ctx, i) {
-              final g = _garmentTypes[i];
-              final isSelected = _selectedGarment == g['name'];
-              return GestureDetector(
-                onTap: () => setState(() => _selectedGarment = g['name']),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: isSelected ? g['color'].withOpacity(0.2) : Colors.black.withOpacity(0.05),
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: isSelected ? g['color'] : Colors.transparent, width: 2),
-                    boxShadow: isSelected ? [BoxShadow(color: g['color'].withOpacity(0.3), blurRadius: 12)] : null,
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(g['icon'], size: 40, color: isSelected ? g['color'] : Colors.black54),
-                      const SizedBox(height: 12),
-                      Text(g['name'], textAlign: TextAlign.center, style: GoogleFonts.inter(color: Colors.black87, fontWeight: isSelected ? FontWeight.bold : FontWeight.normal)),
-                    ],
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
-      ],
-    );
-  }
-
-  // --- Step 1: Prediction Method ---
-  Widget _buildPredictionMethodStep() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('Select Prediction Model', style: GoogleFonts.outfit(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black87)),
-        const SizedBox(height: 8),
-        Text('Choose how you want AI to assist with measurements.', style: GoogleFonts.inter(color: Colors.black87)),
-        const SizedBox(height: 24),
-        
-        // Foundry
-        GestureDetector(
-          onTap: () => setState(() => _predictionMethod = 'FOUNDRY'),
-          child: Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: _predictionMethod == 'FOUNDRY' ? const Color(0xFF1565C0).withOpacity(0.1) : Colors.black.withOpacity(0.05),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: _predictionMethod == 'FOUNDRY' ? const Color(0xFF1565C0) : Colors.black12, width: _predictionMethod == 'FOUNDRY' ? 2 : 1),
-            ),
-            child: Row(
-              children: [
-                Icon(Icons.psychology, size: 40, color: _predictionMethod == 'FOUNDRY' ? const Color(0xFF1565C0) : Colors.black54),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('AI Foundry', style: GoogleFonts.outfit(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black87)),
-                      const SizedBox(height: 4),
-                      Text('Full clothing prediction. Uses existing AI model with all supported clothing categories.', style: GoogleFonts.inter(color: Colors.black54, fontSize: 13)),
-                    ],
-                  ),
-                ),
-                if (_predictionMethod == 'FOUNDRY') const Icon(Icons.check_circle, color: Color(0xFF1565C0)),
-              ],
-            ),
-          ),
-        ),
-        const SizedBox(height: 24),
-
-        // Custom ML
-        GestureDetector(
-          onTap: () => setState(() {
-             _predictionMethod = 'CUSTOM_ML';
-             if (!(_selectedGarment?.contains('Shirt') ?? false) && !(_selectedGarment?.contains('Trouser') ?? false)) {
-                 _selectedGarment = null;
-             }
-          }),
-          child: Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: _predictionMethod == 'CUSTOM_ML' ? const Color(0xFF1565C0).withOpacity(0.1) : Colors.black.withOpacity(0.05),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: _predictionMethod == 'CUSTOM_ML' ? const Color(0xFF1565C0) : Colors.black12, width: _predictionMethod == 'CUSTOM_ML' ? 2 : 1),
-            ),
-            child: Row(
-              children: [
-                Icon(Icons.flash_on, size: 40, color: _predictionMethod == 'CUSTOM_ML' ? const Color(0xFF1565C0) : Colors.black54),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Custom ML Model', style: GoogleFonts.outfit(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black87)),
-                      const SizedBox(height: 4),
-                      Text('Our trained internal model. Currently supports ONLY Shirts and Trousers.', style: GoogleFonts.inter(color: Colors.black54, fontSize: 13)),
-                    ],
-                  ),
-                ),
-                if (_predictionMethod == 'CUSTOM_ML') const Icon(Icons.check_circle, color: Color(0xFF1565C0)),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  // --- Step 3: Priority Input ---
-  Widget _buildPriorityInputStep() {
-    if (_loadingTemplate) return const Center(child: CircularProgressIndicator(color: Color(0xFF1565C0)));
-    
-    final fields = (_measurementTemplate?['fields'] as List? ?? []).cast<Map<String, dynamic>>();
-    final requiredFields = fields.where((f) => f['is_required'] == true).toList();
-    final optionalFields = fields.where((f) => f['is_required'] != true).toList();
-    
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            const Icon(Icons.auto_awesome, color: Color(0xFF1565C0)),
-            const SizedBox(width: 12),
-            Text('Measurements Input', style: GoogleFonts.outfit(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black87)),
-          ],
-        ),
-        const SizedBox(height: 8),
-        Text('Provide required measurements. Optional ones can be left blank, and AI can suggest them.', style: GoogleFonts.inter(color: Colors.black87)),
-        const SizedBox(height: 24),
-        Expanded(
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (requiredFields.isNotEmpty) ...[
-                  Text('Required Measurements', style: GoogleFonts.outfit(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87)),
-                  const SizedBox(height: 12),
-                  ...requiredFields.map((f) => _buildMeasurementRow(f, true)).toList(),
-                  const SizedBox(height: 24),
-                ],
-                if (optionalFields.isNotEmpty) ...[
-                  Text('Optional Measurements', style: GoogleFonts.outfit(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87)),
-                  const SizedBox(height: 12),
-                  ...optionalFields.map((f) => _buildMeasurementRow(f, false)).toList(),
-                  const SizedBox(height: 24),
-                ],
-                if (_customMeasurements.isNotEmpty) ...[
-                  Text('Custom Measurements', style: GoogleFonts.outfit(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87)),
-                  const SizedBox(height: 12),
-                  ..._customMeasurements.map((f) => _buildCustomMeasurementRow(f)).toList(),
-                  const SizedBox(height: 24),
-                ],
-                Center(
-                  child: TextButton.icon(
-                    onPressed: () {
-                      setState(() {
-                        _customMeasurementCounter++;
-                        final newId = 1000 + _customMeasurementCounter;
-                        _customMeasurements.add({'id': newId, 'field_name': ''});
-                        _customMeasurementControllers[newId] = TextEditingController();
-                      });
-                    },
-                    icon: const Icon(Icons.add, color: Color(0xFF1565C0)),
-                    label: Text('+ Add Other Measurement', style: GoogleFonts.inter(color: const Color(0xFF1565C0), fontWeight: FontWeight.bold)),
-                  ),
-                ),
-                const SizedBox(height: 32),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildMeasurementRow(Map<String, dynamic> f, bool isRequired) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.05),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.black12),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Flexible(
-                      child: Text(
-                        f['field_name'], 
-                        style: GoogleFonts.inter(fontWeight: FontWeight.w600, color: Colors.black87),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    if (isRequired) Text(' *', style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: Colors.redAccent)),
-                  ],
-                ),
-                if (isRequired) Text('Required', style: GoogleFonts.inter(fontSize: 11, color: const Color(0xFF1565C0)))
-                else Text('Optional', style: GoogleFonts.inter(fontSize: 11, color: Colors.black54)),
-              ],
-            ),
-          ),
-          const SizedBox(width: 8),
-          SizedBox(
-            width: 110,
-            child: TextField(
-              controller: _measurementControllers[f['id']],
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
-              inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
-              ],
-              style: const TextStyle(color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 14),
-              textAlign: TextAlign.center,
-              decoration: InputDecoration(
-                hintText: f['placeholder'] ?? 'e.g. 10.5', 
-                hintStyle: const TextStyle(color: Colors.black38, fontSize: 13),
-                suffixText: f['unit'], 
-                suffixStyle: const TextStyle(color: Colors.black54, fontSize: 13),
-                filled: true, 
-                fillColor: Colors.grey.shade100,
-                contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: const BorderSide(color: Colors.black12)),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildCustomMeasurementRow(Map<String, dynamic> f) {
-    final id = f['id'] as int;
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.05),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.black12),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: TextField(
-              onChanged: (val) {
-                final idx = _customMeasurements.indexWhere((m) => m['id'] == id);
-                if (idx != -1) _customMeasurements[idx]['field_name'] = val;
-              },
-              style: const TextStyle(color: Colors.black87, fontWeight: FontWeight.w600),
-              decoration: const InputDecoration(
-                hintText: 'Measurement Name',
-                hintStyle: TextStyle(color: Colors.black38),
-                border: InputBorder.none,
-                isDense: true,
-              ),
-            ),
-          ),
-          SizedBox(
-            width: 100,
-            child: TextField(
-              controller: _customMeasurementControllers[id],
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
-              inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
-              ],
-              style: const TextStyle(color: Colors.black87, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-              decoration: InputDecoration(
-                hintText: '0.0', hintStyle: const TextStyle(color: Colors.black38),
-                filled: true, fillColor: Colors.grey.shade100,
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: Colors.black12)),
-              ),
-            ),
-          ),
-          IconButton(
-            icon: const Icon(Icons.close, color: Colors.black54),
-            onPressed: () {
-              setState(() {
-                _customMeasurements.removeWhere((m) => m['id'] == id);
-                _customMeasurementControllers.remove(id)?.dispose();
-              });
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-
-  // --- Step 5: AI Prediction Review ---
-  Widget _buildAiPredictionStep() {
-    if (_aiPredictionLoading) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // Professional minimal loader
-            SizedBox(
-              width: 80,
-              height: 80,
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  SizedBox(
-                    width: 80,
-                    height: 80,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 3,
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        _predictionMethod == 'FOUNDRY' ? const Color(0xFF6A1B9A) : const Color(0xFF00695C),
-                      ),
-                      backgroundColor: (_predictionMethod == 'FOUNDRY' ? const Color(0xFF6A1B9A) : const Color(0xFF00695C)).withValues(alpha: 0.1),
-                    ),
-                  ),
-                  Icon(
-                    _predictionMethod == 'FOUNDRY' ? Icons.auto_awesome : Icons.memory,
-                    color: _predictionMethod == 'FOUNDRY' ? const Color(0xFF6A1B9A) : const Color(0xFF00695C),
-                    size: 32,
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 48),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Text(
-                _predictionMethod == 'FOUNDRY' ? 'Microsoft Foundry is Thinking...' : 'Running Custom ML...',
-                textAlign: TextAlign.center,
-                style: GoogleFonts.outfit(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black87),
-              ),
-            ),
-            const SizedBox(height: 12),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 32),
-              child: Text(
-                _predictionMethod == 'FOUNDRY' 
-                    ? 'Analyzing dataset context to generate perfect measurements.' 
-                    : 'Processing garment features through the predictive model.',
-                style: GoogleFonts.inter(color: Colors.black54, fontSize: 14),
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-    
-    if (_aiPredictionError != null) {
-      return Center(child: Text(_aiPredictionError!, style: const TextStyle(color: Colors.redAccent)));
-    }
-    
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('Prediction Results', style: GoogleFonts.outfit(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black87)),
-        const SizedBox(height: 8),
-        Text("Select an option below. You can edit the values after selecting.", style: GoogleFonts.inter(color: Colors.black87)),
-        const SizedBox(height: 24),
-        Expanded(
-          flex: 3,
-          child: ListView.builder(
-            itemCount: _aiPredictions.length,
-            itemBuilder: (ctx, i) {
-              final p = _aiPredictions[i];
-              final measurements = p['measurements'] as Map<String, dynamic>;
-              final isSelected = _selectedOptionIndex == i;
-              
-              return GestureDetector(
-                onTap: () {
-                   setState(() {
-                       _selectedOptionIndex = i;
-                       measurements.forEach((k, v) {
-                           if (v.toString() != '0' && v.toString() != '0.0') {
-                               _confirmedMeasurements[k] = v.toString();
-                               _isAiGenerated[k] = true;
-                           }
-                       });
-                   });
-                },
-                child: Container(
-                  margin: const EdgeInsets.only(bottom: 12),
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: isSelected ? const Color(0xFF1565C0).withOpacity(0.1) : Colors.black.withOpacity(0.02),
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: isSelected ? const Color(0xFF1565C0) : Colors.black12, width: isSelected ? 2 : 1),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            _predictionMethod == 'FOUNDRY' 
-                                ? 'Recommended Measurements' 
-                                : 'Option ${p['option_number']} - ${p['source']}', 
-                            style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: isSelected ? const Color(0xFF1565C0) : Colors.black87, fontSize: 16)
-                          ),
-                          if (isSelected) const Icon(Icons.check_circle, color: Color(0xFF1565C0)),
-                        ],
-                      ),
-                      if (p['support_percent'] != null) ...[
-                        const SizedBox(height: 4),
-                        Text('Support: ${p['support_percent']}%', style: GoogleFonts.inter(color: Colors.black54, fontSize: 12)),
-                      ],
-                      const SizedBox(height: 12),
-                      Wrap(
-                        spacing: 12,
-                        runSpacing: 8,
-                        children: measurements.entries
-                            .where((e) => e.value.toString() != '0' && e.value.toString() != '0.0')
-                            .map((e) => Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(6), border: Border.all(color: Colors.black12)),
-                          child: Text('${e.key.replaceAll('_', ' ').toUpperCase()}: ${e.value}', style: GoogleFonts.inter(color: Colors.black87, fontSize: 12, fontWeight: FontWeight.w600)),
-                        )).toList(),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
-        if (_selectedOptionIndex != null) ...[
-           const SizedBox(height: 16),
-           SizedBox(
-             width: double.infinity,
-             child: OutlinedButton.icon(
-               onPressed: _showEditMeasurementsDialog,
-               icon: const Icon(Icons.edit, color: Color(0xFF1565C0)),
-               label: Text('Edit Measurements', style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: const Color(0xFF1565C0))),
-               style: OutlinedButton.styleFrom(
-                 padding: const EdgeInsets.symmetric(vertical: 14),
-                 side: const BorderSide(color: Color(0xFF1565C0), width: 1.5),
-                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-               ),
-             ),
-           ),
-        ],
-      ],
-    );
-  }
-
-  void _showEditMeasurementsDialog() {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
-      builder: (ctx) {
-        return StatefulBuilder(
-          builder: (modalCtx, setModalState) {
-            return Padding(
-              padding: EdgeInsets.only(bottom: MediaQuery.of(modalCtx).viewInsets.bottom),
-              child: Container(
-                padding: const EdgeInsets.all(24),
-                constraints: BoxConstraints(maxHeight: MediaQuery.of(modalCtx).size.height * 0.8),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('Edit Measurements', style: GoogleFonts.outfit(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.black87)),
-                        IconButton(icon: const Icon(Icons.close), onPressed: () => Navigator.pop(modalCtx)),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    Text('Adjust the AI recommendations manually if needed.', style: GoogleFonts.inter(color: Colors.black54)),
-                    const SizedBox(height: 16),
-                    Expanded(
-                      child: ListView(
-                        shrinkWrap: true,
-                        children: _confirmedMeasurements.keys.map((k) {
-                          if (_measurementTemplate?['fields']?.any((f) => f['field_name'].toString().toLowerCase() == k.toLowerCase()) ?? false) {
-                              return const SizedBox.shrink();
-                          }
-                          return Padding(
-                            padding: const EdgeInsets.only(bottom: 12.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(k.replaceAll('_', ' ').toUpperCase(), style: GoogleFonts.inter(color: Colors.black87, fontWeight: FontWeight.w600)),
-                                SizedBox(
-                                  width: 120,
-                                  child: TextFormField(
-                                    initialValue: _confirmedMeasurements[k],
-                                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                                    style: const TextStyle(color: Colors.black87, fontWeight: FontWeight.bold),
-                                    decoration: InputDecoration(
-                                      isDense: true,
-                                      hintText: 'Rec: ${_confirmedMeasurements[k]}',
-                                      hintStyle: const TextStyle(color: Colors.black38, fontSize: 12),
-                                      filled: true, fillColor: Colors.black.withOpacity(0.05),
-                                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
-                                    ),
-                                    onChanged: (val) {
-                                       setState(() {
-                                           _confirmedMeasurements[k] = val;
-                                       });
-                                    },
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        }).toList(),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () => Navigator.pop(modalCtx),
-                        style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF1565C0), padding: const EdgeInsets.symmetric(vertical: 16), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
-                        child: Text('Done', style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: Colors.white)),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
-
-  // --- Step 5: Preferences ---
-  Widget _buildPreferencesStep() {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('Style & Fit', style: GoogleFonts.outfit(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black87)),
-          const SizedBox(height: 24),
-          _buildChipSelector('Occasion', ['Everyday / Casual', 'Office / Work', 'Wedding', 'Party'], _occasion, (v) => setState(()=> _occasion = v)),
-          const SizedBox(height: 24),
-          _buildChipSelector('Weather', ['Warm', 'Hot', 'Cold', 'Humid'], _weather, (v) => setState(()=> _weather = v)),
-          const SizedBox(height: 24),
-          _buildChipSelector('Fit', ['Regular Fit', 'Slim Fit', 'Modern Fit'], _fit, (v) => setState(()=> _fit = v)),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildChipSelector(String title, List<String> options, String selected, Function(String) onSelect) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(title, style: GoogleFonts.inter(fontWeight: FontWeight.w600, color: Colors.black54)),
-        const SizedBox(height: 12),
-        Wrap(
-          spacing: 12, runSpacing: 12,
-          children: options.map((opt) {
-            final isSel = selected == opt;
-            return GestureDetector(
-              onTap: () => onSelect(opt),
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                decoration: BoxDecoration(
-                  color: isSel ? const Color(0xFF1565C0) : Colors.black.withOpacity(0.05),
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: isSel ? const Color(0xFF1565C0) : Colors.black12),
-                ),
-                child: Text(opt, style: TextStyle(color: isSel ? Colors.white : Colors.black87, fontWeight: isSel ? FontWeight.bold : FontWeight.normal)),
-              ),
-            );
-          }).toList(),
-        ),
-      ],
-    );
-  }
-
-  // --- Step 6: Fabric Rec ---
-  Widget _buildFabricRecStep() {
-    if (_fabricRecLoading) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            FadeTransition(
-              opacity: _pulseController,
-              child: Container(
-                width: 100, height: 100,
-                decoration: BoxDecoration(shape: BoxShape.circle, color: const Color(0xFF9B59B6).withOpacity(0.3), boxShadow: [BoxShadow(color: const Color(0xFF9B59B6).withOpacity(0.5), blurRadius: 30)]),
-                child: const Icon(Icons.style, color: Colors.white, size: 50),
-              ),
-            ),
-            const SizedBox(height: 32),
-            Text('Analyzing Preferences...', style: GoogleFonts.outfit(fontSize: 20, color: Colors.black87, fontWeight: FontWeight.w600)),
-            const SizedBox(height: 8),
-            Text('Curating the best fabric options for your style.', style: GoogleFonts.inter(color: Colors.black54), textAlign: TextAlign.center),
-          ],
-        ),
-      );
-    }
-    if (_fabricRecError != null) return Center(child: Text(_fabricRecError!, style: const TextStyle(color: Colors.red)));
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('Top Fabrics', style: GoogleFonts.outfit(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black87)),
-        const SizedBox(height: 24),
-        Expanded(
-          child: ListView.builder(
-            itemCount: _fabricRecommendations.length,
-            itemBuilder: (ctx, i) {
-              final rec = _fabricRecommendations[i];
-              final isSel = _selectedFabricIndex == i;
-              return GestureDetector(
-                onTap: () => setState(() => _selectedFabricIndex = i),
-                child: Container(
-                  margin: const EdgeInsets.only(bottom: 16),
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: isSel ? const Color(0xFF1565C0).withOpacity(0.2) : Colors.black.withOpacity(0.05),
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: isSel ? const Color(0xFF1565C0) : Colors.black12, width: 2),
-                  ),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 60, height: 60,
-                        decoration: BoxDecoration(color: const Color(0xFF1565C0), borderRadius: BorderRadius.circular(12)),
-                        alignment: Alignment.center,
-                        child: Text('${rec['suitability_percentage']}%', style: GoogleFonts.outfit(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18)),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(rec['fabric_name'] ?? '', style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: Colors.black87, fontSize: 18)),
-                            const SizedBox(height: 4),
-                            Text(rec['reason'] ?? '', style: GoogleFonts.inter(color: Colors.black87, fontSize: 12)),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
-      ],
-    );
-  }
-
-  // --- Step 7: Estimation ---
-  Widget _buildEstimationStep() {
-    if (_fabricEstLoading) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            FadeTransition(
-              opacity: _pulseController,
-              child: Container(
-                width: 100, height: 100,
-                decoration: BoxDecoration(shape: BoxShape.circle, color: const Color(0xFF4CAF50).withOpacity(0.3), boxShadow: [BoxShadow(color: const Color(0xFF4CAF50).withOpacity(0.5), blurRadius: 30)]),
-                child: const Icon(Icons.straighten, color: Colors.white, size: 50),
-              ),
-            ),
-            const SizedBox(height: 32),
-            Text('Estimating Required Fabric...', style: GoogleFonts.outfit(fontSize: 20, color: Colors.black87, fontWeight: FontWeight.w600)),
-            const SizedBox(height: 8),
-            Text('Calculating exact meterage based on measurements.', style: GoogleFonts.inter(color: Colors.black54), textAlign: TextAlign.center),
-          ],
-        ),
-      );
-    }
-    
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        const SizedBox(height: 32),
-        Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(32),
-          decoration: BoxDecoration(
-            color: const Color(0xFF1565C0).withOpacity(0.1),
-            borderRadius: BorderRadius.circular(24),
-            border: Border.all(color: const Color(0xFF1565C0).withOpacity(0.3)),
-          ),
-          child: Column(
-            children: [
-              const Icon(Icons.straighten, size: 60, color: Color(0xFF1565C0)),
-              const SizedBox(height: 16),
-              Text('Fabric Required', style: GoogleFonts.outfit(color: Colors.black87, fontSize: 18)),
-              const SizedBox(height: 8),
-              Text('${_fabricEstimation?['recommended_quantity_meters'] ?? '2.0'} Meters', style: GoogleFonts.outfit(color: Colors.black87, fontSize: 40, fontWeight: FontWeight.bold)),
-              if (_fabricEstimation != null && _fabricEstimation!['estimated_range'] != null)
-                Text('Range: ${_fabricEstimation!['estimated_range']['min']} - ${_fabricEstimation!['estimated_range']['max']} m', style: GoogleFonts.inter(color: Colors.black54)),
-              const SizedBox(height: 24),
-              TextField(
-                controller: _manualQuantityCtrl,
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                style: const TextStyle(color: Colors.black87),
-                decoration: InputDecoration(
-                  labelText: 'Override Quantity (m)', labelStyle: const TextStyle(color: Colors.black54),
-                  filled: true, fillColor: Colors.black.withOpacity(0.05),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  // --- Step 8: Assign ---
-  Widget _buildAssignStep() {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-        Text('Assign & Save', style: GoogleFonts.outfit(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black87)),
-        const SizedBox(height: 24),
-        Container(
-           padding: const EdgeInsets.all(16),
-           decoration: BoxDecoration(color: Colors.black.withOpacity(0.05), borderRadius: BorderRadius.circular(16)),
-           child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                 Text('Order Summary', style: GoogleFonts.inter(color: Colors.black54, fontWeight: FontWeight.bold)),
-                 const SizedBox(height: 12),
-                 _summaryRow('Customer', _selectedCustomerName ?? ''),
-                 _summaryRow('Prediction Model', _predictionMethod == 'FOUNDRY' ? 'AI Foundry' : 'Custom ML Model'),
-                 _summaryRow('Garment', _selectedGarment ?? ''),
-                 _summaryRow('Fabric', _fabricRecommendations.isNotEmpty && _selectedFabricIndex != null ? _fabricRecommendations[_selectedFabricIndex!]['fabric_name'] : 'N/A'),
-                 _summaryRow('Quantity', '${_manualQuantityCtrl.text} meters'),
-              ],
-           ),
-        ),
-        const SizedBox(height: 24),
-        Text('Assign to Staff', style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: Colors.black87)),
-        const SizedBox(height: 12),
-        _staffList.isEmpty 
-          ? Text('No staff available', style: GoogleFonts.inter(color: Colors.redAccent))
-          : DropdownButtonFormField<int>(
-              value: _staffList.any((s) => s['id'] == _selectedStaffId) ? _selectedStaffId : null,
-              dropdownColor: const Color(0xFFF8FAFC),
-              style: const TextStyle(color: Colors.black87),
-              decoration: InputDecoration(
-                filled: true, fillColor: Colors.black.withOpacity(0.05),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: Colors.black12)),
-              ),
-              items: _staffList.map((s) => DropdownMenuItem<int>(
-                value: s['id'],
-                child: Text(s['full_name'] ?? s['name'] ?? 'Unknown', style: const TextStyle(color: Colors.black87)),
-              )).toList(),
-              onChanged: (v) => setState(() => _selectedStaffId = v),
-            ),
-      ],
-      ),
-    );
-  }
-
-  Widget _summaryRow(String k, String v) {
-      return Padding(
-          padding: const EdgeInsets.only(bottom: 8),
-          child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                  Text(k, style: GoogleFonts.inter(color: Colors.black87)),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Text(
-                      v, 
-                      style: GoogleFonts.inter(color: Colors.black87, fontWeight: FontWeight.bold),
-                      textAlign: TextAlign.right,
-                    ),
-                  ),
-              ]
-          )
-      );
-  }
-
-  // --- Footer ---
-  Widget _buildFooter() {
-    bool isLoading = _aiPredictionLoading || _fabricRecLoading || _fabricEstLoading || _loadingInit || _loadingTemplate;
-    if (isLoading) return const SizedBox.shrink();
-
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border(top: BorderSide(color: Colors.black.withOpacity(0.05))),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          if (_currentStep > 0)
-            TextButton(onPressed: _prevStep, child: Text('Back', style: GoogleFonts.inter(color: Colors.black54, fontWeight: FontWeight.bold)))
-          else const SizedBox(width: 60),
-          
-          Container(
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [Color(0xFF283593), Color(0xFF1A237E), Color(0xFF0D1042)],
-              ),
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [BoxShadow(color: const Color(0xFF1A237E).withOpacity(0.5), blurRadius: 8)],
-            ),
-            child: ElevatedButton(
-              onPressed: _saving ? null : (_currentStep == _stepTitles.length - 1 ? _saveOrder : _nextStep),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.transparent,
-                shadowColor: Colors.transparent,
-                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-              ),
-              child: _saving ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2)) 
-                             : Text(_currentStep == _stepTitles.length - 1 ? 'Save Order' : 'Continue', style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  // ── UI-only state ──────────────────────────────────────────────
+  int _lastStep = 0; // used to pick the slide direction
 
   Future<void> _saveOrder() async {
     setState(() => _saving = true);
@@ -1461,5 +410,1229 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
       _showSnack('Failed to save order: $e');
     }
     if (mounted) setState(() => _saving = false);
+  }
+
+  void _showSnack(String msg) {
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    HapticFeedback.mediumImpact();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            Icon(Icons.info_outline_rounded, color: context.status.danger),
+            const SizedBox(width: Space.sm),
+            Expanded(child: Text(msg, style: const TextStyle(fontWeight: FontWeight.w600))),
+          ],
+        ),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+  }
+
+  // --- Build Methods ---
+  @override
+  Widget build(BuildContext context) {
+    final forward = _currentStep >= _lastStep;
+    _lastStep = _currentStep;
+    final pad = context.pagePadding;
+
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
+        if (_currentStep > 0) {
+          _prevStep();
+        } else {
+          context.go('/home');
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            tooltip: 'Close wizard',
+            icon: const Icon(Icons.close_rounded),
+            onPressed: () {
+              context.go('/home');
+            },
+          ),
+          title: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.auto_awesome_rounded, size: 20, color: context.colors.primary),
+              const SizedBox(width: Space.xs),
+              const Flexible(child: Text('TailorSync AI Wizard', overflow: TextOverflow.ellipsis)),
+            ],
+          ),
+          centerTitle: true,
+        ),
+        body: AmbientBackground(
+          child: SafeArea(
+            top: false,
+            child: GestureDetector(
+              behavior: HitTestBehavior.translucent,
+              onTap: () => FocusScope.of(context).unfocus(),
+              child: MaxWidthBox(
+                maxWidth: MaxWidth.content,
+                child: Column(
+                  children: [
+                    _buildStepper(),
+                    Expanded(
+                      child: AnimatedSwitcher(
+                        duration: Motion.of(context, Motion.long),
+                        switchInCurve: Motion.emphasizedDecelerate,
+                        switchOutCurve: Motion.exit,
+                        transitionBuilder: (w, anim) {
+                          final incoming = w.key == ValueKey<int>(_currentStep);
+                          final dir = (forward ? 1.0 : -1.0) * (incoming ? 1 : -1);
+                          return FadeTransition(
+                            opacity: anim,
+                            child: SlideTransition(
+                              position: Tween<Offset>(begin: Offset(0.08 * dir, 0), end: Offset.zero).animate(anim),
+                              child: w,
+                            ),
+                          );
+                        },
+                        child: Container(
+                          key: ValueKey<int>(_currentStep),
+                          padding: EdgeInsets.fromLTRB(pad, Space.sm, pad, 0),
+                          child: _buildStepContent(),
+                        ),
+                      ),
+                    ),
+                    _buildFooter(),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStepper() {
+    final cs = context.colors;
+    final pad = context.pagePadding;
+    return Padding(
+      padding: EdgeInsets.fromLTRB(pad, Space.xs, pad, Space.sm),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Text(
+                'Step ${_currentStep + 1} of ${_stepTitles.length}',
+                style: context.text.labelMedium?.copyWith(color: cs.onSurfaceVariant),
+              ),
+              const SizedBox(width: Space.sm),
+              Expanded(
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: AnimatedSwitcher(
+                    duration: Motion.of(context, Motion.medium),
+                    transitionBuilder: (w, anim) => FadeTransition(
+                      opacity: anim,
+                      child: SlideTransition(
+                        position: Tween<Offset>(begin: const Offset(0, 0.5), end: Offset.zero).animate(anim),
+                        child: w,
+                      ),
+                    ),
+                    child: Text(
+                      _stepTitles[_currentStep],
+                      key: ValueKey<int>(_currentStep),
+                      style: context.text.titleSmall?.copyWith(color: cs.primary),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: Space.sm),
+          Semantics(
+            label: 'Step ${_currentStep + 1} of ${_stepTitles.length}: ${_stepTitles[_currentStep]}',
+            child: Row(
+              children: List.generate(_stepTitles.length, (index) {
+                final isActive = index <= _currentStep;
+                final isCurrent = index == _currentStep;
+                return Expanded(
+                  flex: isCurrent ? 3 : 2,
+                  child: AnimatedContainer(
+                    duration: Motion.of(context, Motion.medium),
+                    curve: Motion.emphasized,
+                    margin: const EdgeInsets.symmetric(horizontal: 2),
+                    height: isCurrent ? 6 : 4,
+                    decoration: BoxDecoration(
+                      color: isActive ? cs.primary : cs.outlineVariant.withValues(alpha: 0.6),
+                      borderRadius: Radii.brPill,
+                      boxShadow: isCurrent ? [BoxShadow(color: cs.primary.withValues(alpha: 0.4), blurRadius: 6)] : null,
+                    ),
+                  ),
+                );
+              }),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStepContent() {
+    switch (_currentStep) {
+      case 0: return _buildCustomerStep();
+      case 1: return _buildPredictionMethodStep();
+      case 2: return _buildGarmentStep();
+      case 3: return _buildPriorityInputStep();
+      case 4: return _buildAiPredictionStep();
+      case 5: return _buildPreferencesStep();
+      case 6: return _buildFabricRecStep();
+      case 7: return _buildEstimationStep();
+      case 8: return _buildAssignStep();
+      default: return const SizedBox.shrink();
+    }
+  }
+
+  // Shared heading used by every step.
+  Widget _stepHeader(String title, [String? subtitle, IconData? icon]) {
+    return EntranceFade(
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: Space.md),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                if (icon != null) ...[
+                  Icon(icon, color: context.colors.primary),
+                  const SizedBox(width: Space.xs),
+                ],
+                Expanded(child: Text(title, style: context.text.headlineSmall)),
+              ],
+            ),
+            if (subtitle != null) ...[
+              const SizedBox(height: Space.xxs),
+              Text(subtitle, style: context.text.bodyMedium),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Selectable card used by several steps.
+  Widget _selectCard({
+    required bool selected,
+    required VoidCallback onTap,
+    required Widget child,
+    Color? accent,
+    EdgeInsetsGeometry padding = const EdgeInsets.all(Space.md),
+  }) {
+    final cs = context.colors;
+    final a = accent ?? cs.primary;
+    return Semantics(
+      selected: selected,
+      button: true,
+      child: Pressable(
+        onTap: () {
+          HapticFeedback.selectionClick();
+          onTap();
+        },
+        child: AnimatedContainer(
+          duration: Motion.of(context, Motion.short),
+          curve: Motion.standard,
+          padding: padding,
+          decoration: BoxDecoration(
+            color: selected ? a.withValues(alpha: context.isDark ? 0.20 : 0.10) : cs.surfaceContainerLowest,
+            borderRadius: Radii.brLg,
+            border: Border.all(color: selected ? a : cs.outlineVariant.withValues(alpha: 0.6), width: selected ? 2 : 1),
+            boxShadow: selected ? [BoxShadow(color: a.withValues(alpha: 0.18), blurRadius: 16, offset: const Offset(0, 6))] : Shadows.soft(cs),
+          ),
+          child: child,
+        ),
+      ),
+    );
+  }
+
+  Widget _check(bool on, [Color? color]) => AnimatedScale(
+        scale: on ? 1 : 0,
+        duration: Motion.of(context, Motion.short),
+        curve: Motion.spring,
+        child: Icon(Icons.check_circle_rounded, color: color ?? context.colors.primary),
+      );
+
+  Widget _aiLoader({required IconData icon, required Color color, required String title, required String subtitle}) {
+    return Center(
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            FadeTransition(
+              opacity: Tween<double>(begin: 0.85, end: 1).animate(_pulseController),
+              child: StitchLoader(size: 104, color: color, center: Icon(icon, color: color, size: 30)),
+            ),
+            const SizedBox(height: Space.xl),
+            Text(title, textAlign: TextAlign.center, style: context.text.titleLarge),
+            const SizedBox(height: Space.xs),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: Space.lg),
+              child: Text(subtitle, textAlign: TextAlign.center, style: context.text.bodyMedium),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _inlineError(String text) => Center(
+        child: EmptyState(icon: Icons.cloud_off_rounded, title: 'Something went wrong', message: text),
+      );
+
+  // --- Step 1: Customer ---
+  Widget _buildCustomerStep() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _stepHeader('Who is this order for?', 'Select an existing client or create a new profile.'),
+        TextField(
+          onChanged: (v) => setState(() => _customerSearch = v),
+          textInputAction: TextInputAction.search,
+          decoration: const InputDecoration(
+            hintText: 'Search by name or phone...',
+            prefixIcon: Icon(Icons.search_rounded),
+          ),
+        ),
+        const SizedBox(height: Space.md),
+        Expanded(
+          child: Consumer(builder: (ctx, ref, child) {
+            final customersAsync = ref.watch(customersProvider);
+            return customersAsync.when(
+              data: (customers) {
+                final filtered = customers.where((c) => c.name.toLowerCase().contains(_customerSearch.toLowerCase()) || (c.phone ?? '').contains(_customerSearch)).toList();
+                if (filtered.isEmpty) {
+                  return const EmptyState(icon: Icons.person_search_rounded, title: 'No customers found');
+                }
+                return ListView.separated(
+                  padding: const EdgeInsets.only(bottom: Space.md),
+                  keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                  itemCount: filtered.length,
+                  separatorBuilder: (_, __) => const SizedBox(height: Space.sm),
+                  itemBuilder: (ctx, i) {
+                    final c = filtered[i];
+                    final isSelected = _selectedCustomerId == c.id;
+                    return EntranceFade.indexed(
+                      i,
+                      child: _selectCard(
+                        selected: isSelected,
+                        onTap: () => setState(() { _selectedCustomerId = c.id; _selectedCustomerName = c.name; }),
+                        padding: const EdgeInsets.all(Space.sm + 2),
+                        child: Row(
+                          children: [
+                            InitialsAvatar(name: c.name),
+                            const SizedBox(width: Space.sm),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(c.name, style: context.text.titleSmall, maxLines: 1, overflow: TextOverflow.ellipsis),
+                                  Text(c.phone ?? 'No phone', style: context.text.bodySmall, maxLines: 1, overflow: TextOverflow.ellipsis),
+                                ],
+                              ),
+                            ),
+                            _check(isSelected),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                );
+              },
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (e, _) => const Center(child: Text('Error loading customers')),
+            );
+          }),
+        ),
+      ],
+    );
+  }
+
+  // --- Step 2: Garment ---
+  Widget _buildGarmentStep() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _stepHeader('What are we making?', 'Our AI will tailor the measurement flow based on this choice.'),
+        Expanded(
+          child: GridView.builder(
+            padding: const EdgeInsets.only(bottom: Space.md),
+            gridDelegate: adaptiveGrid(maxTileWidth: 200, mainAxisExtent: context.isSmallPhone ? 120 : 136, spacing: context.gridGap),
+            itemCount: _garmentTypes.length,
+            itemBuilder: (ctx, i) {
+              final g = _garmentTypes[i];
+              final isSelected = _selectedGarment == g['name'];
+              final Color color = g['color'];
+              return EntranceFade.indexed(
+                i,
+                child: _selectCard(
+                  selected: isSelected,
+                  accent: color,
+                  onTap: () => setState(() => _selectedGarment = g['name']),
+                  padding: const EdgeInsets.all(Space.sm),
+                  child: Stack(
+                    children: [
+                      Positioned(top: 0, right: 0, child: _check(isSelected, color)),
+                      Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            AnimatedScale(
+                              scale: isSelected ? 1.12 : 1,
+                              duration: Motion.of(context, Motion.medium),
+                              curve: Motion.spring,
+                              child: IconBadge(icon: g['icon'], color: color, size: 52),
+                            ),
+                            const SizedBox(height: Space.sm),
+                            Text(
+                              g['name'],
+                              textAlign: TextAlign.center,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: context.text.labelLarge?.copyWith(
+                                fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  // --- Step 1: Prediction Method ---
+  Widget _buildPredictionMethodStep() {
+    Widget option({
+      required bool selected,
+      required VoidCallback onTap,
+      required IconData icon,
+      required String title,
+      required String body,
+      required Color color,
+    }) {
+      return _selectCard(
+        selected: selected,
+        accent: color,
+        onTap: onTap,
+        padding: const EdgeInsets.all(Space.md + 4),
+        child: Row(
+          children: [
+            IconBadge(icon: icon, color: color, size: 52),
+            const SizedBox(width: Space.md),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(title, style: context.text.titleMedium),
+                  const SizedBox(height: Space.xxs),
+                  Text(body, style: context.text.bodySmall),
+                ],
+              ),
+            ),
+            const SizedBox(width: Space.xs),
+            _check(selected, color),
+          ],
+        ),
+      );
+    }
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.only(bottom: Space.md),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _stepHeader('Select Prediction Model', 'Choose how you want AI to assist with measurements.'),
+          EntranceFade.indexed(
+            1,
+            child: option(
+              selected: _predictionMethod == 'FOUNDRY',
+              onTap: () => setState(() => _predictionMethod = 'FOUNDRY'),
+              icon: Icons.psychology_rounded,
+              title: 'AI Foundry',
+              body: 'Full clothing prediction. Uses existing AI model with all supported clothing categories.',
+              color: context.colors.tertiary,
+            ),
+          ),
+          const SizedBox(height: Space.md),
+          EntranceFade.indexed(
+            2,
+            child: option(
+              selected: _predictionMethod == 'CUSTOM_ML',
+              onTap: () => setState(() {
+                 _predictionMethod = 'CUSTOM_ML';
+                 if (!(_selectedGarment?.contains('Shirt') ?? false) && !(_selectedGarment?.contains('Trouser') ?? false)) {
+                     _selectedGarment = null;
+                 }
+              }),
+              icon: Icons.bolt_rounded,
+              title: 'Custom ML Model',
+              body: 'Our trained internal model. Currently supports ONLY Shirts and Trousers.',
+              color: context.status.success,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // --- Step 3: Priority Input ---
+  Widget _buildPriorityInputStep() {
+    if (_loadingTemplate) return const Center(child: CircularProgressIndicator());
+    
+    final fields = (_measurementTemplate?['fields'] as List? ?? []).cast<Map<String, dynamic>>();
+    final requiredFields = fields.where((f) => f['is_required'] == true).toList();
+    final optionalFields = fields.where((f) => f['is_required'] != true).toList();
+    
+    return SingleChildScrollView(
+      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+      padding: const EdgeInsets.only(bottom: Space.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _stepHeader(
+            'Measurements Input',
+            'Provide required measurements. Optional ones can be left blank, and AI can suggest them.',
+            Icons.auto_awesome_rounded,
+          ),
+          if (requiredFields.isNotEmpty) ...[
+            Text('Required Measurements', style: context.text.titleSmall),
+            const SizedBox(height: Space.sm),
+            ...requiredFields.map((f) => _buildMeasurementRow(f, true)),
+            const SizedBox(height: Space.md),
+          ],
+          if (optionalFields.isNotEmpty) ...[
+            Text('Optional Measurements', style: context.text.titleSmall),
+            const SizedBox(height: Space.sm),
+            ...optionalFields.map((f) => _buildMeasurementRow(f, false)),
+            const SizedBox(height: Space.md),
+          ],
+          AnimatedSize(
+            duration: Motion.of(context, Motion.medium),
+            curve: Motion.emphasized,
+            alignment: Alignment.topCenter,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                if (_customMeasurements.isNotEmpty) ...[
+                  Text('Custom Measurements', style: context.text.titleSmall),
+                  const SizedBox(height: Space.sm),
+                  ..._customMeasurements.map((f) => _buildCustomMeasurementRow(f)),
+                  const SizedBox(height: Space.md),
+                ],
+              ],
+            ),
+          ),
+          Center(
+            child: TextButton.icon(
+              onPressed: () {
+                setState(() {
+                  _customMeasurementCounter++;
+                  final newId = 1000 + _customMeasurementCounter;
+                  _customMeasurements.add({'id': newId, 'field_name': ''});
+                  _customMeasurementControllers[newId] = TextEditingController();
+                });
+              },
+              icon: const Icon(Icons.add_circle_outline_rounded),
+              label: const Text('Add Other Measurement'),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMeasurementRow(Map<String, dynamic> f, bool isRequired) {
+    final cs = context.colors;
+    final fieldW = context.responsive<double>(xs: 104, sm: 116, md: 128);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: Space.sm),
+      child: TsCard(
+        shadow: false,
+        padding: const EdgeInsets.fromLTRB(Space.md, Space.sm, Space.sm, Space.sm),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Flexible(
+                        child: Text(
+                          f['field_name'],
+                          style: context.text.titleSmall,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      if (isRequired) Text(' *', style: TextStyle(fontWeight: FontWeight.w800, color: cs.error)),
+                    ],
+                  ),
+                  Text(
+                    isRequired ? 'Required' : 'Optional',
+                    style: context.text.labelSmall?.copyWith(color: isRequired ? cs.primary : cs.onSurfaceVariant),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: Space.xs),
+            SizedBox(
+              width: fieldW,
+              child: TextField(
+                controller: _measurementControllers[f['id']],
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                textInputAction: TextInputAction.next,
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
+                ],
+                style: context.text.titleSmall,
+                textAlign: TextAlign.center,
+                decoration: InputDecoration(
+                  hintText: f['placeholder'] ?? 'e.g. 10.5',
+                  hintStyle: context.text.bodySmall,
+                  suffixText: f['unit'],
+                  isDense: true,
+                  contentPadding: const EdgeInsets.symmetric(horizontal: Space.xs, vertical: 12),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCustomMeasurementRow(Map<String, dynamic> f) {
+    final id = f['id'] as int;
+    return Padding(
+      key: ValueKey('custom-$id'),
+      padding: const EdgeInsets.only(bottom: Space.sm),
+      child: EntranceFade(
+        child: TsCard(
+          shadow: false,
+          padding: const EdgeInsets.fromLTRB(Space.md, Space.xs, Space.xxs, Space.xs),
+          child: Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  onChanged: (val) {
+                    final idx = _customMeasurements.indexWhere((m) => m['id'] == id);
+                    if (idx != -1) _customMeasurements[idx]['field_name'] = val;
+                  },
+                  textCapitalization: TextCapitalization.words,
+                  style: context.text.titleSmall,
+                  decoration: const InputDecoration(
+                    hintText: 'Measurement Name',
+                    filled: false,
+                    border: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                    isDense: true,
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: context.responsive<double>(xs: 88, md: 104),
+                child: TextField(
+                  controller: _customMeasurementControllers[id],
+                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
+                  ],
+                  style: context.text.titleSmall,
+                  textAlign: TextAlign.center,
+                  decoration: const InputDecoration(
+                    hintText: '0.0',
+                    isDense: true,
+                    contentPadding: EdgeInsets.symmetric(horizontal: Space.xs, vertical: 12),
+                  ),
+                ),
+              ),
+              IconButton(
+                tooltip: 'Remove measurement',
+                icon: const Icon(Icons.close_rounded),
+                onPressed: () {
+                  setState(() {
+                    _customMeasurements.removeWhere((m) => m['id'] == id);
+                    _customMeasurementControllers.remove(id)?.dispose();
+                  });
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+
+  // --- Step 5: AI Prediction Review ---
+  Widget _buildAiPredictionStep() {
+    if (_aiPredictionLoading) {
+      return _aiLoader(
+        icon: _predictionMethod == 'FOUNDRY' ? Icons.auto_awesome_rounded : Icons.memory_rounded,
+        color: _predictionMethod == 'FOUNDRY' ? context.colors.tertiary : context.status.success,
+        title: _predictionMethod == 'FOUNDRY' ? 'Microsoft Foundry is Thinking...' : 'Running Custom ML...',
+        subtitle: _predictionMethod == 'FOUNDRY'
+            ? 'Analyzing dataset context to generate perfect measurements.'
+            : 'Processing garment features through the predictive model.',
+      );
+    }
+    
+    if (_aiPredictionError != null) {
+      return _inlineError(_aiPredictionError!);
+    }
+    
+    final cs = context.colors;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _stepHeader('Prediction Results', 'Select an option below. You can edit the values after selecting.'),
+        Expanded(
+          flex: 3,
+          child: ListView.builder(
+            padding: const EdgeInsets.only(bottom: Space.sm),
+            itemCount: _aiPredictions.length,
+            itemBuilder: (ctx, i) {
+              final p = _aiPredictions[i];
+              final measurements = p['measurements'] as Map<String, dynamic>;
+              final isSelected = _selectedOptionIndex == i;
+              
+              return Padding(
+                padding: const EdgeInsets.only(bottom: Space.sm),
+                child: EntranceFade.indexed(
+                  i,
+                  child: _selectCard(
+                    selected: isSelected,
+                    onTap: () {
+                       setState(() {
+                           _selectedOptionIndex = i;
+                           measurements.forEach((k, v) {
+                               if (v.toString() != '0' && v.toString() != '0.0') {
+                                   _confirmedMeasurements[k] = v.toString();
+                                   _isAiGenerated[k] = true;
+                               }
+                           });
+                       });
+                    },
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                _predictionMethod == 'FOUNDRY'
+                                    ? 'Recommended Measurements'
+                                    : 'Option ${p['option_number']} - ${p['source']}',
+                                style: context.text.titleSmall?.copyWith(color: isSelected ? cs.primary : null),
+                              ),
+                            ),
+                            _check(isSelected),
+                          ],
+                        ),
+                        if (p['support_percent'] != null) ...[
+                          const SizedBox(height: Space.xxs),
+                          StatusPill(label: 'Support: ${p['support_percent']}%', color: context.status.success, dense: true),
+                        ],
+                        const SizedBox(height: Space.sm),
+                        Wrap(
+                          spacing: Space.xs,
+                          runSpacing: Space.xs,
+                          children: measurements.entries
+                              .where((e) => e.value.toString() != '0' && e.value.toString() != '0.0')
+                              .map((e) => Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                    decoration: BoxDecoration(
+                                      color: cs.surfaceContainerHigh,
+                                      borderRadius: Radii.brPill,
+                                    ),
+                                    child: Text(
+                                      '${e.key.replaceAll('_', ' ').toUpperCase()}: ${e.value}',
+                                      style: context.text.labelSmall?.copyWith(color: cs.onSurface),
+                                    ),
+                                  ))
+                              .toList(),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+        AnimatedSize(
+          duration: Motion.of(context, Motion.medium),
+          curve: Motion.emphasized,
+          child: _selectedOptionIndex != null
+              ? Padding(
+                  padding: const EdgeInsets.only(top: Space.xs, bottom: Space.sm),
+                  child: TsButton.secondary(
+                    label: 'Edit Measurements',
+                    icon: Icons.edit_rounded,
+                    onPressed: _showEditMeasurementsDialog,
+                  ),
+                )
+              : const SizedBox(width: double.infinity),
+        ),
+      ],
+    );
+  }
+
+  void _showEditMeasurementsDialog() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      showDragHandle: true,
+      builder: (ctx) {
+        return StatefulBuilder(
+          builder: (modalCtx, setModalState) {
+            return Padding(
+              padding: EdgeInsets.only(bottom: MediaQuery.of(modalCtx).viewInsets.bottom),
+              child: Container(
+                padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+                constraints: BoxConstraints(maxHeight: MediaQuery.of(modalCtx).size.height * 0.8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('Edit Measurements', style: Theme.of(modalCtx).textTheme.titleLarge),
+                        IconButton(tooltip: 'Close', icon: const Icon(Icons.close_rounded), onPressed: () => Navigator.pop(modalCtx)),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Text('Adjust the AI recommendations manually if needed.', style: Theme.of(modalCtx).textTheme.bodyMedium),
+                    const SizedBox(height: 16),
+                    Expanded(
+                      child: ListView(
+                        shrinkWrap: true,
+                        children: _confirmedMeasurements.keys.map((k) {
+                          if (_measurementTemplate?['fields']?.any((f) => f['field_name'].toString().toLowerCase() == k.toLowerCase()) ?? false) {
+                              return const SizedBox.shrink();
+                          }
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 12.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(child: Text(k.replaceAll('_', ' ').toUpperCase(), style: Theme.of(modalCtx).textTheme.titleSmall)),
+                                SizedBox(
+                                  width: 120,
+                                  child: TextFormField(
+                                    initialValue: _confirmedMeasurements[k],
+                                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                                    decoration: InputDecoration(
+                                      isDense: true,
+                                      hintText: 'Rec: ${_confirmedMeasurements[k]}',
+                                    ),
+                                    onChanged: (val) {
+                                       setState(() {
+                                           _confirmedMeasurements[k] = val;
+                                       });
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () => Navigator.pop(modalCtx),
+                        child: const Text('Done'),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  // --- Step 5: Preferences ---
+  Widget _buildPreferencesStep() {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.only(bottom: Space.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _stepHeader('Style & Fit', 'Tell the AI about the occasion so it can recommend the right fabric.'),
+          EntranceFade.indexed(1, child: _buildChipSelector('Occasion', ['Everyday / Casual', 'Office / Work', 'Wedding', 'Party'], _occasion, (v) => setState(()=> _occasion = v))),
+          const SizedBox(height: Space.lg),
+          EntranceFade.indexed(2, child: _buildChipSelector('Weather', ['Warm', 'Hot', 'Cold', 'Humid'], _weather, (v) => setState(()=> _weather = v))),
+          const SizedBox(height: Space.lg),
+          EntranceFade.indexed(3, child: _buildChipSelector('Fit', ['Regular Fit', 'Slim Fit', 'Modern Fit'], _fit, (v) => setState(()=> _fit = v))),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildChipSelector(String title, List<String> options, String selected, Function(String) onSelect) {
+    final cs = context.colors;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(title, style: context.text.titleSmall),
+        const SizedBox(height: Space.sm),
+        Wrap(
+          spacing: Space.xs, runSpacing: Space.xs,
+          children: options.map((opt) {
+            final isSel = selected == opt;
+            return Semantics(
+              selected: isSel,
+              button: true,
+              child: Pressable(
+                onTap: () {
+                  HapticFeedback.selectionClick();
+                  onSelect(opt);
+                },
+                child: AnimatedContainer(
+                  duration: Motion.of(context, Motion.short),
+                  curve: Motion.standard,
+                  constraints: const BoxConstraints(minHeight: 44),
+                  padding: const EdgeInsets.symmetric(horizontal: Space.md, vertical: 10),
+                  decoration: BoxDecoration(
+                    color: isSel ? cs.primary : cs.surfaceContainerLowest,
+                    borderRadius: Radii.brPill,
+                    border: Border.all(color: isSel ? cs.primary : cs.outlineVariant),
+                    boxShadow: isSel ? [BoxShadow(color: cs.primary.withValues(alpha: 0.25), blurRadius: 10, offset: const Offset(0, 4))] : null,
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      AnimatedSize(
+                        duration: Motion.of(context, Motion.short),
+                        child: isSel
+                            ? Padding(
+                                padding: const EdgeInsets.only(right: 4),
+                                child: Icon(Icons.check_rounded, size: 16, color: cs.onPrimary),
+                              )
+                            : const SizedBox.shrink(),
+                      ),
+                      Text(
+                        opt,
+                        style: context.text.labelLarge?.copyWith(
+                          color: isSel ? cs.onPrimary : cs.onSurface,
+                          fontWeight: isSel ? FontWeight.w700 : FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }).toList(),
+        ),
+      ],
+    );
+  }
+
+  // --- Step 6: Fabric Rec ---
+  Widget _buildFabricRecStep() {
+    if (_fabricRecLoading) {
+      return _aiLoader(
+        icon: Icons.style_rounded,
+        color: context.colors.tertiary,
+        title: 'Analyzing Preferences...',
+        subtitle: 'Curating the best fabric options for your style.',
+      );
+    }
+    if (_fabricRecError != null) return _inlineError(_fabricRecError!);
+
+    final cs = context.colors;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _stepHeader('Top Fabrics', 'Pick the fabric that suits this order best.'),
+        Expanded(
+          child: ListView.builder(
+            padding: const EdgeInsets.only(bottom: Space.md),
+            itemCount: _fabricRecommendations.length,
+            itemBuilder: (ctx, i) {
+              final rec = _fabricRecommendations[i];
+              final isSel = _selectedFabricIndex == i;
+              final pct = num.tryParse('${rec['suitability_percentage']}') ?? 0;
+              return Padding(
+                padding: const EdgeInsets.only(bottom: Space.sm),
+                child: EntranceFade.indexed(
+                  i,
+                  child: _selectCard(
+                    selected: isSel,
+                    onTap: () => setState(() => _selectedFabricIndex = i),
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          width: 60,
+                          height: 60,
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              TweenAnimationBuilder<double>(
+                                tween: Tween(begin: 0, end: (pct / 100).clamp(0, 1).toDouble()),
+                                duration: Motion.of(context, const Duration(milliseconds: 800)),
+                                curve: Motion.emphasizedDecelerate,
+                                builder: (context, v, _) => SizedBox.expand(
+                                  child: CircularProgressIndicator(
+                                    value: v,
+                                    strokeWidth: 5,
+                                    color: cs.primary,
+                                    backgroundColor: cs.primary.withValues(alpha: 0.12),
+                                  ),
+                                ),
+                              ),
+                              Text('${rec['suitability_percentage']}%', style: context.text.labelLarge?.copyWith(color: cs.primary)),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: Space.md),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(rec['fabric_name'] ?? '', style: context.text.titleMedium),
+                              const SizedBox(height: Space.xxs),
+                              Text(rec['reason'] ?? '', style: context.text.bodySmall),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: Space.xs),
+                        _check(isSel),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  // --- Step 7: Estimation ---
+  Widget _buildEstimationStep() {
+    if (_fabricEstLoading) {
+      return _aiLoader(
+        icon: Icons.straighten_rounded,
+        color: context.status.success,
+        title: 'Estimating Required Fabric...',
+        subtitle: 'Calculating exact meterage based on measurements.',
+      );
+    }
+    
+    final cs = context.colors;
+    final meters = num.tryParse('${_fabricEstimation?['recommended_quantity_meters'] ?? '2.0'}');
+    return SingleChildScrollView(
+      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+      padding: const EdgeInsets.only(bottom: Space.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _stepHeader('Fabric Estimate', 'Review the AI estimate or override it.'),
+          EntranceFade(
+            delay: Motion.staggerStep,
+            child: TsCard(
+              gradient: Gradients.hero(cs),
+              padding: EdgeInsets.all(context.isSmallPhone ? Space.lg : Space.xl),
+              child: Column(
+                children: [
+                  const Icon(Icons.straighten_rounded, size: 48, color: Colors.white),
+                  const SizedBox(height: Space.sm),
+                  Text('Fabric Required', style: context.text.titleMedium?.copyWith(color: Colors.white.withValues(alpha: 0.85))),
+                  const SizedBox(height: Space.xs),
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: meters == null
+                        ? Text('${_fabricEstimation?['recommended_quantity_meters'] ?? '2.0'} Meters',
+                            style: context.text.displaySmall?.copyWith(color: Colors.white))
+                        : AnimatedCount(
+                            value: meters,
+                            decimals: meters is int ? 0 : 2,
+                            suffix: ' Meters',
+                            style: context.text.displaySmall?.copyWith(color: Colors.white),
+                          ),
+                  ),
+                  if (_fabricEstimation != null && _fabricEstimation!['estimated_range'] != null)
+                    Text(
+                      'Range: ${_fabricEstimation!['estimated_range']['min']} - ${_fabricEstimation!['estimated_range']['max']} m',
+                      style: context.text.bodyMedium?.copyWith(color: Colors.white.withValues(alpha: 0.8)),
+                    ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: Space.lg),
+          EntranceFade(
+            delay: Motion.staggerStep * 2,
+            child: TextField(
+              controller: _manualQuantityCtrl,
+              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              textInputAction: TextInputAction.done,
+              scrollPadding: const EdgeInsets.only(bottom: 160),
+              decoration: const InputDecoration(
+                labelText: 'Override Quantity (m)',
+                prefixIcon: Icon(Icons.edit_note_rounded),
+                suffixText: 'm',
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // --- Step 8: Assign ---
+  Widget _buildAssignStep() {
+    final cs = context.colors;
+    return SingleChildScrollView(
+      padding: const EdgeInsets.only(bottom: Space.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+        _stepHeader('Assign & Save', 'Double-check the order before saving.'),
+        EntranceFade(
+          delay: Motion.staggerStep,
+          child: TsCard(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.receipt_long_rounded, color: cs.primary, size: 20),
+                    const SizedBox(width: Space.xs),
+                    Text('Order Summary', style: context.text.titleSmall),
+                  ],
+                ),
+                const SizedBox(height: Space.sm),
+                _summaryRow('Customer', _selectedCustomerName ?? ''),
+                _summaryRow('Prediction Model', _predictionMethod == 'FOUNDRY' ? 'AI Foundry' : 'Custom ML Model'),
+                _summaryRow('Garment', _selectedGarment ?? ''),
+                _summaryRow('Fabric', _fabricRecommendations.isNotEmpty && _selectedFabricIndex != null ? _fabricRecommendations[_selectedFabricIndex!]['fabric_name'] : 'N/A'),
+                _summaryRow('Quantity', '${_manualQuantityCtrl.text} meters'),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: Space.lg),
+        Text('Assign to Staff', style: context.text.titleSmall),
+        const SizedBox(height: Space.sm),
+        _staffList.isEmpty
+          ? Text('No staff available', style: TextStyle(color: cs.error))
+          : DropdownButtonFormField<int>(
+              value: _staffList.any((s) => s['id'] == _selectedStaffId) ? _selectedStaffId : null,
+              isExpanded: true,
+              borderRadius: Radii.brMd,
+              decoration: const InputDecoration(prefixIcon: Icon(Icons.person_pin_outlined)),
+              items: _staffList.map((s) => DropdownMenuItem<int>(
+                value: s['id'],
+                child: Text(s['full_name'] ?? s['name'] ?? 'Unknown', overflow: TextOverflow.ellipsis),
+              )).toList(),
+              onChanged: (v) => setState(() => _selectedStaffId = v),
+            ),
+      ],
+      ),
+    );
+  }
+
+  Widget _summaryRow(String k, String v) {
+      return Padding(
+          padding: const EdgeInsets.symmetric(vertical: Space.xxs + 2),
+          child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                  Text(k, style: context.text.bodyMedium),
+                  const SizedBox(width: Space.md),
+                  Expanded(
+                    child: Text(
+                      v,
+                      style: context.text.titleSmall,
+                      textAlign: TextAlign.right,
+                    ),
+                  ),
+              ]
+          )
+      );
+  }
+
+  // --- Footer ---
+  Widget _buildFooter() {
+    bool isLoading = _aiPredictionLoading || _fabricRecLoading || _fabricEstLoading || _loadingInit || _loadingTemplate;
+    final cs = context.colors;
+    final isLast = _currentStep == _stepTitles.length - 1;
+
+    return AnimatedSlide(
+      offset: isLoading ? const Offset(0, 1) : Offset.zero,
+      duration: Motion.of(context, Motion.medium),
+      curve: Motion.emphasized,
+      child: AnimatedOpacity(
+        opacity: isLoading ? 0 : 1,
+        duration: Motion.of(context, Motion.short),
+        child: IgnorePointer(
+          ignoring: isLoading,
+          child: ClipRect(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+              child: Container(
+                padding: EdgeInsets.fromLTRB(context.pagePadding, Space.sm, context.pagePadding, Space.md),
+                decoration: BoxDecoration(
+                  color: cs.surface.withValues(alpha: 0.85),
+                  border: Border(top: BorderSide(color: cs.outlineVariant.withValues(alpha: 0.5))),
+                ),
+                child: Row(
+                  children: [
+                    AnimatedSize(
+                      duration: Motion.of(context, Motion.short),
+                      child: _currentStep > 0
+                          ? Padding(
+                              padding: const EdgeInsets.only(right: Space.sm),
+                              child: TextButton.icon(
+                                onPressed: _prevStep,
+                                icon: const Icon(Icons.arrow_back_rounded, size: 18),
+                                label: const Text('Back'),
+                              ),
+                            )
+                          : const SizedBox.shrink(),
+                    ),
+                    Expanded(
+                      child: TsButton(
+                        label: isLast ? 'Save Order' : 'Continue',
+                        icon: isLast ? Icons.check_rounded : Icons.arrow_forward_rounded,
+                        loading: _saving,
+                        onPressed: _saving ? null : (_currentStep == _stepTitles.length - 1 ? _saveOrder : _nextStep),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

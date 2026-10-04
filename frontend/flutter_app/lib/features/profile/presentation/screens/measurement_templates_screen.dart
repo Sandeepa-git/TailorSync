@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/network/providers/api_provider.dart';
+import '../../../../core/widgets/skeleton_loading.dart';
+import '../../../../ui/ui.dart';
 
 class MeasurementTemplatesScreen extends ConsumerStatefulWidget {
   const MeasurementTemplatesScreen({super.key});
@@ -14,13 +15,11 @@ class MeasurementTemplatesScreen extends ConsumerStatefulWidget {
 class _MeasurementTemplatesScreenState extends ConsumerState<MeasurementTemplatesScreen> {
   bool _loading = true;
   List<dynamic> _templates = [];
-
   @override
   void initState() {
     super.initState();
     _loadTemplates();
   }
-
   Future<void> _loadTemplates() async {
     try {
       final api = ref.read(apiClientProvider);
@@ -43,77 +42,138 @@ class _MeasurementTemplatesScreenState extends ConsumerState<MeasurementTemplate
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FA),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFFF8F9FA),
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Color(0xFF1A237E)),
-          onPressed: () => context.pop(),
-        ),
-        title: Text(
-          'Measurement Templates',
-          style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: const Color(0xFF1A237E)),
-        ),
-        centerTitle: true,
+    final cs = context.colors;
+    return TsScrollPage(
+      title: 'Measurement Templates',
+      leading: IconButton(
+        tooltip: 'Back',
+        icon: const Icon(Icons.arrow_back_rounded),
+        onPressed: () => context.pop(),
       ),
-      body: _loading
-          ? const Center(child: CircularProgressIndicator(color: Color(0xFF1A237E)))
-          : _templates.isEmpty
-              ? const Center(child: Text('No templates found.'))
-              : ListView.builder(
-                  padding: const EdgeInsets.all(20),
-                  itemCount: _templates.length,
-                  itemBuilder: (context, index) {
-                    final t = _templates[index];
-                    final fields = t['fields'] as List? ?? [];
-                    return Container(
-                      margin: const EdgeInsets.only(bottom: 16),
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: const Color(0xFFE8EAF6)),
-                        boxShadow: [
-                          BoxShadow(color: const Color(0xFF1A237E).withValues(alpha: 0.03), blurRadius: 10, offset: const Offset(0, 4)),
-                        ],
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(t['category_name'], style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.bold, color: const Color(0xFF1A237E))),
-                          const SizedBox(height: 12),
-                          Wrap(
-                            spacing: 8,
-                            runSpacing: 8,
-                            children: fields.map((f) {
-                              return Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFFF1F3FB),
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: Text(
-                                  f['field_name'],
-                                  style: GoogleFonts.inter(fontSize: 12, color: const Color(0xFF5C6BC0)),
-                                ),
-                              );
-                            }).toList(),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
       floatingActionButton: FloatingActionButton(
+        heroTag: 'fab-templates',
+        tooltip: 'Add template',
         onPressed: () {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Custom templates coming soon!')),
           );
         },
-        backgroundColor: const Color(0xFF1A237E),
-        child: const Icon(Icons.add, color: Colors.white),
+        child: const Icon(Icons.add_rounded),
+      ),
+      slivers: [
+        if (_loading)
+          const SliverToBoxAdapter(child: Shimmer(child: Column(children: [
+            SkeletonContainer(height: 120, borderRadius: Radii.lg),
+            SizedBox(height: Space.sm),
+            SkeletonContainer(height: 120, borderRadius: Radii.lg),
+            SizedBox(height: Space.sm),
+            SkeletonContainer(height: 120, borderRadius: Radii.lg),
+          ])))
+        else if (_templates.isEmpty)
+          const SliverFillRemaining(
+            hasScrollBody: false,
+            child: EmptyState(icon: Icons.straighten_rounded, title: 'No templates found.'),
+          )
+        else
+          SliverList.separated(
+            itemCount: _templates.length,
+            separatorBuilder: (_, __) => SizedBox(height: context.gridGap),
+            itemBuilder: (context, index) {
+              final t = _templates[index];
+              final fields = t['fields'] as List? ?? [];
+              return EntranceFade.indexed(
+                index,
+                child: _TemplateCard(
+                  title: t['category_name'],
+                  fields: [for (final f in fields) f['field_name'].toString()],
+                  color: cs.primary,
+                ),
+              );
+            },
+          ),
+      ],
+    );
+  }
+}
+
+/// Expandable template card with field chips.
+class _TemplateCard extends StatefulWidget {
+  final String title;
+  final List<String> fields;
+  final Color color;
+  const _TemplateCard({required this.title, required this.fields, required this.color});
+
+  @override
+  State<_TemplateCard> createState() => _TemplateCardState();
+}
+
+class _TemplateCardState extends State<_TemplateCard> {
+  bool _open = true;
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = context.colors;
+    return TsCard(
+      padding: EdgeInsets.zero,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          InkWell(
+            borderRadius: Radii.brLg,
+            onTap: () => setState(() => _open = !_open),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(Space.md, Space.sm, Space.xs, Space.sm),
+              child: Row(
+                children: [
+                  IconBadge(icon: Icons.checkroom_rounded, color: widget.color, size: 40),
+                  const SizedBox(width: Space.sm),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(widget.title, style: context.text.titleMedium, maxLines: 1, overflow: TextOverflow.ellipsis),
+                        Text('${widget.fields.length} measurements', style: context.text.bodySmall),
+                      ],
+                    ),
+                  ),
+                  AnimatedRotation(
+                    turns: _open ? 0.5 : 0,
+                    duration: Motion.of(context, Motion.short),
+                    child: const Padding(
+                      padding: EdgeInsets.all(Space.sm),
+                      child: Icon(Icons.keyboard_arrow_down_rounded),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          AnimatedSize(
+            duration: Motion.of(context, Motion.medium),
+            curve: Motion.emphasized,
+            alignment: Alignment.topCenter,
+            child: _open
+                ? Padding(
+                    padding: const EdgeInsets.fromLTRB(Space.md, 0, Space.md, Space.md),
+                    child: Wrap(
+                      spacing: Space.xs,
+                      runSpacing: Space.xs,
+                      children: [
+                        for (final f in widget.fields)
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                            decoration: BoxDecoration(
+                              color: cs.primaryContainer.withValues(alpha: context.isDark ? 0.5 : 0.6),
+                              borderRadius: Radii.brPill,
+                            ),
+                            child: Text(f, style: context.text.labelMedium?.copyWith(color: cs.onPrimaryContainer)),
+                          ),
+                      ],
+                    ),
+                  )
+                : const SizedBox(width: double.infinity),
+          ),
+        ],
       ),
     );
   }

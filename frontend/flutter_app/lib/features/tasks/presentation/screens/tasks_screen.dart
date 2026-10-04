@@ -2,12 +2,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../../orders/presentation/providers/orders_provider.dart';
 import '../../../../core/network/providers/api_provider.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/skeleton_loading.dart';
+import '../../../../ui/ui.dart';
 
 class TasksScreen extends ConsumerStatefulWidget {
   final String? initialFilter;
@@ -21,16 +21,13 @@ class TasksScreen extends ConsumerStatefulWidget {
 class _TasksScreenState extends ConsumerState<TasksScreen> {
   late String _selectedFilter;
   Map<String, dynamic>? _user;
-
   bool _loading = true;
   bool _error = false;
   List<dynamic> _allOrders = [];
   List<dynamic> _tasks = [];
-
   final TextEditingController _searchController = TextEditingController();
   Timer? _debounceTimer;
   String _searchQuery = '';
-
   @override
   void initState() {
     super.initState();
@@ -38,7 +35,6 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
     _searchController.addListener(_onSearchChanged);
     _loadData();
   }
-
   @override
   void dispose() {
     _searchController.removeListener(_onSearchChanged);
@@ -46,7 +42,6 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
     _debounceTimer?.cancel();
     super.dispose();
   }
-
   void _onSearchChanged() {
     _debounceTimer?.cancel();
     _debounceTimer = Timer(const Duration(milliseconds: 300), () {
@@ -57,7 +52,6 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
       }
     });
   }
-
   Future<void> _loadData() async {
     setState(() {
       _loading = true;
@@ -91,7 +85,6 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
       }
     }
   }
-
   static const List<String> _stages = [
     'Order Received',
     'Cutting',
@@ -101,55 +94,73 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
     'Ready',
     'Delivered',
   ];
+  Future<void> _updateDueDateOnly(BuildContext context, dynamic task) async {
+    final currentDueDateStr = task['due_date']?.toString();
+    final initialDate = currentDueDateStr != null ? DateTime.tryParse(currentDueDateStr) : DateTime.now().add(const Duration(days: 7));
+    
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: initialDate ?? DateTime.now().add(const Duration(days: 7)),
+      firstDate: DateTime.now().subtract(const Duration(days: 30)),
+      lastDate: DateTime.now().add(const Duration(days: 365)),
+    );
+    
+    if (picked != null) {
+      final newDateIso = picked.toIso8601String();
+      if (currentDueDateStr?.split('T')[0] == newDateIso.split('T')[0]) return; // no change
+      
+      try {
+        final api = ref.read(apiClientProvider);
+        await api.updateOrder(task['id'], {
+          'due_date': newDateIso,
+        });
+        ref.read(refreshTriggerProvider.notifier).state++;
+        _loadData();
+        if (context.mounted) {
+           ScaffoldMessenger.of(context).showSnackBar(
+             const SnackBar(
+               content: Text('Due date updated'),
+               backgroundColor: Color(0xFF2ECC71),
+               behavior: SnackBarBehavior.floating,
+             ),
+           );
+        }
+      } catch (e) {
+        if (context.mounted) {
+           ScaffoldMessenger.of(context).showSnackBar(
+             const SnackBar(
+               content: Text('Failed to update due date'),
+               backgroundColor: AppTheme.error,
+               behavior: SnackBarBehavior.floating,
+             ),
+           );
+        }
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     if (_loading) {
-      return Scaffold(
-        backgroundColor: AppTheme.scaffoldBg,
-        appBar: AppBar(
-          backgroundColor: AppTheme.scaffoldBg,
-          elevation: 0,
-          centerTitle: true,
-          title: Text('Tasks', style: GoogleFonts.outfit(color: AppTheme.primary, fontWeight: FontWeight.bold, fontSize: 19, letterSpacing: -0.3)),
-        ),
-        body: const TasksListSkeleton(),
+      return TsScrollPage(
+        title: 'Tasks',
+        automaticallyImplyLeading: false,
+        padSlivers: false,
+        slivers: const [SliverToBoxAdapter(child: TasksListSkeleton())],
       );
     }
 
     if (_error) {
-      return Scaffold(
-        backgroundColor: AppTheme.scaffoldBg,
-        appBar: AppBar(
-          backgroundColor: AppTheme.scaffoldBg,
-          elevation: 0,
-          centerTitle: true,
-          title: Text('Tasks', style: GoogleFonts.outfit(color: AppTheme.primary, fontWeight: FontWeight.bold, fontSize: 19, letterSpacing: -0.3)),
-        ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                width: 64,
-                height: 64,
-                decoration: BoxDecoration(
-                  color: AppTheme.error.withValues(alpha: 0.08),
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(Icons.error_outline, size: 32, color: AppTheme.error),
-              ),
-              const SizedBox(height: 16),
-              Text('Failed to load tasks', style: GoogleFonts.inter(fontSize: 16, color: AppTheme.primary, fontWeight: FontWeight.bold)),
-              const SizedBox(height: 16),
-              ElevatedButton.icon(
-                onPressed: _loadData,
-                icon: const Icon(Icons.refresh),
-                label: const Text('Retry'),
-              ),
-            ],
+      return TsScrollPage(
+        title: 'Tasks',
+        automaticallyImplyLeading: false,
+        onRefresh: _loadData,
+        slivers: [
+          SliverFillRemaining(
+            hasScrollBody: false,
+            child: ErrorState(title: 'Failed to load tasks', onRetry: _loadData),
           ),
-        ),
+        ],
       );
     }
 
@@ -208,291 +219,139 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
       return due.isBefore(DateTime.now().subtract(const Duration(days: 1)));
     }).length;
 
-    return Scaffold(
-      backgroundColor: AppTheme.scaffoldBg,
-      appBar: AppBar(
-        backgroundColor: AppTheme.scaffoldBg,
-        elevation: 0,
-        title: Text(
-          'Tasks',
-          style: GoogleFonts.outfit(
-            fontWeight: FontWeight.bold,
-            color: AppTheme.primary,
-            fontSize: 19,
-            letterSpacing: -0.3,
+    final pad = context.pagePadding;
+    final st = context.status;
+
+    return TsScrollPage(
+      title: '${_user?['full_name']?.split(' ').first ?? 'Your'} Tasks',
+      automaticallyImplyLeading: false,
+      padSlivers: false,
+      onRefresh: _loadData,
+      headerBottom: TsSearchField(
+        controller: _searchController,
+        hint: 'Search by Order ID or Customer Name',
+        onClear: () {
+          _searchController.clear();
+          setState(() => _searchQuery = '');
+        },
+      ),
+      slivers: [
+        SliverPadding(
+          padding: EdgeInsets.fromLTRB(pad, Space.xs, pad, 0),
+          sliver: SliverToBoxAdapter(
+            child: Row(
+              children: [
+                Expanded(
+                  child: _SummaryCard(
+                    label: 'Active Tasks',
+                    value: activeCount,
+                    icon: Icons.work_outline_rounded,
+                    color: st.info,
+                    isSelected: _selectedFilter == 'Active',
+                    onTap: () => setState(() => _selectedFilter = 'Active'),
+                  ),
+                ),
+                SizedBox(width: context.gridGap),
+                Expanded(
+                  child: _SummaryCard(
+                    label: 'Due Today',
+                    value: dueTodayCount,
+                    icon: Icons.schedule_rounded,
+                    color: st.warning,
+                    isSelected: _selectedFilter == 'Due Today',
+                    onTap: () => setState(() => _selectedFilter = 'Due Today'),
+                  ),
+                ),
+                SizedBox(width: context.gridGap),
+                Expanded(
+                  child: _SummaryCard(
+                    label: 'Overdue',
+                    value: overdueCount,
+                    icon: Icons.warning_amber_rounded,
+                    color: overdueCount > 0 ? st.danger : context.colors.onSurfaceVariant,
+                    isSelected: _selectedFilter == 'Overdue',
+                    onTap: () => setState(() => _selectedFilter = 'Overdue'),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
-        centerTitle: true,
-      ),
-      body: RefreshIndicator(
-        onRefresh: _loadData,
-        color: AppTheme.primary,
-        child: SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          padding: EdgeInsets.only(
-            left: 20,
-            right: 20,
-            top: 16,
-            bottom: MediaQuery.of(context).padding.bottom + 84,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                '${_user?['full_name']?.split(' ').first ?? 'Your'} Tasks',
-                style: GoogleFonts.outfit(fontSize: 24, fontWeight: FontWeight.bold, color: AppTheme.primary, letterSpacing: -0.5),
-              ),
-              const SizedBox(height: 16),
-              
-              // Summary Cards Row
-              Row(
-                children: [
-                  Expanded(
-                    child: InkWell(
-                      onTap: () => setState(() => _selectedFilter = 'Active'),
-                      borderRadius: BorderRadius.circular(16),
-                      child: _SummaryCard(
-                        label: 'Active Tasks',
-                        value: '$activeCount',
-                        icon: Icons.work_outline_rounded,
-                        color: const Color(0xFF1565C0),
-                        bgColor: const Color(0xFFE3F2FD),
-                        isSelected: _selectedFilter == 'Active',
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: InkWell(
-                      onTap: () => setState(() => _selectedFilter = 'Due Today'),
-                      borderRadius: BorderRadius.circular(16),
-                      child: _SummaryCard(
-                        label: 'Due Today',
-                        value: '$dueTodayCount',
-                        icon: Icons.schedule_rounded,
-                        color: const Color(0xFFE65100),
-                        bgColor: const Color(0xFFFFF3E0),
-                        isSelected: _selectedFilter == 'Due Today',
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: InkWell(
-                      onTap: () => setState(() => _selectedFilter = 'Overdue'),
-                      borderRadius: BorderRadius.circular(16),
-                      child: _SummaryCard(
-                        label: 'Overdue',
-                        value: '$overdueCount',
-                        icon: Icons.warning_amber_rounded,
-                        color: overdueCount > 0 ? const Color(0xFFC62828) : const Color(0xFF757575),
-                        bgColor: overdueCount > 0 ? const Color(0xFFFFEBEE) : const Color(0xFFF5F5F5),
-                        isSelected: _selectedFilter == 'Overdue',
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-
-              // Search Bar
-              Container(
-                decoration: BoxDecoration(
-                  color: AppTheme.surface,
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: AppTheme.softShadow,
-                ),
-                child: TextField(
-                  controller: _searchController,
-                  decoration: InputDecoration(
-                    hintText: 'Search by Order ID or Customer Name',
-                    hintStyle: GoogleFonts.inter(fontSize: 13, color: const Color(0xFF9E9E9E)),
-                    prefixIcon: const Icon(Icons.search_rounded, color: Color(0xFF9E9E9E), size: 20),
-                    suffixIcon: _searchController.text.isNotEmpty
-                        ? IconButton(
-                            icon: const Icon(Icons.clear, size: 18, color: Color(0xFF757575)),
-                            onPressed: () {
-                              _searchController.clear();
-                              setState(() => _searchQuery = '');
-                            },
-                          )
-                        : null,
-                    filled: true,
-                    fillColor: Colors.transparent,
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide.none),
-                    enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide.none),
-                    focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: const BorderSide(color: AppTheme.primary, width: 1.5)),
-                    contentPadding: const EdgeInsets.symmetric(vertical: 14),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-
-              // Filter Chips
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: ['All', 'Active', 'Due Today', 'Overdue', 'Completed', 'On Hold'].map((f) {
-                    final isSelected = _selectedFilter == f;
-                    return Padding(
-                      padding: const EdgeInsets.only(right: 8),
-                      child: ChoiceChip(
-                        label: Text(f),
-                        selected: isSelected,
-                        onSelected: (v) {
-                          HapticFeedback.selectionClick();
-                          setState(() => _selectedFilter = f);
-                        },
-                        selectedColor: AppTheme.primary,
-                        backgroundColor: AppTheme.surface,
-                        labelStyle: GoogleFonts.inter(
-                          color: isSelected ? Colors.white : AppTheme.textCaption,
-                          fontSize: 12,
-                          fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                          side: BorderSide(color: isSelected ? AppTheme.primary : AppTheme.divider),
-                        ),
-                        elevation: isSelected ? 2 : 0,
-                        shadowColor: AppTheme.primary.withValues(alpha: 0.3),
-                      ),
-                    );
-                  }).toList(),
-                ),
-              ),
-              const SizedBox(height: 20),
-
-              // Tasks List
-              if (filteredTasks.isEmpty)
-                Center(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 40),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          width: 64,
-                          height: 64,
-                          decoration: BoxDecoration(
-                            color: AppTheme.tertiary,
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Icon(Icons.assignment_outlined, size: 32, color: AppTheme.secondary),
-                        ),
-                        const SizedBox(height: 16),
-                        Text('No tasks found', style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.bold, color: AppTheme.primary)),
-                        const SizedBox(height: 4),
-                        Text('Try adjusting your search or filters.', style: GoogleFonts.inter(fontSize: 12, color: const Color(0xFF9E9E9E))),
-                        if (_selectedFilter != 'All' || _searchQuery.isNotEmpty) ...[
-                          const SizedBox(height: 16),
-                          OutlinedButton(
-                            onPressed: () {
-                              _searchController.clear();
-                              setState(() {
-                                _searchQuery = '';
-                                _selectedFilter = 'All';
-                              });
-                            },
-                            child: const Text('Clear Filters'),
-                          ),
-                        ],
-                      ],
-                    ),
-                  ),
-                )
-              else
-                ListView.separated(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: filteredTasks.length,
-                  separatorBuilder: (context, index) => const SizedBox(height: 14),
-                  itemBuilder: (context, index) {
-                    final task = filteredTasks[index];
-                    final isHighPriority = task['priority'] == 'High';
-                    final currentStage = task['status'] ?? 'Order Received';
-                    final stageIdx = _stages.indexOf(currentStage);
-                    final parsedDate = task['due_date'] != null ? DateTime.tryParse(task['due_date'].toString()) : null;
-                    final isOverdue = parsedDate != null &&
-                        currentStage != 'Delivered' &&
-                        currentStage != 'Ready' &&
-                        parsedDate.isBefore(DateTime.now().subtract(const Duration(days: 1)));
-
-                    return RepaintBoundary(
-                      child: _TaskCard(
-                        key: ValueKey(task['id']),
-                        orderId: '#ORD-${task['id'].toString().padLeft(4, '0')}',
-                        priority: task['priority'] ?? 'Medium',
-                        priorityColor: isHighPriority
-                            ? const Color(0xFFC62828)
-                            : (task['priority'] == 'Medium' ? const Color(0xFFE65100) : const Color(0xFF757575)),
-                        priorityBg: isHighPriority
-                            ? const Color(0xFFFFEBEE)
-                            : (task['priority'] == 'Medium' ? const Color(0xFFFFF3E0) : const Color(0xFFF5F5F5)),
-                        customerName: task['customer_name'] ?? 'Unknown Customer',
-                        garmentType: task['garment_type'] ?? 'Unknown',
-                        stage: currentStage,
-                        stageIndex: stageIdx >= 0 ? stageIdx : 0,
-                        totalStages: _stages.length,
-                        dueDate: task['due_date'] != null ? task['due_date'].toString().split('T')[0] : 'N/A',
-                        isHighPriority: isHighPriority,
-                        isOverdue: isOverdue,
-                        onUpdateStage: () => _showUpdateStageDialog(context, task),
-                        onUpdateDueDate: () => _updateDueDateOnly(context, task),
-                      ),
-                    );
-                  },
-                ),
-            ],
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: Space.sm),
+            child: FilterChipsRow(
+              padding: EdgeInsets.symmetric(horizontal: pad),
+              options: const ['All', 'Active', 'Due Today', 'Overdue', 'Completed', 'On Hold'],
+              selected: _selectedFilter,
+              onSelected: (f) {
+                HapticFeedback.selectionClick();
+                setState(() => _selectedFilter = f);
+              },
+            ),
           ),
         ),
-      ),
-    );
-  }
+        if (filteredTasks.isEmpty)
+          SliverFillRemaining(
+            hasScrollBody: false,
+            child: EmptyState(
+              icon: Icons.assignment_turned_in_outlined,
+              title: 'No tasks found',
+              message: 'Try adjusting your search or filters.',
+              actionLabel: (_selectedFilter != 'All' || _searchQuery.isNotEmpty) ? 'Clear Filters' : null,
+              actionIcon: Icons.filter_alt_off_rounded,
+              onAction: () {
+                _searchController.clear();
+                setState(() {
+                  _searchQuery = '';
+                  _selectedFilter = 'All';
+                });
+              },
+            ),
+          )
+        else
+          SliverPadding(
+            padding: EdgeInsets.symmetric(horizontal: pad),
+            sliver: SliverList.separated(
+              itemCount: filteredTasks.length,
+              separatorBuilder: (context, index) => SizedBox(height: context.gridGap),
+              itemBuilder: (context, index) {
+                final task = filteredTasks[index];
+                final isHighPriority = task['priority'] == 'High';
+                final currentStage = task['status'] ?? 'Order Received';
+                final stageIdx = _stages.indexOf(currentStage);
+                final parsedDate = task['due_date'] != null ? DateTime.tryParse(task['due_date'].toString()) : null;
+                final isOverdue = parsedDate != null &&
+                    currentStage != 'Delivered' &&
+                    currentStage != 'Ready' &&
+                    parsedDate.isBefore(DateTime.now().subtract(const Duration(days: 1)));
 
-  Future<void> _updateDueDateOnly(BuildContext context, dynamic task) async {
-    final currentDueDateStr = task['due_date']?.toString();
-    final initialDate = currentDueDateStr != null ? DateTime.tryParse(currentDueDateStr) : DateTime.now().add(const Duration(days: 7));
-    
-    final picked = await showDatePicker(
-      context: context,
-      initialDate: initialDate ?? DateTime.now().add(const Duration(days: 7)),
-      firstDate: DateTime.now().subtract(const Duration(days: 30)),
-      lastDate: DateTime.now().add(const Duration(days: 365)),
+                return EntranceFade.indexed(
+                  index,
+                  key: ValueKey(task['id']),
+                  child: RepaintBoundary(
+                    child: _TaskCard(
+                      orderId: '#ORD-${task['id'].toString().padLeft(4, '0')}',
+                      priority: task['priority'] ?? 'Medium',
+                      priorityColor: StageStyle.priorityColor(context, task['priority'] ?? 'Medium'),
+                      customerName: task['customer_name'] ?? 'Unknown Customer',
+                      garmentType: task['garment_type'] ?? 'Unknown',
+                      stage: currentStage,
+                      stageIndex: stageIdx >= 0 ? stageIdx : 0,
+                      totalStages: _stages.length,
+                      dueDate: task['due_date'] != null ? task['due_date'].toString().split('T')[0] : 'N/A',
+                      isHighPriority: isHighPriority,
+                      isOverdue: isOverdue,
+                      onUpdateStage: () => _showUpdateStageDialog(context, task),
+                      onUpdateDueDate: () => _updateDueDateOnly(context, task),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+      ],
     );
-    
-    if (picked != null) {
-      final newDateIso = picked.toIso8601String();
-      if (currentDueDateStr?.split('T')[0] == newDateIso.split('T')[0]) return; // no change
-      
-      try {
-        final api = ref.read(apiClientProvider);
-        await api.updateOrder(task['id'], {
-          'due_date': newDateIso,
-        });
-        ref.read(refreshTriggerProvider.notifier).state++;
-        _loadData();
-        if (context.mounted) {
-           ScaffoldMessenger.of(context).showSnackBar(
-             const SnackBar(
-               content: Text('Due date updated'),
-               backgroundColor: Color(0xFF2ECC71),
-               behavior: SnackBarBehavior.floating,
-             ),
-           );
-        }
-      } catch (e) {
-        if (context.mounted) {
-           ScaffoldMessenger.of(context).showSnackBar(
-             const SnackBar(
-               content: Text('Failed to update due date'),
-               backgroundColor: AppTheme.error,
-               behavior: SnackBarBehavior.floating,
-             ),
-           );
-        }
-      }
-    }
   }
 
   void _showUpdateStageDialog(BuildContext context, dynamic task) {
@@ -505,13 +364,12 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
       useSafeArea: true,
       useRootNavigator: true,
       showDragHandle: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
+      sheetAnimationStyle: AnimationStyle(duration: Motion.of(context, Motion.long), curve: Motion.emphasizedDecelerate),
       builder: (ctx) {
         String selectedStage = currentStage;
         return StatefulBuilder(
           builder: (modalContext, setModalState) {
+            final cs = Theme.of(modalContext).colorScheme;
             return Container(
               constraints: BoxConstraints(
                 maxHeight: MediaQuery.of(modalContext).size.height * 0.75,
@@ -528,17 +386,12 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
                       children: [
                         Text(
                           'Update Task Stage',
-                          style: GoogleFonts.outfit(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: AppTheme.primary,
-                            letterSpacing: -0.3,
-                          ),
+                          style: Theme.of(modalContext).textTheme.titleLarge,
                         ),
                         const SizedBox(height: 2),
                         Text(
                           'Order #ORD-${task['id'].toString().padLeft(4, '0')} • ${task['customer_name'] ?? 'Customer'}',
-                          style: GoogleFonts.inter(fontSize: 12, color: AppTheme.textCaption),
+                          style: Theme.of(modalContext).textTheme.bodySmall,
                         ),
                       ],
                     ),
@@ -556,14 +409,16 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
                         final isCurrentInTask = stage == currentStage;
                         final isCompleted = index < _stages.indexOf(selectedStage);
 
-                        return Container(
+                        return AnimatedContainer(
+                          duration: Motion.of(context, Motion.short),
+                          curve: Motion.standard,
                           constraints: const BoxConstraints(minHeight: 52),
                           margin: const EdgeInsets.symmetric(vertical: 4),
                           decoration: BoxDecoration(
-                            color: isSelected ? AppTheme.primary.withValues(alpha: 0.06) : Colors.transparent,
+                            color: isSelected ? cs.primaryContainer.withValues(alpha: 0.6) : Colors.transparent,
                             borderRadius: BorderRadius.circular(14),
                             border: Border.all(
-                              color: isSelected ? AppTheme.primary : Colors.transparent,
+                              color: isSelected ? cs.primary : Colors.transparent,
                               width: 1.5,
                             ),
                           ),
@@ -578,21 +433,23 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
                               child: Row(
                                 children: [
                                   // Leading Status Icon
-                                  if (isSelected || isCompleted)
-                                    const Icon(Icons.check_circle_rounded, color: AppTheme.primary, size: 22)
-                                  else if (isCurrentInTask)
-                                    const Icon(Icons.radio_button_checked, color: AppTheme.secondary, size: 22)
-                                  else
-                                    const Icon(Icons.radio_button_unchecked, color: Color(0xFFB0BEC5), size: 22),
+                                  AnimatedSwitcher(
+                                    duration: Motion.of(context, Motion.short),
+                                    transitionBuilder: (c, a) => ScaleTransition(scale: a, child: c),
+                                    child: (isSelected || isCompleted)
+                                        ? Icon(Icons.check_circle_rounded, key: const ValueKey('done'), color: cs.primary, size: 22)
+                                        : isCurrentInTask
+                                            ? Icon(Icons.radio_button_checked, key: const ValueKey('cur'), color: cs.secondary, size: 22)
+                                            : Icon(Icons.radio_button_unchecked, key: const ValueKey('todo'), color: cs.outline, size: 22),
+                                  ),
                                   const SizedBox(width: 14),
                                   // Stage Title
                                   Expanded(
                                     child: Text(
                                       stage,
-                                      style: GoogleFonts.inter(
-                                        fontSize: 14,
-                                        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                                        color: isSelected ? AppTheme.primary : const Color(0xFF37474F),
+                                      style: Theme.of(modalContext).textTheme.bodyLarge?.copyWith(
+                                        fontWeight: isSelected ? FontWeight.w700 : FontWeight.w400,
+                                        color: isSelected ? cs.primary : cs.onSurface,
                                       ),
                                     ),
                                   ),
@@ -601,12 +458,12 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
                                     Container(
                                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                       decoration: BoxDecoration(
-                                        color: AppTheme.primary,
+                                        color: cs.primary,
                                         borderRadius: BorderRadius.circular(12),
                                       ),
                                       child: Text(
                                         'Current',
-                                        style: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.white),
+                                        style: Theme.of(modalContext).textTheme.labelSmall?.copyWith(color: cs.onPrimary, fontWeight: FontWeight.w800),
                                       ),
                                     ),
                                 ],
@@ -627,14 +484,11 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
                     ),
                     child: SizedBox(
                       width: double.infinity,
-                      height: 50,
+                      height: 52,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: AppTheme.primary,
-                          foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                          elevation: 3,
-                          shadowColor: AppTheme.primary.withValues(alpha: 0.35),
+                          backgroundColor: cs.primary,
+                          foregroundColor: cs.onPrimary,
                         ),
                         onPressed: () async {
                           Navigator.pop(modalContext);
@@ -669,10 +523,7 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
                             }
                           }
                         },
-                        child: Text(
-                          'Update Stage',
-                          style: GoogleFonts.inter(fontWeight: FontWeight.bold, fontSize: 15),
-                        ),
+                        child: const Text('Update Stage'),
                       ),
                     ),
                   ),
@@ -688,66 +539,62 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
 
 class _SummaryCard extends StatelessWidget {
   final String label;
-  final String value;
+  final int value;
   final IconData icon;
   final Color color;
-  final Color bgColor;
   final bool isSelected;
+  final VoidCallback onTap;
 
   const _SummaryCard({
     required this.label,
     required this.value,
     required this.icon,
     required this.color,
-    required this.bgColor,
+    required this.onTap,
     this.isSelected = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 200),
-      padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
-      decoration: BoxDecoration(
-        color: AppTheme.surface,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: isSelected
-            ? [
-                BoxShadow(color: color.withValues(alpha: 0.20), blurRadius: 12, offset: const Offset(0, 4)),
-                BoxShadow(color: color.withValues(alpha: 0.08), blurRadius: 4, offset: const Offset(0, 1)),
-              ]
-            : AppTheme.softShadow,
-        border: isSelected ? Border.all(color: color.withValues(alpha: 0.4), width: 1.5) : null,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 30,
-            height: 30,
-            decoration: BoxDecoration(
-              color: bgColor,
-              borderRadius: BorderRadius.circular(8),
+    final cs = context.colors;
+    return Semantics(
+      button: true,
+      selected: isSelected,
+      label: '$label: $value',
+      excludeSemantics: true,
+      child: Pressable(
+        onTap: () {
+          HapticFeedback.selectionClick();
+          onTap();
+        },
+        child: AnimatedContainer(
+          duration: Motion.of(context, Motion.short),
+          curve: Motion.standard,
+          padding: const EdgeInsets.all(Space.sm),
+          decoration: BoxDecoration(
+            color: isSelected ? color.withValues(alpha: context.isDark ? 0.22 : 0.10) : cs.surfaceContainerLowest,
+            borderRadius: Radii.brLg,
+            border: Border.all(
+              color: isSelected ? color.withValues(alpha: 0.6) : cs.outlineVariant.withValues(alpha: 0.45),
+              width: isSelected ? 1.6 : 1,
             ),
-            child: Icon(icon, size: 14, color: color),
+            boxShadow: isSelected ? [BoxShadow(color: color.withValues(alpha: 0.18), blurRadius: 14, offset: const Offset(0, 6))] : Shadows.soft(cs),
           ),
-          const SizedBox(height: 8),
-          Text(
-            value,
-            style: GoogleFonts.outfit(fontSize: 22, fontWeight: FontWeight.bold, color: color),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              IconBadge(icon: icon, color: color, size: 30),
+              const SizedBox(height: Space.xs),
+              AnimatedCount(value: value, style: context.text.titleLarge?.copyWith(color: color)),
+              Text(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: context.text.labelSmall?.copyWith(color: cs.onSurfaceVariant),
+              ),
+            ],
           ),
-          const SizedBox(height: 2),
-          Text(
-            label,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: GoogleFonts.inter(
-              fontSize: 10,
-              fontWeight: FontWeight.w600,
-              color: color.withValues(alpha: 0.7),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -757,7 +604,6 @@ class _TaskCard extends StatelessWidget {
   final String orderId;
   final String priority;
   final Color priorityColor;
-  final Color priorityBg;
   final String customerName;
   final String garmentType;
   final String stage;
@@ -770,11 +616,9 @@ class _TaskCard extends StatelessWidget {
   final VoidCallback? onUpdateDueDate;
 
   const _TaskCard({
-    super.key,
     required this.orderId,
     required this.priority,
     required this.priorityColor,
-    required this.priorityBg,
     required this.customerName,
     required this.garmentType,
     required this.stage,
@@ -789,190 +633,113 @@ class _TaskCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = context.colors;
+    final st = context.status;
     final double progressFraction = ((stageIndex + 1) / totalStages).clamp(0.0, 1.0);
+    final stageColor = StageStyle.color(context, stage);
+    final dueColor = isOverdue ? st.danger : cs.onSurfaceVariant;
 
-    return Container(
-      decoration: BoxDecoration(
-        color: AppTheme.surface,
-        borderRadius: BorderRadius.circular(18),
-        boxShadow: AppTheme.softShadow,
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: IntrinsicHeight(
-        child: Row(
-          children: [
-            if (isHighPriority)
-              Container(width: 4, color: const Color(0xFFC62828)),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Top row: Order ID and Priority badge
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          orderId,
-                          style: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.bold, color: AppTheme.textCaption),
-                        ),
-                        Row(
-                          children: [
-                            if (isOverdue) ...[
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFFFFEBEE),
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: Text(
-                                  'OVERDUE',
-                                  style: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.bold, color: const Color(0xFFC62828)),
-                                ),
-                              ),
-                              const SizedBox(width: 6),
-                            ],
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                              decoration: BoxDecoration(
-                                color: priorityBg,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Text(
-                                priority,
-                                style: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.bold, color: priorityColor),
-                              ),
-                            ),
+    return TsCard(
+      padding: EdgeInsets.zero,
+      child: ClipRRect(
+        borderRadius: Radii.brLg,
+        child: IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (isHighPriority) Container(width: 4, color: st.danger),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(Space.md, Space.md, Space.sm, Space.xs),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Text(orderId, style: context.text.labelMedium?.copyWith(color: cs.onSurfaceVariant)),
+                          const Spacer(),
+                          if (isOverdue) ...[
+                            StatusPill(label: 'OVERDUE', color: st.danger, icon: Icons.error_outline_rounded, dense: true),
+                            const SizedBox(width: 6),
                           ],
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-
-                    // Customer & Garment
-                    Text(
-                      customerName,
-                      style: GoogleFonts.outfit(fontSize: 17, fontWeight: FontWeight.bold, color: AppTheme.primary, letterSpacing: -0.3),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      garmentType,
-                      style: GoogleFonts.inter(fontSize: 12, color: AppTheme.textCaption),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 14),
-
-                    // Stage Progress Indicator bar ("Stage X of 7")
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'Stage: $stage',
-                              style: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.bold, color: AppTheme.primary),
-                            ),
-                            Text(
-                              '${stageIndex + 1} of $totalStages',
-                              style: GoogleFonts.inter(fontSize: 10, color: const Color(0xFF757575), fontWeight: FontWeight.w500),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 6),
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(4),
-                          child: LinearProgressIndicator(
-                            value: progressFraction,
-                            minHeight: 5,
-                            backgroundColor: AppTheme.divider,
-                            valueColor: const AlwaysStoppedAnimation<Color>(AppTheme.primary),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 14),
-
-                    // Due date & Actions row
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        // Due date indicator
-                        InkWell(
-                          onTap: onUpdateDueDate,
-                          borderRadius: BorderRadius.circular(4),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 2.0),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.calendar_today_outlined,
-                                  size: 14,
-                                  color: isOverdue ? const Color(0xFFC62828) : const Color(0xFF757575),
-                                ),
-                                const SizedBox(width: 4),
-                                Text(
-                                  'Due: $dueDate',
-                                  style: GoogleFonts.inter(
-                                    fontSize: 11,
-                                    fontWeight: isOverdue ? FontWeight.bold : FontWeight.normal,
-                                    color: isOverdue ? const Color(0xFFC62828) : const Color(0xFF757575),
-                                  ),
-                                ),
-                                const SizedBox(width: 4),
-                                Icon(
-                                  Icons.edit_outlined,
-                                  size: 12,
-                                  color: const Color(0xFF757575),
-                                ),
-                              ],
+                          StatusPill(label: priority, color: priorityColor, dense: true),
+                        ],
+                      ),
+                      const SizedBox(height: Space.xs),
+                      Text(customerName, style: context.text.titleMedium, maxLines: 1, overflow: TextOverflow.ellipsis),
+                      Text(garmentType, style: context.text.bodySmall, maxLines: 1, overflow: TextOverflow.ellipsis),
+                      const SizedBox(height: Space.sm),
+                      Row(
+                        children: [
+                          Icon(StageStyle.icon(stage), size: 14, color: stageColor),
+                          const SizedBox(width: 4),
+                          Expanded(
+                            child: Text(
+                              stage,
+                              style: context.text.labelMedium?.copyWith(color: stageColor, fontWeight: FontWeight.w700),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
-                        ),
-
-                        // Action buttons
-                        Row(
-                          children: [
-                            Tooltip(
-                              message: 'Order Document',
-                              child: IconButton(
-                                icon: const Icon(Icons.description_outlined, size: 20, color: Color(0xFF757575)),
+                          Text('${stageIndex + 1} of $totalStages', style: context.text.labelSmall?.copyWith(color: cs.onSurfaceVariant)),
+                        ],
+                      ),
+                      const SizedBox(height: 6),
+                      StageProgressBar(value: progressFraction, color: stageColor),
+                      const SizedBox(height: Space.xs),
+                      Wrap(
+                        alignment: WrapAlignment.spaceBetween,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        runSpacing: 0,
+                        spacing: Space.xs,
+                        children: [
+                          TextButton.icon(
+                            onPressed: onUpdateDueDate,
+                            style: TextButton.styleFrom(
+                              foregroundColor: dueColor,
+                              padding: const EdgeInsets.symmetric(horizontal: Space.xs),
+                            ),
+                            icon: const Icon(Icons.event_rounded, size: 16),
+                            label: Text(
+                              'Due: $dueDate',
+                              style: context.text.labelMedium?.copyWith(
+                                color: dueColor,
+                                fontWeight: isOverdue ? FontWeight.w800 : FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                tooltip: 'Order Document',
+                                icon: Icon(Icons.description_outlined, size: 20, color: cs.onSurfaceVariant),
                                 onPressed: () {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(content: Text('Viewing order document'), duration: Duration(seconds: 1)),
                                   );
                                 },
                               ),
-                            ),
-                            const SizedBox(width: 4),
-                            OutlinedButton.icon(
-                              onPressed: onUpdateStage,
-                              style: OutlinedButton.styleFrom(
-                                foregroundColor: AppTheme.primary,
-                                side: const BorderSide(color: AppTheme.primary, width: 1),
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                                minimumSize: const Size(0, 32),
+                              FilledButton.tonalIcon(
+                                onPressed: onUpdateStage,
+                                style: FilledButton.styleFrom(
+                                  minimumSize: const Size(0, 40),
+                                  padding: const EdgeInsets.symmetric(horizontal: Space.sm),
+                                  shape: RoundedRectangleBorder(borderRadius: Radii.brSm),
+                                ),
+                                icon: const Icon(Icons.swap_horiz_rounded, size: 18),
+                                label: const Text('Update Stage'),
                               ),
-                              icon: const Icon(Icons.swap_horiz, size: 16),
-                              label: Text(
-                                'Update Stage',
-                                style: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ],
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

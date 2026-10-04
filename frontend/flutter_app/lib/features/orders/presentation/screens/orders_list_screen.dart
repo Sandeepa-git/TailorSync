@@ -1,16 +1,16 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../providers/orders_provider.dart';
 import '../../models/order.dart';
 import '../../../../core/network/providers/api_provider.dart';
 import '../../../../core/network/providers/user_provider.dart';
-import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/skeleton_loading.dart';
+import '../../../../ui/ui.dart';
 import 'package:dio/dio.dart';
 
 class OrdersListScreen extends ConsumerStatefulWidget {
@@ -26,7 +26,6 @@ class _OrdersListScreenState extends ConsumerState<OrdersListScreen> {
   Timer? _pollingTimer;
   String _searchQuery = '';
   String _selectedStatusFilter = 'All';
-
   static const List<String> _stages = [
     'Order Received',
     'Cutting',
@@ -36,7 +35,6 @@ class _OrdersListScreenState extends ConsumerState<OrdersListScreen> {
     'Ready',
     'Delivered',
   ];
-
   @override
   void initState() {
     super.initState();
@@ -47,7 +45,6 @@ class _OrdersListScreenState extends ConsumerState<OrdersListScreen> {
       }
     });
   }
-
   @override
   void dispose() {
     _pollingTimer?.cancel();
@@ -56,7 +53,6 @@ class _OrdersListScreenState extends ConsumerState<OrdersListScreen> {
     _debounceTimer?.cancel();
     super.dispose();
   }
-
   void _onSearchChanged() {
     _debounceTimer?.cancel();
     _debounceTimer = Timer(const Duration(milliseconds: 300), () {
@@ -68,258 +64,167 @@ class _OrdersListScreenState extends ConsumerState<OrdersListScreen> {
     });
   }
 
-  Color _statusColor(String? status) {
-    switch (status) {
-      case 'Order Received': return const Color(0xFF5C6BC0);
-      case 'Cutting': return const Color(0xFFEF5350);
-      case 'Sewing': return const Color(0xFFFF9800);
-      case 'Fitting': return const Color(0xFF8E44AD);
-      case 'Quality Check': return const Color(0xFF26A69A);
-      case 'Ready': return const Color(0xFF66BB6A);
-      case 'Delivered': return const Color(0xFF78909C);
-      default: return const Color(0xFF5C6BC0);
-    }
-  }
+  // UI-only: extended FAB collapses while scrolling down.
+  bool _fabExtended = true;
+
+  Color _statusColor(String? status) => StageStyle.color(context, status);
 
   @override
   Widget build(BuildContext context) {
     final asyncOrders = ref.watch(ordersProvider);
     final asyncUser = ref.watch(userProvider);
     final isOwner = asyncUser.value?['role'] == 'OWNER';
+    final pad = context.pagePadding;
 
-    return Scaffold(
-      backgroundColor: AppTheme.scaffoldBg,
-      appBar: AppBar(
-        backgroundColor: AppTheme.scaffoldBg,
-        elevation: 0,
-        title: Text('Orders', style: GoogleFonts.outfit(fontWeight: FontWeight.bold, color: AppTheme.primary, fontSize: 19, letterSpacing: -0.3)),
-        centerTitle: true,
-      ),
-      body: asyncOrders.when(
-        data: (items) {
-          final filtered = items.where((o) {
-            bool matchesStatus = true;
-            if (_selectedStatusFilter != 'All') {
-              matchesStatus = o.status == _selectedStatusFilter;
-            }
+    Widget content(List<Order> items) {
+      final filtered = items.where((o) {
+        bool matchesStatus = true;
+        if (_selectedStatusFilter != 'All') {
+          matchesStatus = o.status == _selectedStatusFilter;
+        }
 
-              bool matchesSearch = true;
-              if (_searchQuery.isNotEmpty) {
-                final idStr = '#ORD-${o.id.toString().padLeft(4, '0')}'.toLowerCase();
-                final cust = (o.customerName ?? '').toLowerCase();
-                final garm = o.garmentType.toLowerCase();
-                matchesSearch = idStr.contains(_searchQuery) || cust.contains(_searchQuery) || garm.contains(_searchQuery);
-              }
+          bool matchesSearch = true;
+          if (_searchQuery.isNotEmpty) {
+            final idStr = '#ORD-${o.id.toString().padLeft(4, '0')}'.toLowerCase();
+            final cust = (o.customerName ?? '').toLowerCase();
+            final garm = o.garmentType.toLowerCase();
+            matchesSearch = idStr.contains(_searchQuery) || cust.contains(_searchQuery) || garm.contains(_searchQuery);
+          }
 
-            return matchesStatus && matchesSearch;
-          }).toList();
+        return matchesStatus && matchesSearch;
+      }).toList();
 
-          return RefreshIndicator(
-            onRefresh: () async {
-              ref.invalidate(ordersProvider);
-            },
-            color: AppTheme.primary,
-            child: SingleChildScrollView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              padding: EdgeInsets.only(
-                left: 20,
-                right: 20,
-                top: 16,
-                bottom: MediaQuery.of(context).padding.bottom + 84,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Search Input
-                  Container(
-                    decoration: BoxDecoration(
-                      color: AppTheme.surface,
-                      borderRadius: BorderRadius.circular(16),
-                      boxShadow: AppTheme.softShadow,
-                    ),
-                    child: TextField(
-                      controller: _searchController,
-                      decoration: InputDecoration(
-                        hintText: 'Find an order, customer, or garment...',
-                        hintStyle: GoogleFonts.inter(fontSize: 13, color: const Color(0xFF9E9E9E)),
-                        prefixIcon: const Icon(Icons.search_rounded, color: Color(0xFF9E9E9E), size: 20),
-                        suffixIcon: _searchController.text.isNotEmpty
-                            ? IconButton(
-                                icon: const Icon(Icons.clear, size: 18, color: Color(0xFF757575)),
-                                onPressed: () {
-                                  _searchController.clear();
-                                  setState(() => _searchQuery = '');
-                                },
-                              )
-                            : null,
-                        filled: true,
-                        fillColor: Colors.transparent,
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide.none),
-                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide.none),
-                        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: const BorderSide(color: AppTheme.primary, width: 1.5)),
-                        contentPadding: const EdgeInsets.symmetric(vertical: 14),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 14),
+      if (filtered.isEmpty) {
+        return SliverFillRemaining(
+          hasScrollBody: false,
+          child: EmptyState(
+            icon: items.isEmpty ? Icons.receipt_long_rounded : Icons.search_off_rounded,
+            title: items.isEmpty ? 'It\'s quiet in here...' : 'Hmm, we couldn\'t find that.',
+            message: items.isEmpty
+                ? 'Looks like you don\'t have any orders yet.\nLet\'s create your first one and get to work!'
+                : 'Try adjusting your search query or filters to find what you need.',
+            actionLabel: 'Create First Order',
+            actionIcon: Icons.add_rounded,
+            onAction: () => context.go('/orders/new'),
+          ),
+        );
+      }
 
-                  // Horizontal Filter Chips
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: ['All', ..._stages].map((f) {
-                        final isSelected = _selectedStatusFilter == f;
-                        return Padding(
-                          padding: const EdgeInsets.only(right: 8),
-                          child: ChoiceChip(
-                            label: Text(f),
-                            selected: isSelected,
-                            onSelected: (v) {
-                              HapticFeedback.selectionClick();
-                              setState(() => _selectedStatusFilter = f);
-                            },
-                            selectedColor: AppTheme.primary,
-                            backgroundColor: AppTheme.surface,
-                            labelStyle: GoogleFonts.inter(
-                              color: isSelected ? Colors.white : AppTheme.textCaption,
-                              fontSize: 12,
-                              fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
-                              side: BorderSide(color: isSelected ? AppTheme.primary : AppTheme.divider),
-                            ),
-                            elevation: isSelected ? 2 : 0,
-                            shadowColor: AppTheme.primary.withValues(alpha: 0.3),
-                          ),
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
+      return SliverPadding(
+        padding: EdgeInsets.symmetric(horizontal: pad),
+        sliver: SliverList.separated(
+          itemCount: filtered.length,
+          separatorBuilder: (context, index) => SizedBox(height: context.gridGap),
+          itemBuilder: (context, i) {
+            final Order o = filtered[i];
+            final color = _statusColor(o.status);
+            final stageIdx = _stages.indexOf(o.status ?? 'Order Received');
+            final progress = ((stageIdx >= 0 ? stageIdx : 0) + 1) / _stages.length.toDouble();
 
-                  // List Content or Empty State
-                  if (filtered.isEmpty)
-                    Center(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 40),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Container(
-                              width: 64,
-                              height: 64,
-                              decoration: BoxDecoration(
-                                color: AppTheme.tertiary,
-                                shape: BoxShape.circle,
-                              ),
-                              child: const Icon(Icons.receipt_long, size: 32, color: AppTheme.secondary),
-                            ),
-                            const SizedBox(height: 16),
-                            Text(
-                              items.isEmpty ? 'It\'s quiet in here...' : 'Hmm, we couldn\'t find that.',
-                              style: GoogleFonts.inter(color: AppTheme.primary, fontSize: 18, fontWeight: FontWeight.bold),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              items.isEmpty 
-                                  ? 'Looks like you don\'t have any orders yet.\nLet\'s create your first one and get to work!' 
-                                  : 'Try adjusting your search query or filters to find what you need.',
-                              textAlign: TextAlign.center,
-                              style: GoogleFonts.inter(fontSize: 14, color: const Color(0xFF757575), height: 1.5),
-                            ),
-                            const SizedBox(height: 24),
-                            ElevatedButton.icon(
-                              onPressed: () => context.go('/orders/new'),
-                              icon: const Icon(Icons.add),
-                              label: const Text('Create First Order'),
-                            ),
-                          ],
-                        ),
-                      ),
+            final card = _OrderCardItem(
+              order: o,
+              statusColor: color,
+              progressFraction: progress,
+              stageIndex: stageIdx >= 0 ? stageIdx : 0,
+              totalStages: _stages.length,
+              isOwner: isOwner,
+              onTap: () => context.go('/orders/details', extra: o),
+              onDelete: () => _confirmDeleteOrder(context, ref, o),
+            );
+
+            return EntranceFade.indexed(
+              i,
+              key: ValueKey(o.id),
+              child: isOwner
+                  ? _SwipeToDelete(
+                      key: ValueKey('swipe-${o.id}'),
+                      onSwipe: () => _confirmDeleteOrder(context, ref, o),
+                      child: card,
                     )
-                  else
-                    ListView.separated(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: filtered.length,
-                      separatorBuilder: (context, index) => const SizedBox(height: 12),
-                      itemBuilder: (context, i) {
-                        final Order o = filtered[i];
-                        final color = _statusColor(o.status);
-                        final stageIdx = _stages.indexOf(o.status ?? 'Order Received');
-                        final progress = ((stageIdx >= 0 ? stageIdx : 0) + 1) / _stages.length.toDouble();
+                  : card,
+            );
+          },
+        ),
+      );
+    }
 
-                        return _OrderCardItem(
-                          key: ValueKey(o.id),
-                          order: o,
-                          statusColor: color,
-                          progressFraction: progress,
-                          stageIndex: stageIdx >= 0 ? stageIdx : 0,
-                          totalStages: _stages.length,
-                          isOwner: isOwner,
-                          onTap: () => context.go('/orders/details', extra: o),
-                          onDelete: () => _confirmDeleteOrder(context, ref, o),
-                        );
-                      },
-                    ),
-                ],
+    return NotificationListener<UserScrollNotification>(
+      onNotification: (n) {
+        if (n.metrics.axis == Axis.vertical) {
+          final ext = n.direction != ScrollDirection.reverse;
+          if (ext != _fabExtended && n.direction != ScrollDirection.idle) setState(() => _fabExtended = ext);
+        }
+        return false;
+      },
+      child: TsScrollPage(
+        title: 'Orders',
+        automaticallyImplyLeading: false,
+        padSlivers: false,
+        onRefresh: () async {
+          ref.invalidate(ordersProvider);
+        },
+        headerBottom: TsSearchField(
+          controller: _searchController,
+          hint: 'Find an order, customer, or garment...',
+          onClear: () {
+            _searchController.clear();
+            setState(() => _searchQuery = '');
+          },
+        ),
+        floatingActionButton: FloatingActionButton.extended(
+          heroTag: 'fab-new-order',
+          isExtended: _fabExtended,
+          icon: const Icon(Icons.add_rounded),
+          label: const Text('New Order'),
+          onPressed: () {
+            HapticFeedback.selectionClick();
+            context.go('/orders/new');
+          },
+        ),
+        slivers: [
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.only(top: Space.xs, bottom: Space.sm),
+              child: FilterChipsRow(
+                padding: EdgeInsets.symmetric(horizontal: pad),
+                options: ['All', ..._stages],
+                selected: _selectedStatusFilter,
+                onSelected: (f) {
+                  HapticFeedback.selectionClick();
+                  setState(() => _selectedStatusFilter = f);
+                },
               ),
             ),
-          );
-        },
-        loading: () => const OrdersListSkeleton(),
-        error: (e, st) => Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                width: 64,
-                height: 64,
-                decoration: BoxDecoration(
-                  color: AppTheme.error.withValues(alpha: 0.08),
-                  shape: BoxShape.circle,
+          ),
+          ...asyncOrders.when(
+            data: (items) => [content(items)],
+            loading: () => [const SliverToBoxAdapter(child: OrdersListSkeleton())],
+            error: (e, st) => [
+              SliverFillRemaining(
+                hasScrollBody: false,
+                child: ErrorState(
+                  title: 'Error loading orders',
+                  onRetry: () => ref.invalidate(ordersProvider),
                 ),
-                child: const Icon(Icons.error_outline, size: 32, color: AppTheme.error),
-              ),
-              const SizedBox(height: 16),
-              Text('Error loading orders', style: GoogleFonts.inter(fontSize: 16, color: AppTheme.primary, fontWeight: FontWeight.bold)),
-              const SizedBox(height: 16),
-              ElevatedButton.icon(
-                onPressed: () => ref.invalidate(ordersProvider),
-                icon: const Icon(Icons.refresh),
-                label: const Text('Retry'),
               ),
             ],
           ),
-        ),
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: AppTheme.primary,
-        foregroundColor: Colors.white,
-        elevation: 4,
-        icon: const Icon(Icons.add),
-        label: Text('New Order', style: GoogleFonts.inter(fontWeight: FontWeight.bold)),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        onPressed: () {
-          HapticFeedback.selectionClick();
-          context.go('/orders/new');
-        },
+        ],
       ),
     );
   }
 
   void _confirmDeleteOrder(BuildContext context, WidgetRef ref, Order order) {
-    showDialog(
+    showTsDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: Text('Delete Order', style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: AppTheme.primary)),
-        content: Text('Are you sure you want to delete order #ORD-${order.id.toString().padLeft(4, '0')}?', style: GoogleFonts.inter()),
+        icon: Icon(Icons.delete_outline_rounded, color: Theme.of(ctx).colorScheme.error, size: 32),
+        title: const Text('Delete Order', textAlign: TextAlign.center),
+        content: Text('Are you sure you want to delete order #ORD-${order.id.toString().padLeft(4, '0')}?'),
         actions: [
           TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: AppTheme.error),
+          FilledButton(
+            style: FilledButton.styleFrom(backgroundColor: Theme.of(ctx).colorScheme.error, foregroundColor: Theme.of(ctx).colorScheme.onError),
             onPressed: () async {
               Navigator.pop(ctx);
               try {
@@ -337,7 +242,7 @@ class _OrdersListScreenState extends ConsumerState<OrdersListScreen> {
                   }
                 }
                 if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(err), backgroundColor: AppTheme.error));
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(err), backgroundColor: Theme.of(context).colorScheme.error));
                 }
               }
             },
@@ -345,6 +250,43 @@ class _OrdersListScreenState extends ConsumerState<OrdersListScreen> {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// Swipe left to reveal a delete action. The swipe only opens the existing
+/// confirmation flow; the card always springs back.
+class _SwipeToDelete extends StatelessWidget {
+  final Widget child;
+  final VoidCallback onSwipe;
+  const _SwipeToDelete({super.key, required this.child, required this.onSwipe});
+
+  @override
+  Widget build(BuildContext context) {
+    final s = context.status;
+    return Dismissible(
+      key: key!,
+      direction: DismissDirection.endToStart,
+      dismissThresholds: const {DismissDirection.endToStart: 0.35},
+      confirmDismiss: (_) async {
+        HapticFeedback.mediumImpact();
+        onSwipe();
+        return false;
+      },
+      background: Container(
+        alignment: Alignment.centerRight,
+        padding: const EdgeInsets.symmetric(horizontal: Space.lg),
+        decoration: BoxDecoration(color: s.dangerContainer, borderRadius: Radii.brLg),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('Delete', style: context.text.labelLarge?.copyWith(color: s.onDangerContainer)),
+            const SizedBox(width: Space.xs),
+            Icon(Icons.delete_outline_rounded, color: s.onDangerContainer),
+          ],
+        ),
+      ),
+      child: child,
     );
   }
 }
@@ -360,7 +302,6 @@ class _OrderCardItem extends StatelessWidget {
   final VoidCallback onDelete;
 
   const _OrderCardItem({
-    super.key,
     required this.order,
     required this.statusColor,
     required this.progressFraction,
@@ -373,161 +314,100 @@ class _OrderCardItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final initials = order.customerName != null && order.customerName!.isNotEmpty
-        ? order.customerName!.split(' ').map((e) => e[0]).take(2).join('').toUpperCase()
-        : 'C';
-
-    return Container(
-      decoration: BoxDecoration(
-        color: AppTheme.surface,
-        borderRadius: BorderRadius.circular(18),
-        boxShadow: AppTheme.softShadow,
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: IntrinsicHeight(
-        child: Row(
-          children: [
-            // Colored left accent strip
-            Container(width: 4, color: statusColor),
-            Expanded(
-              child: InkWell(
-                onTap: onTap,
-                borderRadius: const BorderRadius.only(
-                  topRight: Radius.circular(18),
-                  bottomRight: Radius.circular(18),
-                ),
+    final cs = context.colors;
+    final customer = order.customerName ?? 'Customer #${order.customerId}';
+    return TsCard(
+      onTap: onTap,
+      padding: EdgeInsets.zero,
+      child: ClipRRect(
+        borderRadius: Radii.brLg,
+        child: IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Container(width: 4, color: statusColor),
+              Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.fromLTRB(Space.md, Space.sm, Space.xs, Space.md),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Top Row: Status Chip & Order ID & Delete Icon
                       Row(
                         children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                            decoration: BoxDecoration(
-                              color: statusColor.withValues(alpha: 0.12),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Text(
-                              order.status ?? 'Pending',
-                              style: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.bold, color: statusColor),
-                            ),
-                          ),
+                          Flexible(child: StagePill(status: order.status ?? 'Pending', dense: true)),
+                          const SizedBox(width: Space.xs),
                           const Spacer(),
                           Text(
                             '#ORD-${order.id.toString().padLeft(4, '0')}',
-                            style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.bold, color: AppTheme.textCaption),
+                            style: context.text.labelMedium?.copyWith(color: cs.onSurfaceVariant),
                           ),
-                          const SizedBox(width: 8),
                           if (isOwner)
-                            Tooltip(
-                              message: 'Delete Order',
-                              child: IconButton(
-                                icon: const Icon(Icons.delete_outline, color: AppTheme.error, size: 18),
-                                onPressed: onDelete,
-                                padding: EdgeInsets.zero,
-                                constraints: const BoxConstraints(),
-                              ),
-                            ),
+                            IconButton(
+                              tooltip: 'Delete Order',
+                              icon: Icon(Icons.delete_outline_rounded, color: cs.error, size: 20),
+                              onPressed: onDelete,
+                            )
+                          else
+                            const SizedBox(width: Space.xs, height: kMinTouch),
                         ],
                       ),
-                      const SizedBox(height: 12),
-
-                      // Garment Type
-                      Text(
-                        order.garmentType,
-                        style: GoogleFonts.outfit(fontSize: 17, fontWeight: FontWeight.bold, color: AppTheme.primary, letterSpacing: -0.3),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                      Padding(
+                        padding: const EdgeInsets.only(right: Space.xs),
+                        child: Text(
+                          order.garmentType,
+                          style: context.text.titleMedium,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
-                      const SizedBox(height: 4),
-
-                      // Customer & Priority Row
-                      Row(
-                        children: [
-                          Container(
-                            width: 24,
-                            height: 24,
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [AppTheme.primary, AppTheme.secondary],
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                              ),
-                              borderRadius: BorderRadius.circular(7),
+                      const SizedBox(height: Space.xs),
+                      Padding(
+                        padding: const EdgeInsets.only(right: Space.xs),
+                        child: Row(
+                          children: [
+                            InitialsAvatar(name: customer, size: 26),
+                            const SizedBox(width: Space.xs),
+                            Expanded(
+                              child: Text(customer, style: context.text.bodySmall, maxLines: 1, overflow: TextOverflow.ellipsis),
                             ),
-                            child: Center(
-                              child: Text(initials, style: GoogleFonts.inter(fontSize: 9, fontWeight: FontWeight.bold, color: Colors.white)),
-                            ),
-                          ),
-                          const SizedBox(width: 6),
-                          Expanded(
-                            child: Text(
-                              order.customerName ?? 'Customer #${order.customerId}',
-                              style: GoogleFonts.inter(fontSize: 13, color: AppTheme.textCaption),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                          if (order.priority != null) ...[
-                            const SizedBox(width: 8),
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                              decoration: BoxDecoration(
-                                color: order.priority == 'High' ? const Color(0xFFFFEBEE) : AppTheme.tertiary,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Text(
-                                order.priority!,
-                                style: GoogleFonts.inter(
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.bold,
-                                  color: order.priority == 'High' ? const Color(0xFFC62828) : AppTheme.textCaption,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ],
-                      ),
-                      const SizedBox(height: 14),
-
-                      // Stage progress bar
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'Stage Progress',
-                                style: GoogleFonts.inter(fontSize: 10, color: const Color(0xFF757575)),
-                              ),
-                              Text(
-                                '${stageIndex + 1} of $totalStages',
-                                style: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.bold, color: AppTheme.primary),
+                            if (order.priority != null) ...[
+                              const SizedBox(width: Space.xs),
+                              StatusPill(
+                                label: order.priority!,
+                                color: StageStyle.priorityColor(context, order.priority),
+                                icon: order.priority == 'High' ? Icons.local_fire_department_rounded : null,
+                                dense: true,
                               ),
                             ],
-                          ),
-                          const SizedBox(height: 6),
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(4),
-                            child: LinearProgressIndicator(
-                              value: progressFraction,
-                              minHeight: 5,
-                              backgroundColor: AppTheme.divider,
-                              valueColor: AlwaysStoppedAnimation<Color>(statusColor),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: Space.sm),
+                      Padding(
+                        padding: const EdgeInsets.only(right: Space.xs),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(child: Text('Stage progress', style: context.text.labelSmall?.copyWith(color: cs.onSurfaceVariant))),
+                                Text(
+                                  '${stageIndex + 1} of $totalStages',
+                                  style: context.text.labelSmall?.copyWith(color: cs.primary, fontWeight: FontWeight.w800),
+                                ),
+                              ],
                             ),
-                          ),
-                        ],
+                            const SizedBox(height: 6),
+                            StageProgressBar(value: progressFraction, color: statusColor),
+                          ],
+                        ),
                       ),
                     ],
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

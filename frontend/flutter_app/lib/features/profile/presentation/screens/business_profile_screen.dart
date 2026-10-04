@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/network/providers/api_provider.dart';
 import '../../../../core/widgets/skeleton_loading.dart';
+import '../../../../core/widgets/tailorsync_text_field.dart';
+import '../../../../ui/ui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:dio/dio.dart';
 
@@ -17,17 +18,14 @@ class _BusinessProfileScreenState extends ConsumerState<BusinessProfileScreen> {
   bool _loading = true;
   bool _saving = false;
   Map<String, dynamic>? _business;
-
   final _nameCtrl = TextEditingController();
   final _contactCtrl = TextEditingController();
   final _addressCtrl = TextEditingController();
-
   @override
   void initState() {
     super.initState();
     _loadBusiness();
   }
-
   Future<void> _loadBusiness() async {
     try {
       final api = ref.read(apiClientProvider);
@@ -45,7 +43,6 @@ class _BusinessProfileScreenState extends ConsumerState<BusinessProfileScreen> {
       if (mounted) setState(() => _loading = false);
     }
   }
-
   Future<void> _saveBusiness() async {
     setState(() => _saving = true);
     try {
@@ -62,17 +59,18 @@ class _BusinessProfileScreenState extends ConsumerState<BusinessProfileScreen> {
       if (mounted) setState(() => _saving = false);
     }
   }
-
   Future<void> _deleteAccount() async {
     final passwordCtrl = TextEditingController();
     bool obscurePassword = true;
 
-    final confirm = await showDialog<bool>(
+    final confirm = await showTsDialog<bool>(
       context: context,
       builder: (context) => StatefulBuilder(
         builder: (context, setDialogState) => AlertDialog(
-          title: Text('Delete Account', style: GoogleFonts.outfit(fontWeight: FontWeight.bold, color: Colors.red)),
-          content: Column(
+          icon: Icon(Icons.delete_forever_rounded, color: Theme.of(context).colorScheme.error, size: 32),
+          title: const Text('Delete Account', textAlign: TextAlign.center),
+          content: SingleChildScrollView(
+            child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               const Text('This will permanently delete your admin account, your business, and ALL associated data (staff, customers, orders). This action CANNOT be undone.'),
@@ -91,6 +89,7 @@ class _BusinessProfileScreenState extends ConsumerState<BusinessProfileScreen> {
                 ),
               ),
             ],
+          ),
           ),
           actions: [
             TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancel')),
@@ -126,97 +125,136 @@ class _BusinessProfileScreenState extends ConsumerState<BusinessProfileScreen> {
   Widget build(BuildContext context) {
     if (_loading) {
       return const Scaffold(
-        backgroundColor: Color(0xFFF8F9FA),
         body: SafeArea(child: ProfileSkeleton()),
       );
     }
 
+    final cs = context.colors;
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FA),
       appBar: AppBar(
-        backgroundColor: const Color(0xFFF8F9FA),
-        elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Color(0xFF1A237E)),
+          tooltip: 'Back',
+          icon: const Icon(Icons.arrow_back_rounded),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text(
-          'Business Profile',
-          style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: const Color(0xFF1A237E)),
-        ),
+        title: const Text('Business Profile'),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
-        child: Container(
-          padding: const EdgeInsets.all(24),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: const Color(0xFFE8EAF6)),
-            boxShadow: [
-              BoxShadow(color: const Color(0xFF1A237E).withValues(alpha: 0.02), blurRadius: 10, offset: const Offset(0, 4)),
-            ],
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              TextFormField(
-                controller: _nameCtrl,
-                decoration: const InputDecoration(
-                  labelText: 'Business Name',
-                  prefixIcon: Icon(Icons.store, color: Color(0xFF5C6BC0)),
-                ),
-              ),
-              const SizedBox(height: 20),
-              TextFormField(
-                controller: _contactCtrl,
-                decoration: const InputDecoration(
-                  labelText: 'Business Contact Number',
-                  prefixIcon: Icon(Icons.phone, color: Color(0xFF5C6BC0)),
-                ),
-                keyboardType: TextInputType.phone,
-              ),
-              const SizedBox(height: 20),
-              TextFormField(
-                controller: _addressCtrl,
-                decoration: const InputDecoration(
-                  labelText: 'Business Address',
-                  prefixIcon: Icon(Icons.location_on, color: Color(0xFF5C6BC0)),
-                ),
-                maxLines: 3,
-              ),
-              const SizedBox(height: 32),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: _saving ? null : _saveBusiness,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF1A237E),
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      body: TsFormBody(
+        children: [
+          EntranceFade(
+            child: TsCard(
+              gradient: Gradients.hero(cs),
+              padding: const EdgeInsets.all(Space.lg),
+              child: Row(
+                children: [
+                  Container(
+                    width: 52,
+                    height: 52,
+                    decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.16), borderRadius: Radii.brMd),
+                    child: const Icon(Icons.storefront_rounded, color: Colors.white, size: 28),
                   ),
-                  child: _saving
-                      ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                      : Text('Save Changes', style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold)),
-                ),
-              ),
-              const SizedBox(height: 40),
-              SizedBox(
-                width: double.infinity,
-                child: OutlinedButton.icon(
-                  onPressed: _deleteAccount,
-                  icon: const Icon(Icons.delete_forever, color: Colors.red),
-                  label: Text('Delete Admin Account', style: GoogleFonts.inter(color: Colors.red, fontWeight: FontWeight.bold)),
-                  style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    side: const BorderSide(color: Colors.red),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  const SizedBox(width: Space.md),
+                  Expanded(
+                    child: ValueListenableBuilder<TextEditingValue>(
+                      valueListenable: _nameCtrl,
+                      builder: (context, v, _) => Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            v.text.isEmpty ? 'Your business' : v.text,
+                            style: context.text.titleLarge?.copyWith(color: Colors.white),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          Text(
+                            'Shown on orders and receipts',
+                            style: context.text.bodySmall?.copyWith(color: Colors.white.withValues(alpha: 0.8)),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
+          const SizedBox(height: Space.lg),
+          EntranceFade(
+            delay: Motion.staggerStep,
+            child: TsCard(
+              padding: const EdgeInsets.all(Space.lg),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  TailorSyncTextField(
+                    label: 'Business Name',
+                    controller: _nameCtrl,
+                    icon: Icons.storefront_outlined,
+                    textCapitalization: TextCapitalization.words,
+                  ),
+                  const SizedBox(height: Space.md),
+                  TailorSyncTextField(
+                    label: 'Business Contact Number',
+                    controller: _contactCtrl,
+                    icon: Icons.phone_outlined,
+                    keyboardType: TextInputType.phone,
+                  ),
+                  const SizedBox(height: Space.md),
+                  TailorSyncTextField(
+                    label: 'Business Address',
+                    controller: _addressCtrl,
+                    icon: Icons.location_on_outlined,
+                    maxLines: 3,
+                    keyboardType: TextInputType.multiline,
+                  ),
+                  const SizedBox(height: Space.xl),
+                  TsButton(
+                    label: 'Save Changes',
+                    icon: Icons.check_rounded,
+                    loading: _saving,
+                    onPressed: _saving ? null : _saveBusiness,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: Space.xl),
+          EntranceFade(
+            delay: Motion.staggerStep * 2,
+            child: Container(
+              padding: const EdgeInsets.all(Space.md),
+              decoration: BoxDecoration(
+                color: context.status.dangerContainer.withValues(alpha: context.isDark ? 0.35 : 0.5),
+                borderRadius: Radii.brLg,
+                border: Border.all(color: cs.error.withValues(alpha: 0.35)),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Row(
+                    children: [
+                      Icon(Icons.warning_amber_rounded, color: cs.error),
+                      const SizedBox(width: Space.xs),
+                      Text('Danger zone', style: context.text.titleSmall?.copyWith(color: cs.error)),
+                    ],
+                  ),
+                  const SizedBox(height: Space.xs),
+                  Text(
+                    'Deleting your admin account removes your business and all associated data.',
+                    style: context.text.bodySmall,
+                  ),
+                  const SizedBox(height: Space.md),
+                  TsButton(
+                    label: 'Delete Admin Account',
+                    icon: Icons.delete_forever_rounded,
+                    variant: TsButtonVariant.danger,
+                    onPressed: _deleteAccount,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

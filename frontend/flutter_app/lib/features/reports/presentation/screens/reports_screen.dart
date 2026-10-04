@@ -1,9 +1,12 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter/services.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/network/providers/api_provider.dart';
-import '../../../../core/theme/app_theme.dart';
+import '../../../../core/widgets/skeleton_loading.dart';
+import '../../../../ui/ui.dart';
 
 class ReportsScreen extends ConsumerStatefulWidget {
   const ReportsScreen({super.key});
@@ -18,13 +21,11 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
   Map<String, dynamic>? _stats;
   List<dynamic> _allOrders = [];
   List<dynamic> _staffList = [];
-
   @override
   void initState() {
     super.initState();
     _loadData();
   }
-
   Future<void> _loadData() async {
     try {
       final api = ref.read(apiClientProvider);
@@ -78,193 +79,272 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
     final readyPct = totalForStatus > 0 ? ((readyCount / totalForStatus) * 100).round() : 0;
     final otherPct = totalForStatus > 0 ? ((otherCount / totalForStatus) * 100).round() : 0;
 
-    return Scaffold(
-      backgroundColor: AppTheme.scaffoldBg,
-      appBar: AppBar(
-        backgroundColor: AppTheme.scaffoldBg,
-        elevation: 0,
-        title: Text(
-          'Reports & Analytics',
-          style: GoogleFonts.outfit(
-            fontWeight: FontWeight.bold,
-            color: AppTheme.primary,
-            fontSize: 19,
-            letterSpacing: -0.3,
+    final cs = context.colors;
+    final st = context.status;
+
+    if (_loading) {
+      return TsScrollPage(
+        title: 'Reports',
+        automaticallyImplyLeading: false,
+        padSlivers: false,
+        slivers: const [SliverToBoxAdapter(child: DashboardSkeleton())],
+      );
+    }
+
+    final slices = [
+      _Slice('Sewing', sewingCount, sewingPct, cs.primary),
+      _Slice('Cutting', cuttingCount, cuttingPct, st.warning),
+      _Slice('Other', otherCount, otherPct, cs.tertiary),
+      _Slice('Ready', readyCount, readyPct, st.success),
+    ];
+
+    num kpi(String k) => num.tryParse(_stats?[k]?.toString() ?? '0') ?? 0;
+
+    final kpis = [
+      _Kpi(Icons.people_rounded, 'Total Customers', kpi('total_customers'), st.info),
+      _Kpi(Icons.shopping_bag_rounded, 'Total Orders', kpi('total_orders'), cs.tertiary),
+      _Kpi(Icons.pending_actions_rounded, 'Ongoing Orders', kpi('ongoing_orders'), st.warning),
+      _Kpi(Icons.check_circle_rounded, 'Completed Orders', kpi('completed_orders'), st.success),
+    ];
+
+    return TsScrollPage(
+      title: 'Reports & Analytics',
+      automaticallyImplyLeading: false,
+      onRefresh: _loadData,
+      slivers: [
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: Space.md),
+            child: _PeriodTabs(
+              options: const ['This Month', 'Today', 'This Week'],
+              selected: _selectedPeriod,
+              onSelected: (p) {
+                HapticFeedback.selectionClick();
+                setState(() => _selectedPeriod = p);
+              },
+            ),
           ),
         ),
-        centerTitle: true,
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Period Filter
-            Center(
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: ['This Month', 'Today', 'This Week'].map((p) {
-                    final isSelected = _selectedPeriod == p;
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 4),
-                      child: ChoiceChip(
-                        label: Text(p),
-                        selected: isSelected,
-                        onSelected: (v) => setState(() => _selectedPeriod = p),
-                        selectedColor: AppTheme.primary,
-                        backgroundColor: AppTheme.surface,
-                        labelStyle: GoogleFonts.inter(color: isSelected ? Colors.white : AppTheme.textCaption, fontSize: 13, fontWeight: isSelected ? FontWeight.bold : FontWeight.w500),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20), side: BorderSide(color: isSelected ? AppTheme.primary : AppTheme.divider)),
-                        elevation: isSelected ? 2 : 0,
-                        shadowColor: AppTheme.primary.withValues(alpha: 0.3),
-                      ),
-                    );
-                  }).toList(),
-                ),
-              ),
-            ),
-            const SizedBox(height: 24),
-
-            // KPI Grid
-            GridView.count(
-              crossAxisCount: 2,
-              mainAxisSpacing: 12,
-              crossAxisSpacing: 12,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              childAspectRatio: 1.5,
-              children: [
-                _KpiCard(icon: Icons.people_rounded, title: 'Total Customers', value: _stats?['total_customers']?.toString() ?? '0', iconColor: const Color(0xFF1565C0), iconBgColor: const Color(0xFFE3F2FD)),
-                _KpiCard(icon: Icons.shopping_bag_rounded, title: 'Total Orders', value: _stats?['total_orders']?.toString() ?? '0', iconColor: const Color(0xFF6A1B9A), iconBgColor: const Color(0xFFF3E5F5)),
-                _KpiCard(icon: Icons.pending_actions_rounded, title: 'Ongoing Orders', value: _stats?['ongoing_orders']?.toString() ?? '0', iconColor: const Color(0xFFE65100), iconBgColor: const Color(0xFFFFF3E0)),
-                _KpiCard(icon: Icons.check_circle_rounded, title: 'Completed Orders', value: _stats?['completed_orders']?.toString() ?? '0', iconColor: const Color(0xFF2E7D32), iconBgColor: const Color(0xFFE8F5E9)),
-              ],
-            ),
-            const SizedBox(height: 24),
-
-            // Order Insights
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: AppTheme.surface,
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: AppTheme.cardShadow,
-              ),
+        SliverGrid.builder(
+          gridDelegate: adaptiveGrid(
+            maxTileWidth: context.isWide ? 200 : 240,
+            mainAxisExtent: context.isSmallPhone ? 104 : 112,
+            spacing: context.gridGap,
+          ),
+          itemCount: kpis.length,
+          itemBuilder: (context, i) => EntranceFade.indexed(i, child: _KpiCard(kpi: kpis[i])),
+        ),
+        const SliverToBoxAdapter(child: SectionHeader(title: 'Order Insights')),
+        SliverToBoxAdapter(
+          child: EntranceFade(
+            delay: Motion.stagger(4),
+            child: TsCard(
+              padding: EdgeInsets.all(context.isSmallPhone ? Space.md : Space.lg),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Row(
-                    children: [
-                      Container(
-                        width: 32,
-                        height: 32,
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFE3F2FD),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: const Icon(Icons.insights_rounded, size: 16, color: Color(0xFF1565C0)),
-                      ),
-                      const SizedBox(width: 10),
-                      Text('Order Insights', style: GoogleFonts.outfit(fontSize: 16, fontWeight: FontWeight.bold, color: AppTheme.primary, letterSpacing: -0.3)),
-                    ],
-                  ),
-                  const SizedBox(height: 18),
-                  Text('Status Breakdown', style: GoogleFonts.inter(fontSize: 12, color: AppTheme.textCaption)),
-                  const SizedBox(height: 8),
-                  
-                  // Empty Progress Bar
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(6),
-                    child: Row(
-                      children: totalForStatus == 0 ? [ Expanded(child: Container(height: 10, color: AppTheme.divider)) ] : [
-                        if (sewingCount > 0) Expanded(flex: sewingCount, child: Container(height: 10, color: AppTheme.primary)),
-                        if (cuttingCount > 0) Expanded(flex: cuttingCount, child: Container(height: 10, color: AppTheme.secondary)),
-                        if (otherCount > 0) Expanded(flex: otherCount, child: Container(height: 10, color: const Color(0xFF9FA8DA))),
-                        if (readyCount > 0) Expanded(flex: readyCount, child: Container(height: 10, color: AppTheme.divider)),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  
-                  // Legend
-                  Row(
-                    children: [
-                      Expanded(child: _LegendItem(color: AppTheme.primary, label: 'Sewing ($sewingPct%)')),
-                      Expanded(child: _LegendItem(color: AppTheme.secondary, label: 'Cutting ($cuttingPct%)')),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      Expanded(child: _LegendItem(color: const Color(0xFF9FA8DA), label: 'Other ($otherPct%)')),
-                      Expanded(child: _LegendItem(color: AppTheme.divider, label: 'Ready ($readyPct%)')),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
-                  
-                  // Rows
-                  _InsightRow(label: 'Orders This Week', value: '$thisWeekCount', color: const Color(0xFFE3F2FD)),
-                  const SizedBox(height: 12),
-                  _InsightRow(label: 'Orders This Month', value: '$thisMonthCount', color: const Color(0xFFF3E5F5)),
-                ],
-              ),
-            ),
-            const SizedBox(height: 24),
-
-            // Staff Performance
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: AppTheme.surface,
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: AppTheme.cardShadow,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        width: 32,
-                        height: 32,
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFF3E5F5),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: const Icon(Icons.groups_rounded, size: 16, color: Color(0xFF6A1B9A)),
-                      ),
-                      const SizedBox(width: 10),
-                      Text('Staff Performance', style: GoogleFonts.outfit(fontSize: 16, fontWeight: FontWeight.bold, color: AppTheme.primary, letterSpacing: -0.3)),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  if (_staffList.isEmpty)
-                    Center(child: Text('No staff data available', style: GoogleFonts.inter(fontSize: 12, color: const Color(0xFF9E9E9E))))
-                  else
-                    ..._staffList.map((s) {
-                      final staffOrders = _allOrders.where((o) => o['staff_id'] == s['id']).toList();
-                      final completedCount = staffOrders.where((o) => o['status'] == 'Delivered' || o['status'] == 'Ready').length;
-                      final totalAssigned = staffOrders.length;
-                      final progress = totalAssigned > 0 ? (completedCount / totalAssigned) : 0.0;
-                      final name = s['full_name']?.toString() ?? 'Staff';
-                      final initials = name.isNotEmpty ? name.substring(0, 1).toUpperCase() : 'S';
-
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 14),
-                        child: _StaffProgress(
-                          initials: initials,
-                          name: name,
-                          completed: completedCount,
-                          progress: progress,
+                  Text('Status breakdown', style: context.text.labelMedium?.copyWith(color: cs.onSurfaceVariant)),
+                  const SizedBox(height: Space.md),
+                  LayoutBuilder(
+                    builder: (context, c) {
+                      final donut = (c.maxWidth * 0.42).clamp(110.0, 170.0);
+                      final legend = Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          for (final s in slices)
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 4),
+                              child: _LegendItem(color: s.color, label: '${s.label} (${s.pct}%)'),
+                            ),
+                        ],
+                      );
+                      final chart = SizedBox.square(
+                        dimension: donut,
+                        child: _Donut(
+                          slices: slices,
+                          total: totalForStatus,
+                          center: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              AnimatedCount(value: totalForStatus, style: context.text.headlineSmall),
+                              Text('orders', style: context.text.labelSmall?.copyWith(color: cs.onSurfaceVariant)),
+                            ],
+                          ),
                         ),
                       );
-                    }),
+                      if (c.maxWidth < 300) {
+                        return Column(children: [chart, const SizedBox(height: Space.md), legend]);
+                      }
+                      return Row(
+                        children: [
+                          chart,
+                          const SizedBox(width: Space.lg),
+                          Expanded(child: legend),
+                        ],
+                      );
+                    },
+                  ),
+                  const SizedBox(height: Space.lg),
+                  _InsightRow(label: 'Orders This Week', value: thisWeekCount, color: st.info),
+                  const SizedBox(height: Space.sm),
+                  _InsightRow(label: 'Orders This Month', value: thisMonthCount, color: cs.tertiary),
                 ],
               ),
             ),
-            const SizedBox(height: 16),
+          ),
+        ),
+        const SliverToBoxAdapter(child: SectionHeader(title: 'Staff Performance')),
+        SliverToBoxAdapter(
+          child: EntranceFade(
+            delay: Motion.stagger(5),
+            child: TsCard(
+              padding: EdgeInsets.all(context.isSmallPhone ? Space.md : Space.lg),
+              child: _staffList.isEmpty
+                  ? Padding(
+                      padding: const EdgeInsets.symmetric(vertical: Space.md),
+                      child: Column(
+                        children: [
+                          Icon(Icons.groups_rounded, size: 36, color: cs.onSurfaceVariant),
+                          const SizedBox(height: Space.xs),
+                          Text('No staff data available', style: context.text.bodyMedium),
+                        ],
+                      ),
+                    )
+                  : Column(
+                      children: [
+                        ..._staffList.map((s) {
+                          final staffOrders = _allOrders.where((o) => o['staff_id'] == s['id']).toList();
+                          final completedCount = staffOrders.where((o) => o['status'] == 'Delivered' || o['status'] == 'Ready').length;
+                          final totalAssigned = staffOrders.length;
+                          final progress = totalAssigned > 0 ? (completedCount / totalAssigned) : 0.0;
+                          final name = s['full_name']?.toString() ?? 'Staff';
+
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: Space.xs),
+                            child: _StaffProgress(
+                              name: name,
+                              completed: completedCount,
+                              progress: progress,
+                            ),
+                          );
+                        }),
+                      ],
+                    ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _Slice {
+  final String label;
+  final int count;
+  final int pct;
+  final Color color;
+  _Slice(this.label, this.count, this.pct, this.color);
+}
+
+class _Kpi {
+  final IconData icon;
+  final String title;
+  final num value;
+  final Color color;
+  _Kpi(this.icon, this.title, this.value, this.color);
+}
+
+/// Pill-style segmented tabs with a sliding indicator.
+class _PeriodTabs extends StatelessWidget {
+  final List<String> options;
+  final String selected;
+  final ValueChanged<String> onSelected;
+  const _PeriodTabs({required this.options, required this.selected, required this.onSelected});
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = context.colors;
+    final idx = options.indexOf(selected).clamp(0, options.length - 1);
+    return Container(
+      height: 48,
+      padding: const EdgeInsets.all(4),
+      decoration: BoxDecoration(color: cs.surfaceContainerHigh, borderRadius: Radii.brPill),
+      child: LayoutBuilder(
+        builder: (context, c) {
+          final w = c.maxWidth / options.length;
+          return Stack(
+            children: [
+              AnimatedPositioned(
+                duration: Motion.of(context, Motion.medium),
+                curve: Motion.emphasized,
+                left: w * idx,
+                top: 0,
+                bottom: 0,
+                width: w,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(color: cs.primary, borderRadius: Radii.brPill, boxShadow: Shadows.raised(cs)),
+                ),
+              ),
+              Row(
+                children: [
+                  for (final p in options)
+                    Expanded(
+                      child: Semantics(
+                        button: true,
+                        selected: p == selected,
+                        child: InkWell(
+                          borderRadius: Radii.brPill,
+                          onTap: () => onSelected(p),
+                          child: Center(
+                            child: AnimatedDefaultTextStyle(
+                              duration: Motion.of(context, Motion.short),
+                              style: (context.text.labelLarge ?? const TextStyle()).copyWith(
+                                color: p == selected ? cs.onPrimary : cs.onSurfaceVariant,
+                              ),
+                              child: Text(p, maxLines: 1, overflow: TextOverflow.ellipsis),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _KpiCard extends StatelessWidget {
+  final _Kpi kpi;
+  const _KpiCard({required this.kpi});
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      label: '${kpi.title}: ${kpi.value}',
+      excludeSemantics: true,
+      child: TsCard(
+        padding: const EdgeInsets.all(Space.md - 2),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            IconBadge(icon: kpi.icon, color: kpi.color, size: 34),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: Alignment.centerLeft,
+                  child: AnimatedCount(value: kpi.value, style: context.text.headlineSmall),
+                ),
+                Text(kpi.title, style: context.text.bodySmall, maxLines: 1, overflow: TextOverflow.ellipsis),
+              ],
+            ),
           ],
         ),
       ),
@@ -272,50 +352,66 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
   }
 }
 
-class _KpiCard extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String value;
-  final Color iconColor;
-  final Color iconBgColor;
-
-  const _KpiCard({required this.icon, required this.title, required this.value, required this.iconColor, required this.iconBgColor});
+/// Animated donut chart drawn with a CustomPainter.
+class _Donut extends StatelessWidget {
+  final List<_Slice> slices;
+  final int total;
+  final Widget center;
+  const _Donut({required this.slices, required this.total, required this.center});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-      decoration: BoxDecoration(
-        color: AppTheme.surface,
-        borderRadius: BorderRadius.circular(18),
-        boxShadow: AppTheme.softShadow,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            width: 28,
-            height: 28,
-            decoration: BoxDecoration(
-              color: iconBgColor,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Icon(icon, size: 14, color: iconColor),
-          ),
-          const SizedBox(height: 6),
-          Expanded(
-            child: FittedBox(
-              alignment: Alignment.centerLeft,
-              fit: BoxFit.scaleDown,
-              child: Text(value, style: GoogleFonts.outfit(fontSize: 26, fontWeight: FontWeight.bold, color: AppTheme.primary, letterSpacing: -0.5)),
-            ),
-          ),
-          Text(title, style: GoogleFonts.inter(fontSize: 10, color: AppTheme.textCaption, fontWeight: FontWeight.w500), maxLines: 1, overflow: TextOverflow.ellipsis),
-        ],
+    final track = context.colors.surfaceContainerHighest;
+    return Semantics(
+      label: slices.map((s) => '${s.label} ${s.pct} percent').join(', '),
+      excludeSemantics: true,
+      child: TweenAnimationBuilder<double>(
+        tween: Tween(begin: 0, end: 1),
+        duration: Motion.of(context, const Duration(milliseconds: 900)),
+        curve: Motion.emphasizedDecelerate,
+        builder: (context, t, child) => CustomPaint(
+          painter: _DonutPainter(slices: slices, total: total, t: t, track: track),
+          child: Center(child: child),
+        ),
+        child: center,
       ),
     );
   }
+}
+
+class _DonutPainter extends CustomPainter {
+  final List<_Slice> slices;
+  final int total;
+  final double t;
+  final Color track;
+  _DonutPainter({required this.slices, required this.total, required this.t, required this.track});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final stroke = size.width * 0.13;
+    final rect = Rect.fromLTWH(stroke / 2, stroke / 2, size.width - stroke, size.height - stroke);
+    final p = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = stroke
+      ..strokeCap = StrokeCap.butt;
+    canvas.drawArc(rect, 0, math.pi * 2, false, p..color = track);
+    if (total == 0) return;
+    var start = -math.pi / 2;
+    const gap = 0.04;
+    final visible = slices.where((s) => s.count > 0).length;
+    for (final s in slices) {
+      if (s.count == 0) continue;
+      final sweep = (s.count / total) * math.pi * 2 * t;
+      final g = visible > 1 ? gap : 0.0;
+      if (sweep > g) {
+        canvas.drawArc(rect, start + g / 2, sweep - g, false, p..color = s.color);
+      }
+      start += sweep;
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _DonutPainter old) => old.t != t || old.total != total || old.track != track;
 }
 
 class _LegendItem extends StatelessWidget {
@@ -326,10 +422,11 @@ class _LegendItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisSize: MainAxisSize.min,
       children: [
-        Container(width: 8, height: 8, decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(3))),
-        const SizedBox(width: 6),
-        Text(label, style: GoogleFonts.inter(fontSize: 11, color: AppTheme.textCaption)),
+        Container(width: 10, height: 10, decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(3))),
+        const SizedBox(width: Space.xs),
+        Flexible(child: Text(label, style: context.text.bodySmall?.copyWith(color: context.colors.onSurface))),
       ],
     );
   }
@@ -337,79 +434,58 @@ class _LegendItem extends StatelessWidget {
 
 class _InsightRow extends StatelessWidget {
   final String label;
-  final String value;
+  final int value;
   final Color color;
   const _InsightRow({required this.label, required this.value, required this.color});
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(label, style: GoogleFonts.inter(fontSize: 12, color: AppTheme.primary)),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
-          decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(20)),
-          child: Text(value, style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.bold, color: AppTheme.primary)),
-        ),
-      ],
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: Space.md, vertical: Space.sm),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: context.isDark ? 0.16 : 0.08),
+        borderRadius: Radii.brMd,
+      ),
+      child: Row(
+        children: [
+          Expanded(child: Text(label, style: context.text.bodyMedium?.copyWith(color: context.colors.onSurface))),
+          AnimatedCount(value: value, style: context.text.titleMedium?.copyWith(color: color)),
+        ],
+      ),
     );
   }
 }
 
 class _StaffProgress extends StatelessWidget {
-  final String initials;
   final String name;
   final int completed;
   final double progress;
-  final Color color;
 
-  const _StaffProgress({required this.initials, required this.name, required this.completed, required this.progress, this.color = const Color(0xFF1A237E)});
+  const _StaffProgress({required this.name, required this.completed, required this.progress});
 
   @override
   Widget build(BuildContext context) {
+    final cs = context.colors;
     return Row(
       children: [
-        Container(
-          width: 40,
-          height: 40,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [AppTheme.primary, AppTheme.secondary],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Center(
-            child: Text(initials, style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
-          ),
-        ),
-        const SizedBox(width: 12),
+        InitialsAvatar(name: name, size: 42),
+        const SizedBox(width: Space.sm),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(name, style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w600, color: AppTheme.primary)),
+              Text(name, style: context.text.titleSmall, maxLines: 1, overflow: TextOverflow.ellipsis),
               const SizedBox(height: 6),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(4),
-                child: LinearProgressIndicator(
-                  value: progress,
-                  backgroundColor: AppTheme.divider,
-                  valueColor: const AlwaysStoppedAnimation<Color>(AppTheme.primary),
-                  minHeight: 5,
-                ),
-              ),
+              StageProgressBar(value: progress, color: cs.primary),
             ],
           ),
         ),
-        const SizedBox(width: 16),
+        const SizedBox(width: Space.md),
         Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            Text('$completed', style: GoogleFonts.outfit(fontSize: 16, fontWeight: FontWeight.bold, color: AppTheme.primary)),
-            Text('completed', style: GoogleFonts.inter(fontSize: 10, color: AppTheme.textCaption)),
+            AnimatedCount(value: completed, style: context.text.titleMedium),
+            Text('completed', style: context.text.labelSmall?.copyWith(color: cs.onSurfaceVariant)),
           ],
         ),
       ],

@@ -19,6 +19,7 @@ import '../features/profile/presentation/screens/business_profile_screen.dart';
 import '../features/profile/presentation/screens/staff_management_screen.dart';
 import '../features/profile/presentation/screens/measurement_templates_screen.dart';
 import '../features/customers/models/customer.dart';
+import '../ui/components/transitions.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 final GlobalKey<NavigatorState> _shellNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'shell');
@@ -30,17 +31,17 @@ final GoRouter appRouter = GoRouter(
     // Splash & Auth (outside shell)
     GoRoute(
       path: '/splash',
-      builder: (BuildContext context, GoRouterState state) => const SplashScreen(),
+      pageBuilder: (BuildContext context, GoRouterState state) => fadeScalePage(state, const SplashScreen()),
     ),
     GoRoute(
       path: '/login',
-      builder: (BuildContext context, GoRouterState state) => const LoginScreen(),
+      pageBuilder: (BuildContext context, GoRouterState state) => fadeScalePage(state, const LoginScreen()),
     ),
     // New Order Wizard (full screen, outside shell)
     GoRoute(
       path: '/orders/new',
       parentNavigatorKey: _rootNavigatorKey,
-      builder: (BuildContext context, GoRouterState state) => const NewOrderWizard(),
+      pageBuilder: (BuildContext context, GoRouterState state) => sharedAxisVerticalPage(state, const NewOrderWizard()),
     ),
 
 
@@ -53,11 +54,11 @@ final GoRouter appRouter = GoRouter(
       routes: <RouteBase>[
         GoRoute(
           path: '/home',
-          builder: (BuildContext context, GoRouterState state) => const DashboardScreen(),
+          pageBuilder: (BuildContext context, GoRouterState state) => fadeThroughPage(state, const DashboardScreen()),
         ),
         GoRoute(
           path: '/customers',
-          builder: (BuildContext context, GoRouterState state) => const CustomersListScreen(),
+          pageBuilder: (BuildContext context, GoRouterState state) => fadeThroughPage(state, const CustomersListScreen()),
           routes: [
             GoRoute(
               path: 'new',
@@ -71,7 +72,7 @@ final GoRouter appRouter = GoRouter(
         ),
         GoRoute(
           path: '/orders',
-          builder: (BuildContext context, GoRouterState state) => const OrdersListScreen(),
+          pageBuilder: (BuildContext context, GoRouterState state) => fadeThroughPage(state, const OrdersListScreen()),
           routes: [
             GoRoute(
               path: 'details',
@@ -81,23 +82,23 @@ final GoRouter appRouter = GoRouter(
         ),
         GoRoute(
           path: '/tasks',
-          builder: (BuildContext context, GoRouterState state) => const TasksScreen(),
+          pageBuilder: (BuildContext context, GoRouterState state) => fadeThroughPage(state, const TasksScreen()),
         ),
         GoRoute(
           path: '/reports',
-          builder: (BuildContext context, GoRouterState state) => const ReportsScreen(),
+          pageBuilder: (BuildContext context, GoRouterState state) => fadeThroughPage(state, const ReportsScreen()),
         ),
         GoRoute(
           path: '/ai',
-          builder: (BuildContext context, GoRouterState state) => const AiToolsScreen(),
+          pageBuilder: (BuildContext context, GoRouterState state) => fadeThroughPage(state, const AiToolsScreen()),
         ),
         GoRoute(
           path: '/pattern',
-          builder: (BuildContext context, GoRouterState state) => const PatternViewerScreen(),
+          pageBuilder: (BuildContext context, GoRouterState state) => fadeThroughPage(state, const PatternViewerScreen()),
         ),
         GoRoute(
           path: '/profile',
-          builder: (BuildContext context, GoRouterState state) => const ProfileScreen(),
+          pageBuilder: (BuildContext context, GoRouterState state) => fadeThroughPage(state, const ProfileScreen()),
           routes: [
             GoRoute(
               path: 'business',

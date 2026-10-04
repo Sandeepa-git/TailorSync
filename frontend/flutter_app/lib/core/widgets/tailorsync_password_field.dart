@@ -1,17 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import '../theme/app_theme.dart';
 
+import '../../ui/theme/app_theme.dart';
+import '../../ui/theme/motion.dart';
+
+/// Password field with a morphing visibility toggle.
 class TailorSyncPasswordField extends StatefulWidget {
   final String label;
   final TextEditingController controller;
   final String? Function(String?)? validator;
+  final TextInputAction? textInputAction;
+  final ValueChanged<String>? onFieldSubmitted;
+  final FocusNode? focusNode;
+  final Iterable<String>? autofillHints;
 
   const TailorSyncPasswordField({
     super.key,
     required this.label,
     required this.controller,
     this.validator,
+    this.textInputAction,
+    this.onFieldSubmitted,
+    this.focusNode,
+    this.autofillHints,
   });
 
   @override
@@ -25,60 +35,34 @@ class _TailorSyncPasswordFieldState extends State<TailorSyncPasswordField> {
   Widget build(BuildContext context) {
     return TextFormField(
       controller: widget.controller,
+      focusNode: widget.focusNode,
       obscureText: _obscureText,
       validator: widget.validator,
-      style: GoogleFonts.inter(
-        fontSize: 15,
-        fontWeight: FontWeight.w400,
-        color: AppTheme.textPrimary,
-      ),
+      textInputAction: widget.textInputAction ?? TextInputAction.next,
+      onFieldSubmitted: widget.onFieldSubmitted,
+      autofillHints: widget.autofillHints ?? const [AutofillHints.password],
+      keyboardType: TextInputType.visiblePassword,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
+      scrollPadding: const EdgeInsets.only(bottom: 120),
+      style: context.text.bodyLarge,
       decoration: InputDecoration(
         labelText: widget.label,
-        labelStyle: GoogleFonts.inter(
-          fontSize: 14,
-          color: AppTheme.textCaption,
-        ),
-        prefixIcon: const Icon(
-          Icons.lock_outline,
-          size: 20,
-          color: AppTheme.secondary,
-        ),
+        prefixIcon: const Icon(Icons.lock_outline_rounded, size: 20),
         suffixIcon: IconButton(
-          icon: Icon(
-            _obscureText ? Icons.visibility_off : Icons.visibility,
-            size: 20,
-            color: AppTheme.secondary,
+          tooltip: _obscureText ? 'Show password' : 'Hide password',
+          onPressed: () => setState(() => _obscureText = !_obscureText),
+          icon: AnimatedSwitcher(
+            duration: Motion.of(context, Motion.short),
+            transitionBuilder: (c, a) => RotationTransition(
+              turns: Tween(begin: 0.75, end: 1.0).animate(a),
+              child: FadeTransition(opacity: a, child: c),
+            ),
+            child: Icon(
+              _obscureText ? Icons.visibility_off_rounded : Icons.visibility_rounded,
+              key: ValueKey(_obscureText),
+              size: 20,
+            ),
           ),
-          onPressed: () {
-            setState(() {
-              _obscureText = !_obscureText;
-            });
-          },
-          constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
-          padding: EdgeInsets.zero,
-        ),
-        filled: true,
-        fillColor: AppTheme.surface,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: AppTheme.divider, width: 1.0),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: AppTheme.divider, width: 1.0),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: AppTheme.primary, width: 1.5),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: AppTheme.error, width: 1.0),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: AppTheme.error, width: 1.5),
         ),
       ),
     );
