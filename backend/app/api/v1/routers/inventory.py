@@ -102,6 +102,33 @@ def restock_item(item_id: int, payload: Restock, db: Session = Depends(get_db), 
     return inv.to_dict(inv.restock(db, item, payload.meters, payload.note, user.user_id))
 
 
+# Common tailoring fabrics: (name, opening stock m, low-stock alert m)
+SAMPLE_FABRICS = [
+    ("Cotton", 60, 10), ("Linen", 35, 8), ("Cotton Linen Blend", 30, 8),
+    ("Poplin", 45, 10), ("Oxford Cotton", 25, 6), ("Chambray", 20, 5),
+    ("Denim", 30, 8), ("Polyester Viscose", 40, 10), ("Wool Blend", 18, 5),
+    ("Poly Wool", 22, 5), ("Silk", 12, 4), ("Satin", 15, 4),
+    ("Chiffon", 14, 4), ("Georgette", 16, 4), ("Rayon", 24, 6),
+    ("Batik Cotton", 20, 5), ("Twill", 28, 6), ("Gabardine", 26, 6),
+]
+
+
+@router.post("/samples")
+def add_sample_fabrics(db: Session = Depends(get_db), user: User = Depends(owner_only)):
+    """Add a starter set of common fabrics with stock. Existing fabrics are never changed."""
+    added, skipped = [], []
+    for name, qty, threshold in SAMPLE_FABRICS:
+        if inv.find_item(db, user.business_id, name):
+            skipped.append(name)
+            continue
+        item = inv.ensure_items(db, user.business_id, [name])[0]
+        item.low_stock_threshold_m = threshold
+        inv.set_quantity(db, item, qty, note="Sample opening stock", user_id=user.user_id)
+        added.append(name)
+    db.commit()
+    return {"added": added, "skipped": skipped, "added_count": len(added)}
+
+
 @router.get("/{item_id}/history")
 def history(item_id: int, db: Session = Depends(get_db), user: User = Depends(owner_only)):
     item = _get(db, item_id, user)

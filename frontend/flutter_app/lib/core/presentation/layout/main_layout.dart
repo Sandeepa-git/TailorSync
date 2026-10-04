@@ -192,9 +192,12 @@ class _FloatingNavBar extends StatelessWidget {
 
     return Padding(
       padding: EdgeInsets.fromLTRB(side, 0, side, (bottom > 0 ? bottom : Space.sm) + Space.xxs),
+      // heightFactor: 1 keeps the bar only as tall as itself (otherwise Align
+      // fills the whole screen height and pushes SnackBars off screen).
       child: MaxWidthBox(
         maxWidth: 520,
         alignment: Alignment.bottomCenter,
+        heightFactor: 1,
         child: DecoratedBox(
           decoration: BoxDecoration(
             borderRadius: Radii.brXl,

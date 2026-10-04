@@ -73,11 +73,13 @@ class MaxWidthBox extends StatelessWidget {
   final double maxWidth;
   final Widget child;
   final Alignment alignment;
+  final double? heightFactor;
 
   const MaxWidthBox({
     super.key,
     this.maxWidth = MaxWidth.content,
     this.alignment = Alignment.topCenter,
+    this.heightFactor,
     required this.child,
   });
 
@@ -85,6 +87,7 @@ class MaxWidthBox extends StatelessWidget {
   Widget build(BuildContext context) {
     return Align(
       alignment: alignment,
+      heightFactor: heightFactor,
       child: ConstrainedBox(
         constraints: BoxConstraints(maxWidth: maxWidth),
         child: child,

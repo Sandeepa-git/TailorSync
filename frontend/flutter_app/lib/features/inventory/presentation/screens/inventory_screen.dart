@@ -143,6 +143,28 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
     await _run(() => ref.read(apiClientProvider).updateInventoryItem(item['id'], payload), 'Saved');
   }
 
+  Future<void> _addSamples() async {
+    final yes = await confirmDialog(
+      context,
+      title: 'Add sample fabrics?',
+      message: 'Adds 18 common fabrics (cotton, linen, poplin, silk…) with starting stock. '
+          'Fabrics you already have are not changed.',
+      confirmLabel: 'Add',
+    );
+    if (!yes) return;
+    try {
+      final r = await ref.read(apiClientProvider).addSampleFabrics();
+      final n = (r.data is Map ? r.data['added_count'] : 0) ?? 0;
+      if (mounted) {
+        showToast(context, n == 0 ? 'All sample fabrics are already in your inventory' : 'Added $n sample fabrics',
+            type: ToastType.success);
+      }
+      await _load();
+    } catch (e) {
+      if (mounted) showToast(context, _err(e), type: ToastType.error);
+    }
+  }
+
   Future<void> _delete(Map<String, dynamic> item) async {
     final yes = await confirmDialog(
       context,
@@ -322,6 +344,13 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
           onPressed: () => context.canPop() ? context.pop() : context.go('/home'),
         ),
         title: const Text('Fabric Inventory'),
+        actions: [
+          IconButton(
+            tooltip: 'Add sample fabrics',
+            icon: const Icon(Icons.playlist_add_rounded),
+            onPressed: _addSamples,
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _addFabric,
@@ -360,10 +389,13 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
                       ),
                       const SizedBox(height: Space.md),
                       if (_items.isEmpty)
-                        const EmptyState(
+                        EmptyState(
                           icon: Icons.inventory_2_outlined,
                           title: 'No fabrics yet',
                           message: 'Fabrics are added automatically when the AI recommends them, or add one yourself.',
+                          actionLabel: 'Add sample fabrics',
+                          actionIcon: Icons.playlist_add_rounded,
+                          onAction: _addSamples,
                         ),
                       for (final it in filtered) _itemTile(it),
                     ],

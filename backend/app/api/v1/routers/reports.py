@@ -197,6 +197,20 @@ def overview(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
+    """Safe wrapper: logs the real error and returns it as a readable message."""
+    import logging, traceback
+    from fastapi import HTTPException
+    try:
+        return build_overview(days, current_user, db)
+    except HTTPException:
+        raise
+    except Exception as e:
+        db.rollback()
+        logging.getLogger(__name__).error("Reports overview failed:\n" + traceback.format_exc())
+        raise HTTPException(status_code=500, detail=f"Reports error: {type(e).__name__}: {e}")
+
+
+def build_overview(days: int, current_user: User, db: Session):
     from collections import defaultdict
     from datetime import timedelta
     from sqlalchemy.orm import joinedload
@@ -367,6 +381,7 @@ def overview(
     # ---------- inventory (owners only): stock + how long it will last
     inventory = None
     if is_owner:
+      try:
         since = datetime.utcnow() - timedelta(days=30)
         items = db.query(InventoryItem).filter(InventoryItem.business_id == biz).all()
         inv_rows = []
@@ -391,6 +406,12 @@ def overview(
             "total_stock_m": round(sum(r["quantity_m"] for r in tracked if r["quantity_m"] > 0), 2),
             "used_30d_m": round(sum(r["used_30d_m"] for r in inv_rows), 2),
         }
+      except Exception as e:
+        import logging
+        db.rollback()
+        logging.getLogger(__name__).error(f"Reports: inventory section skipped: {e}")
+        inventory = {"items": [], "tracked_count": 0, "low_count": 0, "total_stock_m": 0, "used_30d_m": 0,
+                     "error": "Inventory data unavailable"}
 
     return {
         "period": {"start": str(start), "end": str(today), "days": span, "unit": unit},

@@ -1,10 +1,10 @@
 import 'dart:math' as math;
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 
 import '../../../../core/network/providers/api_provider.dart';
 import '../../../../core/widgets/skeleton_loading.dart';
@@ -12,7 +12,7 @@ import '../../../../ui/ui.dart';
 import '../../../orders/presentation/providers/orders_provider.dart';
 import '../widgets/trend_line_chart.dart';
 
-/// Reports & Analytics: orders, revenue, delivery quality, fabric use,
+/// Reports & Analytics: orders, delivery quality, fabric use,
 /// inventory, staff and customers - all from /reports/overview.
 class ReportsScreen extends ConsumerStatefulWidget {
   const ReportsScreen({super.key});
@@ -28,8 +28,6 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
   String? _error;
   Map<String, dynamic>? _data;
 
-  final _lkr = NumberFormat.compactCurrency(locale: 'en', symbol: 'LKR ', decimalDigits: 1);
-  final _lkrFull = NumberFormat.currency(locale: 'en', symbol: 'LKR ', decimalDigits: 0);
 
   @override
   void initState() {
@@ -51,10 +49,24 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
         });
       }
     } catch (e) {
+      var msg = 'Could not load reports. Pull down to try again.';
+      if (e is DioException) {
+        final code = e.response?.statusCode;
+        final d = e.response?.data;
+        if (code == 401 || code == 403) {
+          msg = 'Your session has expired. Please sign in again.';
+        } else if (d is Map && d['detail'] != null) {
+          msg = '${d['detail']}';
+        } else if (code != null) {
+          msg = 'Server error ($code). Pull down to try again.';
+        } else {
+          msg = 'Can\'t reach the server. Check your connection.';
+        }
+      }
       if (mounted) {
         setState(() {
           _loading = false;
-          _error = 'Could not load reports. Pull down to try again.';
+          _error = msg;
         });
       }
     }
@@ -125,8 +137,6 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
     final tiles = <_StatTile>[
       _StatTile(Icons.shopping_bag_rounded, 'Orders', '${_n(k['total_orders'])}', cs.primary,
           sub: _delta(_n(k['total_orders']), _n(k['prev_total_orders']))),
-      _StatTile(Icons.payments_rounded, 'Revenue', _lkr.format(_n(k['revenue'])), st.success,
-          sub: _delta(_n(k['revenue']), _n(k['prev_revenue']))),
       _StatTile(Icons.check_circle_rounded, 'Delivered', '${_n(k['completed'])}', st.success),
       _StatTile(Icons.pending_actions_rounded, 'In progress', '${_n(k['active'])}', st.info),
       _StatTile(Icons.warning_rounded, 'Overdue', '${_n(k['overdue'])}',
@@ -138,7 +148,8 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
       _StatTile(Icons.hourglass_bottom_rounded, 'Avg turnaround',
           turnaround == null ? '—' : '${turnaround.toStringAsFixed(1)} days', cs.tertiary,
           sub: 'order to delivery'),
-      _StatTile(Icons.sell_rounded, 'Avg order value', _lkr.format(_n(k['avg_order_value'])), cs.secondary),
+      _StatTile(Icons.straighten_rounded, 'Fabric used', '${_n(k['fabric_used_m']).toStringAsFixed(1)} m', cs.secondary,
+          sub: 'across orders this period'),
     ];
 
     final statuses = _list('status_breakdown');
@@ -210,28 +221,6 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
               ),
             ]),
             stagger: 2,
-          ),
-        ),
-
-        // 3. REVENUE
-        _section('Revenue'),
-        SliverToBoxAdapter(
-          child: _card(
-            Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-              _caption('Order value per $unit · total ${_lkrFull.format(_n(k['revenue']))}'),
-              TrendLineChart(
-                labels: labels,
-                fillFirst: true,
-                series: [ChartSeries('Revenue', kSeriesBlue, trend.map((b) => _n(b['revenue']).toDouble()).toList())],
-                format: (v) => NumberFormat.compact().format(v),
-              ),
-              if (_n(k['revenue']) == 0)
-                Padding(
-                  padding: const EdgeInsets.only(top: Space.xs),
-                  child: Text('Add a price when creating orders to track revenue.', style: context.text.bodySmall),
-                ),
-            ]),
-            stagger: 3,
           ),
         ),
 
@@ -325,7 +314,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                         label: g['garment_type'],
                         value: _n(g['count']).toDouble(),
                         max: _n(garments.first['count']).toDouble(),
-                        text: '${g['count']} orders${_n(g['revenue']) > 0 ? ' · ${_lkr.format(_n(g['revenue']))}' : ''}',
+                        text: '${g['count']} orders',
                         color: kSeriesBlue,
                       ),
                   ]),
@@ -388,7 +377,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                         label: c['customer_name'] ?? 'Unknown',
                         value: _n(c['count']).toDouble(),
                         max: _n(customers.first['count']).toDouble(),
-                        text: '${c['count']} orders${_n(c['revenue']) > 0 ? ' · ${_lkr.format(_n(c['revenue']))}' : ''}',
+                        text: '${c['count']} orders',
                         color: cs.tertiary,
                       ),
                   ]),

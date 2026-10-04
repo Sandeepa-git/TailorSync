@@ -263,6 +263,7 @@ class ApiClient {
       dio.post('/inventory/$id/restock', data: {'meters': meters, if (note != null && note.isNotEmpty) 'note': note});
   Future<Response> inventoryHistory(int id) => dio.get('/inventory/$id/history');
   Future<Response> deleteInventoryItem(int id) => dio.delete('/inventory/$id');
+  Future<Response> addSampleFabrics() => dio.post('/inventory/samples');
 
   // Measurement Templates
   Future<Response> getMeasurementTemplates() async {
