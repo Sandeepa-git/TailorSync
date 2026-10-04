@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../providers/customers_provider.dart';
 import '../../models/customer.dart';
+import '../../../orders/presentation/providers/orders_provider.dart';
 import '../../../../core/network/providers/api_provider.dart';
 import '../../../../core/widgets/skeleton_loading.dart';
 import '../../../../ui/ui.dart';
@@ -123,7 +124,7 @@ class _CustomersListScreenState extends ConsumerState<CustomersListScreen> {
   Widget _buildCustomerCard(BuildContext context, WidgetRef ref, Customer c) {
     final cs = context.colors;
     return TsCard(
-      onTap: () => context.go('/customers/edit', extra: c),
+      onTap: () => _showCustomerDetails(context, ref, c),
       padding: const EdgeInsets.fromLTRB(Space.md, Space.sm, Space.xxs, Space.sm),
       child: Row(
         children: [
@@ -151,6 +152,11 @@ class _CustomersListScreenState extends ConsumerState<CustomersListScreen> {
             ),
           ),
           IconButton(
+            tooltip: 'View details',
+            icon: const Icon(Icons.info_outline_rounded, size: 20),
+            onPressed: () => _showCustomerDetails(context, ref, c),
+          ),
+          IconButton(
             tooltip: 'Edit ${c.name}',
             icon: const Icon(Icons.edit_outlined, size: 20),
             onPressed: () => context.go('/customers/edit', extra: c),
@@ -162,6 +168,98 @@ class _CustomersListScreenState extends ConsumerState<CustomersListScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  void _showCustomerDetails(BuildContext context, WidgetRef ref, Customer customer) {
+    showTsSheet(
+      context: context,
+      builder: (ctx) {
+        final cs = Theme.of(ctx).colorScheme;
+        final text = Theme.of(ctx).textTheme;
+        return Consumer(
+          builder: (context, ref, child) {
+            final ordersAsync = ref.watch(ordersProvider);
+            return Container(
+              padding: const EdgeInsets.all(24),
+              width: double.infinity,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      InitialsAvatar(name: customer.name, size: 64),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(customer.name, style: text.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
+                            if (customer.email != null) ...[
+                              const SizedBox(height: 4),
+                              Row(
+                                children: [
+                                  Icon(Icons.email_outlined, size: 16, color: cs.onSurfaceVariant),
+                                  const SizedBox(width: 8),
+                                  Text(customer.email!, style: text.bodyMedium?.copyWith(color: cs.onSurfaceVariant)),
+                                ],
+                              ),
+                            ],
+                            if (customer.phone != null) ...[
+                              const SizedBox(height: 4),
+                              Row(
+                                children: [
+                                  Icon(Icons.phone_outlined, size: 16, color: cs.onSurfaceVariant),
+                                  const SizedBox(width: 8),
+                                  Text(customer.phone!, style: text.bodyMedium?.copyWith(color: cs.onSurfaceVariant)),
+                                ],
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 24),
+                  const Divider(),
+                  const SizedBox(height: 16),
+                  Text('Order Statistics', style: text.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 16),
+                  ordersAsync.when(
+                    data: (orders) {
+                      final customerOrders = orders.where((o) => o.customerId == customer.id).toList();
+                      final total = customerOrders.length;
+                      final active = customerOrders.where((o) => o.status != 'Delivered' && o.status != 'Ready').length;
+                      final completed = customerOrders.where((o) => o.status == 'Delivered' || o.status == 'Ready').length;
+                      
+                      return Row(
+                        children: [
+                          Expanded(child: _StatBox(title: 'Total', value: total.toString(), color: cs.primary)),
+                          const SizedBox(width: 12),
+                          Expanded(child: _StatBox(title: 'Active', value: active.toString(), color: Colors.orange)),
+                          const SizedBox(width: 12),
+                          Expanded(child: _StatBox(title: 'Completed', value: completed.toString(), color: Colors.green)),
+                        ],
+                      );
+                    },
+                    loading: () => const Center(child: CircularProgressIndicator()),
+                    error: (e, st) => Text('Error loading orders: $e', style: text.bodySmall?.copyWith(color: cs.error)),
+                  ),
+                  const SizedBox(height: 24),
+                  SizedBox(
+                    width: double.infinity,
+                    child: FilledButton.tonal(
+                      onPressed: () => Navigator.pop(ctx),
+                      child: const Text('Close'),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
     );
   }
 
@@ -207,6 +305,33 @@ class _CustomersListScreenState extends ConsumerState<CustomersListScreen> {
             },
             child: const Text('Delete'),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+class _StatBox extends StatelessWidget {
+  final String title;
+  final String value;
+  final Color color;
+
+  const _StatBox({required this.title, required this.value, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
+      ),
+      child: Column(
+        children: [
+          Text(title, style: Theme.of(context).textTheme.labelMedium?.copyWith(color: color)),
+          const SizedBox(height: 4),
+          Text(value, style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: color, fontWeight: FontWeight.bold)),
         ],
       ),
     );
