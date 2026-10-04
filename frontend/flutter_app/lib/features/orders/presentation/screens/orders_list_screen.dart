@@ -157,6 +157,7 @@ class _OrdersListScreenState extends ConsumerState<OrdersListScreen> {
         return false;
       },
       child: TsScrollPage(
+        watermark: TailorAccessory.hanger, watermarkLeft: true,
         title: 'Orders',
         automaticallyImplyLeading: false,
         padSlivers: false,

@@ -198,8 +198,15 @@ abstract final class TsTheme {
         shape: RoundedRectangleBorder(borderRadius: Radii.brPill),
         side: BorderSide(color: cs.outlineVariant),
         backgroundColor: cs.surfaceContainerLowest,
-        selectedColor: cs.primaryContainer,
-        labelStyle: text.labelMedium,
+        selectedColor: cs.primary,
+        // Selected chips are dark blue, so their text turns white.
+        labelStyle: text.labelMedium?.copyWith(
+          color: WidgetStateColor.resolveWith(
+            (s) => s.contains(WidgetState.selected) ? cs.onPrimary : cs.onSurface,
+          ),
+        ),
+        secondaryLabelStyle: text.labelMedium?.copyWith(color: cs.onPrimary),
+        secondarySelectedColor: cs.primary,
         padding: const EdgeInsets.symmetric(horizontal: Space.xs, vertical: Space.xxs),
         showCheckmark: false,
       ),

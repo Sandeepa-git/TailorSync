@@ -82,6 +82,7 @@ class _CustomersListScreenState extends ConsumerState<CustomersListScreen> {
     }
 
     return TsScrollPage(
+        watermark: TailorAccessory.tape,
       title: 'Customers',
       automaticallyImplyLeading: false,
       padSlivers: false,
@@ -243,7 +244,7 @@ class _CustomersListScreenState extends ConsumerState<CustomersListScreen> {
                         ],
                       );
                     },
-                    loading: () => const Center(child: CircularProgressIndicator()),
+                    loading: () => const Center(child: ScissorLoader()),
                     error: (e, st) => Text('Error loading orders: $e', style: text.bodySmall?.copyWith(color: cs.error)),
                   ),
                   const SizedBox(height: 24),

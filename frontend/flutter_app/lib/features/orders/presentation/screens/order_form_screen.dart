@@ -64,7 +64,7 @@ class _OrderFormScreenState extends ConsumerState<OrderFormScreen> {
                       onChanged: (val) => setState(() => _selectedCustomerId = val),
                     );
                   },
-                  loading: () => const Center(child: CircularProgressIndicator()),
+                  loading: () => const Center(child: ScissorLoader()),
                   error: (e, st) => Text('Error loading customers: $e'),
                 ),
                 const SizedBox(height: Space.md),

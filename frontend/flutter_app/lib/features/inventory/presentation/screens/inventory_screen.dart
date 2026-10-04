@@ -358,7 +358,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
         label: const Text('Add fabric'),
       ),
       body: _loading
-          ? const Center(child: CircularProgressIndicator())
+          ? const Center(child: ScissorLoader())
           : _error != null
               ? ErrorState(title: 'Couldn\'t load inventory', message: _error, onRetry: _load)
               : RefreshIndicator(

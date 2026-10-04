@@ -402,11 +402,10 @@ class _BootStatus extends StatelessWidget {
                     ),
                     child: const Icon(Icons.wifi_off_rounded, color: _SplashPalette.gold, size: 24),
                   )
-                : const OrbitLoader(
+                : const ScissorLoader(
                     key: ValueKey('load'),
-                    size: 44,
-                    color: _SplashPalette.gold,
-                    highlight: _SplashPalette.goldSoft,
+                    size: 132,
+                    color: _SplashPalette.goldSoft,
                   ),
           ),
           const SizedBox(height: Space.md),

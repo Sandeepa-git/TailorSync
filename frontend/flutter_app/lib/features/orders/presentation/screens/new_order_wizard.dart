@@ -774,7 +774,7 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
                   },
                 );
               },
-              loading: () => const Center(child: CircularProgressIndicator()),
+              loading: () => const Center(child: ScissorLoader()),
               error: (e, _) => const Center(child: Text('Error loading customers')),
             );
           }),
@@ -919,7 +919,7 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
 
   // --- Step 3: Priority Input ---
   Widget _buildPriorityInputStep() {
-    if (_loadingTemplate) return const Center(child: CircularProgressIndicator());
+    if (_loadingTemplate) return const Center(child: ScissorLoader());
     
     final fields = (_measurementTemplate?['fields'] as List? ?? []).cast<Map<String, dynamic>>();
     final requiredFields = fields.where((f) => f['is_required'] == true).toList();

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../ui/ui.dart';
+import 'privacy_policy_screen.dart';
 
 class TermsAndConditionsScreen extends StatelessWidget {
   const TermsAndConditionsScreen({super.key});
@@ -84,11 +85,12 @@ class TermsAndConditionsScreen extends StatelessWidget {
                 'Your privacy is important to us. By using TailorSync, you acknowledge and agree to the following:\n\n'
                 '• We collect and store business information, customer data, measurements, and order details that you enter into the App.\n'
                 '• Customer personal data (names, contact information, body measurements) is stored securely and is accessible only to authorized users within your organization.\n'
-                '• Photos uploaded for the AI Style Preview feature are processed by third-party AI services (Google Gemini) and are not permanently stored by TailorSync.\n'
+                '• Photos uploaded for the Virtual Try-On feature are processed by a third-party AI service (Cloudflare Workers AI) and are not permanently stored by TailorSync.\n'
                 '• We use industry-standard encryption and security measures to protect your data.\n'
                 '• We do not sell, rent, or share your personal or business data with third parties for marketing purposes.\n'
                 '• We may use anonymized, aggregated data for service improvement and analytics.\n'
-                '• You may request deletion of your account and associated data at any time through the App settings.',
+                '• You may request deletion of your account and associated data at any time through the App settings.\n\n'
+                'Full details are in our Privacy Policy (Profile > Privacy Policy, or the button below).',
               ),
 
               _buildSection(
@@ -97,7 +99,7 @@ class TermsAndConditionsScreen extends StatelessWidget {
                 '• AI predictions and recommendations are provided as suggestions only and should not be treated as exact or guaranteed results.\n'
                 '• The Style Preview feature generates approximate visual representations and does not guarantee the final appearance of a garment.\n'
                 '• You are responsible for verifying all AI-generated measurements and recommendations before using them for actual garment production.\n'
-                '• AI features may use third-party services (such as Google Gemini and Azure AI), and their respective terms of service also apply.\n'
+                '• AI features may use third-party services (such as Microsoft Azure AI Foundry and Cloudflare Workers AI), and their respective terms of service also apply.\n'
                 '• We are not liable for any errors, inaccuracies, or damages resulting from reliance on AI-generated content.',
               ),
 
@@ -184,6 +186,16 @@ class TermsAndConditionsScreen extends StatelessWidget {
                 'If you have any questions, concerns, or feedback regarding these Terms and Conditions, please contact us:\n\n'
                 '• Email: support@tailorsync.app\n'
                 '• In-App: Settings > Help & Support',
+              ),
+              const SizedBox(height: Space.xs),
+              Center(
+                child: TextButton.icon(
+                  icon: const Icon(Icons.privacy_tip_outlined),
+                  label: const Text('Read the Privacy Policy'),
+                  onPressed: () => Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const PrivacyPolicyScreen()),
+                  ),
+                ),
               ),
               const SizedBox(height: Space.md),
               Center(

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import '../theme/responsive.dart';
 import '../theme/tokens.dart';
+import 'tailor_art.dart';
 
 /// Standard scrolling page: collapsing large title that shrinks into a
 /// frosted app bar, pull-to-refresh, responsive gutters, a centred max
@@ -23,6 +24,9 @@ class TsScrollPage extends StatelessWidget {
   final double headerBottomHeight;
   final double maxWidth;
   final bool padSlivers;
+  /// Big faint tailoring accessory behind the content (main tab pages).
+  final TailorAccessory? watermark;
+  final bool watermarkLeft;
 
   const TsScrollPage({
     super.key,
@@ -39,6 +43,8 @@ class TsScrollPage extends StatelessWidget {
     this.headerBottomHeight = 64,
     this.maxWidth = MaxWidth.content,
     this.padSlivers = true,
+    this.watermark,
+    this.watermarkLeft = false,
   });
 
   @override
@@ -62,7 +68,8 @@ class TsScrollPage extends StatelessWidget {
         ),
       ),
       actions: [...?actions, SizedBox(width: pad - Space.xs)],
-      backgroundColor: cs.surface.withValues(alpha: 0.86),
+      backgroundColor: Color.lerp(cs.surface, const Color(0xFF3949AB), context.isDark ? 0.18 : 0.10)!
+          .withValues(alpha: 0.72),
       surfaceTintColor: Colors.transparent,
       flexibleSpace: ClipRect(
         child: BackdropFilter(
@@ -113,7 +120,13 @@ class TsScrollPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: cs.surface,
       floatingActionButton: floatingActionButton,
-      body: MaxWidthBox(maxWidth: maxWidth, child: scroll),
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          PageBackdrop(watermark: watermark, watermarkLeft: watermarkLeft),
+          MaxWidthBox(maxWidth: maxWidth, child: scroll),
+        ],
+      ),
     );
   }
 }

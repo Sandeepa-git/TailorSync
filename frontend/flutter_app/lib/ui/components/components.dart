@@ -9,3 +9,4 @@ export 'transitions.dart';
 export 'status_style.dart';
 export 'ts_search_field.dart';
 export 'loaders.dart';
+export 'tailor_art.dart';

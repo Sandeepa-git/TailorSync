@@ -210,9 +210,17 @@ class _FloatingNavBar extends StatelessWidget {
               child: Container(
                 height: barHeight,
                 decoration: BoxDecoration(
-                  color: (context.isDark ? cs.surfaceContainerHigh : cs.surfaceContainerLowest).withValues(alpha: 0.88),
+                  // Brand indigo nav (same blues as the login screen).
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      const Color(0xFF283593).withValues(alpha: 0.96),
+                      const Color(0xFF1A237E).withValues(alpha: 0.96),
+                    ],
+                  ),
                   borderRadius: Radii.brXl,
-                  border: Border.all(color: cs.outlineVariant.withValues(alpha: 0.35)),
+                  border: Border.all(color: Colors.white.withValues(alpha: 0.12)),
                 ),
                 child: ClampedTextScale(
                   max: 1.15,
@@ -229,7 +237,11 @@ class _FloatingNavBar extends StatelessWidget {
                             width: pillW,
                             height: pillH,
                             child: DecoratedBox(
-                              decoration: BoxDecoration(color: cs.primaryContainer, borderRadius: Radii.brPill),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withValues(alpha: 0.18),
+                                borderRadius: Radii.brPill,
+                                border: Border.all(color: const Color(0xFFE2C27D).withValues(alpha: 0.55)),
+                              ),
                             ),
                           ),
                           Row(
@@ -267,8 +279,7 @@ class _NavButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cs = context.colors;
-    final fg = selected ? cs.onPrimaryContainer : cs.onSurfaceVariant;
+    final fg = selected ? Colors.white : Colors.white.withValues(alpha: 0.62);
     final dur = Motion.of(context, Motion.medium);
     return Semantics(
       selected: selected,
@@ -302,7 +313,7 @@ class _NavButton extends StatelessWidget {
             AnimatedDefaultTextStyle(
               duration: dur,
               style: (context.text.labelSmall ?? const TextStyle()).copyWith(
-                color: selected ? cs.primary : cs.onSurfaceVariant,
+                color: selected ? const Color(0xFFF6E7C1) : Colors.white.withValues(alpha: 0.62),
                 fontWeight: selected ? FontWeight.w800 : FontWeight.w500,
                 fontSize: 11,
               ),

@@ -145,6 +145,7 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
   Widget build(BuildContext context) {
     if (_loading) {
       return TsScrollPage(
+        watermark: TailorAccessory.spool, watermarkLeft: true,
         title: 'Tasks',
         automaticallyImplyLeading: false,
         padSlivers: false,
@@ -154,6 +155,7 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
 
     if (_error) {
       return TsScrollPage(
+        watermark: TailorAccessory.spool, watermarkLeft: true,
         title: 'Tasks',
         automaticallyImplyLeading: false,
         onRefresh: _loadData,
@@ -225,6 +227,7 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
     final st = context.status;
 
     return TsScrollPage(
+        watermark: TailorAccessory.spool, watermarkLeft: true,
       title: '${_user?['full_name']?.split(' ').first ?? 'Your'} Tasks',
       automaticallyImplyLeading: false,
       padSlivers: false,

@@ -174,14 +174,20 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
     return Scaffold(
       body: TsScrollPage(
-        title: 'Home',
+        watermark: TailorAccessory.scissors,
+        title: '',
         automaticallyImplyLeading: false,
         padSlivers: false,
         onRefresh: _loadData,
         actions: [
-          IconButton(
-            icon: InitialsAvatar(name: firstName.isNotEmpty ? firstName : 'T', size: 32),
-            onPressed: () => context.push('/profile'),
+          Padding(
+            padding: const EdgeInsets.only(top: Space.xs),
+            child: ProfileRingAvatar(
+              name: _user?['full_name'] ?? firstName,
+              isOwner: !isStaffUser,
+              size: 46,
+              onTap: () => context.push('/profile'),
+            ),
           ),
           const SizedBox(width: Space.xs),
         ],
@@ -198,10 +204,14 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(_getGreeting(), style: context.text.bodyMedium),
+                              Text(_getGreeting(),
+                                  style: context.text.bodyMedium?.copyWith(
+                                      color: context.isDark ? const Color(0xFFB8C2FF) : const Color(0xFF3949AB),
+                                      fontWeight: FontWeight.w600)),
                               Text(
                                 firstName,
-                                style: context.text.headlineMedium,
+                                style: context.text.headlineMedium?.copyWith(
+                                    color: context.isDark ? Colors.white : const Color(0xFF1A237E)),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),

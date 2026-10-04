@@ -29,32 +29,87 @@ class _ColorOption {
 }
 
 const _garments = [
+  // Sri Lankan traditional & occasion wear
   'Saree',
+  'Kandyan saree (Osariya)',
+  'Bridal saree',
+  'Half saree',
+  'Lama saree',
+  'Redda and hatte',
+  'Kandyan bridal (Nilame)',
+  'National dress',
+  'Sarong and shirt',
+  'Batik sarong',
+  'Batik dress',
+  'Long frock',
   'Frock',
-  'Evening gown',
+  // South Asian
   'Lehenga',
   'Kurta',
+  'Kurta pyjama',
   'Shalwar kameez',
+  'Churidar',
+  'Anarkali',
+  // Western, office & everyday
+  'Evening gown',
+  'Office blouse and skirt',
   'Blouse and skirt',
   'Business suit',
   'Shirt and trousers',
-  'Sarong and shirt',
+  'Linen shirt',
+  'School uniform',
 ];
 
+/// What the image model is actually told for local garment names.
+const _garmentPrompts = {
+  'Kandyan saree (Osariya)':
+      'Kandyan saree (osariya), Sri Lankan style saree with a frilled peplum at the waist and the pallu draped over the left shoulder',
+  'Bridal saree': 'Sri Lankan bridal saree with heavy embroidery and a long veil-like pallu',
+  'Half saree': 'half saree (langa voni) with a long skirt, blouse and draped dupatta',
+  'Lama saree': 'young girl\'s Sri Lankan lama saree, short simple draped saree',
+  'Redda and hatte': 'traditional Sri Lankan redda and hatte, wrap cloth skirt with a fitted short-sleeve jacket blouse',
+  'Kandyan bridal (Nilame)':
+      'traditional Kandyan groom outfit (Nilame attire) with embroidered jacket, wrapped cloth and decorated four-cornered hat',
+  'National dress': 'Sri Lankan men\'s national dress, long-sleeve white collarless kurtha top with a white wrapped sarong',
+  'Sarong and shirt': 'Sri Lankan sarong with a casual shirt',
+  'Batik sarong': 'Sri Lankan hand-dyed batik sarong with a plain shirt',
+  'Batik dress': 'Sri Lankan batik print dress',
+  'Long frock': 'long ankle-length frock',
+  'Kurta pyjama': 'kurta with matching pyjama trousers',
+  'Churidar': 'churidar suit with fitted leggings and long top with dupatta',
+  'Anarkali': 'flared floor-length anarkali dress with dupatta',
+  'Office blouse and skirt': 'smart office blouse with a knee-length pencil skirt',
+  'School uniform': 'Sri Lankan school uniform, white frock with a tie for girls or white shirt and shorts for boys',
+};
+
 const _colors = [
+  _ColorOption('White', Color(0xFFF7F5F0)),
+  _ColorOption('Cream', Color(0xFFF1E6C8)),
+  _ColorOption('Gold', Color(0xFFD4A537)),
+  _ColorOption('Mustard', Color(0xFFD9A21B)),
+  _ColorOption('Orange', Color(0xFFE8711C)),
+  _ColorOption('Peach', Color(0xFFF4A98A)),
   _ColorOption('Red', Color(0xFFC62828)),
   _ColorOption('Maroon', Color(0xFF6D1B2B)),
   _ColorOption('Pink', Color(0xFFEC6FA0)),
-  _ColorOption('Royal blue', Color(0xFF1E4DD8)),
-  _ColorOption('Navy', Color(0xFF1A2550)),
-  _ColorOption('Emerald green', Color(0xFF0E8A5F)),
+  _ColorOption('Magenta', Color(0xFFB0186F)),
+  _ColorOption('Lavender', Color(0xFFB39DDB)),
   _ColorOption('Purple', Color(0xFF6A3BA8)),
-  _ColorOption('Gold', Color(0xFFD4A537)),
+  _ColorOption('Royal blue', Color(0xFF1E4DD8)),
+  _ColorOption('Sky blue', Color(0xFF6EC1F0)),
+  _ColorOption('Navy', Color(0xFF1A2550)),
+  _ColorOption('Teal', Color(0xFF0F7C80)),
+  _ColorOption('Emerald green', Color(0xFF0E8A5F)),
+  _ColorOption('Olive', Color(0xFF7A7A2E)),
+  _ColorOption('Brown', Color(0xFF6B4226)),
+  _ColorOption('Grey', Color(0xFF8A8F98)),
   _ColorOption('Black', Color(0xFF151515)),
-  _ColorOption('White', Color(0xFFF7F5F0)),
 ];
 
-const _fabrics = ['Silk', 'Cotton', 'Linen', 'Chiffon', 'Satin', 'Velvet', 'Lace', 'Denim'];
+const _fabrics = [
+  'Silk', 'Cotton', 'Linen', 'Batik', 'Handloom', 'Chiffon', 'Georgette',
+  'Satin', 'Organza', 'Brocade', 'Velvet', 'Lace', 'Denim',
+];
 
 class _VirtualTryOnScreenState extends ConsumerState<VirtualTryOnScreen> {
   final _picker = ImagePicker();
@@ -105,7 +160,7 @@ class _VirtualTryOnScreenState extends ConsumerState<VirtualTryOnScreen> {
     final main = [
       if (_color != null) _color!.toLowerCase(),
       if (_fabric != null) _fabric!.toLowerCase(),
-      if (_garment != null) _garment!.toLowerCase(),
+      if (_garment != null) _garmentPrompts[_garment] ?? _garment!.toLowerCase(),
     ].join(' ');
     final details = _detailsCtrl.text.trim();
     if (main.isEmpty) return details;

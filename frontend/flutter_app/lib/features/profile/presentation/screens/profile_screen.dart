@@ -6,6 +6,7 @@ import '../../../../core/network/providers/api_provider.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/skeleton_loading.dart';
 import '../../../../ui/ui.dart';
+import '../../../auth/presentation/screens/privacy_policy_screen.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
@@ -455,18 +456,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   leadingColor: cs.onSurfaceVariant,
                   title: 'Privacy Policy',
                   trailingIcon: Icons.chevron_right_rounded,
-                  onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          title: const Text('Privacy Policy'),
-                          content: const Text('Your privacy is important to us. All personal and business data is securely stored and never shared with third parties without consent. (Placeholder for full policy)'),
-                          actions: [
-                            TextButton(onPressed: () => Navigator.pop(context), child: const Text('Close')),
-                          ],
-                        ),
-                      );
-                    },
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const PrivacyPolicyScreen()),
+                  ),
                 ),
                 _SettingsListTile(
                   leadingIcon: Icons.headset_mic_outlined,

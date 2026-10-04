@@ -117,6 +117,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
 
     if (_loading) {
       return TsScrollPage(
+        watermark: TailorAccessory.button,
         title: 'Reports',
         automaticallyImplyLeading: false,
         padSlivers: false,
@@ -170,6 +171,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
     final methodsTotal = methods.values.fold<num>(0, (a, b) => a + (b as num));
 
     return TsScrollPage(
+        watermark: TailorAccessory.button,
       title: 'Reports & Analytics',
       automaticallyImplyLeading: false,
       onRefresh: _loadData,
