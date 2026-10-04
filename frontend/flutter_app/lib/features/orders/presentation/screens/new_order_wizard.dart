@@ -8,6 +8,7 @@ import '../../../../core/network/providers/api_provider.dart';
 import '../../../../ui/ui.dart';
 import '../../../customers/presentation/providers/customers_provider.dart';
 import '../../presentation/providers/orders_provider.dart';
+import '../../blueprints/garment_blueprints.dart';
 
 class NewOrderWizard extends ConsumerStatefulWidget {
   const NewOrderWizard({super.key});
@@ -1581,7 +1582,71 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
               )).toList(),
               onChanged: (v) => setState(() => _selectedStaffId = v),
             ),
+        const SizedBox(height: Space.lg),
+        _sectionTitle(Icons.straighten_rounded, 'Body Measurements'),
+        const SizedBox(height: Space.sm),
+        _buildBodyMeasurementsCard(),
+        const SizedBox(height: Space.lg),
+        _sectionTitle(Icons.architecture_rounded, 'Cutting Blueprint'),
+        const SizedBox(height: Space.sm),
+        GarmentBlueprintSection(
+          garment: _selectedGarment ?? '',
+          measurements: _confirmedMeasurements,
+        ),
       ],
+      ),
+    );
+  }
+
+  Widget _sectionTitle(IconData icon, String text) {
+    final cs = context.colors;
+    return Row(
+      children: [
+        Icon(icon, size: 20, color: cs.primary),
+        const SizedBox(width: Space.xs),
+        Text(text, style: context.text.titleSmall),
+      ],
+    );
+  }
+
+  /// All finalized measurements of this order (entered + AI-predicted).
+  Widget _buildBodyMeasurementsCard() {
+    final cs = context.colors;
+    String pretty(String k) => k
+        .replaceAll('_', ' ')
+        .split(' ')
+        .where((w) => w.isNotEmpty)
+        .map((w) => w[0].toUpperCase() + w.substring(1))
+        .join(' ');
+    final entries = _confirmedMeasurements.entries
+        .where((e) => e.value.trim().isNotEmpty && e.value.trim() != '0' && e.value.trim() != '0.0')
+        .toList();
+    if (entries.isEmpty) {
+      return TsCard(shadow: false, child: Text('No measurements recorded.', style: context.text.bodySmall));
+    }
+    return TsCard(
+      padding: const EdgeInsets.all(Space.sm),
+      child: Wrap(
+        spacing: Space.xs,
+        runSpacing: Space.xs,
+        children: [
+          for (final e in entries)
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: Space.sm, vertical: Space.xs),
+              decoration: BoxDecoration(color: cs.surfaceContainerHigh, borderRadius: Radii.brSm),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (_isAiGenerated[e.key] == true) ...[
+                    Icon(Icons.auto_awesome_rounded, size: 14, color: cs.primary),
+                    const SizedBox(width: 4),
+                  ],
+                  Text('${pretty(e.key)}: ', style: context.text.bodySmall),
+                  Text('${e.value}"', style: context.text.titleSmall),
+                ],
+              ),
+            ),
+        ],
       ),
     );
   }

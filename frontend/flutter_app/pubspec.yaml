@@ -44,3 +44,4 @@ flutter:
   assets:
     - assets/icon.png
     - assets/patterns/
+    - assets/blueprints/
