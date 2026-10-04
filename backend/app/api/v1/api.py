@@ -1,10 +1,9 @@
 from fastapi import APIRouter
-from app.api.v1.routers import auth, users, staff, customers, orders, measurements, reports, ai, business, templates, tryon, captcha
+from app.api.v1.routers import auth, users, staff, customers, orders, measurements, reports, ai, business, templates, tryon
 
 api_router = APIRouter()
 
 api_router.include_router(auth.router, prefix="/auth", tags=["auth"])
-api_router.include_router(captcha.router, prefix="/auth", tags=["auth"])
 api_router.include_router(users.router, prefix="/users", tags=["users"])
 api_router.include_router(staff.router, prefix="/staff", tags=["staff"])
 api_router.include_router(customers.router, prefix="/customers", tags=["customers"])

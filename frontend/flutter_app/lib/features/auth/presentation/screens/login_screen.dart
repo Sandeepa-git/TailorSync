@@ -8,7 +8,7 @@ import '../../../../core/widgets/tailorsync_text_field.dart';
 import '../../../../core/widgets/tailorsync_password_field.dart';
 import '../../../../core/widgets/tailorsync_button.dart';
 import '../../../../core/widgets/tailorsync_password_requirements.dart';
-import '../../../../core/widgets/captcha/recaptcha_check.dart';
+import '../../../../core/widgets/robot_check.dart';
 import '../../../../ui/ui.dart';
 import 'terms_and_conditions_screen.dart';
 
@@ -37,7 +37,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   bool _obscureConfirmPassword = true;
   bool _acceptedTerms = false;
   bool _captchaPassed = false;
-  String? _captchaToken; // Google reCAPTCHA token (null when offline fallback is used)
   int _captchaKey = 0; // bump to reset the captcha
   @override
   void initState() {
@@ -91,10 +90,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           password: _password.text.trim(),
           fullName: _name.text.trim(),
           phone: _phone.text.trim(),
-          captchaToken: _captchaToken,
         );
       } else {
-        response = await api.login(_email.text.trim(), _password.text.trim(), captchaToken: _captchaToken);
+        response = await api.login(_email.text.trim(), _password.text.trim());
       }
 
       final token = response.data['access_token'];
@@ -124,7 +122,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       // Require a fresh captcha after a failed attempt.
       setState(() {
         _captchaPassed = false;
-        _captchaToken = null;
         _captchaKey++;
       });
       String error = _isSignUp ? 'Sign up failed' : 'Login failed';
@@ -374,7 +371,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   void _toggleMode() => setState(() {
         _isSignUp = !_isSignUp;
         _captchaPassed = false;
-        _captchaToken = null;
         _captchaKey++;
         _name.clear();
         _email.clear();
@@ -622,17 +618,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                     ],
 
                                     const SizedBox(height: Space.sm),
-                                    RecaptchaCheck(
+                                    RobotCheck(
                                       key: ValueKey('captcha_$_captchaKey'),
                                       enabled: !_loading,
-                                      onToken: (token) => setState(() {
-                                        _captchaToken = token;
-                                        _captchaPassed = true;
-                                      }),
-                                      onReset: () => setState(() {
-                                        _captchaToken = null;
-                                        _captchaPassed = false;
-                                      }),
+                                      onChanged: (ok) => setState(() => _captchaPassed = ok),
                                     ),
 
                                     if (!_isSignUp)

@@ -11,7 +11,6 @@ from app.models.user import User
 import random
 from app.services.email_service import send_email_async
 from app.core.security import validate_password_strength, get_password_hash
-from app.services import recaptcha_service
 
 router = APIRouter()
 
@@ -65,7 +64,6 @@ def login(payload: EmailLoginIn, request: Request, db: Session = Depends(get_db)
     rate_key = f"{client_ip}:{payload.email.strip().lower()}"
     
     _check_rate_limit(rate_key)
-    recaptcha_service.verify_request(request)
     
     try:
         token = auth_service.email_login(db, payload.email, payload.password)
@@ -82,7 +80,6 @@ def signup(payload: EmailSignupIn, request: Request, db: Session = Depends(get_d
     rate_key = f"signup:{client_ip}"
     
     _check_rate_limit(rate_key)
-    recaptcha_service.verify_request(request)
     
     try:
         token = auth_service.email_signup(
