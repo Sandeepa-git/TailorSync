@@ -13,6 +13,14 @@ class FoundryClient:
         self.endpoint = os.environ.get("FOUNDRY_ENDPOINT", "")
         self.api_key = os.environ.get("FOUNDRY_API_KEY", "")
         self.model_name = os.environ.get("FOUNDRY_MODEL_NAME", "gpt-4o")
+
+        # Foundry AGENT settings (preferred). When FOUNDRY_PROJECT_ENDPOINT is set,
+        # requests go to the configured agent (its own instructions + files);
+        # the plain model deployment above is only used as a fallback.
+        self.project_endpoint = os.environ.get("FOUNDRY_PROJECT_ENDPOINT", "").strip()
+        self.agent_name = os.environ.get("FOUNDRY_AGENT_NAME", "tailorsync-ai-agent").strip()
+        self.agent_version = os.environ.get("FOUNDRY_AGENT_VERSION", "").strip()
+        self._agent_client = None
         
         if not self.endpoint:
             logger.warning("FOUNDRY_ENDPOINT is not set.")
@@ -40,19 +48,53 @@ class FoundryClient:
 
         self._dataset_service = DatasetService()
 
-    def _call_foundry(self, prompt: str, system_instruction: str) -> str:
+    # ------------------------------------------------------------------ agent
+    def _get_agent_client(self):
+        """OpenAI-compatible client bound to the Foundry project (Entra ID auth)."""
+        if self._agent_client is None:
+            from azure.ai.projects import AIProjectClient
+            from azure.identity import DefaultAzureCredential
+
+            project = AIProjectClient(endpoint=self.project_endpoint, credential=DefaultAzureCredential())
+            self._agent_client = project.get_openai_client()
+        return self._agent_client
+
+    def _call_agent(self, prompt: str, task_context: str) -> str:
+        agent_ref = {"name": self.agent_name, "type": "agent_reference"}
+        if self.agent_version:
+            agent_ref["version"] = self.agent_version
+        # The agent keeps its own instructions/files; we only add the task details.
+        message = f"{task_context.strip()}\n\n{prompt.strip()}"
+        response = self._get_agent_client().responses.create(
+            input=[{"role": "user", "content": message}],
+            extra_body={"agent_reference": agent_ref},
+        )
+        logger.info(f"Foundry agent '{self.agent_name}' answered")
+        return response.output_text
+
+    def _call_model(self, prompt: str, system_instruction: str) -> str:
         if not self.client:
             raise ValueError("Foundry client is not initialized properly. Check credentials and endpoint.")
-            
+        response = self.client.complete(
+            messages=[
+                SystemMessage(content=system_instruction),
+                UserMessage(content=prompt),
+            ],
+            model=self.model_name
+        )
+        logger.info(f"Foundry model '{self.model_name}' answered (fallback / no agent configured)")
+        return response.choices[0].message.content
+
+    def _call_foundry(self, prompt: str, system_instruction: str) -> str:
         try:
-            response = self.client.complete(
-                messages=[
-                    SystemMessage(content=system_instruction),
-                    UserMessage(content=prompt),
-                ],
-                model=self.model_name
-            )
-            content = response.choices[0].message.content
+            content = None
+            if self.project_endpoint:
+                try:
+                    content = self._call_agent(prompt, system_instruction)
+                except Exception as agent_err:
+                    logger.error(f"Foundry agent call failed, falling back to model: {agent_err}")
+            if content is None:
+                content = self._call_model(prompt, system_instruction)
             
             # Robust JSON extraction: Find content between ```json and ``` or first { and last }
             import re

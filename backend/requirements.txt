@@ -19,3 +19,5 @@ azure-identity
 pillow
 python-multipart
 requests
+azure-ai-projects>=2.3.0
+openai
