@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:dio/dio.dart';
@@ -59,8 +60,11 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
         } on DioException catch (e) {
           debugPrint('Token verification error: $e');
           if (e.response?.statusCode == 401) {
-            // Proceed anyway as per the requirement not to force logout
-            destination = '/home'; 
+            // The server is confirmed awake (see _bootstrap), so a 401 here
+            // means the saved session is no longer valid. Ask the user to
+            // sign in again instead of opening an empty, failing dashboard.
+            // (The stored token is not deleted; a new login overwrites it.)
+            destination = '/login';
           } else {
             // Network glitch / timeout — assume token is present and proceed to home
             destination = '/home';
@@ -154,7 +158,10 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   @override
   Widget build(BuildContext context) {
     final logoSize = (context.screenSize.shortestSide * 0.30).clamp(96.0, 148.0);
-    return Scaffold(
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      // Light status-bar icons over the dark brand splash.
+      value: TsTheme.overlayStyle(Brightness.dark),
+      child: Scaffold(
       body: AmbientBackground(
         vivid: true,
         child: Semantics(
@@ -215,6 +222,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
           ),
         ),
       ),
+    ),
     );
   }
 }

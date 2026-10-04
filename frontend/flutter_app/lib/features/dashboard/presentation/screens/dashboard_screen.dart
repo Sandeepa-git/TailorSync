@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -20,6 +21,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   List<dynamic> _tasks = [];
   bool _loading = true;
   bool _error = false;
+  int? _errorStatus; // HTTP status of the failed load, for a clear message
+  String? _errorDetail;
   @override
   void initState() {
     super.initState();
@@ -29,6 +32,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     setState(() {
       _loading = true;
       _error = false;
+      _errorStatus = null;
+      _errorDetail = null;
     });
     try {
       final api = ref.read(apiClientProvider);
@@ -49,6 +54,13 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
         setState(() {
           _loading = false;
           _error = true;
+          if (e is DioException) {
+            _errorStatus = e.response?.statusCode;
+            final data = e.response?.data;
+            _errorDetail = data is Map && data['detail'] != null ? data['detail'].toString() : e.message;
+          } else {
+            _errorDetail = e.toString();
+          }
         });
       }
     }
@@ -73,13 +85,25 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     }
 
     if (_error) {
+      final sessionExpired = _errorStatus == 401 || _errorStatus == 403;
       return Scaffold(
         body: SafeArea(
-          child: ErrorState(
-            title: 'Failed to load dashboard',
-            message: 'Check your connection and try again.',
-            onRetry: _loadData,
-          ),
+          child: sessionExpired
+              ? EmptyState(
+                  icon: Icons.lock_clock_rounded,
+                  title: 'Your session has expired',
+                  message: 'Please sign in again to load your dashboard.',
+                  actionLabel: 'Sign in again',
+                  actionIcon: Icons.login_rounded,
+                  onAction: () => context.go('/login'),
+                )
+              : ErrorState(
+                  title: 'Failed to load dashboard',
+                  message: _errorStatus == null
+                      ? 'Check your connection and try again.${_errorDetail != null ? '\n($_errorDetail)' : ''}'
+                      : 'The server returned an error ($_errorStatus). ${_errorDetail ?? ''}',
+                  onRetry: _loadData,
+                ),
         ),
       );
     }
