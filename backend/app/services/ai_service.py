@@ -1,5 +1,5 @@
 import logging
-from app.services.foundry_client import FoundryClient
+from app.services.foundry_client import get_foundry_client
 from app.schemas.ai import (
     MeasurementPredictIn, MeasurementPredictOut, MeasurementPredictionItem,
     FabricRecommendIn, FabricRecommendOut, FabricRecommendationItem,
@@ -22,7 +22,7 @@ def predict_measurements(request: MeasurementPredictIn, user_id: int, business_i
         MeasurementPredictOut containing AI-generated predictions.
     """
     logger.info(f"AI [predict_measurements] called for user {user_id} using Microsoft Foundry")
-    client = FoundryClient()
+    client = get_foundry_client()
     data = client.predict_measurements(request.garment_type, request.measurements)
     if "garment_type" not in data:
         data["garment_type"] = request.garment_type
@@ -42,7 +42,7 @@ def recommend_fabrics(request: FabricRecommendIn, user_id: int, business_id: int
         FabricRecommendOut containing top fabric choices and suitability percentages.
     """
     logger.info(f"AI [recommend_fabrics] called for user {user_id} using Microsoft Foundry")
-    client = FoundryClient()
+    client = get_foundry_client()
     data = client.recommend_fabric(
         garment_type=request.garment_type,
         occasion=request.occasion,
@@ -66,7 +66,7 @@ def estimate_fabric(request: FabricEstimateIn, user_id: int, business_id: int, o
         FabricEstimateOut containing the recommended quantity in meters and a min/max range.
     """
     logger.info(f"AI [estimate_fabric] called for user {user_id} using Microsoft Foundry")
-    client = FoundryClient()
+    client = get_foundry_client()
     data = client.estimate_fabric(
         garment_type=request.garment_type,
         fabric=request.fabric,

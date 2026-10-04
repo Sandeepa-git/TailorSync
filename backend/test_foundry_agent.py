@@ -15,7 +15,7 @@ c = FoundryClient()
 print("Project endpoint:", c.project_endpoint or "(NOT SET)")
 print("Agent:", c.agent_name, "version:", c.agent_version or "(latest)")
 try:
-    print("\nAgent reply:\n", c._call_agent('Reply with JSON only: {"status": "ok", "who": "<your agent name>"}', "Connection test."))
+    print("\nAgent reply:\n", c._call_agent('Connection test. Reply with JSON only: {"status": "ok", "who": "<your agent name>"}'))
     print("\n✅ The agent is connected.")
 except Exception as e:
     print("\n❌ Agent call failed:", type(e).__name__, e)

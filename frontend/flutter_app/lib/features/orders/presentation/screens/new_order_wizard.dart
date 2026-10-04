@@ -179,16 +179,34 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
           final resp = await api.predictMeasurementsFoundry(req);
           setState(() {
             List<Map<String, dynamic>> preds = List<Map<String, dynamic>>.from(resp.data['predictions'] ?? []);
+            double? toNum(dynamic v) =>
+                double.tryParse(RegExp(r'-?\d+(\.\d+)?').firstMatch(v?.toString() ?? '')?.group(0) ?? '');
+
+            // One card with ALL recommended values, plus up to two alternative
+            // sets built from each measurement's alternatives.
+            final recommended = <String, dynamic>{};
+            final alt1 = <String, dynamic>{};
+            final alt2 = <String, dynamic>{};
+            for (final p in preds) {
+              final name = p['measurement']?.toString();
+              if (name == null || name.isEmpty) continue;
+              final rec = toNum(p['recommended']) ?? 0.0;
+              recommended[name] = rec;
+              final alts = (p['alternatives'] as List?) ?? const [];
+              alt1[name] = alts.isNotEmpty ? (toNum(alts[0]) ?? rec) : rec;
+              alt2[name] = alts.length > 1 ? (toNum(alts[1]) ?? rec) : rec;
+            }
+
             _aiPredictions = [];
-            for (var p in preds) {
-                Map<String, dynamic> measurements = {};
-                measurements[p['measurement']] = double.tryParse(p['recommended'].toString()) ?? 0.0;
-                _aiPredictions.add({
-                    'option_number': 1,
-                    'source': 'Foundry Gen AI',
-                    'support_percent': null,
-                    'measurements': measurements
-                });
+            if (recommended.isNotEmpty) {
+              _aiPredictions.add({'option_number': 1, 'source': 'Recommended Measurements', 'support_percent': null, 'measurements': recommended});
+              bool differs(Map<String, dynamic> m) => m.entries.any((e) => e.value != recommended[e.key]);
+              if (differs(alt1)) {
+                _aiPredictions.add({'option_number': 2, 'source': 'Alternative 1', 'support_percent': null, 'measurements': alt1});
+              }
+              if (differs(alt2) && alt2.toString() != alt1.toString()) {
+                _aiPredictions.add({'option_number': 3, 'source': 'Alternative 2', 'support_percent': null, 'measurements': alt2});
+              }
             }
             _aiPredictionLoading = false;
           });
@@ -1142,7 +1160,7 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
                             Expanded(
                               child: Text(
                                 _predictionMethod == 'FOUNDRY'
-                                    ? 'Recommended Measurements'
+                                    ? '${p['source']}'
                                     : 'Option ${p['option_number']} - ${p['source']}',
                                 style: context.text.titleSmall?.copyWith(color: isSelected ? cs.primary : null),
                               ),

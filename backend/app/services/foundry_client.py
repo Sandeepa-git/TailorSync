@@ -21,6 +21,10 @@ class FoundryClient:
         self.agent_name = os.environ.get("FOUNDRY_AGENT_NAME", "tailorsync-ai-agent").strip()
         self.agent_version = os.environ.get("FOUNDRY_AGENT_VERSION", "").strip()
         self._agent_client = None
+        # gpt-5-mini is a reasoning model: "low" effort is much faster and is
+        # plenty for these structured tasks. Set FOUNDRY_REASONING_EFFORT to change.
+        self.reasoning_effort = os.environ.get("FOUNDRY_REASONING_EFFORT", "low").strip()
+        self._agent_extra_ok = True  # flips off if the agent rejects reasoning/format options
         
         if not self.endpoint:
             logger.warning("FOUNDRY_ENDPOINT is not set.")
@@ -56,19 +60,38 @@ class FoundryClient:
             from azure.identity import DefaultAzureCredential
 
             project = AIProjectClient(endpoint=self.project_endpoint, credential=DefaultAzureCredential())
-            self._agent_client = project.get_openai_client()
+            # Fail fast instead of hanging; one retry is enough.
+            self._agent_client = project.get_openai_client().with_options(timeout=60.0, max_retries=1)
         return self._agent_client
 
-    def _call_agent(self, prompt: str, task_context: str) -> str:
+    def _call_agent(self, message: str) -> str:
         agent_ref = {"name": self.agent_name, "type": "agent_reference"}
         if self.agent_version:
             agent_ref["version"] = self.agent_version
-        # The agent keeps its own instructions/files; we only add the task details.
-        message = f"{task_context.strip()}\n\n{prompt.strip()}"
-        response = self._get_agent_client().responses.create(
-            input=[{"role": "user", "content": message}],
-            extra_body={"agent_reference": agent_ref},
-        )
+        # The agent has its own instructions + the measurement files (File Search),
+        # so we only send the tailor's input and the expected JSON shape.
+        kwargs = {
+            "input": [{"role": "user", "content": message}],
+            "extra_body": {"agent_reference": agent_ref},
+        }
+        if self._agent_extra_ok:
+            # Faster reasoning + guaranteed JSON output.
+            if self.reasoning_effort:
+                kwargs["reasoning"] = {"effort": self.reasoning_effort}
+            kwargs["text"] = {"format": {"type": "json_object"}}
+        client = self._get_agent_client()
+        try:
+            response = client.responses.create(**kwargs)
+        except Exception as e:
+            if self._agent_extra_ok and getattr(e, "status_code", None) == 400:
+                # Agent doesn't allow overriding these options: retry plain, remember it.
+                logger.warning(f"Agent rejected reasoning/format options, retrying without them: {e}")
+                self._agent_extra_ok = False
+                kwargs.pop("reasoning", None)
+                kwargs.pop("text", None)
+                response = client.responses.create(**kwargs)
+            else:
+                raise
         logger.info(f"Foundry agent '{self.agent_name}' answered")
         return response.output_text
 
@@ -85,12 +108,15 @@ class FoundryClient:
         logger.info(f"Foundry model '{self.model_name}' answered (fallback / no agent configured)")
         return response.choices[0].message.content
 
-    def _call_foundry(self, prompt: str, system_instruction: str) -> str:
+    def _call_foundry(self, prompt: str, system_instruction: str, agent_message: str = None) -> str:
+        """The agent only gets `agent_message` (the tailor's input, no dataset - it has
+        the files itself). `prompt` + `system_instruction` (with the local dataset) are
+        used only if the agent is unavailable and we fall back to the plain model."""
         try:
             content = None
             if self.project_endpoint:
                 try:
-                    content = self._call_agent(prompt, system_instruction)
+                    content = self._call_agent(agent_message or prompt)
                 except Exception as agent_err:
                     logger.error(f"Foundry agent call failed, falling back to model: {agent_err}")
             if content is None:
@@ -115,6 +141,15 @@ class FoundryClient:
             raise e
 
     def predict_measurements(self, garment_type: str, provided_measurements: dict) -> dict:
+        agent_message = json.dumps({
+            "task": "predict_missing_measurements",
+            "garment_type": garment_type,
+            "provided_measurements": provided_measurements,
+            "reply_format": {"predictions": [{"measurement": "name", "recommended": "number as string",
+                                              "alternatives": ["number", "number"], "reason": "short"}]},
+            "rules": "Predict every missing measurement for this garment. Reply with JSON only.",
+        })
+
         exact_match = self._dataset_service.get_exact_match(garment_type, provided_measurements)
         context = self._dataset_service.get_dataset_context(garment_type)
         
@@ -157,15 +192,17 @@ Return ONLY a JSON object with this exact structure:
   ]
 }}
 """
-        response_text = self._call_foundry(prompt, system_instruction)
-        result = json.loads(response_text)
-        
-        # Sanitize the output to guarantee no empty measurements
-        if "predictions" in result:
-            for p in result["predictions"]:
-                if not p.get("recommended") or p.get("recommended").strip() == "":
-                    p["recommended"] = "0" # Safe fallback
-        
+        response_text = self._call_foundry(prompt, system_instruction, agent_message)
+        return self._sanitize_predictions(json.loads(response_text))
+
+    @staticmethod
+    def _sanitize_predictions(result: dict) -> dict:
+        # Guarantee no empty measurements and string values the schema expects.
+        for p in result.get("predictions", []) or []:
+            rec = p.get("recommended")
+            p["recommended"] = str(rec).strip() if rec not in (None, "") else "0"
+            p["alternatives"] = [str(a) for a in (p.get("alternatives") or [])]
+            p["reason"] = str(p.get("reason") or "")
         return result
 
     def recommend_fabric(self, garment_type: str, occasion: str, weather: str, fabric_preferences: list, fit: str) -> dict:
@@ -195,10 +232,24 @@ Return ONLY a JSON object with exactly 3 recommendations in this structure:
   ]
 }}
 """
-        response_text = self._call_foundry(prompt, system_instruction)
+        agent_message = json.dumps({
+            "task": "recommend_fabrics",
+            "garment_type": garment_type, "occasion": occasion, "weather": weather,
+            "fabric_preferences": fabric_preferences, "fit": fit,
+            "reply_format": {"recommendations": [{"fabric_name": "name", "suitability_percentage": 90, "reason": "short"}]},
+            "rules": "Exactly 3 recommendations. Reply with JSON only.",
+        })
+        response_text = self._call_foundry(prompt, system_instruction, agent_message)
         return json.loads(response_text)
 
     def estimate_fabric(self, garment_type: str, fabric: str, measurements: dict) -> dict:
+        agent_message = json.dumps({
+            "task": "estimate_fabric_meters",
+            "garment_type": garment_type, "fabric": fabric, "measurements": measurements,
+            "reply_format": {"recommended_quantity_meters": 2.1, "estimated_range": {"min": 2.0, "max": 2.25},
+                             "fabric_width_inches": 60, "reason": "short"},
+            "rules": "Reply with JSON only.",
+        })
         context = self._dataset_service.get_dataset_context(garment_type)
         system_instruction = f"""
 You are the AI fabric estimator for TailorSync.
@@ -230,5 +281,17 @@ Return ONLY a JSON object in this structure:
   "reason": "Based on the matching height and waist in the dataset..."
 }}
 """
-        response_text = self._call_foundry(prompt, system_instruction)
+        response_text = self._call_foundry(prompt, system_instruction, agent_message)
         return json.loads(response_text)
+
+
+# One shared client for the whole app: avoids re-creating credentials, HTTP
+# connections and Azure tokens on every request (a big part of the delay).
+_shared_client = None
+
+
+def get_foundry_client() -> "FoundryClient":
+    global _shared_client
+    if _shared_client is None:
+        _shared_client = FoundryClient()
+    return _shared_client
