@@ -11,7 +11,8 @@ router = APIRouter()
 
 def _fabric_info(o) -> dict:
     """Chosen fabric + estimated quantity saved with the order (latest entries)."""
-    info = {"selected_fabric": None, "fabric_quantity": None, "fabric_unit": None}
+    info = {"selected_fabric": None, "fabric_quantity": None, "fabric_unit": None,
+            "total_price": float(o.total_price) if getattr(o, "total_price", None) is not None else None}
     try:
         recs = list(getattr(o, "fabric_recommendations", None) or [])
         if recs:

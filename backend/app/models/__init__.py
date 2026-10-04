@@ -12,6 +12,7 @@ from app.models.fabric_recommendation import FabricRecommendation
 from app.models.staff_assignment import StaffAssignment
 from app.models.note import Note
 from app.models.fabric_catalog import FabricCatalog
+from app.models.inventory import InventoryItem, InventoryTransaction
 
 __all__ = [
     "User",

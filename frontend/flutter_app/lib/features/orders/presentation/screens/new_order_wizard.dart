@@ -158,6 +158,7 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
   bool _fabricEstLoading = false;
   String? _fabricEstError;
   TextEditingController _manualQuantityCtrl = TextEditingController();
+  final TextEditingController _priceCtrl = TextEditingController(); // optional order price (LKR)
   // Step 8: Assign
   int? _selectedStaffId = 1;
  
@@ -420,9 +421,12 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
         body['selected_fabric'] = _fabricRecommendations[_selectedFabricIndex!]['fabric_name'];
       }
       body['fabric_estimation'] = {'recommended_quantity_meters': double.tryParse(_manualQuantityCtrl.text) ?? 2.0};
+      final price = double.tryParse(_priceCtrl.text.replaceAll(',', '').trim());
+      if (price != null && price > 0) body['total_price'] = price;
 
       await api.createOrder(body);
       ref.invalidate(ordersProvider);
+      ref.read(refreshTriggerProvider.notifier).state++; // refresh dashboard, reports, inventory badge
       if (mounted) context.go('/orders');
     } catch (e) {
       _showSnack('Failed to save order: $e');
@@ -1445,6 +1449,10 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
                               Text(rec['fabric_name'] ?? '', style: context.text.titleMedium),
                               const SizedBox(height: Space.xxs),
                               Text(rec['reason'] ?? '', style: context.text.bodySmall),
+                              if (rec['stock_status'] != null) ...[
+                                const SizedBox(height: Space.xs),
+                                _stockPill(rec),
+                              ],
                             ],
                           ),
                         ),
@@ -1562,8 +1570,24 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
                 _summaryRow('Garment', _selectedGarment ?? ''),
                 _summaryRow('Fabric', _fabricRecommendations.isNotEmpty && _selectedFabricIndex != null ? _fabricRecommendations[_selectedFabricIndex!]['fabric_name'] : 'N/A'),
                 _summaryRow('Quantity', '${_manualQuantityCtrl.text} meters'),
+                if (_priceCtrl.text.trim().isNotEmpty) _summaryRow('Price', 'LKR ${_priceCtrl.text.trim()}'),
               ],
             ),
+          ),
+        ),
+        const SizedBox(height: Space.lg),
+        Text('Order Price (optional)', style: context.text.titleSmall),
+        const SizedBox(height: Space.sm),
+        TextField(
+          controller: _priceCtrl,
+          onChanged: (_) => setState(() {}),
+          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))],
+          decoration: const InputDecoration(
+            prefixIcon: Icon(Icons.payments_outlined),
+            prefixText: 'LKR ',
+            hintText: 'e.g. 4500',
+            helperText: 'Used for revenue in Reports',
           ),
         ),
         const SizedBox(height: Space.lg),
@@ -1649,6 +1673,20 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
         ],
       ),
     );
+  }
+
+  /// Inventory badge shown under each AI fabric recommendation.
+  Widget _stockPill(Map<String, dynamic> rec) {
+    final st = context.status;
+    final m = (rec['stock_m'] as num?)?.toDouble() ?? 0;
+    final txt = m.toStringAsFixed(2).replaceFirst(RegExp(r'\.?0+$'), '');
+    final (Color c, String label, IconData icon) = switch (rec['stock_status']) {
+      'ok' => (st.success, '$txt m in stock', Icons.inventory_2_rounded),
+      'low' => (st.warning, 'Low: $txt m left', Icons.warning_amber_rounded),
+      'out' => (st.danger, 'Out of stock', Icons.error_outline_rounded),
+      _ => (context.colors.onSurfaceVariant, 'Stock not tracked', Icons.help_outline_rounded),
+    };
+    return StatusPill(label: label, icon: icon, color: c, dense: true);
   }
 
   Widget _summaryRow(String k, String v) {

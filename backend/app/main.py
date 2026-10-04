@@ -29,6 +29,7 @@ import app.models.fabric_recommendation
 import app.models.staff_assignment
 import app.models.note
 import app.models.fabric_catalog
+import app.models.inventory
 
 app = FastAPI(title="TailorSync API")
 
@@ -56,6 +57,14 @@ app.include_router(api_router, prefix="/api/v1")
 
 @app.on_event("startup")
 def startup_event():
+    # Create the inventory tables if they don't exist yet (other tables untouched).
+    try:
+        from app.database.session import engine
+        from app.database.base import Base
+        from app.models.inventory import InventoryItem, InventoryTransaction
+        Base.metadata.create_all(bind=engine, tables=[InventoryItem.__table__, InventoryTransaction.__table__])
+    except Exception as e:
+        logger.error(f"Could not create inventory tables: {e}")
     try:
         from app.services.ml_service import ml_service
         ml_service.load_models()

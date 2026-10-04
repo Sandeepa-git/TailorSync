@@ -110,6 +110,15 @@ def create_order(db: Session, order: OrderCreate, business_id: int):
             reason="Selected by user after AI recommendation"
         )
         db.add(rec_model)
+
+    # Inventory: subtract the estimated fabric (only if the owner tracks this fabric).
+    try:
+        from app.services.inventory_service import deduct_for_order
+        meters = (order.fabric_estimation or {}).get("recommended_quantity_meters")
+        deduct_for_order(db, business_id, db_order.order_id, order.selected_fabric, meters)
+    except Exception as e:
+        import logging
+        logging.getLogger(__name__).error(f"Inventory deduction failed for order {db_order.order_id}: {e}")
     
     db.commit()
     db.refresh(db_order)
@@ -192,6 +201,14 @@ def delete_order(db: Session, order_id: int, business_id: int):
     if not order:
         return False
     
+    # Inventory: give back the fabric this order used.
+    try:
+        from app.services.inventory_service import restore_for_order
+        restore_for_order(db, business_id, order_id)
+    except Exception as e:
+        import logging
+        logging.getLogger(__name__).error(f"Inventory restore failed for order {order_id}: {e}")
+
     db.query(Measurement).filter(Measurement.order_id == order_id).delete()
     db.query(StaffAssignment).filter(StaffAssignment.order_id == order_id).delete()
     

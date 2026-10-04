@@ -118,6 +118,10 @@ class OrderDetailsScreen extends ConsumerWidget {
                               value: order.priority ?? 'Normal',
                               valueColor: StageStyle.priorityColor(context, order.priority),
                             ),
+                            if (order.totalPrice != null) ...[
+                              const _RowDivider(),
+                              _DetailRow(icon: Icons.payments_outlined, label: 'Price', value: 'LKR ${_trim(order.totalPrice!)}'),
+                            ],
                             if (order.predictionMethod != null) ...[
                               const _RowDivider(),
                               _DetailRow(

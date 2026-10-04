@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from app.api.v1.routers import auth, users, staff, customers, orders, measurements, reports, ai, business, templates, tryon, captcha
+from app.api.v1.routers import auth, users, staff, customers, orders, measurements, reports, ai, business, templates, tryon, captcha, inventory
 
 api_router = APIRouter()
 
@@ -15,6 +15,7 @@ api_router.include_router(ai.router, prefix="/ai", tags=["ai"])
 api_router.include_router(tryon.router, prefix="/ai", tags=["virtual-tryon"])
 api_router.include_router(business.router, prefix="/business", tags=["business"])
 api_router.include_router(templates.router, prefix="/measurement-templates", tags=["templates"])
+api_router.include_router(inventory.router, prefix="/inventory", tags=["inventory"])
 
 
 

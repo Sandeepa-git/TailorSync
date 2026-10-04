@@ -18,6 +18,7 @@ class DashboardScreen extends ConsumerStatefulWidget {
 class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   Map<String, dynamic>? _stats;
   Map<String, dynamic>? _user;
+  int _lowStock = 0; // owners: fabrics low/out of stock
   List<dynamic> _tasks = [];
   bool _loading = true;
   bool _error = false;
@@ -41,6 +42,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       final userResp = await api.getMe();
       final ordersResp = await api.listOrders();
 
+      _loadInventoryAlerts();
       if (mounted) {
         setState(() {
           _stats = statsResp.data;
@@ -65,6 +67,15 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       }
     }
   }
+  Future<void> _loadInventoryAlerts() async {
+    try {
+      final resp = await ref.read(apiClientProvider).inventoryAlerts();
+      if (mounted) setState(() => _lowStock = (resp.data['count'] as num?)?.toInt() ?? 0);
+    } catch (_) {
+      // inventory is optional; never break the dashboard
+    }
+  }
+
   String _getGreeting() {
     final hour = DateTime.now().hour;
     if (hour < 12) return 'Good Morning';
@@ -153,6 +164,12 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       if (!isStaffUser)
         _ShortcutData(Icons.bar_chart_rounded, 'Reports', 'Business insights', cs.tertiary,
             onTap: () => context.go('/reports')),
+      if (!isStaffUser)
+        _ShortcutData(Icons.inventory_2_outlined, 'Inventory', 'Fabric stock levels',
+            context.isDark ? const Color(0xFFFFB74D) : const Color(0xFFEF6C00),
+            badge: _lowStock > 0 ? '$_lowStock low' : null,
+            badgeColor: _lowStock > 0 ? st.danger : null,
+            onTap: () => context.push('/inventory')),
     ];
 
     return Scaffold(
@@ -204,6 +221,27 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                           delay: Motion.staggerStep * 2,
                           child: _TryOnHeroCard(onTap: () => context.push('/tryon')),
                         ),
+                        if (!isStaffUser && _lowStock > 0) ...[
+                          const SizedBox(height: Space.sm),
+                          TsCard(
+                            onTap: () => context.push('/inventory'),
+                            color: st.danger.withValues(alpha: 0.08),
+                            padding: const EdgeInsets.all(Space.sm + 2),
+                            child: Row(
+                              children: [
+                                Icon(Icons.warning_amber_rounded, color: st.danger),
+                                const SizedBox(width: Space.sm),
+                                Expanded(
+                                  child: Text(
+                                    _lowStock == 1 ? '1 fabric is running low' : '$_lowStock fabrics are running low',
+                                    style: context.text.titleSmall,
+                                  ),
+                                ),
+                                Text('View', style: context.text.labelLarge?.copyWith(color: cs.primary)),
+                              ],
+                            ),
+                          ),
+                        ],
                         const SectionHeader(title: 'Today at a glance'),
                         GridView.builder(
                           shrinkWrap: true,

@@ -21,6 +21,7 @@ class OrderCreate(BaseModel):
     selected_fabric: Optional[str] = None
     fabric_estimation: Optional[dict] = None
     prediction_method: Optional[str] = None
+    total_price: Optional[float] = None  # order price (LKR)
 
 class OrderRead(BaseModel):
     id: int
@@ -43,6 +44,7 @@ class OrderRead(BaseModel):
     selected_fabric: Optional[str] = None
     fabric_quantity: Optional[float] = None
     fabric_unit: Optional[str] = None
+    total_price: Optional[float] = None
 
     class Config:
         orm_mode = True

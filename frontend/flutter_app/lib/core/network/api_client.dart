@@ -197,6 +197,9 @@ class ApiClient {
   }
 
   // Reports & Analytics
+  /// Everything for the Reports page. days: 7/30/90/365, 0 = all time.
+  Future<Response> getReportsOverview(int days) => dio.get('/reports/overview', queryParameters: {'days': days});
+
   Future<Response> getDashboard({String? fromDate, String? toDate}) async {
     final params = <String, dynamic>{};
     if (fromDate != null) params['from_date'] = fromDate;
@@ -250,6 +253,16 @@ class ApiClient {
   Future<Response> getTryOnUsage() async {
     return dio.get('/ai/virtual-tryon/usage');
   }
+
+  // Inventory (owner only)
+  Future<Response> listInventory() => dio.get('/inventory/');
+  Future<Response> inventoryAlerts() => dio.get('/inventory/alerts');
+  Future<Response> createInventoryItem(Map<String, dynamic> payload) => dio.post('/inventory/', data: payload);
+  Future<Response> updateInventoryItem(int id, Map<String, dynamic> payload) => dio.put('/inventory/$id', data: payload);
+  Future<Response> restockInventoryItem(int id, double meters, {String? note}) =>
+      dio.post('/inventory/$id/restock', data: {'meters': meters, if (note != null && note.isNotEmpty) 'note': note});
+  Future<Response> inventoryHistory(int id) => dio.get('/inventory/$id/history');
+  Future<Response> deleteInventoryItem(int id) => dio.delete('/inventory/$id');
 
   // Measurement Templates
   Future<Response> getMeasurementTemplates() async {

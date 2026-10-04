@@ -14,6 +14,7 @@ import '../features/tasks/presentation/screens/tasks_screen.dart';
 import '../features/reports/presentation/screens/reports_screen.dart';
 import '../features/ai_tools/presentation/screens/ai_tools_screen.dart';
 import '../features/virtual_tryon/presentation/screens/virtual_tryon_screen.dart';
+import '../features/inventory/presentation/screens/inventory_screen.dart';
 import '../features/pattern_viewer/presentation/screens/pattern_viewer_screen.dart';
 import '../features/profile/presentation/screens/profile_screen.dart';
 import '../features/profile/presentation/screens/business_profile_screen.dart';
@@ -45,6 +46,13 @@ final GoRouter appRouter = GoRouter(
       pageBuilder: (BuildContext context, GoRouterState state) => sharedAxisVerticalPage(state, const NewOrderWizard()),
     ),
 
+
+    // Fabric inventory (owners)
+    GoRoute(
+      path: '/inventory',
+      parentNavigatorKey: _rootNavigatorKey,
+      pageBuilder: (BuildContext context, GoRouterState state) => sharedAxisVerticalPage(state, const InventoryScreen()),
+    ),
 
     // Virtual Try-On (full screen, outside shell)
     GoRoute(

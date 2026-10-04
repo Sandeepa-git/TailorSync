@@ -28,6 +28,10 @@ class FabricRecommendationItem(BaseModel):
     fabric_name: str
     suitability_percentage: int
     reason: str
+    # Inventory info (filled by the backend, not the AI)
+    stock_m: Optional[float] = None
+    stock_tracked: Optional[bool] = None
+    stock_status: Optional[str] = None  # ok | low | out | untracked
 
 class FabricRecommendOut(BaseModel):
     recommendations: List[FabricRecommendationItem]

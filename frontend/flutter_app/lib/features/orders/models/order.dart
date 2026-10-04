@@ -17,6 +17,7 @@ class Order {
   final String? selectedFabric;
   final double? fabricQuantity;
   final String? fabricUnit;
+  final double? totalPrice;
 
   Order({
     this.id,
@@ -37,6 +38,7 @@ class Order {
     this.selectedFabric,
     this.fabricQuantity,
     this.fabricUnit,
+    this.totalPrice,
   });
 
   factory Order.fromJson(Map<String, dynamic> json) => Order(
@@ -58,5 +60,6 @@ class Order {
         selectedFabric: json['selected_fabric'],
         fabricQuantity: (json['fabric_quantity'] as num?)?.toDouble(),
         fabricUnit: json['fabric_unit'],
+        totalPrice: (json['total_price'] as num?)?.toDouble(),
       );
 }
