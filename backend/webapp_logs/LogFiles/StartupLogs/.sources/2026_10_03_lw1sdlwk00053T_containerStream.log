@@ -1,0 +1,51 @@
+2026-10-03T14:09:25.7968688Z 2026-10-03 14:09:25,795 - app.services.ai_service - INFO - AI [predict_measurements] called for user 8 using Microsoft Foundry
+2026-10-03T14:09:35.7984177Z 2026-10-03 14:09:35,798 - azure.identity._credentials.environment - INFO - No environment configuration found.
+2026-10-03T14:09:35.8057148Z 2026-10-03 14:09:35,805 - azure.identity._credentials.managed_identity - INFO - ManagedIdentityCredential will use App Service managed identity
+2026-10-03T14:09:40.3261676Z 2026-10-03 14:09:40,324 - azure.core.pipeline.policies.http_logging_policy - INFO - Request URL: 'http://169.254.130.5:8081/msi/token?api-version=2019-08-01&resource=REDACTED'
+2026-10-03T14:09:40.3262077Z Request method: 'GET'
+2026-10-03T14:09:40.3262103Z Request headers:
+2026-10-03T14:09:40.3262125Z     'X-IDENTITY-HEADER': 'REDACTED'
+2026-10-03T14:09:40.3262143Z     'Metadata': 'REDACTED'
+2026-10-03T14:09:40.3262164Z     'x-ms-client-request-id': '1300d8d2-bf34-11f1-9311-9ad9bbb54b62'
+2026-10-03T14:09:40.3262192Z     'User-Agent': 'azsdk-python-identity/1.26.0 Python/3.11.15 (Linux-6.6.150.1-1.azl3-x86_64-with-glibc2.36)'
+2026-10-03T14:09:40.3262330Z No body was attached to the request
+2026-10-03T14:09:48.9193127Z 2026-10-03 14:09:48,919 - azure.core.pipeline.policies.http_logging_policy - INFO - Response status: 200
+2026-10-03T14:09:48.9193421Z Response headers:
+2026-10-03T14:09:48.9193452Z     'Content-Type': 'application/json; charset=utf-8'
+2026-10-03T14:09:48.9193477Z     'Date': 'Sat, 03 Oct 2026 14:09:48 GMT'
+2026-10-03T14:09:48.9193495Z     'Server': 'Kestrel'
+2026-10-03T14:09:48.9193512Z     'Transfer-Encoding': 'chunked'
+2026-10-03T14:09:48.9193530Z     'X-CORRELATION-ID': 'REDACTED'
+2026-10-03T14:09:48.9285952Z 2026-10-03 14:09:48,928 - azure.identity._credentials.chained - INFO - DefaultAzureCredential acquired a token from ManagedIdentityCredential
+2026-10-03T14:09:49.8108834Z 2026-10-03 14:09:49,810 - httpx2 - INFO - HTTP Request: POST https://tailorsync-ai-resource.services.ai.azure.com/api/projects/tailorsync-ai/openai/v1/responses "HTTP/1.1 403 Forbidden"
+2026-10-03T14:09:49.8119149Z 2026-10-03 14:09:49,811 - app.services.foundry_client - ERROR - Agent API error: Error code: 403
+2026-10-03T14:09:49.8305943Z Traceback (most recent call last):
+2026-10-03T14:09:49.8306534Z   File "/tmp/8df21564e6ac04e/app/services/foundry_client.py", line 102, in _call_foundry_agent
+2026-10-03T14:09:49.8306570Z     response = self.agent_client.responses.create(
+2026-10-03T14:09:49.8306592Z                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-10-03T14:09:49.8317928Z   File "/tmp/8df21564e6ac04e/antenv/lib/python3.11/site-packages/openai/resources/responses/responses.py", line 1028, in create
+2026-10-03T14:09:49.8318015Z     return self._post(
+2026-10-03T14:09:49.8318039Z            ^^^^^^^^^^^
+2026-10-03T14:09:49.8318070Z   File "/tmp/8df21564e6ac04e/antenv/lib/python3.11/site-packages/openai/_base_client.py", line 1382, in post
+2026-10-03T14:09:49.8318093Z     return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+2026-10-03T14:09:49.8318114Z                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-10-03T14:09:49.8318138Z   File "/tmp/8df21564e6ac04e/antenv/lib/python3.11/site-packages/openai/_base_client.py", line 1155, in request
+2026-10-03T14:09:49.8318206Z     raise self._make_status_error_from_response(err.response) from None
+2026-10-03T14:09:49.8318229Z openai.PermissionDeniedError: Error code: 403
+2026-10-03T14:09:49.8321861Z 
+2026-10-03T14:09:49.8321940Z During handling of the above exception, another exception occurred:
+2026-10-03T14:09:49.8321959Z 
+2026-10-03T14:09:49.8321980Z Traceback (most recent call last):
+2026-10-03T14:09:49.8322003Z   File "/tmp/8df21564e6ac04e/app/api/v1/routers/ai.py", line 41, in predict_foundry
+2026-10-03T14:09:49.8322023Z     return predict_measurements(
+2026-10-03T14:09:49.8322042Z            ^^^^^^^^^^^^^^^^^^^^^
+2026-10-03T14:09:49.8322066Z   File "/tmp/8df21564e6ac04e/app/services/ai_service.py", line 26, in predict_measurements
+2026-10-03T14:09:49.8322088Z     data = client.predict_measurements(request.garment_type, request.measurements)
+2026-10-03T14:09:49.8322111Z            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-10-03T14:09:49.8322177Z   File "/tmp/8df21564e6ac04e/app/services/foundry_client.py", line 177, in predict_measurements
+2026-10-03T14:09:49.8322200Z     response_text = self._call_foundry_agent(prompt)
+2026-10-03T14:09:49.8322221Z                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-10-03T14:09:49.8322245Z   File "/tmp/8df21564e6ac04e/app/services/foundry_client.py", line 123, in _call_foundry_agent
+2026-10-03T14:09:49.8322266Z     raise ValueError(f"Foundry Agent request failed: {e}")
+2026-10-03T14:09:49.8322287Z ValueError: Foundry Agent request failed: Error code: 403
+2026-10-03T14:09:49.8920331Z INFO:     169.254.130.1:46885 - "POST /api/v1/ai/foundry-predict HTTP/1.1" 503 Service Unavailable

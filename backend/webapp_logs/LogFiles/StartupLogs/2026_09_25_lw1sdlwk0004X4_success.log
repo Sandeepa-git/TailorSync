@@ -1,0 +1,314 @@
+========== New Cold Start Attempt (2026-09-25T00:01:09.7974813+00:00) ==========
+2026-09-25T00:01:09.7974813+00:00 ContainerStream: INFO:     169.254.129.1:26403 - "GET /robots.txt HTTP/1.1" 404 Not Found
+2026-09-25T00:01:10.0235049+00:00 ContainerStream: INFO:     169.254.129.1:26403 - "GET / HTTP/1.1" 200 OK
+2026-09-25T10:45:23.4503651+00:00 ContainerStream: 2026-09-25 10:45:23,418 - app.api.deps - INFO - Token expired
+2026-09-25T10:45:23.5350359+00:00 ContainerStream: INFO:     169.254.129.1:50211 - "GET /api/v1/auth/verify HTTP/1.1" 401 Unauthorized
+2026-09-25T10:45:34.5789625+00:00 ContainerStream: INFO:     169.254.129.1:40267 - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+2026-09-25T10:45:35.3488667+00:00 ContainerStream: INFO:     169.254.129.1:40267 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-25T10:45:35.8456595+00:00 ContainerStream: INFO:     169.254.129.1:40267 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-25T10:45:37.5597381+00:00 ContainerStream: INFO:     169.254.129.1:40267 - "GET /api/v1/orders/stats HTTP/1.1" 200 OK
+2026-09-25T10:45:38.1326688+00:00 ContainerStream: INFO:     169.254.129.1:40267 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-25T10:45:39.0583826+00:00 ContainerStream: INFO:     169.254.129.1:40267 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-25T10:45:39.7697208+00:00 ContainerStream: INFO:     169.254.129.1:40267 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-25T10:45:48.2156882+00:00 ContainerStream: INFO:     169.254.129.1:22827 - "GET /api/v1/orders/stats HTTP/1.1" 200 OK
+2026-09-25T10:45:48.7724726+00:00 ContainerStream: INFO:     169.254.129.1:22827 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-25T10:45:49.5510344+00:00 ContainerStream: INFO:     169.254.129.1:22827 - "GET /api/v1/staff/ HTTP/1.1" 200 OK
+2026-09-25T10:45:52.1365531+00:00 ContainerStream: INFO:     169.254.129.1:22827 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-25T10:45:52.7085043+00:00 ContainerStream: INFO:     169.254.129.1:22827 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-25T10:45:58.3125116+00:00 ContainerStream: INFO:     169.254.129.1:43525 - "GET /api/v1/customers/ HTTP/1.1" 200 OK
+2026-09-25T10:45:59.9572363+00:00 ContainerStream: INFO:     169.254.129.1:43525 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-25T10:46:03.1567593+00:00 ContainerStream: INFO:     169.254.129.1:43525 - "GET /api/v1/orders/stats HTTP/1.1" 200 OK
+2026-09-25T10:46:03.4089334+00:00 ContainerStream: INFO:     169.254.129.1:43525 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-25T10:46:04.0246982+00:00 ContainerStream: INFO:     169.254.129.1:43525 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-25T10:46:04.8874200+00:00 ContainerStream: INFO:     169.254.129.1:43525 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-25T10:46:11.3426838+00:00 ContainerStream: INFO:     169.254.129.1:31885 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-25T10:46:18.5923361+00:00 ContainerStream: INFO:     169.254.129.1:28725 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-25T10:46:26.4127090+00:00 ContainerStream: INFO:     169.254.129.1:54927 - "GET /api/v1/staff/ HTTP/1.1" 200 OK
+2026-09-25T10:46:44.4372339+00:00 ContainerStream: INFO:     169.254.129.1:62647 - "GET /api/v1/orders/stats HTTP/1.1" 200 OK
+2026-09-25T10:46:44.9827787+00:00 ContainerStream: INFO:     169.254.129.1:62647 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-25T10:46:45.4373425+00:00 ContainerStream: INFO:     169.254.129.1:62647 - "GET /api/v1/staff/ HTTP/1.1" 200 OK
+2026-09-25T10:46:48.3698773+00:00 ContainerStream: INFO:     169.254.129.1:62647 - "GET /api/v1/orders/stats HTTP/1.1" 200 OK
+2026-09-25T10:46:48.7759627+00:00 ContainerStream: INFO:     169.254.129.1:62647 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-25T10:46:49.3179003+00:00 ContainerStream: INFO:     169.254.129.1:62647 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-25T10:46:49.8897818+00:00 ContainerStream: INFO:     169.254.129.1:62647 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-25T10:46:51.5335649+00:00 ContainerStream: INFO:     169.254.129.1:62647 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-25T10:46:53.4144434+00:00 ContainerStream: INFO:     169.254.129.1:62647 - "GET /api/v1/staff/ HTTP/1.1" 200 OK
+2026-09-25T10:46:56.5868399+00:00 ContainerStream: INFO:     169.254.129.1:62647 - "PATCH /api/v1/staff/19/deactivate HTTP/1.1" 200 OK
+2026-09-25T10:46:57.2750099+00:00 ContainerStream: INFO:     169.254.129.1:62647 - "GET /api/v1/staff/ HTTP/1.1" 200 OK
+2026-09-25T10:46:58.8185439+00:00 ContainerStream: 2026-09-25 10:46:58,817 - app.services.email_service - INFO - Email sent successfully to izufttank@gmail.com
+2026-09-25T10:47:20.0868022+00:00 ContainerStream: INFO:     169.254.129.1:40987 - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+2026-09-25T10:47:20.7283981+00:00 ContainerStream: INFO:     169.254.129.1:40987 - "GET /api/v1/users/me HTTP/1.1" 400 Bad Request
+2026-09-25T10:47:21.2405707+00:00 ContainerStream: INFO:     169.254.129.1:40987 - "GET /api/v1/orders/stats HTTP/1.1" 400 Bad Request
+2026-09-25T10:47:24.3261373+00:00 ContainerStream: INFO:     169.254.129.1:40987 - "GET /api/v1/orders/stats HTTP/1.1" 400 Bad Request
+2026-09-25T10:47:25.7618780+00:00 ContainerStream: INFO:     169.254.129.1:40987 - "GET /api/v1/orders/ HTTP/1.1" 400 Bad Request
+2026-09-25T10:47:27.2764463+00:00 ContainerStream: INFO:     169.254.129.1:40987 - "GET /api/v1/customers/ HTTP/1.1" 400 Bad Request
+2026-09-25T10:47:28.0214971+00:00 ContainerStream: INFO:     169.254.129.1:40987 - "GET /api/v1/users/me HTTP/1.1" 400 Bad Request
+2026-09-25T10:47:28.9089171+00:00 ContainerStream: INFO:     169.254.129.1:40987 - "GET /api/v1/customers/ HTTP/1.1" 400 Bad Request
+2026-09-25T10:47:53.4648647+00:00 ContainerStream: INFO:     169.254.129.1:42559 - "GET /api/v1/auth/verify HTTP/1.1" 400 Bad Request
+2026-09-25T10:47:54.2266708+00:00 ContainerStream: INFO:     169.254.129.1:42559 - "GET /api/v1/users/me HTTP/1.1" 400 Bad Request
+2026-09-25T10:47:55.5114203+00:00 ContainerStream: INFO:     169.254.129.1:42559 - "GET /api/v1/orders/stats HTTP/1.1" 400 Bad Request
+2026-09-25T10:47:58.1464036+00:00 ContainerStream: INFO:     169.254.129.1:42559 - "GET /api/v1/orders/stats HTTP/1.1" 400 Bad Request
+2026-09-25T10:49:25.4821288+00:00 ContainerStream: INFO:     169.254.129.1:18917 - "GET /api/v1/auth/verify HTTP/1.1" 400 Bad Request
+2026-09-25T10:49:26.2378674+00:00 ContainerStream: INFO:     169.254.129.1:18917 - "GET /api/v1/users/me HTTP/1.1" 400 Bad Request
+2026-09-25T10:49:27.3565824+00:00 ContainerStream: INFO:     169.254.129.1:18917 - "GET /api/v1/orders/stats HTTP/1.1" 400 Bad Request
+2026-09-25T10:51:03.5931998+00:00 ContainerStream: INFO:     169.254.129.1:49737 - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+2026-09-25T10:51:04.1009455+00:00 ContainerStream: INFO:     169.254.129.1:49737 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-25T10:51:04.7213144+00:00 ContainerStream: INFO:     169.254.129.1:49737 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-25T10:51:05.8038459+00:00 ContainerStream: INFO:     169.254.129.1:49737 - "GET /api/v1/orders/stats HTTP/1.1" 200 OK
+2026-09-25T10:51:06.3470689+00:00 ContainerStream: INFO:     169.254.129.1:49737 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-25T10:51:06.9655114+00:00 ContainerStream: INFO:     169.254.129.1:49737 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-25T10:51:07.6337013+00:00 ContainerStream: INFO:     169.254.129.1:49737 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-25T10:51:53.0560714+00:00 ContainerStream: INFO:     169.254.129.1:63091 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-25T11:03:32.5656378+00:00 ContainerStatus: State: Starting, Action: EstablishingSiteNetworks, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: , DetailsLevel: INFO
+2026-09-25T11:03:36.1410951+00:00 ContainerStatus: State: Starting, Action: StartingMsiContainer, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: , DetailsLevel: INFO
+2026-09-25T11:03:51.2298236+00:00 ContainerStatus: State: Starting, Action: StartingSiteContainers, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: , DetailsLevel: INFO
+2026-09-25T11:03:51.2305053+00:00 ContainerStatus: Container start method called.
+2026-09-25T11:03:51.2305688+00:00 ContainerStatus: State: Starting, Action: PullingImage, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Pulling image 10.1.0.4:13209/appsvc/python:3.11_20260910.3.tuxprod for tailorsync-api-prod., DetailsLevel: INFO
+2026-09-25T11:03:51.2306347+00:00 ContainerStatus: Establishing network.
+2026-09-25T11:03:51.2307131+00:00 ContainerStatus: Pulling image: appsvc/python:3.11_20260910.3.tuxprod.
+2026-09-25T11:03:51.4278864+00:00 ContainerStatus: Container is starting.
+2026-09-25T11:03:51.4287039+00:00 ContainerStatus: State: Starting, Action: MountingVolumes, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Mounting volumes for tailorsync-api-prod., DetailsLevel: INFO
+2026-09-25T11:03:51.4291558+00:00 ContainerStatus: Establishing user namespace if not established already.
+2026-09-25T11:03:51.4298433+00:00 ContainerStatus: Establishing network if not established already.
+2026-09-25T11:03:51.4304107+00:00 ContainerStatus: Mounting volumes.
+2026-09-25T11:03:51.4312139+00:00 ContainerStatus: Nested mountpoint 
+2026-09-25T11:03:51.4574764+00:00 ContainerStatus: Nested mountpoint volatile/logs
+2026-09-25T11:03:51.4601164+00:00 ContainerStatus: Nested mountpoint 
+2026-09-25T11:03:51.7521109+00:00 ContainerStatus: Nested mountpoint 
+2026-09-25T11:03:51.7818277+00:00 ContainerStatus: Nested mountpoint 
+2026-09-25T11:03:51.7837533+00:00 ContainerStatus: Nested mountpoint 
+2026-09-25T11:03:52.4056260+00:00 ContainerStatus: State: Starting, Action: CreatingContainer, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Finished pulling container image and mounting volumes for tailorsync-api-prod. Allocatinng the rest of the container resources to finish container creation., DetailsLevel: INFO
+2026-09-25T11:03:52.4065647+00:00 ContainerStatus: Creating container.
+2026-09-25T11:03:52.4156465+00:00 ContainerStatus: Creating pipes for streaming container io.
+2026-09-25T11:03:52.4157887+00:00 ContainerStatus: Creating stdout named pipe at /podr/container/pipe/415cb24267cf_tailorsync-api-prod/stdout_fdeaa58c04e64d49b96395802344d4c4.
+2026-09-25T11:03:52.4160173+00:00 ContainerStatus: Successfully created stdout named pipe at: /podr/container/pipe/415cb24267cf_tailorsync-api-prod/stdout_fdeaa58c04e64d49b96395802344d4c4.
+2026-09-25T11:03:52.4161124+00:00 ContainerStatus: Opening named pipe /podr/container/pipe/415cb24267cf_tailorsync-api-prod/stdout_fdeaa58c04e64d49b96395802344d4c4 for reading in non-blocking mode.
+2026-09-25T11:03:52.4168040+00:00 ContainerStatus: Successfully opened named pipe: /podr/container/pipe/415cb24267cf_tailorsync-api-prod/stdout_fdeaa58c04e64d49b96395802344d4c4.
+2026-09-25T11:03:52.4168645+00:00 ContainerStatus: Successfully removed non-blocking flag from /podr/container/pipe/415cb24267cf_tailorsync-api-prod/stdout_fdeaa58c04e64d49b96395802344d4c4.
+2026-09-25T11:03:52.4230959+00:00 ContainerStatus: Creating stderr named pipe at /podr/container/pipe/415cb24267cf_tailorsync-api-prod/stderr_e0023a5de0e04dcfbd0afd8cc461aacb.
+2026-09-25T11:03:52.4232034+00:00 ContainerStatus: Successfully created stderr named pipe at: /podr/container/pipe/415cb24267cf_tailorsync-api-prod/stderr_e0023a5de0e04dcfbd0afd8cc461aacb.
+2026-09-25T11:03:52.4232464+00:00 ContainerStatus: Opening named pipe /podr/container/pipe/415cb24267cf_tailorsync-api-prod/stderr_e0023a5de0e04dcfbd0afd8cc461aacb for reading in non-blocking mode.
+2026-09-25T11:03:52.4233144+00:00 ContainerStatus: Successfully opened named pipe: /podr/container/pipe/415cb24267cf_tailorsync-api-prod/stderr_e0023a5de0e04dcfbd0afd8cc461aacb.
+2026-09-25T11:03:52.4233619+00:00 ContainerStatus: Successfully removed non-blocking flag from /podr/container/pipe/415cb24267cf_tailorsync-api-prod/stderr_e0023a5de0e04dcfbd0afd8cc461aacb.
+2026-09-25T11:03:52.4234425+00:00 ContainerStatus: Creating container with image: appsvc/python:3.11_20260910.3.tuxprod from registry: 10.1.0.4:13209 and fully qualified image name: 10.1.0.4:13209/appsvc/python:3.11_20260910.3.tuxprod
+2026-09-25T11:03:53.1597403+00:00 ContainerStatus: Starting container: 415cb24267cf_tailorsync-api-prod.
+2026-09-25T11:03:53.2450802+00:00 ContainerStatus: Starting watchers and probes.
+2026-09-25T11:03:53.2530646+00:00 ContainerStatus: Starting metrics collection.
+2026-09-25T11:03:53.2724906+00:00 ContainerStatus: Container is running.
+2026-09-25T11:03:53.2726070+00:00 ContainerStatus: State: Starting, Action: CreatingContainer, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Container tailorsync-api-prod successfully created and is running., DetailsLevel: INFO
+2026-09-25T11:03:53.4896506+00:00 ContainerStatus: Container start method finished after 2258 ms.
+2026-09-25T11:03:53.5070574+00:00 ContainerStatus: State: Starting, Action: InitiatingSiteWarmUpProbe, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Container tailorsync-api-prod successfully created and is running., DetailsLevel: INFO
+2026-09-25T11:03:53.5140815+00:00 ContainerStatus: State: Starting, Action: WaitingForSiteWarmUpProbeSuccess, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Pinging warmup path to ensure container is ready to receive requests., DetailsLevel: INFO
+2026-09-25T11:03:53.8533444+00:00 ContainerStream:    _____                               
+2026-09-25T11:03:53.8710022+00:00 ContainerStream:   /  _  \ __________ _________   ____  
+2026-09-25T11:03:53.8710153+00:00 ContainerStream:  /  /_\  \\___   /  |  \_  __ \_/ __ \ 
+2026-09-25T11:03:53.8710191+00:00 ContainerStream: /    |    \/    /|  |  /|  | \/\  ___/ 
+2026-09-25T11:03:53.8710222+00:00 ContainerStream: \____|__  /_____ \____/ |__|    \___  >
+2026-09-25T11:03:53.8710301+00:00 ContainerStream:         \/      \/                  \/ 
+2026-09-25T11:03:53.8710334+00:00 ContainerStream: A P P   S E R V I C E   O N   L I N U X
+2026-09-25T11:03:53.8710357+00:00 ContainerStream: 
+2026-09-25T11:03:53.8710387+00:00 ContainerStream: Documentation     : https://aka.ms/webapp-linux
+2026-09-25T11:03:53.8710413+00:00 ContainerStream: Python quickstart : https://aka.ms/python-qs
+2026-09-25T11:03:53.8739769+00:00 ContainerStream: Python version    : 3.11.15
+2026-09-25T11:03:53.8822504+00:00 ContainerStream: Instance name     : lw1sdlwk0004X4
+2026-09-25T11:03:53.8822679+00:00 ContainerStream: Instance id       : d1bb16b0b07ed500a5589d686efd8d41b70fdb89fc955c56e7582796ccdcce9e
+2026-09-25T11:03:53.8822708+00:00 ContainerStream: 
+2026-09-25T11:03:53.8822738+00:00 ContainerStream: App port          : 8000
+2026-09-25T11:03:53.8822765+00:00 ContainerStream: Port selected by  : Default for this image
+2026-09-25T11:03:53.8822794+00:00 ContainerStream: (Learn more about the PORT appsetting https://aka.ms/webapp-python-settings)
+2026-09-25T11:03:53.8822817+00:00 ContainerStream: 
+2026-09-25T11:03:53.8822850+00:00 ContainerStream: Note: Any data outside '/home' is not persisted
+2026-09-25T11:03:53.8822904+00:00 ContainerStream: 
+2026-09-25T11:03:53.8822953+00:00 ContainerStream: ────────────────────────────────────────────────────────────────
+2026-09-25T11:03:53.8822985+00:00 ContainerStream:  Run 'apphelp' for available commands and aliases.
+2026-09-25T11:03:53.8823014+00:00 ContainerStream:  Run 'install-nettools' to install networking utilities.
+2026-09-25T11:03:53.8823052+00:00 ContainerStream: ────────────────────────────────────────────────────────────────
+2026-09-25T11:03:59.1799303+00:00 ContainerStream: Starting OpenBSD Secure Shell server: sshd.
+2026-09-25T11:03:59.2406124+00:00 ContainerStream: WEBSITES_INCLUDE_CLOUD_CERTS is not set to true.
+2026-09-25T11:03:59.3388835+00:00 ContainerStream: Updating certificates in /etc/ssl/certs...
+2026-09-25T11:04:20.9510342+00:00 ContainerStream: rehash: warning: skipping duplicate certificate in azl_SSL.com_TLS_ECC_Root_CA_2022.pem
+2026-09-25T11:04:20.9809884+00:00 ContainerStream: rehash: warning: skipping duplicate certificate in azl_SSL.com_TLS_RSA_Root_CA_2022.pem
+2026-09-25T11:04:22.0997076+00:00 ContainerStream: rehash: warning: skipping ca-certificates.crt,it does not contain exactly one certificate or CRL
+2026-09-25T11:04:22.4080613+00:00 ContainerStream: 4 added, 0 removed; done.
+2026-09-25T11:04:22.4093204+00:00 ContainerStream: Running hooks in /etc/ca-certificates/update.d...
+2026-09-25T11:04:22.4689546+00:00 ContainerStream: done.
+2026-09-25T11:04:22.5300532+00:00 ContainerStream: CA certificates copied and updated successfully.
+2026-09-25T11:04:22.7834144+00:00 ContainerStream: Site's appCommandLine: uvicorn app.main:app --host 0.0.0.0 --port 8000
+2026-09-25T11:04:23.4647925+00:00 ContainerStream: Starting periodic command scheduler: cron.
+2026-09-25T11:04:23.4648461+00:00 ContainerStream: Launching oryx with: create-script -appPath /home/site/wwwroot -output /opt/startup/startup.sh -virtualEnvName antenv -defaultApp /opt/defaultsite -userStartupCommand 'uvicorn app.main:app --host 0.0.0.0 --port 8000'
+2026-09-25T11:04:23.9873042+00:00 ContainerStream: Found build manifest file at '/home/site/wwwroot/oryx-manifest.toml'. Deserializing it...
+2026-09-25T11:04:24.0254731+00:00 ContainerStream: Build Operation ID: e54499998ccf8a50
+2026-09-25T11:04:24.0278743+00:00 ContainerStream: Oryx Version: 0.2.20260710.1, Commit: 079b5b6294eb97d462d8f96bfa3243e9b85251da, ReleaseTagName: 20260710.1
+2026-09-25T11:04:24.0288646+00:00 ContainerStream: Output is compressed. Extracting it...
+2026-09-25T11:04:24.0581093+00:00 ContainerStream: Found zstd-compressed tarball.
+2026-09-25T11:04:24.0581296+00:00 ContainerStream: Extracting '/home/site/wwwroot/output.tar.zst' to directory '/tmp/8df1af43b81303a'...
+2026-09-25T11:04:24.0841509+00:00 ContainerStream: Using zstd for decompression of file: /home/site/wwwroot/output.tar.zst
+2026-09-25T11:04:47.3731240+00:00 ContainerStream: zstd tar Successfully extracted '/home/site/wwwroot/output.tar.zst' to '/tmp/8df1af43b81303a'
+2026-09-25T11:04:47.3735134+00:00 ContainerStream: App path is set to '/tmp/8df1af43b81303a'
+2026-09-25T11:04:47.4202746+00:00 ContainerStream: Writing output script to '/opt/startup/startup.sh'
+2026-09-25T11:04:47.7092938+00:00 ContainerStream: Using packages from virtual environment antenv located at /tmp/8df1af43b81303a/antenv.
+2026-09-25T11:04:47.7119609+00:00 ContainerStream: Updated PYTHONPATH to '/opt/startup/app_logs:/tmp/8df1af43b81303a/antenv/lib/python3.11/site-packages'
+2026-09-25T11:04:52.2822430+00:00 ContainerStream: INFO:     Started server process [1887]
+2026-09-25T11:04:52.2837085+00:00 ContainerStream: INFO:     Waiting for application startup.
+2026-09-25T11:04:52.2892887+00:00 ContainerStream: INFO:     Application startup complete.
+2026-09-25T11:04:52.2903447+00:00 ContainerStream: INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+2026-09-25T11:04:52.6459317+00:00 ContainerStream: INFO:     169.254.129.1:40649 - "GET /robots933456.txt HTTP/1.1" 404 Not Found
+2026-09-25T11:04:52.7047334+00:00 ContainerStatus: Site startup probe succeeded after 59.0610044 seconds.
+2026-09-25T11:04:53.1035692+00:00 ContainerStatus: State: Starting, Action: WarmUpProbeSucceeded, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Site startup probe succeeded after 59.0610044 seconds., DetailsLevel: INFO
+2026-09-25T11:04:53.8975379+00:00 ContainerStatus: Site is running with deployment version: 3069706a-29f9-400f-be79-a2126932a841
+2026-09-25T11:04:53.9024738+00:00 ContainerStatus: Site started.
+2026-09-25T11:04:53.9044742+00:00 ContainerStatus: State: Started, Action: None, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Site started at 09/25/2026 11:04:53 (UTC), DetailsLevel: INFO
+2026-09-25T11:04:53.9211405+00:00 ContainerStatus: Site is running with patch version PYTHON-3.11.15
+========== New Cold Start Attempt (2026-09-25T11:05:14.1739714+00:00) ==========
+2026-09-25T11:05:14.1739714+00:00 ContainerStatus: State: Stopping, Action: StoppingSite, LastError: ContainerStartupFailure, LastErrorTimestamp: 09/24/2026 21:03:44, LastErrorDetails: Container exited with exit code 127 during startup after 52.9s. Please inspect your container logs for more details., Details: Site started at 09/24/2026 22:19:55 (UTC), DetailsLevel: INFO
+2026-09-25T11:05:14.2190239+00:00 ContainerStatus: State: Stopping, Action: StoppingSiteContainers, LastError: ContainerStartupFailure, LastErrorTimestamp: 09/24/2026 21:03:44, LastErrorDetails: Container exited with exit code 127 during startup after 52.9s. Please inspect your container logs for more details., Details: Site started at 09/24/2026 22:19:55 (UTC), DetailsLevel: INFO
+2026-09-25T11:05:14.2214741+00:00 ContainerStatus: Container is terminating. Grace period: 5 seconds.
+2026-09-25T11:05:14.2794592+00:00 ContainerStatus: Stop and delete container. Retry count = 0
+2026-09-25T11:05:14.2808370+00:00 ContainerStatus: Stopping container: dc0fc1c2e66d_tailorsync-api-prod.
+2026-09-25T11:05:19.3858171+00:00 ContainerStatus: Deleting container: dc0fc1c2e66d_tailorsync-api-prod. Retry count = 0
+2026-09-25T11:05:21.9098129+00:00 ContainerStatus: Container spec TerminationMessagePolicy  path 
+2026-09-25T11:05:21.9198262+00:00 ContainerStatus: Container is terminated. Total time elapsed: 7688 ms.
+2026-09-25T11:05:24.0909118+00:00 ContainerStatus: Site: tailorsync-api-prod stopped.
+2026-09-25T11:09:14.1350750+00:00 ContainerStream: INFO:     169.254.129.1:54333 - "GET /api/v1/auth/verify HTTP/1.1" 200 OK
+2026-09-25T11:09:14.5248410+00:00 ContainerStream: INFO:     169.254.129.1:54333 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-25T11:09:15.1744309+00:00 ContainerStream: INFO:     169.254.129.1:54333 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-25T11:09:16.2687533+00:00 ContainerStream: INFO:     169.254.129.1:54333 - "GET /api/v1/orders/stats HTTP/1.1" 200 OK
+2026-09-25T11:09:16.6751714+00:00 ContainerStream: INFO:     169.254.129.1:54333 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-25T11:09:17.2825431+00:00 ContainerStream: INFO:     169.254.129.1:54333 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-25T11:09:17.8721176+00:00 ContainerStream: INFO:     169.254.129.1:54333 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-25T11:09:18.7056501+00:00 ContainerStream: INFO:     169.254.129.1:54333 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-25T11:09:37.1094256+00:00 ContainerStream: INFO:     169.254.129.1:53327 - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+2026-09-25T11:09:37.4870979+00:00 ContainerStream: INFO:     169.254.129.1:53327 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-25T11:09:37.9246687+00:00 ContainerStream: INFO:     169.254.129.1:53327 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-25T11:09:38.8915372+00:00 ContainerStream: INFO:     169.254.129.1:53327 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-25T11:09:39.5191269+00:00 ContainerStream: INFO:     169.254.129.1:53327 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-25T11:09:50.2724088+00:00 ContainerStream: INFO:     169.254.129.1:55287 - "PUT /api/v1/orders/18 HTTP/1.1" 403 Forbidden
+2026-09-25T11:09:52.7807792+00:00 ContainerStream: INFO:     169.254.129.1:55287 - "PUT /api/v1/orders/18 HTTP/1.1" 403 Forbidden
+2026-09-25T11:09:56.1147667+00:00 ContainerStream: INFO:     169.254.129.1:55287 - "PUT /api/v1/orders/18 HTTP/1.1" 403 Forbidden
+2026-09-25T11:09:58.6665590+00:00 ContainerStream: INFO:     169.254.129.1:55287 - "PUT /api/v1/orders/18 HTTP/1.1" 403 Forbidden
+2026-09-25T11:10:07.8532264+00:00 ContainerStream: INFO:     169.254.129.1:60987 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-25T11:10:13.4400031+00:00 ContainerStream: INFO:     169.254.129.1:56657 - "DELETE /api/v1/orders/18 HTTP/1.1" 403 Forbidden
+2026-09-25T11:10:16.0547450+00:00 ContainerStream: INFO:     169.254.129.1:56657 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-25T11:10:17.4594313+00:00 ContainerStream: INFO:     169.254.129.1:56657 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-25T11:10:20.2193897+00:00 ContainerStream: INFO:     169.254.129.1:56657 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-25T11:10:20.7631209+00:00 ContainerStream: INFO:     169.254.129.1:56657 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-25T11:10:22.0378487+00:00 ContainerStream: INFO:     169.254.129.1:56657 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-25T11:10:29.4035351+00:00 ContainerStream: INFO:     169.254.129.1:32075 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-25T11:10:29.8672986+00:00 ContainerStream: INFO:     169.254.129.1:32075 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-25T11:10:34.9182594+00:00 ContainerStream: INFO:     169.254.129.1:32075 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-25T11:10:50.9705061+00:00 ContainerStream: INFO:     169.254.129.1:21859 - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+2026-09-25T11:10:51.3867529+00:00 ContainerStream: INFO:     169.254.129.1:21859 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-25T11:10:51.8024685+00:00 ContainerStream: INFO:     169.254.129.1:21859 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-25T11:10:52.8258654+00:00 ContainerStream: INFO:     169.254.129.1:21859 - "GET /api/v1/orders/stats HTTP/1.1" 200 OK
+2026-09-25T11:10:53.2072833+00:00 ContainerStream: INFO:     169.254.129.1:21859 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-25T11:10:53.7594040+00:00 ContainerStream: INFO:     169.254.129.1:21859 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-25T11:10:54.4048548+00:00 ContainerStream: INFO:     169.254.129.1:21859 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-25T11:11:55.7181918+00:00 ContainerStream: INFO:     169.254.129.1:54329 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-25T11:12:02.1940482+00:00 ContainerStream: INFO:     169.254.129.1:54331 - "GET /api/v1/staff/ HTTP/1.1" 200 OK
+2026-09-25T11:12:05.6457591+00:00 ContainerStream: INFO:     169.254.129.1:54331 - "PATCH /api/v1/staff/19/reactivate HTTP/1.1" 200 OK
+2026-09-25T11:12:06.1231923+00:00 ContainerStream: INFO:     169.254.129.1:54331 - "GET /api/v1/staff/ HTTP/1.1" 200 OK
+2026-09-25T11:12:09.6426373+00:00 ContainerStream: 2026-09-25 11:12:09,631 - app.services.email_service - INFO - Email sent successfully to izufttank@gmail.com
+2026-09-25T11:12:14.1697348+00:00 ContainerStream: INFO:     169.254.129.1:29901 - "GET /api/v1/orders/stats HTTP/1.1" 200 OK
+2026-09-25T11:12:14.6829711+00:00 ContainerStream: INFO:     169.254.129.1:29901 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-25T11:12:15.3558225+00:00 ContainerStream: INFO:     169.254.129.1:29901 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-25T11:12:16.1073907+00:00 ContainerStream: INFO:     169.254.129.1:29901 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-25T11:19:22.0195070+00:00 ContainerStatus: State: Starting, Action: EstablishingSiteNetworks, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: , DetailsLevel: INFO
+2026-09-25T11:19:25.7558798+00:00 ContainerStatus: State: Starting, Action: StartingMsiContainer, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: , DetailsLevel: INFO
+2026-09-25T11:19:40.8372852+00:00 ContainerStatus: State: Starting, Action: StartingSiteContainers, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: , DetailsLevel: INFO
+2026-09-25T11:19:40.8381977+00:00 ContainerStatus: Container start method called.
+2026-09-25T11:19:40.8383405+00:00 ContainerStatus: State: Starting, Action: PullingImage, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Pulling image 10.1.0.5:13209/appsvc/python:3.11_20260910.3.tuxprod for tailorsync-api-prod., DetailsLevel: INFO
+2026-09-25T11:19:40.8384105+00:00 ContainerStatus: Establishing network.
+2026-09-25T11:19:40.8385275+00:00 ContainerStatus: Pulling image: appsvc/python:3.11_20260910.3.tuxprod.
+2026-09-25T11:19:41.1873552+00:00 ContainerStatus: Container is starting.
+2026-09-25T11:19:41.1874232+00:00 ContainerStatus: State: Starting, Action: MountingVolumes, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Mounting volumes for tailorsync-api-prod., DetailsLevel: INFO
+2026-09-25T11:19:41.1874950+00:00 ContainerStatus: Establishing user namespace if not established already.
+2026-09-25T11:19:41.1875675+00:00 ContainerStatus: Establishing network if not established already.
+2026-09-25T11:19:41.1876662+00:00 ContainerStatus: Mounting volumes.
+2026-09-25T11:19:41.1877604+00:00 ContainerStatus: Nested mountpoint 
+2026-09-25T11:19:41.2386169+00:00 ContainerStatus: Nested mountpoint volatile/logs
+2026-09-25T11:19:41.3580811+00:00 ContainerStatus: Nested mountpoint 
+2026-09-25T11:19:41.5438701+00:00 ContainerStatus: Nested mountpoint 
+2026-09-25T11:19:41.5644368+00:00 ContainerStatus: Nested mountpoint 
+2026-09-25T11:19:41.6951595+00:00 ContainerStatus: Nested mountpoint 
+2026-09-25T11:19:42.7734063+00:00 ContainerStatus: State: Starting, Action: CreatingContainer, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Finished pulling container image and mounting volumes for tailorsync-api-prod. Allocatinng the rest of the container resources to finish container creation., DetailsLevel: INFO
+2026-09-25T11:19:42.7735619+00:00 ContainerStatus: Creating container.
+2026-09-25T11:19:42.7736351+00:00 ContainerStatus: Creating pipes for streaming container io.
+2026-09-25T11:19:42.7737186+00:00 ContainerStatus: Creating stdout named pipe at /podr/container/pipe/d4a6b5bc55f7_tailorsync-api-prod/stdout_b25698ba176e48ca8b245ba758efd3d4.
+2026-09-25T11:19:42.7935334+00:00 ContainerStatus: Successfully created stdout named pipe at: /podr/container/pipe/d4a6b5bc55f7_tailorsync-api-prod/stdout_b25698ba176e48ca8b245ba758efd3d4.
+2026-09-25T11:19:42.7936429+00:00 ContainerStatus: Opening named pipe /podr/container/pipe/d4a6b5bc55f7_tailorsync-api-prod/stdout_b25698ba176e48ca8b245ba758efd3d4 for reading in non-blocking mode.
+2026-09-25T11:19:42.7937529+00:00 ContainerStatus: Successfully opened named pipe: /podr/container/pipe/d4a6b5bc55f7_tailorsync-api-prod/stdout_b25698ba176e48ca8b245ba758efd3d4.
+2026-09-25T11:19:42.7938128+00:00 ContainerStatus: Successfully removed non-blocking flag from /podr/container/pipe/d4a6b5bc55f7_tailorsync-api-prod/stdout_b25698ba176e48ca8b245ba758efd3d4.
+2026-09-25T11:19:42.7939484+00:00 ContainerStatus: Creating stderr named pipe at /podr/container/pipe/d4a6b5bc55f7_tailorsync-api-prod/stderr_ad5d3a0f0a8d4970b85dc9e1c562d973.
+2026-09-25T11:19:42.8040476+00:00 ContainerStatus: Successfully created stderr named pipe at: /podr/container/pipe/d4a6b5bc55f7_tailorsync-api-prod/stderr_ad5d3a0f0a8d4970b85dc9e1c562d973.
+2026-09-25T11:19:42.8041558+00:00 ContainerStatus: Opening named pipe /podr/container/pipe/d4a6b5bc55f7_tailorsync-api-prod/stderr_ad5d3a0f0a8d4970b85dc9e1c562d973 for reading in non-blocking mode.
+2026-09-25T11:19:42.8042692+00:00 ContainerStatus: Successfully opened named pipe: /podr/container/pipe/d4a6b5bc55f7_tailorsync-api-prod/stderr_ad5d3a0f0a8d4970b85dc9e1c562d973.
+2026-09-25T11:19:42.8043494+00:00 ContainerStatus: Successfully removed non-blocking flag from /podr/container/pipe/d4a6b5bc55f7_tailorsync-api-prod/stderr_ad5d3a0f0a8d4970b85dc9e1c562d973.
+2026-09-25T11:19:42.8044552+00:00 ContainerStatus: Creating container with image: appsvc/python:3.11_20260910.3.tuxprod from registry: 10.1.0.5:13209 and fully qualified image name: 10.1.0.5:13209/appsvc/python:3.11_20260910.3.tuxprod
+2026-09-25T11:19:43.5263987+00:00 ContainerStatus: Starting container: d4a6b5bc55f7_tailorsync-api-prod.
+2026-09-25T11:19:43.6176347+00:00 ContainerStatus: Starting watchers and probes.
+2026-09-25T11:19:43.6481007+00:00 ContainerStatus: Starting metrics collection.
+2026-09-25T11:19:43.6482470+00:00 ContainerStatus: Container is running.
+2026-09-25T11:19:43.6483249+00:00 ContainerStatus: State: Starting, Action: CreatingContainer, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Container tailorsync-api-prod successfully created and is running., DetailsLevel: INFO
+2026-09-25T11:19:43.8463753+00:00 ContainerStatus: Container start method finished after 3007 ms.
+2026-09-25T11:19:43.8466289+00:00 ContainerStatus: State: Starting, Action: InitiatingSiteWarmUpProbe, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Container tailorsync-api-prod successfully created and is running., DetailsLevel: INFO
+2026-09-25T11:19:43.9319752+00:00 ContainerStatus: State: Starting, Action: WaitingForSiteWarmUpProbeSuccess, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Pinging warmup path to ensure container is ready to receive requests., DetailsLevel: INFO
+2026-09-25T11:19:44.0112649+00:00 ContainerStream:    _____                               
+2026-09-25T11:19:44.0524448+00:00 ContainerStream:   /  _  \ __________ _________   ____  
+2026-09-25T11:19:44.0524637+00:00 ContainerStream:  /  /_\  \\___   /  |  \_  __ \_/ __ \ 
+2026-09-25T11:19:44.0524666+00:00 ContainerStream: /    |    \/    /|  |  /|  | \/\  ___/ 
+2026-09-25T11:19:44.0524723+00:00 ContainerStream: \____|__  /_____ \____/ |__|    \___  >
+2026-09-25T11:19:44.0524756+00:00 ContainerStream:         \/      \/                  \/ 
+2026-09-25T11:19:44.0524778+00:00 ContainerStream: A P P   S E R V I C E   O N   L I N U X
+2026-09-25T11:19:44.0524798+00:00 ContainerStream: 
+2026-09-25T11:19:44.0524830+00:00 ContainerStream: Documentation     : https://aka.ms/webapp-linux
+2026-09-25T11:19:44.0524856+00:00 ContainerStream: Python quickstart : https://aka.ms/python-qs
+2026-09-25T11:19:44.0524880+00:00 ContainerStream: Python version    : 3.11.15
+2026-09-25T11:19:44.0524926+00:00 ContainerStream: Instance name     : lw1sdlwk0004X4
+2026-09-25T11:19:44.0524967+00:00 ContainerStream: Instance id       : d1bb16b0b07ed500a5589d686efd8d41b70fdb89fc955c56e7582796ccdcce9e
+2026-09-25T11:19:44.0524988+00:00 ContainerStream: 
+2026-09-25T11:19:44.0525011+00:00 ContainerStream: App port          : 8000
+2026-09-25T11:19:44.0525034+00:00 ContainerStream: Port selected by  : Default for this image
+2026-09-25T11:19:44.0525061+00:00 ContainerStream: (Learn more about the PORT appsetting https://aka.ms/webapp-python-settings)
+2026-09-25T11:19:44.0525104+00:00 ContainerStream: 
+2026-09-25T11:19:44.0525129+00:00 ContainerStream: Note: Any data outside '/home' is not persisted
+2026-09-25T11:19:44.0525149+00:00 ContainerStream: 
+2026-09-25T11:19:44.0525193+00:00 ContainerStream: ────────────────────────────────────────────────────────────────
+2026-09-25T11:19:44.0525223+00:00 ContainerStream:  Run 'apphelp' for available commands and aliases.
+2026-09-25T11:19:44.0525248+00:00 ContainerStream:  Run 'install-nettools' to install networking utilities.
+2026-09-25T11:19:44.0525286+00:00 ContainerStream: ────────────────────────────────────────────────────────────────
+2026-09-25T11:19:48.3273840+00:00 ContainerStream: Starting OpenBSD Secure Shell server: sshd.
+2026-09-25T11:19:48.3949890+00:00 ContainerStream: WEBSITES_INCLUDE_CLOUD_CERTS is not set to true.
+2026-09-25T11:19:48.4966635+00:00 ContainerStream: Updating certificates in /etc/ssl/certs...
+2026-09-25T11:20:08.8215727+00:00 ContainerStream: rehash: warning: skipping duplicate certificate in azl_SSL.com_TLS_ECC_Root_CA_2022.pem
+2026-09-25T11:20:08.8216143+00:00 ContainerStream: rehash: warning: skipping duplicate certificate in azl_SSL.com_TLS_RSA_Root_CA_2022.pem
+2026-09-25T11:20:09.7174141+00:00 ContainerStream: rehash: warning: skipping ca-certificates.crt,it does not contain exactly one certificate or CRL
+2026-09-25T11:20:09.8788796+00:00 ContainerStream: 4 added, 0 removed; done.
+2026-09-25T11:20:09.8789352+00:00 ContainerStream: Running hooks in /etc/ca-certificates/update.d...
+2026-09-25T11:20:09.8976364+00:00 ContainerStream: done.
+2026-09-25T11:20:09.9193491+00:00 ContainerStream: CA certificates copied and updated successfully.
+2026-09-25T11:20:10.2321679+00:00 ContainerStream: Site's appCommandLine: uvicorn app.main:app --host 0.0.0.0 --port 8000
+2026-09-25T11:20:10.9341239+00:00 ContainerStream: Starting periodic command scheduler: cron.
+2026-09-25T11:20:10.9352286+00:00 ContainerStream: Launching oryx with: create-script -appPath /home/site/wwwroot -output /opt/startup/startup.sh -virtualEnvName antenv -defaultApp /opt/defaultsite -userStartupCommand 'uvicorn app.main:app --host 0.0.0.0 --port 8000'
+2026-09-25T11:20:11.4299413+00:00 ContainerStream: Found build manifest file at '/home/site/wwwroot/oryx-manifest.toml'. Deserializing it...
+2026-09-25T11:20:11.4392036+00:00 ContainerStream: Build Operation ID: f344369b10b3f68a
+2026-09-25T11:20:11.4413889+00:00 ContainerStream: Oryx Version: 0.2.20260710.1, Commit: 079b5b6294eb97d462d8f96bfa3243e9b85251da, ReleaseTagName: 20260710.1
+2026-09-25T11:20:11.4416136+00:00 ContainerStream: Output is compressed. Extracting it...
+2026-09-25T11:20:11.4482539+00:00 ContainerStream: Found zstd-compressed tarball.
+2026-09-25T11:20:11.4506984+00:00 ContainerStream: Extracting '/home/site/wwwroot/output.tar.zst' to directory '/tmp/8df1af66a0865cc'...
+2026-09-25T11:20:11.4509067+00:00 ContainerStream: Using zstd for decompression of file: /home/site/wwwroot/output.tar.zst
+2026-09-25T11:20:38.5827163+00:00 ContainerStream: zstd tar Successfully extracted '/home/site/wwwroot/output.tar.zst' to '/tmp/8df1af66a0865cc'
+2026-09-25T11:20:38.5830641+00:00 ContainerStream: App path is set to '/tmp/8df1af66a0865cc'
+2026-09-25T11:20:38.6389748+00:00 ContainerStream: Writing output script to '/opt/startup/startup.sh'
+2026-09-25T11:20:38.8814927+00:00 ContainerStream: Using packages from virtual environment antenv located at /tmp/8df1af66a0865cc/antenv.
+2026-09-25T11:20:38.8820525+00:00 ContainerStream: Updated PYTHONPATH to '/opt/startup/app_logs:/tmp/8df1af66a0865cc/antenv/lib/python3.11/site-packages'
+2026-09-25T11:20:43.2361403+00:00 ContainerStream: INFO:     Started server process [1888]
+2026-09-25T11:20:43.2361816+00:00 ContainerStream: INFO:     Waiting for application startup.
+2026-09-25T11:20:43.2361853+00:00 ContainerStream: INFO:     Application startup complete.
+2026-09-25T11:20:43.2644032+00:00 ContainerStream: INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+2026-09-25T11:20:44.0585086+00:00 ContainerStream: INFO:     169.254.129.1:49979 - "GET /robots933456.txt HTTP/1.1" 404 Not Found
+2026-09-25T11:20:44.0950015+00:00 ContainerStatus: Site startup probe succeeded after 60.0562763 seconds.
+2026-09-25T11:20:44.4862429+00:00 ContainerStatus: State: Starting, Action: WarmUpProbeSucceeded, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Site startup probe succeeded after 60.0562763 seconds., DetailsLevel: INFO
+2026-09-25T11:20:45.3133838+00:00 ContainerStatus: Site is running with deployment version: 1c280600-8fad-4598-9b03-454a95ebe0f3
+2026-09-25T11:20:45.3149267+00:00 ContainerStatus: Site started.
+2026-09-25T11:20:45.3157277+00:00 ContainerStatus: State: Started, Action: None, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Site started at 09/25/2026 11:20:45 (UTC), DetailsLevel: INFO
+2026-09-25T11:20:45.3537602+00:00 ContainerStatus: Site is running with patch version PYTHON-3.11.15

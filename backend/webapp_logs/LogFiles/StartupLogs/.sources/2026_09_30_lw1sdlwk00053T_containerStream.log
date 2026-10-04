@@ -1,0 +1,810 @@
+2026-09-30T07:34:14.3578924Z INFO:     169.254.130.1:54885 - "GET /api/v1/auth/verify HTTP/1.1" 401 Unauthorized
+2026-09-30T07:34:14.3624511Z 2026-09-30 07:34:14,108 - app.api.deps - INFO - Token expired
+2026-09-30T07:34:25.3679354Z INFO:     169.254.130.1:41895 - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+2026-09-30T07:34:27.1468630Z INFO:     169.254.130.1:41895 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-30T07:34:27.8477861Z INFO:     169.254.130.1:41895 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-30T07:34:30.4985359Z INFO:     169.254.130.1:41895 - "GET /api/v1/orders/stats HTTP/1.1" 200 OK
+2026-09-30T07:34:32.2756742Z INFO:     169.254.130.1:41895 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-30T07:34:34.5963803Z INFO:     169.254.130.1:41895 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-30T07:34:35.2817272Z INFO:     169.254.130.1:41895 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-30T07:34:59.6200788Z INFO:     169.254.130.1:15021 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-30T07:35:00.2867371Z INFO:     169.254.130.1:15021 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-30T07:35:07.7410593Z INFO:     169.254.130.1:39533 - "GET /api/v1/orders/stats HTTP/1.1" 200 OK
+2026-09-30T07:35:09.4803967Z INFO:     169.254.130.1:39533 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-30T07:35:13.9392270Z INFO:     169.254.130.1:39533 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-30T07:35:14.8444884Z INFO:     169.254.130.1:39533 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-30T08:34:44.8148270Z 2026-09-30 08:34:44,797 - app.api.deps - INFO - Token expired
+2026-09-30T08:34:44.8190087Z INFO:     169.254.130.1:23789 - "GET /api/v1/auth/verify HTTP/1.1" 401 Unauthorized
+2026-09-30T08:34:55.8963758Z INFO:     169.254.130.1:24451 - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+2026-09-30T08:34:56.3237689Z INFO:     169.254.130.1:24451 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-30T08:34:56.7750589Z INFO:     169.254.130.1:24451 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-30T08:34:58.0446473Z INFO:     169.254.130.1:24451 - "GET /api/v1/orders/stats HTTP/1.1" 200 OK
+2026-09-30T08:34:58.4490929Z INFO:     169.254.130.1:24451 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-30T08:34:59.2249810Z INFO:     169.254.130.1:24451 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-30T08:34:59.9957542Z INFO:     169.254.130.1:24451 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-30T08:35:05.1620324Z INFO:     169.254.130.1:59519 - "GET /api/v1/customers/ HTTP/1.1" 200 OK
+2026-09-30T08:35:05.3271106Z INFO:     169.254.130.1:59521 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-30T08:35:05.8042922Z INFO:     169.254.130.1:59521 - "GET /api/v1/staff/ HTTP/1.1" 200 OK
+2026-09-30T08:35:54.0776446Z 2026-09-30 08:35:54,077 - app.services.ai_service - INFO - AI [predict_measurements] called for user 8 using Microsoft Foundry
+2026-09-30T08:35:54.0856500Z 2026-09-30 08:35:54,085 - app.services.foundry_client - WARNING - FOUNDRY_API_KEY is not set.
+2026-09-30T08:35:54.3675691Z 2026-09-30 08:35:54,367 - azure.identity._credentials.environment - INFO - No environment configuration found.
+2026-09-30T08:35:54.3835074Z 2026-09-30 08:35:54,379 - azure.identity._credentials.managed_identity - INFO - ManagedIdentityCredential will use App Service managed identity
+2026-09-30T08:35:54.4373281Z 2026-09-30 08:35:54,437 - azure.core.pipeline.policies.http_logging_policy - INFO - Request URL: 'http://169.254.130.6:8081/msi/token?api-version=2019-08-01&resource=REDACTED'
+2026-09-30T08:35:54.4374011Z Request method: 'GET'
+2026-09-30T08:35:54.4374053Z Request headers:
+2026-09-30T08:35:54.4374084Z     'X-IDENTITY-HEADER': 'REDACTED'
+2026-09-30T08:35:54.4374203Z     'Metadata': 'REDACTED'
+2026-09-30T08:35:54.4374231Z     'User-Agent': 'azsdk-python-identity/1.25.3 Python/3.11.15 (Linux-6.6.150.1-1.azl3-x86_64-with-glibc2.36)'
+2026-09-30T08:35:54.4374253Z No body was attached to the request
+2026-09-30T08:36:01.3138191Z 2026-09-30 08:36:01,270 - azure.core.pipeline.policies.http_logging_policy - INFO - Response status: 200
+2026-09-30T08:36:01.3138477Z Response headers:
+2026-09-30T08:36:01.3138509Z     'Content-Type': 'application/json; charset=utf-8'
+2026-09-30T08:36:01.3138531Z     'Date': 'Wed, 30 Sep 2026 08:36:00 GMT'
+2026-09-30T08:36:01.3138552Z     'Server': 'Kestrel'
+2026-09-30T08:36:01.3138573Z     'Transfer-Encoding': 'chunked'
+2026-09-30T08:36:01.3138594Z     'X-CORRELATION-ID': 'REDACTED'
+2026-09-30T08:36:01.3138987Z 2026-09-30 08:36:01,281 - azure.identity._credentials.chained - INFO - DefaultAzureCredential acquired a token from ManagedIdentityCredential
+2026-09-30T08:36:01.3139079Z 2026-09-30 08:36:01,284 - azure.core.pipeline.policies.http_logging_policy - INFO - Request URL: 'https://tailorsync-ai-resource.services.ai.azure.com/models/chat/completions?api-version=2024-05-01-preview'
+2026-09-30T08:36:01.3139100Z Request method: 'POST'
+2026-09-30T08:36:01.3139120Z Request headers:
+2026-09-30T08:36:01.3139140Z     'Content-Type': 'application/json'
+2026-09-30T08:36:01.3139188Z     'Content-Length': '2900'
+2026-09-30T08:36:01.3139208Z     'Accept': 'application/json'
+2026-09-30T08:36:01.3139231Z     'x-ms-client-request-id': 'f36559c6-bca9-11f1-88ef-8248e8d83145'
+2026-09-30T08:36:01.3139258Z     'User-Agent': 'azsdk-python-ai-inference/1.0.0b9 Python/3.11.15 (Linux-6.6.150.1-1.azl3-x86_64-with-glibc2.36)'
+2026-09-30T08:36:01.3139278Z     'Authorization': 'REDACTED'
+2026-09-30T08:36:01.3139298Z A body is sent with the request
+2026-09-30T08:36:21.6734793Z 2026-09-30 08:36:21,672 - azure.core.pipeline.policies.http_logging_policy - INFO - Response status: 200
+2026-09-30T08:36:21.6735267Z Response headers:
+2026-09-30T08:36:21.6735297Z     'Content-Length': '2847'
+2026-09-30T08:36:21.6735321Z     'Content-Type': 'application/json'
+2026-09-30T08:36:21.6735341Z     'Date': 'Wed, 30 Sep 2026 08:36:01 GMT'
+2026-09-30T08:36:21.6735361Z     'Server': 'istio-envoy'
+2026-09-30T08:36:21.6735381Z     'azureai-fe-is-streaming': 'REDACTED'
+2026-09-30T08:36:21.6735495Z     'azureai-fe-offer-type': 'REDACTED'
+2026-09-30T08:36:21.6735518Z     'azureml-model-session': 'REDACTED'
+2026-09-30T08:36:21.6735537Z     'skip-error-remapping': 'REDACTED'
+2026-09-30T08:36:21.6735557Z     'x-accel-buffering': 'REDACTED'
+2026-09-30T08:36:21.6735577Z     'x-ms-is-spilled-over': 'REDACTED'
+2026-09-30T08:36:21.6735596Z     'x-ms-rai-invoked': 'REDACTED'
+2026-09-30T08:36:21.6735616Z     'x-ms-served-model': 'REDACTED'
+2026-09-30T08:36:21.6735637Z     'x-ratelimit-abusepenalty-active': 'REDACTED'
+2026-09-30T08:36:21.6735655Z     'x-ratelimit-key': 'REDACTED'
+2026-09-30T08:36:21.6735676Z     'x-ratelimit-limit-requests': 'REDACTED'
+2026-09-30T08:36:21.6735696Z     'x-ratelimit-limit-tokens': 'REDACTED'
+2026-09-30T08:36:21.6735716Z     'x-ratelimit-remaining-requests': 'REDACTED'
+2026-09-30T08:36:21.6735736Z     'x-ratelimit-remaining-tokens': 'REDACTED'
+2026-09-30T08:36:21.6735784Z     'x-ratelimit-renewalperiod-requests': 'REDACTED'
+2026-09-30T08:36:21.6735805Z     'x-ratelimit-renewalperiod-tokens': 'REDACTED'
+2026-09-30T08:36:21.6735824Z     'x-ratelimit-reset-requests': 'REDACTED'
+2026-09-30T08:36:21.6735844Z     'x-ratelimit-reset-tokens': 'REDACTED'
+2026-09-30T08:36:21.6735863Z     'x-request-id': 'REDACTED'
+2026-09-30T08:36:21.6735883Z     'apim-request-id': 'REDACTED'
+2026-09-30T08:36:21.6735902Z     'Strict-Transport-Security': 'REDACTED'
+2026-09-30T08:36:21.6735923Z     'x-ms-client-request-id': 'f36559c6-bca9-11f1-88ef-8248e8d83145'
+2026-09-30T08:36:21.6735942Z     'X-Content-Type-Options': 'REDACTED'
+2026-09-30T08:36:21.6735961Z     'x-ms-region': 'REDACTED'
+2026-09-30T08:36:21.6910381Z INFO:     169.254.130.1:58343 - "POST /api/v1/ai/predict-measurements HTTP/1.1" 200 OK
+2026-09-30T08:37:29.4199592Z 2026-09-30 08:37:29,419 - app.services.ai_service - INFO - AI [recommend_fabrics] called for user 8 using Microsoft Foundry
+2026-09-30T08:37:29.4294093Z 2026-09-30 08:37:29,420 - app.services.foundry_client - WARNING - FOUNDRY_API_KEY is not set.
+2026-09-30T08:37:29.4294330Z 2026-09-30 08:37:29,420 - azure.identity._credentials.environment - INFO - No environment configuration found.
+2026-09-30T08:37:29.4294367Z 2026-09-30 08:37:29,420 - azure.identity._credentials.managed_identity - INFO - ManagedIdentityCredential will use App Service managed identity
+2026-09-30T08:37:29.4388191Z 2026-09-30 08:37:29,438 - azure.core.pipeline.policies.http_logging_policy - INFO - Request URL: 'http://169.254.130.6:8081/msi/token?api-version=2019-08-01&resource=REDACTED'
+2026-09-30T08:37:29.4388721Z Request method: 'GET'
+2026-09-30T08:37:29.4388756Z Request headers:
+2026-09-30T08:37:29.4388780Z     'X-IDENTITY-HEADER': 'REDACTED'
+2026-09-30T08:37:29.4388800Z     'Metadata': 'REDACTED'
+2026-09-30T08:37:29.4388826Z     'User-Agent': 'azsdk-python-identity/1.25.3 Python/3.11.15 (Linux-6.6.150.1-1.azl3-x86_64-with-glibc2.36)'
+2026-09-30T08:37:29.4388848Z No body was attached to the request
+2026-09-30T08:37:29.5969287Z 2026-09-30 08:37:29,596 - azure.core.pipeline.policies.http_logging_policy - INFO - Response status: 200
+2026-09-30T08:37:29.5969928Z Response headers:
+2026-09-30T08:37:29.5969962Z     'Content-Type': 'application/json; charset=utf-8'
+2026-09-30T08:37:29.5969985Z     'Date': 'Wed, 30 Sep 2026 08:37:29 GMT'
+2026-09-30T08:37:29.5970005Z     'Server': 'Kestrel'
+2026-09-30T08:37:29.5970029Z     'Transfer-Encoding': 'chunked'
+2026-09-30T08:37:29.5970056Z     'X-CORRELATION-ID': 'REDACTED'
+2026-09-30T08:37:29.6168634Z 2026-09-30 08:37:29,614 - azure.identity._credentials.chained - INFO - DefaultAzureCredential acquired a token from ManagedIdentityCredential
+2026-09-30T08:37:29.6168887Z 2026-09-30 08:37:29,615 - azure.core.pipeline.policies.http_logging_policy - INFO - Request URL: 'https://tailorsync-ai-resource.services.ai.azure.com/models/chat/completions?api-version=2024-05-01-preview'
+2026-09-30T08:37:29.6168912Z Request method: 'POST'
+2026-09-30T08:37:29.6168938Z Request headers:
+2026-09-30T08:37:29.6168970Z     'Content-Type': 'application/json'
+2026-09-30T08:37:29.6169021Z     'Content-Length': '754'
+2026-09-30T08:37:29.6169042Z     'Accept': 'application/json'
+2026-09-30T08:37:29.6169064Z     'x-ms-client-request-id': '2c06ecea-bcaa-11f1-88ef-8248e8d83145'
+2026-09-30T08:37:29.6169090Z     'User-Agent': 'azsdk-python-ai-inference/1.0.0b9 Python/3.11.15 (Linux-6.6.150.1-1.azl3-x86_64-with-glibc2.36)'
+2026-09-30T08:37:29.6169110Z     'Authorization': 'REDACTED'
+2026-09-30T08:37:29.6169131Z A body is sent with the request
+2026-09-30T08:37:39.7298578Z 2026-09-30 08:37:39,729 - azure.core.pipeline.policies.http_logging_policy - INFO - Response status: 200
+2026-09-30T08:37:39.7299319Z Response headers:
+2026-09-30T08:37:39.7299360Z     'Content-Length': '2509'
+2026-09-30T08:37:39.7299388Z     'Content-Type': 'application/json'
+2026-09-30T08:37:39.7299410Z     'Date': 'Wed, 30 Sep 2026 08:37:29 GMT'
+2026-09-30T08:37:39.7299433Z     'Server': 'istio-envoy'
+2026-09-30T08:37:39.7299564Z     'azureai-fe-is-streaming': 'REDACTED'
+2026-09-30T08:37:39.7299588Z     'azureai-fe-offer-type': 'REDACTED'
+2026-09-30T08:37:39.7299609Z     'azureml-model-session': 'REDACTED'
+2026-09-30T08:37:39.7299630Z     'skip-error-remapping': 'REDACTED'
+2026-09-30T08:37:39.7299651Z     'x-accel-buffering': 'REDACTED'
+2026-09-30T08:37:39.7299672Z     'x-ms-is-spilled-over': 'REDACTED'
+2026-09-30T08:37:39.7299693Z     'x-ms-rai-invoked': 'REDACTED'
+2026-09-30T08:37:39.7299714Z     'x-ms-served-model': 'REDACTED'
+2026-09-30T08:37:39.7299736Z     'x-ratelimit-abusepenalty-active': 'REDACTED'
+2026-09-30T08:37:39.7299757Z     'x-ratelimit-key': 'REDACTED'
+2026-09-30T08:37:39.7299778Z     'x-ratelimit-limit-requests': 'REDACTED'
+2026-09-30T08:37:39.7299799Z     'x-ratelimit-limit-tokens': 'REDACTED'
+2026-09-30T08:37:39.7299821Z     'x-ratelimit-remaining-requests': 'REDACTED'
+2026-09-30T08:37:39.7299842Z     'x-ratelimit-remaining-tokens': 'REDACTED'
+2026-09-30T08:37:39.7299891Z     'x-ratelimit-renewalperiod-requests': 'REDACTED'
+2026-09-30T08:37:39.7299912Z     'x-ratelimit-renewalperiod-tokens': 'REDACTED'
+2026-09-30T08:37:39.7299933Z     'x-ratelimit-reset-requests': 'REDACTED'
+2026-09-30T08:37:39.7299954Z     'x-ratelimit-reset-tokens': 'REDACTED'
+2026-09-30T08:37:39.7299975Z     'x-request-id': 'REDACTED'
+2026-09-30T08:37:39.7299997Z     'apim-request-id': 'REDACTED'
+2026-09-30T08:37:39.7300018Z     'Strict-Transport-Security': 'REDACTED'
+2026-09-30T08:37:39.7300041Z     'x-ms-client-request-id': '2c06ecea-bcaa-11f1-88ef-8248e8d83145'
+2026-09-30T08:37:39.7300061Z     'X-Content-Type-Options': 'REDACTED'
+2026-09-30T08:37:39.7300081Z     'x-ms-region': 'REDACTED'
+2026-09-30T08:37:39.7488140Z INFO:     169.254.130.1:56795 - "POST /api/v1/ai/recommend-fabric HTTP/1.1" 200 OK
+2026-09-30T08:38:08.4991013Z 2026-09-30 08:38:08,498 - app.services.ai_service - INFO - AI [estimate_fabric] called for user 8 using Microsoft Foundry
+2026-09-30T08:38:08.5008384Z 2026-09-30 08:38:08,500 - app.services.foundry_client - WARNING - FOUNDRY_API_KEY is not set.
+2026-09-30T08:38:08.5056941Z 2026-09-30 08:38:08,500 - azure.identity._credentials.environment - INFO - No environment configuration found.
+2026-09-30T08:38:08.5057234Z 2026-09-30 08:38:08,504 - azure.identity._credentials.managed_identity - INFO - ManagedIdentityCredential will use App Service managed identity
+2026-09-30T08:38:08.5074327Z 2026-09-30 08:38:08,507 - azure.core.pipeline.policies.http_logging_policy - INFO - Request URL: 'http://169.254.130.6:8081/msi/token?api-version=2019-08-01&resource=REDACTED'
+2026-09-30T08:38:08.5074421Z Request method: 'GET'
+2026-09-30T08:38:08.5074446Z Request headers:
+2026-09-30T08:38:08.5074469Z     'X-IDENTITY-HEADER': 'REDACTED'
+2026-09-30T08:38:08.5074491Z     'Metadata': 'REDACTED'
+2026-09-30T08:38:08.5074517Z     'User-Agent': 'azsdk-python-identity/1.25.3 Python/3.11.15 (Linux-6.6.150.1-1.azl3-x86_64-with-glibc2.36)'
+2026-09-30T08:38:08.5074538Z No body was attached to the request
+2026-09-30T08:38:08.6132605Z 2026-09-30 08:38:08,613 - azure.core.pipeline.policies.http_logging_policy - INFO - Response status: 200
+2026-09-30T08:38:08.6133431Z Response headers:
+2026-09-30T08:38:08.6133471Z     'Content-Type': 'application/json; charset=utf-8'
+2026-09-30T08:38:08.6133494Z     'Date': 'Wed, 30 Sep 2026 08:38:08 GMT'
+2026-09-30T08:38:08.6133515Z     'Server': 'Kestrel'
+2026-09-30T08:38:08.6133537Z     'Transfer-Encoding': 'chunked'
+2026-09-30T08:38:08.6133558Z     'X-CORRELATION-ID': 'REDACTED'
+2026-09-30T08:38:08.6148674Z 2026-09-30 08:38:08,614 - azure.identity._credentials.chained - INFO - DefaultAzureCredential acquired a token from ManagedIdentityCredential
+2026-09-30T08:38:08.6223851Z 2026-09-30 08:38:08,622 - azure.core.pipeline.policies.http_logging_policy - INFO - Request URL: 'https://tailorsync-ai-resource.services.ai.azure.com/models/chat/completions?api-version=2024-05-01-preview'
+2026-09-30T08:38:08.6224155Z Request method: 'POST'
+2026-09-30T08:38:08.6224185Z Request headers:
+2026-09-30T08:38:08.6224210Z     'Content-Type': 'application/json'
+2026-09-30T08:38:08.6224231Z     'Content-Length': '3023'
+2026-09-30T08:38:08.6224324Z     'Accept': 'application/json'
+2026-09-30T08:38:08.6224348Z     'x-ms-client-request-id': '43516448-bcaa-11f1-88ef-8248e8d83145'
+2026-09-30T08:38:08.6224375Z     'User-Agent': 'azsdk-python-ai-inference/1.0.0b9 Python/3.11.15 (Linux-6.6.150.1-1.azl3-x86_64-with-glibc2.36)'
+2026-09-30T08:38:08.6224395Z     'Authorization': 'REDACTED'
+2026-09-30T08:38:08.6224416Z A body is sent with the request
+2026-09-30T08:38:18.0020281Z 2026-09-30 08:38:17,983 - azure.core.pipeline.policies.http_logging_policy - INFO - Response status: 200
+2026-09-30T08:38:18.0021350Z Response headers:
+2026-09-30T08:38:18.0021391Z     'Content-Length': '2007'
+2026-09-30T08:38:18.0021415Z     'Content-Type': 'application/json'
+2026-09-30T08:38:18.0021435Z     'Date': 'Wed, 30 Sep 2026 08:38:08 GMT'
+2026-09-30T08:38:18.0021455Z     'Server': 'istio-envoy'
+2026-09-30T08:38:18.0021475Z     'azureai-fe-is-streaming': 'REDACTED'
+2026-09-30T08:38:18.0021494Z     'azureai-fe-offer-type': 'REDACTED'
+2026-09-30T08:38:18.0035575Z     'azureml-model-session': 'REDACTED'
+2026-09-30T08:38:18.0035676Z     'skip-error-remapping': 'REDACTED'
+2026-09-30T08:38:18.0035699Z     'x-accel-buffering': 'REDACTED'
+2026-09-30T08:38:18.0035718Z     'x-ms-is-spilled-over': 'REDACTED'
+2026-09-30T08:38:18.0035738Z     'x-ms-rai-invoked': 'REDACTED'
+2026-09-30T08:38:18.0035759Z     'x-ms-served-model': 'REDACTED'
+2026-09-30T08:38:18.0035779Z     'x-ratelimit-abusepenalty-active': 'REDACTED'
+2026-09-30T08:38:18.0035798Z     'x-ratelimit-key': 'REDACTED'
+2026-09-30T08:38:18.0035818Z     'x-ratelimit-limit-requests': 'REDACTED'
+2026-09-30T08:38:18.0035838Z     'x-ratelimit-limit-tokens': 'REDACTED'
+2026-09-30T08:38:18.0035857Z     'x-ratelimit-remaining-requests': 'REDACTED'
+2026-09-30T08:38:18.0035879Z     'x-ratelimit-remaining-tokens': 'REDACTED'
+2026-09-30T08:38:18.0035899Z     'x-ratelimit-renewalperiod-requests': 'REDACTED'
+2026-09-30T08:38:18.0035962Z     'x-ratelimit-renewalperiod-tokens': 'REDACTED'
+2026-09-30T08:38:18.0035983Z     'x-ratelimit-reset-requests': 'REDACTED'
+2026-09-30T08:38:18.0036002Z     'x-ratelimit-reset-tokens': 'REDACTED'
+2026-09-30T08:38:18.0036022Z     'x-request-id': 'REDACTED'
+2026-09-30T08:38:18.0036041Z     'apim-request-id': 'REDACTED'
+2026-09-30T08:38:18.0036061Z     'Strict-Transport-Security': 'REDACTED'
+2026-09-30T08:38:18.0036081Z     'x-ms-client-request-id': '43516448-bcaa-11f1-88ef-8248e8d83145'
+2026-09-30T08:38:18.0036101Z     'X-Content-Type-Options': 'REDACTED'
+2026-09-30T08:38:18.0036120Z     'x-ms-region': 'REDACTED'
+2026-09-30T08:38:18.0428556Z INFO:     169.254.130.1:44229 - "POST /api/v1/ai/estimate-fabric HTTP/1.1" 200 OK
+2026-09-30T08:38:29.1723147Z INFO:     169.254.130.1:19865 - "POST /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-30T08:38:29.8163277Z INFO:     169.254.130.1:19865 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-30T08:38:31.3913621Z 2026-09-30 08:38:31,390 - app.services.email_service - INFO - Email sent successfully to izufttank@gmail.com
+2026-09-30T08:38:35.6918167Z INFO:     169.254.130.1:60257 - "GET /api/v1/orders/stats HTTP/1.1" 200 OK
+2026-09-30T08:38:36.0921862Z INFO:     169.254.130.1:60257 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-30T08:38:36.7228426Z INFO:     169.254.130.1:60257 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-30T08:38:37.3952002Z INFO:     169.254.130.1:60257 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-30T08:38:47.9953720Z INFO:     169.254.130.1:46995 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-30T08:38:50.3675848Z INFO:     169.254.130.1:46995 - "GET /api/v1/staff/ HTTP/1.1" 200 OK
+2026-09-30T08:39:03.0009362Z INFO:     169.254.130.1:42507 - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+2026-09-30T08:39:03.4135302Z INFO:     169.254.130.1:42507 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-30T08:39:03.8505993Z INFO:     169.254.130.1:42507 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-30T08:39:04.8628228Z INFO:     169.254.130.1:42507 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-30T08:39:05.5650040Z INFO:     169.254.130.1:42507 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-30T08:39:10.4746880Z INFO:     169.254.130.1:42507 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-30T08:39:11.4045346Z INFO:     169.254.130.1:42507 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-30T08:39:11.9353058Z INFO:     169.254.130.1:42507 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-30T08:44:53.2440305Z INFO:     169.254.130.1:27715 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-30T08:45:02.5885846Z INFO:     169.254.130.1:64113 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-30T08:45:27.1986903Z INFO:     169.254.130.1:45175 - "GET /api/v1/auth/verify HTTP/1.1" 200 OK
+2026-09-30T08:45:27.5858071Z INFO:     169.254.130.1:45175 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-30T08:45:28.2791280Z INFO:     169.254.130.1:45175 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-30T08:45:29.1621130Z INFO:     169.254.130.1:45175 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-30T08:45:29.7608466Z INFO:     169.254.130.1:45175 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-30T08:45:31.0709619Z INFO:     169.254.130.1:45175 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-30T13:07:22.4357467Z INFO:     169.254.130.1:17779 - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+2026-09-30T13:07:23.7555950Z INFO:     169.254.130.1:17779 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-30T13:07:24.2704526Z INFO:     169.254.130.1:17779 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-30T13:07:25.7364967Z INFO:     169.254.130.1:17779 - "GET /api/v1/orders/stats HTTP/1.1" 200 OK
+2026-09-30T13:07:26.2116624Z INFO:     169.254.130.1:17779 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-30T13:07:27.5891629Z INFO:     169.254.130.1:17779 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-30T13:07:28.4325734Z INFO:     169.254.130.1:17779 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-30T13:07:37.9314070Z INFO:     169.254.130.1:11555 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-30T13:07:37.9984630Z INFO:     169.254.130.1:11567 - "GET /api/v1/customers/ HTTP/1.1" 200 OK
+2026-09-30T13:07:38.3778745Z INFO:     169.254.130.1:11567 - "GET /api/v1/staff/ HTTP/1.1" 200 OK
+2026-09-30T13:07:48.9319745Z INFO:     169.254.130.1:38689 - "GET /robots.txt HTTP/1.1" 404 Not Found
+2026-09-30T13:07:49.1142521Z INFO:     169.254.130.1:38689 - "GET / HTTP/1.1" 200 OK
+2026-09-30T13:08:09.6826188Z 2026-09-30 13:08:09,675 - app.services.ai_service - INFO - AI [predict_measurements] called for user 8 using Microsoft Foundry
+2026-09-30T13:08:09.6903710Z 2026-09-30 13:08:09,690 - app.services.foundry_client - WARNING - FOUNDRY_API_KEY is not set.
+2026-09-30T13:08:09.7156374Z 2026-09-30 13:08:09,715 - azure.identity._credentials.environment - INFO - No environment configuration found.
+2026-09-30T13:08:09.7945242Z 2026-09-30 13:08:09,794 - azure.identity._credentials.managed_identity - INFO - ManagedIdentityCredential will use App Service managed identity
+2026-09-30T13:08:10.0282342Z 2026-09-30 13:08:10,027 - azure.core.pipeline.policies.http_logging_policy - INFO - Request URL: 'http://169.254.130.6:8081/msi/token?api-version=2019-08-01&resource=REDACTED'
+2026-09-30T13:08:10.0283066Z Request method: 'GET'
+2026-09-30T13:08:10.0283105Z Request headers:
+2026-09-30T13:08:10.0283136Z     'X-IDENTITY-HEADER': 'REDACTED'
+2026-09-30T13:08:10.0283161Z     'Metadata': 'REDACTED'
+2026-09-30T13:08:10.0283187Z     'User-Agent': 'azsdk-python-identity/1.25.3 Python/3.11.15 (Linux-6.6.150.1-1.azl3-x86_64-with-glibc2.36)'
+2026-09-30T13:08:10.0283296Z No body was attached to the request
+2026-09-30T13:08:11.3426048Z 2026-09-30 13:08:11,342 - azure.core.pipeline.policies.http_logging_policy - INFO - Response status: 200
+2026-09-30T13:08:11.3426697Z Response headers:
+2026-09-30T13:08:11.3426739Z     'Content-Type': 'application/json; charset=utf-8'
+2026-09-30T13:08:11.3426762Z     'Date': 'Wed, 30 Sep 2026 13:08:10 GMT'
+2026-09-30T13:08:11.3426784Z     'Server': 'Kestrel'
+2026-09-30T13:08:11.3426811Z     'Transfer-Encoding': 'chunked'
+2026-09-30T13:08:11.3426837Z     'X-CORRELATION-ID': 'REDACTED'
+2026-09-30T13:08:11.3595789Z 2026-09-30 13:08:11,359 - azure.identity._credentials.chained - INFO - DefaultAzureCredential acquired a token from ManagedIdentityCredential
+2026-09-30T13:08:11.3653401Z 2026-09-30 13:08:11,365 - azure.core.pipeline.policies.http_logging_policy - INFO - Request URL: 'https://tailorsync-ai-resource.services.ai.azure.com/models/chat/completions?api-version=2024-05-01-preview'
+2026-09-30T13:08:11.3653950Z Request method: 'POST'
+2026-09-30T13:08:11.3654074Z Request headers:
+2026-09-30T13:08:11.3654098Z     'Content-Type': 'application/json'
+2026-09-30T13:08:11.3654120Z     'Content-Length': '2045'
+2026-09-30T13:08:11.3654141Z     'Accept': 'application/json'
+2026-09-30T13:08:11.3654165Z     'x-ms-client-request-id': 'fc291d74-bccf-11f1-a6e7-8248e8d83145'
+2026-09-30T13:08:11.3654191Z     'User-Agent': 'azsdk-python-ai-inference/1.0.0b9 Python/3.11.15 (Linux-6.6.150.1-1.azl3-x86_64-with-glibc2.36)'
+2026-09-30T13:08:11.3654212Z     'Authorization': 'REDACTED'
+2026-09-30T13:08:11.3654232Z A body is sent with the request
+2026-09-30T13:08:36.5469892Z 2026-09-30 13:08:36,546 - azure.core.pipeline.policies.http_logging_policy - INFO - Response status: 200
+2026-09-30T13:08:36.5470453Z Response headers:
+2026-09-30T13:08:36.5470486Z     'Content-Length': '3786'
+2026-09-30T13:08:36.5470511Z     'Content-Type': 'application/json'
+2026-09-30T13:08:36.5470534Z     'Date': 'Wed, 30 Sep 2026 13:08:11 GMT'
+2026-09-30T13:08:36.5470659Z     'Server': 'istio-envoy'
+2026-09-30T13:08:36.5470687Z     'azureai-fe-is-streaming': 'REDACTED'
+2026-09-30T13:08:36.5470709Z     'azureai-fe-offer-type': 'REDACTED'
+2026-09-30T13:08:36.5470730Z     'azureml-model-session': 'REDACTED'
+2026-09-30T13:08:36.5470751Z     'skip-error-remapping': 'REDACTED'
+2026-09-30T13:08:36.5470772Z     'x-accel-buffering': 'REDACTED'
+2026-09-30T13:08:36.5470793Z     'x-ms-is-spilled-over': 'REDACTED'
+2026-09-30T13:08:36.5470814Z     'x-ms-rai-invoked': 'REDACTED'
+2026-09-30T13:08:36.5471069Z     'x-ms-served-model': 'REDACTED'
+2026-09-30T13:08:36.5471100Z     'x-ratelimit-abusepenalty-active': 'REDACTED'
+2026-09-30T13:08:36.5471121Z     'x-ratelimit-key': 'REDACTED'
+2026-09-30T13:08:36.5471143Z     'x-ratelimit-limit-requests': 'REDACTED'
+2026-09-30T13:08:36.5471164Z     'x-ratelimit-limit-tokens': 'REDACTED'
+2026-09-30T13:08:36.5471217Z     'x-ratelimit-remaining-requests': 'REDACTED'
+2026-09-30T13:08:36.5471238Z     'x-ratelimit-remaining-tokens': 'REDACTED'
+2026-09-30T13:08:36.5471261Z     'x-ratelimit-renewalperiod-requests': 'REDACTED'
+2026-09-30T13:08:36.5471282Z     'x-ratelimit-renewalperiod-tokens': 'REDACTED'
+2026-09-30T13:08:36.5471304Z     'x-ratelimit-reset-requests': 'REDACTED'
+2026-09-30T13:08:36.5471324Z     'x-ratelimit-reset-tokens': 'REDACTED'
+2026-09-30T13:08:36.5471345Z     'x-request-id': 'REDACTED'
+2026-09-30T13:08:36.5471365Z     'apim-request-id': 'REDACTED'
+2026-09-30T13:08:36.5471386Z     'Strict-Transport-Security': 'REDACTED'
+2026-09-30T13:08:36.5471409Z     'x-ms-client-request-id': 'fc291d74-bccf-11f1-a6e7-8248e8d83145'
+2026-09-30T13:08:36.5471431Z     'X-Content-Type-Options': 'REDACTED'
+2026-09-30T13:08:36.5471451Z     'x-ms-region': 'REDACTED'
+2026-09-30T13:08:36.5797729Z INFO:     169.254.130.1:61283 - "POST /api/v1/ai/predict-measurements HTTP/1.1" 200 OK
+2026-09-30T13:09:11.5212695Z 2026-09-30 13:09:11,517 - app.services.ai_service - INFO - AI [recommend_fabrics] called for user 8 using Microsoft Foundry
+2026-09-30T13:09:11.5213183Z 2026-09-30 13:09:11,517 - app.services.foundry_client - WARNING - FOUNDRY_API_KEY is not set.
+2026-09-30T13:09:11.5213215Z 2026-09-30 13:09:11,518 - azure.identity._credentials.environment - INFO - No environment configuration found.
+2026-09-30T13:09:11.5213243Z 2026-09-30 13:09:11,518 - azure.identity._credentials.managed_identity - INFO - ManagedIdentityCredential will use App Service managed identity
+2026-09-30T13:09:11.5244491Z 2026-09-30 13:09:11,524 - azure.core.pipeline.policies.http_logging_policy - INFO - Request URL: 'http://169.254.130.6:8081/msi/token?api-version=2019-08-01&resource=REDACTED'
+2026-09-30T13:09:11.5244973Z Request method: 'GET'
+2026-09-30T13:09:11.5245003Z Request headers:
+2026-09-30T13:09:11.5245025Z     'X-IDENTITY-HEADER': 'REDACTED'
+2026-09-30T13:09:11.5245048Z     'Metadata': 'REDACTED'
+2026-09-30T13:09:11.5245076Z     'User-Agent': 'azsdk-python-identity/1.25.3 Python/3.11.15 (Linux-6.6.150.1-1.azl3-x86_64-with-glibc2.36)'
+2026-09-30T13:09:11.5245098Z No body was attached to the request
+2026-09-30T13:09:11.9675886Z 2026-09-30 13:09:11,965 - azure.core.pipeline.policies.http_logging_policy - INFO - Response status: 200
+2026-09-30T13:09:11.9676372Z Response headers:
+2026-09-30T13:09:11.9676410Z     'Content-Type': 'application/json; charset=utf-8'
+2026-09-30T13:09:11.9676442Z     'Date': 'Wed, 30 Sep 2026 13:09:11 GMT'
+2026-09-30T13:09:11.9676465Z     'Server': 'Kestrel'
+2026-09-30T13:09:11.9676488Z     'Transfer-Encoding': 'chunked'
+2026-09-30T13:09:11.9676508Z     'X-CORRELATION-ID': 'REDACTED'
+2026-09-30T13:09:11.9676537Z 2026-09-30 13:09:11,966 - azure.identity._credentials.chained - INFO - DefaultAzureCredential acquired a token from ManagedIdentityCredential
+2026-09-30T13:09:11.9676574Z 2026-09-30 13:09:11,966 - azure.core.pipeline.policies.http_logging_policy - INFO - Request URL: 'https://tailorsync-ai-resource.services.ai.azure.com/models/chat/completions?api-version=2024-05-01-preview'
+2026-09-30T13:09:11.9676602Z Request method: 'POST'
+2026-09-30T13:09:11.9676624Z Request headers:
+2026-09-30T13:09:11.9676646Z     'Content-Type': 'application/json'
+2026-09-30T13:09:11.9676667Z     'Content-Length': '756'
+2026-09-30T13:09:11.9676791Z     'Accept': 'application/json'
+2026-09-30T13:09:11.9676815Z     'x-ms-client-request-id': '20d4ce66-bcd0-11f1-a6e7-8248e8d83145'
+2026-09-30T13:09:11.9676841Z     'User-Agent': 'azsdk-python-ai-inference/1.0.0b9 Python/3.11.15 (Linux-6.6.150.1-1.azl3-x86_64-with-glibc2.36)'
+2026-09-30T13:09:11.9676862Z     'Authorization': 'REDACTED'
+2026-09-30T13:09:11.9676883Z A body is sent with the request
+2026-09-30T13:09:20.4830593Z 2026-09-30 13:09:20,481 - azure.core.pipeline.policies.http_logging_policy - INFO - Response status: 200
+2026-09-30T13:09:20.4831016Z Response headers:
+2026-09-30T13:09:20.4831977Z     'Content-Length': '2451'
+2026-09-30T13:09:20.4832019Z     'Content-Type': 'application/json'
+2026-09-30T13:09:20.4832041Z     'Date': 'Wed, 30 Sep 2026 13:09:11 GMT'
+2026-09-30T13:09:20.4832063Z     'Server': 'istio-envoy'
+2026-09-30T13:09:20.4832085Z     'azureai-fe-is-streaming': 'REDACTED'
+2026-09-30T13:09:20.4832107Z     'azureai-fe-offer-type': 'REDACTED'
+2026-09-30T13:09:20.4832128Z     'azureml-model-session': 'REDACTED'
+2026-09-30T13:09:20.4832149Z     'skip-error-remapping': 'REDACTED'
+2026-09-30T13:09:20.4832170Z     'x-accel-buffering': 'REDACTED'
+2026-09-30T13:09:20.4832192Z     'x-ms-is-spilled-over': 'REDACTED'
+2026-09-30T13:09:20.4832213Z     'x-ms-rai-invoked': 'REDACTED'
+2026-09-30T13:09:20.4832234Z     'x-ms-served-model': 'REDACTED'
+2026-09-30T13:09:20.4832299Z     'x-ratelimit-abusepenalty-active': 'REDACTED'
+2026-09-30T13:09:20.4832320Z     'x-ratelimit-key': 'REDACTED'
+2026-09-30T13:09:20.4832343Z     'x-ratelimit-limit-requests': 'REDACTED'
+2026-09-30T13:09:20.4832365Z     'x-ratelimit-limit-tokens': 'REDACTED'
+2026-09-30T13:09:20.4832386Z     'x-ratelimit-remaining-requests': 'REDACTED'
+2026-09-30T13:09:20.4832409Z     'x-ratelimit-remaining-tokens': 'REDACTED'
+2026-09-30T13:09:20.4832430Z     'x-ratelimit-renewalperiod-requests': 'REDACTED'
+2026-09-30T13:09:20.4832451Z     'x-ratelimit-renewalperiod-tokens': 'REDACTED'
+2026-09-30T13:09:20.4832473Z     'x-ratelimit-reset-requests': 'REDACTED'
+2026-09-30T13:09:20.4832494Z     'x-ratelimit-reset-tokens': 'REDACTED'
+2026-09-30T13:09:20.4832516Z     'x-request-id': 'REDACTED'
+2026-09-30T13:09:20.4832537Z     'apim-request-id': 'REDACTED'
+2026-09-30T13:09:20.4832557Z     'Strict-Transport-Security': 'REDACTED'
+2026-09-30T13:09:20.4832608Z     'x-ms-client-request-id': '20d4ce66-bcd0-11f1-a6e7-8248e8d83145'
+2026-09-30T13:09:20.4832629Z     'X-Content-Type-Options': 'REDACTED'
+2026-09-30T13:09:20.4832649Z     'x-ms-region': 'REDACTED'
+2026-09-30T13:09:20.4988998Z INFO:     169.254.130.1:21677 - "POST /api/v1/ai/recommend-fabric HTTP/1.1" 200 OK
+2026-09-30T13:09:31.7610775Z 2026-09-30 13:09:31,753 - app.services.ai_service - INFO - AI [estimate_fabric] called for user 8 using Microsoft Foundry
+2026-09-30T13:09:31.7611252Z 2026-09-30 13:09:31,754 - app.services.foundry_client - WARNING - FOUNDRY_API_KEY is not set.
+2026-09-30T13:09:31.7611290Z 2026-09-30 13:09:31,754 - azure.identity._credentials.environment - INFO - No environment configuration found.
+2026-09-30T13:09:31.7611317Z 2026-09-30 13:09:31,754 - azure.identity._credentials.managed_identity - INFO - ManagedIdentityCredential will use App Service managed identity
+2026-09-30T13:09:31.7642397Z 2026-09-30 13:09:31,764 - azure.core.pipeline.policies.http_logging_policy - INFO - Request URL: 'http://169.254.130.6:8081/msi/token?api-version=2019-08-01&resource=REDACTED'
+2026-09-30T13:09:31.7642690Z Request method: 'GET'
+2026-09-30T13:09:31.7642830Z Request headers:
+2026-09-30T13:09:31.7642856Z     'X-IDENTITY-HEADER': 'REDACTED'
+2026-09-30T13:09:31.7642933Z     'Metadata': 'REDACTED'
+2026-09-30T13:09:31.7642962Z     'User-Agent': 'azsdk-python-identity/1.25.3 Python/3.11.15 (Linux-6.6.150.1-1.azl3-x86_64-with-glibc2.36)'
+2026-09-30T13:09:31.7642984Z No body was attached to the request
+2026-09-30T13:09:31.9242990Z 2026-09-30 13:09:31,923 - azure.core.pipeline.policies.http_logging_policy - INFO - Response status: 200
+2026-09-30T13:09:31.9246329Z Response headers:
+2026-09-30T13:09:31.9246402Z     'Content-Type': 'application/json; charset=utf-8'
+2026-09-30T13:09:31.9246430Z     'Date': 'Wed, 30 Sep 2026 13:09:31 GMT'
+2026-09-30T13:09:31.9246456Z     'Server': 'Kestrel'
+2026-09-30T13:09:31.9246483Z     'Transfer-Encoding': 'chunked'
+2026-09-30T13:09:31.9246505Z     'X-CORRELATION-ID': 'REDACTED'
+2026-09-30T13:09:31.9328362Z 2026-09-30 13:09:31,929 - azure.identity._credentials.chained - INFO - DefaultAzureCredential acquired a token from ManagedIdentityCredential
+2026-09-30T13:09:31.9328765Z 2026-09-30 13:09:31,930 - azure.core.pipeline.policies.http_logging_policy - INFO - Request URL: 'https://tailorsync-ai-resource.services.ai.azure.com/models/chat/completions?api-version=2024-05-01-preview'
+2026-09-30T13:09:31.9328803Z Request method: 'POST'
+2026-09-30T13:09:31.9328823Z Request headers:
+2026-09-30T13:09:31.9328845Z     'Content-Type': 'application/json'
+2026-09-30T13:09:31.9328866Z     'Content-Length': '2232'
+2026-09-30T13:09:31.9328888Z     'Accept': 'application/json'
+2026-09-30T13:09:31.9328911Z     'x-ms-client-request-id': '2ce516ca-bcd0-11f1-a6e7-8248e8d83145'
+2026-09-30T13:09:31.9328938Z     'User-Agent': 'azsdk-python-ai-inference/1.0.0b9 Python/3.11.15 (Linux-6.6.150.1-1.azl3-x86_64-with-glibc2.36)'
+2026-09-30T13:09:31.9328959Z     'Authorization': 'REDACTED'
+2026-09-30T13:09:31.9328979Z A body is sent with the request
+2026-09-30T13:09:45.6178534Z 2026-09-30 13:09:45,617 - azure.core.pipeline.policies.http_logging_policy - INFO - Response status: 200
+2026-09-30T13:09:45.6179048Z Response headers:
+2026-09-30T13:09:45.6179080Z     'Content-Length': '1883'
+2026-09-30T13:09:45.6179104Z     'Content-Type': 'application/json'
+2026-09-30T13:09:45.6179127Z     'Date': 'Wed, 30 Sep 2026 13:09:31 GMT'
+2026-09-30T13:09:45.6179162Z     'Server': 'istio-envoy'
+2026-09-30T13:09:45.6179186Z     'azureai-fe-is-streaming': 'REDACTED'
+2026-09-30T13:09:45.6179208Z     'azureai-fe-offer-type': 'REDACTED'
+2026-09-30T13:09:45.6179228Z     'azureml-model-session': 'REDACTED'
+2026-09-30T13:09:45.6179249Z     'skip-error-remapping': 'REDACTED'
+2026-09-30T13:09:45.6179316Z     'x-accel-buffering': 'REDACTED'
+2026-09-30T13:09:45.6179451Z     'x-ms-is-spilled-over': 'REDACTED'
+2026-09-30T13:09:45.6179473Z     'x-ms-rai-invoked': 'REDACTED'
+2026-09-30T13:09:45.6179494Z     'x-ms-served-model': 'REDACTED'
+2026-09-30T13:09:45.6179515Z     'x-ratelimit-abusepenalty-active': 'REDACTED'
+2026-09-30T13:09:45.6179536Z     'x-ratelimit-key': 'REDACTED'
+2026-09-30T13:09:45.6179558Z     'x-ratelimit-limit-requests': 'REDACTED'
+2026-09-30T13:09:45.6179579Z     'x-ratelimit-limit-tokens': 'REDACTED'
+2026-09-30T13:09:45.6179602Z     'x-ratelimit-remaining-requests': 'REDACTED'
+2026-09-30T13:09:45.6179623Z     'x-ratelimit-remaining-tokens': 'REDACTED'
+2026-09-30T13:09:45.6179645Z     'x-ratelimit-renewalperiod-requests': 'REDACTED'
+2026-09-30T13:09:45.6179666Z     'x-ratelimit-renewalperiod-tokens': 'REDACTED'
+2026-09-30T13:09:45.6179687Z     'x-ratelimit-reset-requests': 'REDACTED'
+2026-09-30T13:09:45.6179709Z     'x-ratelimit-reset-tokens': 'REDACTED'
+2026-09-30T13:09:45.6179751Z     'x-request-id': 'REDACTED'
+2026-09-30T13:09:45.6179772Z     'apim-request-id': 'REDACTED'
+2026-09-30T13:09:45.6179793Z     'Strict-Transport-Security': 'REDACTED'
+2026-09-30T13:09:45.6179815Z     'x-ms-client-request-id': '2ce516ca-bcd0-11f1-a6e7-8248e8d83145'
+2026-09-30T13:09:45.6179837Z     'X-Content-Type-Options': 'REDACTED'
+2026-09-30T13:09:45.6179857Z     'x-ms-region': 'REDACTED'
+2026-09-30T13:09:45.6356449Z INFO:     169.254.130.1:60475 - "POST /api/v1/ai/estimate-fabric HTTP/1.1" 200 OK
+2026-09-30T13:10:06.6208004Z INFO:     169.254.130.1:34997 - "POST /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-30T13:10:07.2433046Z INFO:     169.254.130.1:34997 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-30T13:10:07.7872564Z 2026-09-30 13:10:07,786 - app.services.email_service - INFO - Email sent successfully to izufttank@gmail.com
+2026-09-30T13:10:18.5263161Z INFO:     169.254.130.1:24981 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-30T13:10:26.2944513Z INFO:     169.254.130.1:31305 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-30T13:10:26.9063097Z INFO:     169.254.130.1:31305 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-30T13:10:35.8997167Z INFO:     169.254.130.1:23253 - "PUT /api/v1/orders/21 HTTP/1.1" 200 OK
+2026-09-30T13:10:36.3121109Z INFO:     169.254.130.1:23253 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-30T13:10:36.9703630Z INFO:     169.254.130.1:23253 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-30T13:10:38.2359642Z INFO:     169.254.130.1:23253 - "PUT /api/v1/orders/20 HTTP/1.1" 200 OK
+2026-09-30T13:10:38.6332515Z INFO:     169.254.130.1:23253 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-30T13:10:39.2208559Z INFO:     169.254.130.1:23253 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-30T13:11:13.2427422Z INFO:     169.254.130.1:14289 - "GET /api/v1/orders/stats HTTP/1.1" 200 OK
+2026-09-30T13:11:13.6939304Z INFO:     169.254.130.1:14289 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-30T13:11:14.2664137Z INFO:     169.254.130.1:14289 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-30T13:11:14.9575810Z INFO:     169.254.130.1:14289 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-30T13:11:15.6736196Z INFO:     169.254.130.1:14289 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-30T13:11:26.3310623Z INFO:     169.254.130.1:59217 - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+2026-09-30T13:11:26.7385038Z INFO:     169.254.130.1:59217 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-30T13:11:27.1744549Z INFO:     169.254.130.1:59217 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-30T13:11:28.1195777Z INFO:     169.254.130.1:59217 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-30T13:11:28.6913704Z INFO:     169.254.130.1:59217 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-30T13:11:33.6162215Z INFO:     169.254.130.1:59217 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-30T13:11:36.8117892Z INFO:     169.254.130.1:59217 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-30T13:11:37.3483822Z INFO:     169.254.130.1:59217 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-30T13:11:49.8708643Z INFO:     169.254.130.1:49039 - "PUT /api/v1/orders/18 HTTP/1.1" 200 OK
+2026-09-30T13:11:50.5068738Z INFO:     169.254.130.1:49039 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-30T13:11:51.0595953Z INFO:     169.254.130.1:49039 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-30T13:12:13.4248638Z INFO:     169.254.130.1:50959 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-30T13:12:23.1217179Z INFO:     169.254.130.1:38709 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-30T13:40:07.5674827Z INFO:     169.254.130.1:24235 - "GET /api/v1/auth/verify HTTP/1.1" 200 OK
+2026-09-30T13:40:08.1509979Z INFO:     169.254.130.1:24235 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-30T13:40:08.8727508Z INFO:     169.254.130.1:24235 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-30T13:40:09.8181111Z INFO:     169.254.130.1:24235 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-30T13:40:10.4429715Z INFO:     169.254.130.1:24235 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-30T13:40:21.1622366Z INFO:     169.254.130.1:31875 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-30T13:40:34.6465897Z INFO:     169.254.130.1:53883 - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+2026-09-30T13:40:35.0438504Z INFO:     169.254.130.1:53883 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-30T13:40:35.5152846Z INFO:     169.254.130.1:53883 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-30T13:40:36.5659983Z INFO:     169.254.130.1:53883 - "GET /api/v1/orders/stats HTTP/1.1" 200 OK
+2026-09-30T13:40:36.9618209Z INFO:     169.254.130.1:53883 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-30T13:40:37.5561008Z INFO:     169.254.130.1:53883 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-30T13:40:38.2095499Z INFO:     169.254.130.1:53883 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-30T13:41:10.4219372Z INFO:     169.254.130.1:63105 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-30T13:41:10.5294749Z INFO:     169.254.130.1:63115 - "GET /api/v1/customers/ HTTP/1.1" 200 OK
+2026-09-30T13:41:10.8748786Z INFO:     169.254.130.1:63115 - "GET /api/v1/staff/ HTTP/1.1" 200 OK
+2026-09-30T13:42:02.4081327Z 2026-09-30 13:42:02,380 - app.services.ai_service - INFO - AI [predict_measurements] called for user 8 using Microsoft Foundry
+2026-09-30T13:42:02.4081812Z 2026-09-30 13:42:02,406 - app.services.foundry_client - WARNING - FOUNDRY_API_KEY is not set.
+2026-09-30T13:42:02.4081852Z 2026-09-30 13:42:02,406 - azure.identity._credentials.environment - INFO - No environment configuration found.
+2026-09-30T13:42:02.4081879Z 2026-09-30 13:42:02,407 - azure.identity._credentials.managed_identity - INFO - ManagedIdentityCredential will use App Service managed identity
+2026-09-30T13:42:02.5020024Z 2026-09-30 13:42:02,501 - azure.core.pipeline.policies.http_logging_policy - INFO - Request URL: 'http://169.254.130.6:8081/msi/token?api-version=2019-08-01&resource=REDACTED'
+2026-09-30T13:42:02.5020501Z Request method: 'GET'
+2026-09-30T13:42:02.5020532Z Request headers:
+2026-09-30T13:42:02.5020555Z     'X-IDENTITY-HEADER': 'REDACTED'
+2026-09-30T13:42:02.5020577Z     'Metadata': 'REDACTED'
+2026-09-30T13:42:02.5020602Z     'User-Agent': 'azsdk-python-identity/1.25.3 Python/3.11.15 (Linux-6.6.150.1-1.azl3-x86_64-with-glibc2.36)'
+2026-09-30T13:42:02.5020626Z No body was attached to the request
+2026-09-30T13:42:05.0027926Z 2026-09-30 13:42:04,971 - azure.core.pipeline.policies.http_logging_policy - INFO - Response status: 200
+2026-09-30T13:42:05.0028206Z Response headers:
+2026-09-30T13:42:05.0028244Z     'Content-Type': 'application/json; charset=utf-8'
+2026-09-30T13:42:05.0028265Z     'Date': 'Wed, 30 Sep 2026 13:42:04 GMT'
+2026-09-30T13:42:05.0028287Z     'Server': 'Kestrel'
+2026-09-30T13:42:05.0028312Z     'Transfer-Encoding': 'chunked'
+2026-09-30T13:42:05.0028342Z     'X-CORRELATION-ID': 'REDACTED'
+2026-09-30T13:42:05.0028370Z 2026-09-30 13:42:04,973 - azure.identity._credentials.chained - INFO - DefaultAzureCredential acquired a token from ManagedIdentityCredential
+2026-09-30T13:42:05.0028401Z 2026-09-30 13:42:04,984 - azure.core.pipeline.policies.http_logging_policy - INFO - Request URL: 'https://tailorsync-ai-resource.services.ai.azure.com/models/chat/completions?api-version=2024-05-01-preview'
+2026-09-30T13:42:05.0028421Z Request method: 'POST'
+2026-09-30T13:42:05.0028440Z Request headers:
+2026-09-30T13:42:05.0028465Z     'Content-Type': 'application/json'
+2026-09-30T13:42:05.0028494Z     'Content-Length': '2045'
+2026-09-30T13:42:05.0028605Z     'Accept': 'application/json'
+2026-09-30T13:42:05.0028628Z     'x-ms-client-request-id': 'b79c9bb8-bcd4-11f1-8baa-8248e8d83145'
+2026-09-30T13:42:05.0028655Z     'User-Agent': 'azsdk-python-ai-inference/1.0.0b9 Python/3.11.15 (Linux-6.6.150.1-1.azl3-x86_64-with-glibc2.36)'
+2026-09-30T13:42:05.0028676Z     'Authorization': 'REDACTED'
+2026-09-30T13:42:05.0028696Z A body is sent with the request
+2026-09-30T13:42:31.3362603Z 2026-09-30 13:42:31,335 - azure.core.pipeline.policies.http_logging_policy - INFO - Response status: 200
+2026-09-30T13:42:31.3363122Z Response headers:
+2026-09-30T13:42:31.3363157Z     'Content-Length': '3596'
+2026-09-30T13:42:31.3363186Z     'Content-Type': 'application/json'
+2026-09-30T13:42:31.3363208Z     'Date': 'Wed, 30 Sep 2026 13:42:05 GMT'
+2026-09-30T13:42:31.3363236Z     'Server': 'istio-envoy'
+2026-09-30T13:42:31.3363256Z     'Vary': 'REDACTED'
+2026-09-30T13:42:31.3363374Z     'azureai-fe-is-streaming': 'REDACTED'
+2026-09-30T13:42:31.3363399Z     'azureai-fe-offer-type': 'REDACTED'
+2026-09-30T13:42:31.3363420Z     'azureml-model-session': 'REDACTED'
+2026-09-30T13:42:31.3363445Z     'skip-error-remapping': 'REDACTED'
+2026-09-30T13:42:31.3363465Z     'x-accel-buffering': 'REDACTED'
+2026-09-30T13:42:31.3363486Z     'x-ms-is-spilled-over': 'REDACTED'
+2026-09-30T13:42:31.3363507Z     'x-ms-rai-invoked': 'REDACTED'
+2026-09-30T13:42:31.3363528Z     'x-ms-served-model': 'REDACTED'
+2026-09-30T13:42:31.3363551Z     'x-ratelimit-abusepenalty-active': 'REDACTED'
+2026-09-30T13:42:31.3363573Z     'x-ratelimit-key': 'REDACTED'
+2026-09-30T13:42:31.3363593Z     'x-ratelimit-limit-requests': 'REDACTED'
+2026-09-30T13:42:31.3363615Z     'x-ratelimit-limit-tokens': 'REDACTED'
+2026-09-30T13:42:31.3363636Z     'x-ratelimit-remaining-requests': 'REDACTED'
+2026-09-30T13:42:31.3363657Z     'x-ratelimit-remaining-tokens': 'REDACTED'
+2026-09-30T13:42:31.3363712Z     'x-ratelimit-renewalperiod-requests': 'REDACTED'
+2026-09-30T13:42:31.3363734Z     'x-ratelimit-renewalperiod-tokens': 'REDACTED'
+2026-09-30T13:42:31.3363755Z     'x-ratelimit-reset-requests': 'REDACTED'
+2026-09-30T13:42:31.3363776Z     'x-ratelimit-reset-tokens': 'REDACTED'
+2026-09-30T13:42:31.3363797Z     'x-request-id': 'REDACTED'
+2026-09-30T13:42:31.3363818Z     'apim-request-id': 'REDACTED'
+2026-09-30T13:42:31.3363839Z     'Strict-Transport-Security': 'REDACTED'
+2026-09-30T13:42:31.3363862Z     'x-ms-client-request-id': 'b79c9bb8-bcd4-11f1-8baa-8248e8d83145'
+2026-09-30T13:42:31.3364119Z     'X-Content-Type-Options': 'REDACTED'
+2026-09-30T13:42:31.3364148Z     'x-ms-region': 'REDACTED'
+2026-09-30T13:42:31.3654658Z Traceback (most recent call last):
+2026-09-30T13:42:31.3821231Z   File "/tmp/8df1c9bf6c509fa/app/api/v1/routers/ai.py", line 16, in predict
+2026-09-30T13:42:31.3821998Z     return predict_measurements(
+2026-09-30T13:42:31.3822035Z            ^^^^^^^^^^^^^^^^^^^^^
+2026-09-30T13:42:31.3833758Z   File "/tmp/8df1c9bf6c509fa/app/services/ai_service.py", line 14, in predict_measurements
+2026-09-30T13:42:31.3834022Z     data = client.predict_measurements(request.garment_type, request.measurements)
+2026-09-30T13:42:31.3834051Z            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-09-30T13:42:31.3844909Z   File "/tmp/8df1c9bf6c509fa/app/services/foundry_client.py", line 117, in predict_measurements
+2026-09-30T13:42:31.3845015Z     return json.loads(response_text)
+2026-09-30T13:42:31.3845041Z            ^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-09-30T13:42:31.3889869Z   File "/opt/python/3.11.15/lib/python3.11/json/__init__.py", line 346, in loads
+2026-09-30T13:42:31.3890081Z     return _default_decoder.decode(s)
+2026-09-30T13:42:31.3890112Z            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-09-30T13:42:31.3890173Z   File "/opt/python/3.11.15/lib/python3.11/json/decoder.py", line 337, in decode
+2026-09-30T13:42:31.3890197Z     obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+2026-09-30T13:42:31.3890220Z                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-09-30T13:42:31.3890243Z   File "/opt/python/3.11.15/lib/python3.11/json/decoder.py", line 353, in raw_decode
+2026-09-30T13:42:31.3890265Z     obj, end = self.scan_once(s, idx)
+2026-09-30T13:42:31.3890285Z                ^^^^^^^^^^^^^^^^^^^^^^
+2026-09-30T13:42:31.3896649Z json.decoder.JSONDecodeError: Invalid control character at: line 19 column 115 (char 526)
+2026-09-30T13:42:31.4296387Z INFO:     169.254.130.1:26483 - "POST /api/v1/ai/predict-measurements HTTP/1.1" 503 Service Unavailable
+2026-09-30T13:42:43.5576722Z 2026-09-30 13:42:43,555 - app.services.ai_service - INFO - AI [predict_measurements] called for user 8 using Microsoft Foundry
+2026-09-30T13:42:43.5579921Z 2026-09-30 13:42:43,556 - app.services.foundry_client - WARNING - FOUNDRY_API_KEY is not set.
+2026-09-30T13:42:43.5579984Z 2026-09-30 13:42:43,556 - azure.identity._credentials.environment - INFO - No environment configuration found.
+2026-09-30T13:42:43.5677760Z 2026-09-30 13:42:43,564 - azure.identity._credentials.managed_identity - INFO - ManagedIdentityCredential will use App Service managed identity
+2026-09-30T13:42:43.5835705Z 2026-09-30 13:42:43,574 - azure.core.pipeline.policies.http_logging_policy - INFO - Request URL: 'http://169.254.130.6:8081/msi/token?api-version=2019-08-01&resource=REDACTED'
+2026-09-30T13:42:43.5836020Z Request method: 'GET'
+2026-09-30T13:42:43.5836053Z Request headers:
+2026-09-30T13:42:43.5836085Z     'X-IDENTITY-HEADER': 'REDACTED'
+2026-09-30T13:42:43.5836108Z     'Metadata': 'REDACTED'
+2026-09-30T13:42:43.5836135Z     'User-Agent': 'azsdk-python-identity/1.25.3 Python/3.11.15 (Linux-6.6.150.1-1.azl3-x86_64-with-glibc2.36)'
+2026-09-30T13:42:43.5836155Z No body was attached to the request
+2026-09-30T13:42:43.7426743Z 2026-09-30 13:42:43,733 - azure.core.pipeline.policies.http_logging_policy - INFO - Response status: 200
+2026-09-30T13:42:43.7427273Z Response headers:
+2026-09-30T13:42:43.7427315Z     'Content-Type': 'application/json; charset=utf-8'
+2026-09-30T13:42:43.7427338Z     'Date': 'Wed, 30 Sep 2026 13:42:43 GMT'
+2026-09-30T13:42:43.7427474Z     'Server': 'Kestrel'
+2026-09-30T13:42:43.7427502Z     'Transfer-Encoding': 'chunked'
+2026-09-30T13:42:43.7427525Z     'X-CORRELATION-ID': 'REDACTED'
+2026-09-30T13:42:43.7427554Z 2026-09-30 13:42:43,734 - azure.identity._credentials.chained - INFO - DefaultAzureCredential acquired a token from ManagedIdentityCredential
+2026-09-30T13:42:43.7427586Z 2026-09-30 13:42:43,734 - azure.core.pipeline.policies.http_logging_policy - INFO - Request URL: 'https://tailorsync-ai-resource.services.ai.azure.com/models/chat/completions?api-version=2024-05-01-preview'
+2026-09-30T13:42:43.7427608Z Request method: 'POST'
+2026-09-30T13:42:43.7427630Z Request headers:
+2026-09-30T13:42:43.7427652Z     'Content-Type': 'application/json'
+2026-09-30T13:42:43.7427674Z     'Content-Length': '2045'
+2026-09-30T13:42:43.7427696Z     'Accept': 'application/json'
+2026-09-30T13:42:43.7427721Z     'x-ms-client-request-id': 'd01b5094-bcd4-11f1-8baa-8248e8d83145'
+2026-09-30T13:42:43.7427748Z     'User-Agent': 'azsdk-python-ai-inference/1.0.0b9 Python/3.11.15 (Linux-6.6.150.1-1.azl3-x86_64-with-glibc2.36)'
+2026-09-30T13:42:43.7427770Z     'Authorization': 'REDACTED'
+2026-09-30T13:42:43.7427817Z A body is sent with the request
+2026-09-30T13:42:49.3489111Z INFO:     169.254.130.1:15175 - "GET /api/v1/orders/stats HTTP/1.1" 200 OK
+2026-09-30T13:42:49.7749675Z INFO:     169.254.130.1:15175 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-30T13:42:50.3698669Z INFO:     169.254.130.1:15175 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-30T13:42:51.0568984Z INFO:     169.254.130.1:15175 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-30T13:42:51.8226184Z INFO:     169.254.130.1:15175 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-30T13:42:52.2748810Z INFO:     169.254.130.1:15175 - "GET /api/v1/staff/ HTTP/1.1" 200 OK
+2026-09-30T13:42:52.8925808Z INFO:     169.254.130.1:15175 - "GET /api/v1/customers/ HTTP/1.1" 200 OK
+2026-09-30T13:43:06.0719720Z 2026-09-30 13:43:06,069 - azure.core.pipeline.policies.http_logging_policy - INFO - Response status: 200
+2026-09-30T13:43:06.0720010Z Response headers:
+2026-09-30T13:43:06.0720043Z     'Content-Length': '4279'
+2026-09-30T13:43:06.0720065Z     'Content-Type': 'application/json'
+2026-09-30T13:43:06.0720088Z     'Date': 'Wed, 30 Sep 2026 13:42:43 GMT'
+2026-09-30T13:43:06.0720109Z     'Server': 'istio-envoy'
+2026-09-30T13:43:06.0720131Z     'azureai-fe-is-streaming': 'REDACTED'
+2026-09-30T13:43:06.0720152Z     'azureai-fe-offer-type': 'REDACTED'
+2026-09-30T13:43:06.0720178Z     'azureml-model-session': 'REDACTED'
+2026-09-30T13:43:06.0720205Z     'skip-error-remapping': 'REDACTED'
+2026-09-30T13:43:06.0720227Z     'x-accel-buffering': 'REDACTED'
+2026-09-30T13:43:06.0720247Z     'x-ms-is-spilled-over': 'REDACTED'
+2026-09-30T13:43:06.0720362Z     'x-ms-rai-invoked': 'REDACTED'
+2026-09-30T13:43:06.0720386Z     'x-ms-served-model': 'REDACTED'
+2026-09-30T13:43:06.0720409Z     'x-ratelimit-abusepenalty-active': 'REDACTED'
+2026-09-30T13:43:06.0720429Z     'x-ratelimit-key': 'REDACTED'
+2026-09-30T13:43:06.0720451Z     'x-ratelimit-limit-requests': 'REDACTED'
+2026-09-30T13:43:06.0720472Z     'x-ratelimit-limit-tokens': 'REDACTED'
+2026-09-30T13:43:06.0720494Z     'x-ratelimit-remaining-requests': 'REDACTED'
+2026-09-30T13:43:06.0720515Z     'x-ratelimit-remaining-tokens': 'REDACTED'
+2026-09-30T13:43:06.0720537Z     'x-ratelimit-renewalperiod-requests': 'REDACTED'
+2026-09-30T13:43:06.0720559Z     'x-ratelimit-renewalperiod-tokens': 'REDACTED'
+2026-09-30T13:43:06.0720580Z     'x-ratelimit-reset-requests': 'REDACTED'
+2026-09-30T13:43:06.0720601Z     'x-ratelimit-reset-tokens': 'REDACTED'
+2026-09-30T13:43:06.0720622Z     'x-request-id': 'REDACTED'
+2026-09-30T13:43:06.0720670Z     'apim-request-id': 'REDACTED'
+2026-09-30T13:43:06.0720692Z     'Strict-Transport-Security': 'REDACTED'
+2026-09-30T13:43:06.0720716Z     'x-ms-client-request-id': 'd01b5094-bcd4-11f1-8baa-8248e8d83145'
+2026-09-30T13:43:06.0720736Z     'X-Content-Type-Options': 'REDACTED'
+2026-09-30T13:43:06.0720756Z     'x-ms-region': 'REDACTED'
+2026-09-30T13:43:06.0836327Z INFO:     169.254.130.1:21991 - "POST /api/v1/ai/predict-measurements HTTP/1.1" 200 OK
+2026-09-30T13:43:17.9555317Z 2026-09-30 13:43:17,953 - app.services.ai_service - INFO - AI [predict_measurements] called for user 8 using Microsoft Foundry
+2026-09-30T13:43:17.9555800Z 2026-09-30 13:43:17,953 - app.services.foundry_client - WARNING - FOUNDRY_API_KEY is not set.
+2026-09-30T13:43:17.9555839Z 2026-09-30 13:43:17,954 - azure.identity._credentials.environment - INFO - No environment configuration found.
+2026-09-30T13:43:17.9555870Z 2026-09-30 13:43:17,954 - azure.identity._credentials.managed_identity - INFO - ManagedIdentityCredential will use App Service managed identity
+2026-09-30T13:43:17.9579444Z 2026-09-30 13:43:17,957 - azure.core.pipeline.policies.http_logging_policy - INFO - Request URL: 'http://169.254.130.6:8081/msi/token?api-version=2019-08-01&resource=REDACTED'
+2026-09-30T13:43:17.9579661Z Request method: 'GET'
+2026-09-30T13:43:17.9579739Z Request headers:
+2026-09-30T13:43:17.9579763Z     'X-IDENTITY-HEADER': 'REDACTED'
+2026-09-30T13:43:17.9579784Z     'Metadata': 'REDACTED'
+2026-09-30T13:43:17.9579810Z     'User-Agent': 'azsdk-python-identity/1.25.3 Python/3.11.15 (Linux-6.6.150.1-1.azl3-x86_64-with-glibc2.36)'
+2026-09-30T13:43:17.9579831Z No body was attached to the request
+2026-09-30T13:43:18.1341776Z 2026-09-30 13:43:18,133 - azure.core.pipeline.policies.http_logging_policy - INFO - Response status: 200
+2026-09-30T13:43:18.1342287Z Response headers:
+2026-09-30T13:43:18.1342321Z     'Content-Type': 'application/json; charset=utf-8'
+2026-09-30T13:43:18.1342345Z     'Date': 'Wed, 30 Sep 2026 13:43:17 GMT'
+2026-09-30T13:43:18.1342526Z     'Server': 'Kestrel'
+2026-09-30T13:43:18.1342553Z     'Transfer-Encoding': 'chunked'
+2026-09-30T13:43:18.1342579Z     'X-CORRELATION-ID': 'REDACTED'
+2026-09-30T13:43:18.1448730Z 2026-09-30 13:43:18,143 - azure.identity._credentials.chained - INFO - DefaultAzureCredential acquired a token from ManagedIdentityCredential
+2026-09-30T13:43:18.1525634Z 2026-09-30 13:43:18,150 - azure.core.pipeline.policies.http_logging_policy - INFO - Request URL: 'https://tailorsync-ai-resource.services.ai.azure.com/models/chat/completions?api-version=2024-05-01-preview'
+2026-09-30T13:43:18.1526300Z Request method: 'POST'
+2026-09-30T13:43:18.1526335Z Request headers:
+2026-09-30T13:43:18.1526358Z     'Content-Type': 'application/json'
+2026-09-30T13:43:18.1526379Z     'Content-Length': '2045'
+2026-09-30T13:43:18.1526400Z     'Accept': 'application/json'
+2026-09-30T13:43:18.1526423Z     'x-ms-client-request-id': 'e499d3f6-bcd4-11f1-8baa-8248e8d83145'
+2026-09-30T13:43:18.1526449Z     'User-Agent': 'azsdk-python-ai-inference/1.0.0b9 Python/3.11.15 (Linux-6.6.150.1-1.azl3-x86_64-with-glibc2.36)'
+2026-09-30T13:43:18.1526475Z     'Authorization': 'REDACTED'
+2026-09-30T13:43:18.1526498Z A body is sent with the request
+2026-09-30T13:43:36.3550573Z 2026-09-30 13:43:36,354 - azure.core.pipeline.policies.http_logging_policy - INFO - Response status: 200
+2026-09-30T13:43:36.3551196Z Response headers:
+2026-09-30T13:43:36.3551224Z     'Content-Length': '3512'
+2026-09-30T13:43:36.3551247Z     'Content-Type': 'application/json'
+2026-09-30T13:43:36.3551270Z     'Date': 'Wed, 30 Sep 2026 13:43:18 GMT'
+2026-09-30T13:43:36.3551291Z     'Server': 'istio-envoy'
+2026-09-30T13:43:36.3551313Z     'azureai-fe-is-streaming': 'REDACTED'
+2026-09-30T13:43:36.3551334Z     'azureai-fe-offer-type': 'REDACTED'
+2026-09-30T13:43:36.3551355Z     'azureml-model-session': 'REDACTED'
+2026-09-30T13:43:36.3551376Z     'skip-error-remapping': 'REDACTED'
+2026-09-30T13:43:36.3551397Z     'x-accel-buffering': 'REDACTED'
+2026-09-30T13:43:36.3551417Z     'x-ms-is-spilled-over': 'REDACTED'
+2026-09-30T13:43:36.3551439Z     'x-ms-rai-invoked': 'REDACTED'
+2026-09-30T13:43:36.3551459Z     'x-ms-served-model': 'REDACTED'
+2026-09-30T13:43:36.3551506Z     'x-ratelimit-abusepenalty-active': 'REDACTED'
+2026-09-30T13:43:36.3551528Z     'x-ratelimit-key': 'REDACTED'
+2026-09-30T13:43:36.3551550Z     'x-ratelimit-limit-requests': 'REDACTED'
+2026-09-30T13:43:36.3551573Z     'x-ratelimit-limit-tokens': 'REDACTED'
+2026-09-30T13:43:36.3551594Z     'x-ratelimit-remaining-requests': 'REDACTED'
+2026-09-30T13:43:36.3551615Z     'x-ratelimit-remaining-tokens': 'REDACTED'
+2026-09-30T13:43:36.3551637Z     'x-ratelimit-renewalperiod-requests': 'REDACTED'
+2026-09-30T13:43:36.3551659Z     'x-ratelimit-renewalperiod-tokens': 'REDACTED'
+2026-09-30T13:43:36.3551680Z     'x-ratelimit-reset-requests': 'REDACTED'
+2026-09-30T13:43:36.3551702Z     'x-ratelimit-reset-tokens': 'REDACTED'
+2026-09-30T13:43:36.3551722Z     'x-request-id': 'REDACTED'
+2026-09-30T13:43:36.3551743Z     'apim-request-id': 'REDACTED'
+2026-09-30T13:43:36.3551764Z     'Strict-Transport-Security': 'REDACTED'
+2026-09-30T13:43:36.3551812Z     'x-ms-client-request-id': 'e499d3f6-bcd4-11f1-8baa-8248e8d83145'
+2026-09-30T13:43:36.3551833Z     'X-Content-Type-Options': 'REDACTED'
+2026-09-30T13:43:36.3551853Z     'x-ms-region': 'REDACTED'
+2026-09-30T13:43:36.3753620Z INFO:     169.254.130.1:43567 - "POST /api/v1/ai/predict-measurements HTTP/1.1" 200 OK
+2026-09-30T13:44:07.0779702Z 2026-09-30 13:44:07,076 - app.services.ai_service - INFO - AI [recommend_fabrics] called for user 8 using Microsoft Foundry
+2026-09-30T13:44:07.0780729Z 2026-09-30 13:44:07,076 - app.services.foundry_client - WARNING - FOUNDRY_API_KEY is not set.
+2026-09-30T13:44:07.0780766Z 2026-09-30 13:44:07,076 - azure.identity._credentials.environment - INFO - No environment configuration found.
+2026-09-30T13:44:07.0780791Z 2026-09-30 13:44:07,076 - azure.identity._credentials.managed_identity - INFO - ManagedIdentityCredential will use App Service managed identity
+2026-09-30T13:44:07.0863637Z 2026-09-30 13:44:07,083 - azure.core.pipeline.policies.http_logging_policy - INFO - Request URL: 'http://169.254.130.6:8081/msi/token?api-version=2019-08-01&resource=REDACTED'
+2026-09-30T13:44:07.0863842Z Request method: 'GET'
+2026-09-30T13:44:07.0863870Z Request headers:
+2026-09-30T13:44:07.0863894Z     'X-IDENTITY-HEADER': 'REDACTED'
+2026-09-30T13:44:07.0863915Z     'Metadata': 'REDACTED'
+2026-09-30T13:44:07.0863941Z     'User-Agent': 'azsdk-python-identity/1.25.3 Python/3.11.15 (Linux-6.6.150.1-1.azl3-x86_64-with-glibc2.36)'
+2026-09-30T13:44:07.0863966Z No body was attached to the request
+2026-09-30T13:44:07.3603828Z 2026-09-30 13:44:07,358 - azure.core.pipeline.policies.http_logging_policy - INFO - Response status: 200
+2026-09-30T13:44:07.3753968Z Response headers:
+2026-09-30T13:44:07.3754162Z     'Content-Type': 'application/json; charset=utf-8'
+2026-09-30T13:44:07.3754193Z     'Date': 'Wed, 30 Sep 2026 13:44:06 GMT'
+2026-09-30T13:44:07.3754224Z     'Server': 'Kestrel'
+2026-09-30T13:44:07.3754249Z     'Transfer-Encoding': 'chunked'
+2026-09-30T13:44:07.3754273Z     'X-CORRELATION-ID': 'REDACTED'
+2026-09-30T13:44:07.3754559Z 2026-09-30 13:44:07,365 - azure.identity._credentials.chained - INFO - DefaultAzureCredential acquired a token from ManagedIdentityCredential
+2026-09-30T13:44:07.3754599Z 2026-09-30 13:44:07,366 - azure.core.pipeline.policies.http_logging_policy - INFO - Request URL: 'https://tailorsync-ai-resource.services.ai.azure.com/models/chat/completions?api-version=2024-05-01-preview'
+2026-09-30T13:44:07.3754626Z Request method: 'POST'
+2026-09-30T13:44:07.3754654Z Request headers:
+2026-09-30T13:44:07.3758472Z     'Content-Type': 'application/json'
+2026-09-30T13:44:07.3758711Z     'Content-Length': '756'
+2026-09-30T13:44:07.3758741Z     'Accept': 'application/json'
+2026-09-30T13:44:07.3758765Z     'x-ms-client-request-id': '01e10ae2-bcd5-11f1-8baa-8248e8d83145'
+2026-09-30T13:44:07.3758791Z     'User-Agent': 'azsdk-python-ai-inference/1.0.0b9 Python/3.11.15 (Linux-6.6.150.1-1.azl3-x86_64-with-glibc2.36)'
+2026-09-30T13:44:07.3758811Z     'Authorization': 'REDACTED'
+2026-09-30T13:44:07.3758832Z A body is sent with the request
+2026-09-30T13:44:15.1592707Z 2026-09-30 13:44:15,157 - azure.core.pipeline.policies.http_logging_policy - INFO - Response status: 200
+2026-09-30T13:44:15.1593235Z Response headers:
+2026-09-30T13:44:15.1593273Z     'Content-Length': '2496'
+2026-09-30T13:44:15.1593296Z     'Content-Type': 'application/json'
+2026-09-30T13:44:15.1593318Z     'Date': 'Wed, 30 Sep 2026 13:44:07 GMT'
+2026-09-30T13:44:15.1593412Z     'Server': 'istio-envoy'
+2026-09-30T13:44:15.1593434Z     'azureai-fe-is-streaming': 'REDACTED'
+2026-09-30T13:44:15.1593556Z     'azureai-fe-offer-type': 'REDACTED'
+2026-09-30T13:44:15.1593578Z     'azureml-model-session': 'REDACTED'
+2026-09-30T13:44:15.1593598Z     'skip-error-remapping': 'REDACTED'
+2026-09-30T13:44:15.1593620Z     'x-accel-buffering': 'REDACTED'
+2026-09-30T13:44:15.1593640Z     'x-ms-is-spilled-over': 'REDACTED'
+2026-09-30T13:44:15.1593660Z     'x-ms-rai-invoked': 'REDACTED'
+2026-09-30T13:44:15.1593682Z     'x-ms-served-model': 'REDACTED'
+2026-09-30T13:44:15.1593704Z     'x-ratelimit-abusepenalty-active': 'REDACTED'
+2026-09-30T13:44:15.1593724Z     'x-ratelimit-key': 'REDACTED'
+2026-09-30T13:44:15.1593746Z     'x-ratelimit-limit-requests': 'REDACTED'
+2026-09-30T13:44:15.1593767Z     'x-ratelimit-limit-tokens': 'REDACTED'
+2026-09-30T13:44:15.1593789Z     'x-ratelimit-remaining-requests': 'REDACTED'
+2026-09-30T13:44:15.1593811Z     'x-ratelimit-remaining-tokens': 'REDACTED'
+2026-09-30T13:44:15.1593856Z     'x-ratelimit-renewalperiod-requests': 'REDACTED'
+2026-09-30T13:44:15.1593879Z     'x-ratelimit-renewalperiod-tokens': 'REDACTED'
+2026-09-30T13:44:15.1593900Z     'x-ratelimit-reset-requests': 'REDACTED'
+2026-09-30T13:44:15.1593921Z     'x-ratelimit-reset-tokens': 'REDACTED'
+2026-09-30T13:44:15.1593942Z     'x-request-id': 'REDACTED'
+2026-09-30T13:44:15.1593964Z     'apim-request-id': 'REDACTED'
+2026-09-30T13:44:15.1593985Z     'Strict-Transport-Security': 'REDACTED'
+2026-09-30T13:44:15.1594007Z     'x-ms-client-request-id': '01e10ae2-bcd5-11f1-8baa-8248e8d83145'
+2026-09-30T13:44:15.1594028Z     'X-Content-Type-Options': 'REDACTED'
+2026-09-30T13:44:15.1594048Z     'x-ms-region': 'REDACTED'
+2026-09-30T13:44:15.1749515Z INFO:     169.254.130.1:32747 - "POST /api/v1/ai/recommend-fabric HTTP/1.1" 200 OK
+2026-09-30T13:44:29.1838371Z 2026-09-30 13:44:29,181 - app.services.ai_service - INFO - AI [estimate_fabric] called for user 8 using Microsoft Foundry
+2026-09-30T13:44:29.1838962Z 2026-09-30 13:44:29,181 - app.services.foundry_client - WARNING - FOUNDRY_API_KEY is not set.
+2026-09-30T13:44:29.1839091Z 2026-09-30 13:44:29,181 - azure.identity._credentials.environment - INFO - No environment configuration found.
+2026-09-30T13:44:29.1839124Z 2026-09-30 13:44:29,181 - azure.identity._credentials.managed_identity - INFO - ManagedIdentityCredential will use App Service managed identity
+2026-09-30T13:44:29.1856849Z 2026-09-30 13:44:29,185 - azure.core.pipeline.policies.http_logging_policy - INFO - Request URL: 'http://169.254.130.6:8081/msi/token?api-version=2019-08-01&resource=REDACTED'
+2026-09-30T13:44:29.1857021Z Request method: 'GET'
+2026-09-30T13:44:29.1857049Z Request headers:
+2026-09-30T13:44:29.1857071Z     'X-IDENTITY-HEADER': 'REDACTED'
+2026-09-30T13:44:29.1857092Z     'Metadata': 'REDACTED'
+2026-09-30T13:44:29.1857119Z     'User-Agent': 'azsdk-python-identity/1.25.3 Python/3.11.15 (Linux-6.6.150.1-1.azl3-x86_64-with-glibc2.36)'
+2026-09-30T13:44:29.1857140Z No body was attached to the request
+2026-09-30T13:44:29.3554649Z 2026-09-30 13:44:29,355 - azure.core.pipeline.policies.http_logging_policy - INFO - Response status: 200
+2026-09-30T13:44:29.3555239Z Response headers:
+2026-09-30T13:44:29.3555364Z     'Content-Type': 'application/json; charset=utf-8'
+2026-09-30T13:44:29.3555389Z     'Date': 'Wed, 30 Sep 2026 13:44:28 GMT'
+2026-09-30T13:44:29.3555409Z     'Server': 'Kestrel'
+2026-09-30T13:44:29.3555434Z     'Transfer-Encoding': 'chunked'
+2026-09-30T13:44:29.3555466Z     'X-CORRELATION-ID': 'REDACTED'
+2026-09-30T13:44:29.3654009Z 2026-09-30 13:44:29,365 - azure.identity._credentials.chained - INFO - DefaultAzureCredential acquired a token from ManagedIdentityCredential
+2026-09-30T13:44:29.3736887Z 2026-09-30 13:44:29,373 - azure.core.pipeline.policies.http_logging_policy - INFO - Request URL: 'https://tailorsync-ai-resource.services.ai.azure.com/models/chat/completions?api-version=2024-05-01-preview'
+2026-09-30T13:44:29.3740043Z Request method: 'POST'
+2026-09-30T13:44:29.3740098Z Request headers:
+2026-09-30T13:44:29.3740136Z     'Content-Type': 'application/json'
+2026-09-30T13:44:29.3740160Z     'Content-Length': '2244'
+2026-09-30T13:44:29.3740188Z     'Accept': 'application/json'
+2026-09-30T13:44:29.3740242Z     'x-ms-client-request-id': '0f0e5530-bcd5-11f1-8baa-8248e8d83145'
+2026-09-30T13:44:29.3740270Z     'User-Agent': 'azsdk-python-ai-inference/1.0.0b9 Python/3.11.15 (Linux-6.6.150.1-1.azl3-x86_64-with-glibc2.36)'
+2026-09-30T13:44:29.3740292Z     'Authorization': 'REDACTED'
+2026-09-30T13:44:29.3740312Z A body is sent with the request
+2026-09-30T13:45:00.9814188Z 2026-09-30 13:45:00,971 - azure.core.pipeline.policies.http_logging_policy - INFO - Response status: 200
+2026-09-30T13:45:00.9814838Z Response headers:
+2026-09-30T13:45:00.9814870Z     'Content-Length': '2071'
+2026-09-30T13:45:00.9814893Z     'Content-Type': 'application/json'
+2026-09-30T13:45:00.9814915Z     'Date': 'Wed, 30 Sep 2026 13:44:29 GMT'
+2026-09-30T13:45:00.9814935Z     'Server': 'istio-envoy'
+2026-09-30T13:45:00.9814957Z     'azureai-fe-is-streaming': 'REDACTED'
+2026-09-30T13:45:00.9814985Z     'azureai-fe-offer-type': 'REDACTED'
+2026-09-30T13:45:00.9815006Z     'azureml-model-session': 'REDACTED'
+2026-09-30T13:45:00.9815098Z     'skip-error-remapping': 'REDACTED'
+2026-09-30T13:45:00.9815120Z     'x-accel-buffering': 'REDACTED'
+2026-09-30T13:45:00.9815141Z     'x-ms-is-spilled-over': 'REDACTED'
+2026-09-30T13:45:00.9815161Z     'x-ms-rai-invoked': 'REDACTED'
+2026-09-30T13:45:00.9815182Z     'x-ms-served-model': 'REDACTED'
+2026-09-30T13:45:00.9815204Z     'x-ratelimit-abusepenalty-active': 'REDACTED'
+2026-09-30T13:45:00.9815224Z     'x-ratelimit-key': 'REDACTED'
+2026-09-30T13:45:00.9815246Z     'x-ratelimit-limit-requests': 'REDACTED'
+2026-09-30T13:45:00.9815267Z     'x-ratelimit-limit-tokens': 'REDACTED'
+2026-09-30T13:45:00.9815292Z     'x-ratelimit-remaining-requests': 'REDACTED'
+2026-09-30T13:45:00.9815313Z     'x-ratelimit-remaining-tokens': 'REDACTED'
+2026-09-30T13:45:00.9815334Z     'x-ratelimit-renewalperiod-requests': 'REDACTED'
+2026-09-30T13:45:00.9815355Z     'x-ratelimit-renewalperiod-tokens': 'REDACTED'
+2026-09-30T13:45:00.9815397Z     'x-ratelimit-reset-requests': 'REDACTED'
+2026-09-30T13:45:00.9815418Z     'x-ratelimit-reset-tokens': 'REDACTED'
+2026-09-30T13:45:00.9815439Z     'x-request-id': 'REDACTED'
+2026-09-30T13:45:00.9815460Z     'apim-request-id': 'REDACTED'
+2026-09-30T13:45:00.9815481Z     'Strict-Transport-Security': 'REDACTED'
+2026-09-30T13:45:00.9815504Z     'x-ms-client-request-id': '0f0e5530-bcd5-11f1-8baa-8248e8d83145'
+2026-09-30T13:45:00.9815524Z     'X-Content-Type-Options': 'REDACTED'
+2026-09-30T13:45:00.9815544Z     'x-ms-region': 'REDACTED'
+2026-09-30T13:45:00.9815998Z INFO:     169.254.130.1:26883 - "POST /api/v1/ai/estimate-fabric HTTP/1.1" 200 OK
+2026-09-30T13:45:16.5439562Z INFO:     169.254.130.1:23191 - "POST /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-30T13:45:17.3009621Z INFO:     169.254.130.1:23191 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-30T13:45:18.7210928Z 2026-09-30 13:45:18,716 - app.services.email_service - INFO - Email sent successfully to agsvwimalasiri@gmail.com
+2026-09-30T13:45:23.5757790Z INFO:     169.254.130.1:23205 - "GET /api/v1/orders/stats HTTP/1.1" 200 OK
+2026-09-30T13:45:24.4045260Z INFO:     169.254.130.1:23205 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-30T13:45:24.9180550Z INFO:     169.254.130.1:23205 - "GET /api/v1/staff/ HTTP/1.1" 200 OK
+2026-09-30T13:46:36.2542392Z INFO:     169.254.130.1:30625 - "GET /api/v1/orders/stats HTTP/1.1" 200 OK
+2026-09-30T13:46:36.6593207Z INFO:     169.254.130.1:30625 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-30T13:46:37.2769256Z INFO:     169.254.130.1:30625 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-30T13:46:37.9755266Z INFO:     169.254.130.1:30625 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-09-30T13:46:39.3333309Z INFO:     169.254.130.1:30625 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-09-30T13:46:41.0625125Z INFO:     169.254.130.1:30625 - "GET /api/v1/staff/ HTTP/1.1" 200 OK

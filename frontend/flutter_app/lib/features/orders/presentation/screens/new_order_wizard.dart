@@ -709,7 +709,13 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
               data: (customers) {
                 final filtered = customers.where((c) => c.name.toLowerCase().contains(_customerSearch.toLowerCase()) || (c.phone ?? '').contains(_customerSearch)).toList();
                 if (filtered.isEmpty) {
-                  return const EmptyState(icon: Icons.person_search_rounded, title: 'No customers found');
+                  return EmptyState(
+                    icon: Icons.person_search_rounded,
+                    title: 'No customers found',
+                    actionLabel: 'Create New Customer',
+                    actionIcon: Icons.person_add_alt_1_rounded,
+                    onAction: () => context.push('/customers/new'),
+                  );
                 }
                 return ListView.separated(
                   padding: const EdgeInsets.only(bottom: Space.md),

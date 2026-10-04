@@ -13,9 +13,9 @@ import '../../../ui/theme/responsive.dart';
 import '../../../ui/theme/tokens.dart';
 
 class MainLayout extends ConsumerStatefulWidget {
-  final Widget child;
+  final StatefulNavigationShell navigationShell;
 
-  const MainLayout({super.key, required this.child});
+  const MainLayout({super.key, required this.navigationShell});
 
   @override
   ConsumerState<MainLayout> createState() => _MainLayoutState();
@@ -37,61 +37,50 @@ class _MainLayoutState extends ConsumerState<MainLayout> {
 
   @override
   Widget build(BuildContext context) {
-    final String location = GoRouterState.of(context).location;
-
     final userAsync = ref.watch(userProvider);
     final isActive = userAsync.valueOrNull?['is_active'] ?? true;
     final isStaff = userAsync.valueOrNull?['role'] == 'staff' || userAsync.valueOrNull?['role'] == 'STAFF';
 
-    int currentIndex = 0;
-    if (isStaff) {
-      if (location.startsWith('/tasks')) {
-        currentIndex = 0;
-      } else if (location.startsWith('/orders')) {
-        currentIndex = 1;
-      } else if (location.startsWith('/profile')) {
-        currentIndex = 2;
+    // The order of branches in app_router.dart:
+    // 0: /home, 1: /orders, 2: /customers, 3: /tasks, 4: /reports, 5: /profile, 6: /ai, 7: /pattern
+    
+    // We map the bottom nav index to the StatefulShellBranch index
+    int getBranchIndex(int navIndex) {
+      if (isStaff) {
+        if (navIndex == 0) return 3; // tasks
+        if (navIndex == 1) return 1; // orders
+        if (navIndex == 2) return 5; // profile
+      } else {
+        if (navIndex == 0) return 0; // home
+        if (navIndex == 1) return 1; // orders
+        if (navIndex == 2) return 2; // customers
+        if (navIndex == 3) return 3; // tasks
+        if (navIndex == 4) return 4; // reports
       }
-    } else {
-      if (location.startsWith('/orders')) {
-        currentIndex = 1;
-      } else if (location.startsWith('/customers')) {
-        currentIndex = 2;
-      } else if (location.startsWith('/tasks')) {
-        currentIndex = 3;
-      } else if (location.startsWith('/reports')) {
-        currentIndex = 4;
-      }
+      return 0;
     }
 
-    void onSelectDestination(int index) {
-      if (isStaff) {
-        if (index == 0) {
-          context.go('/tasks');
-        } else if (index == 1) {
-          context.go('/orders');
-        } else if (index == 2) {
-          context.go('/profile');
-        }
-      } else {
-        switch (index) {
-          case 0:
-            context.go('/home');
-            break;
-          case 1:
-            context.go('/orders');
-            break;
-          case 2:
-            context.go('/customers');
-            break;
-          case 3:
-            context.go('/tasks');
-            break;
-          case 4:
-            context.go('/reports');
-            break;
-        }
-      }
+    // Determine current nav index based on the active branch
+    int currentIndex = 0;
+    final int activeBranch = widget.navigationShell.currentIndex;
+    if (isStaff) {
+      if (activeBranch == 3) currentIndex = 0;
+      else if (activeBranch == 1) currentIndex = 1;
+      else if (activeBranch == 5) currentIndex = 2;
+    } else {
+      if (activeBranch == 0) currentIndex = 0;
+      else if (activeBranch == 1) currentIndex = 1;
+      else if (activeBranch == 2) currentIndex = 2;
+      else if (activeBranch == 3) currentIndex = 3;
+      else if (activeBranch == 4) currentIndex = 4;
+    }
+
+    void onSelectDestination(int navIndex) {
+      final targetBranch = getBranchIndex(navIndex);
+      widget.navigationShell.goBranch(
+        targetBranch,
+        initialLocation: targetBranch == widget.navigationShell.currentIndex,
+      );
     }
 
     final destinations = isStaff
@@ -126,7 +115,7 @@ class _MainLayoutState extends ConsumerState<MainLayout> {
               removeTop: !isActive,
               child: NotificationListener<UserScrollNotification>(
                 onNotification: _onScroll,
-                child: widget.child,
+                child: widget.navigationShell,
               ),
             ),
           ),

@@ -1,0 +1,8 @@
+<step title="Incoming Request" date="2026-09-22T21:53:32.559" instance="d1bb16" url="/api/deployments/latest?deployer=OneDeploy&amp;time=2026-09-22_21-51-23Z" method="GET" type="request" pid="840,1,32" Host="tailorsync-api-prod-gxgvdaawe5a6bffn.scm.centralus-01.azurewebsites.net" User-Agent="GITHUBACTIONS_DeployWebAppToAzure_f129415d1f87bb1deee995e9bd6a8a49863bca433d880e9275dd3641cbfb5532_v3.0.8" Authorization="Bea..." Content-Type="application/json; charset=utf-8" Cookie="ARRAffinity=d1bb16b0b07ed500a5589d686efd8d41b70fdb89fc955c56e7582796ccdcce9e; ARRAffinitySameSite=d1bb16b0b07ed500a5589d686efd8d41b70fdb89fc955c56e7582796ccdcce9e" Content-Length="0" X-ARR-LOG-ID="06ac979c-d7d6-42bd-8766-7ef1aa4bb5f8" CLIENT-IP="172.183.91.4:31766" X-SITE-DEPLOYMENT-ID="tailorsync-api-prod" WAS-DEFAULT-HOSTNAME="tailorsync-api-prod-gxgvdaawe5a6bffn.scm.centralus-01.azurewebsites.net" X-Forwarded-Proto="https" X-AppService-Proto="https" X-Forwarded-TlsVersion="1.3" X-WAWS-Unencoded-URL="/api/deployments/latest?deployer=OneDeploy&amp;time=2026-09-22_21-51-23Z" X-Client-IP="172.183.91.4" X-Client-Port="31766" >
+  <step title="DeploymentService.GetResult" date="2026-09-22T21:53:32.609" >
+    <step title="DeploymentService.GetLatestDeployment" date="2026-09-22T21:53:32.639" >
+      <step title="DeploymentManager.GetResults" date="2026-09-22T21:53:32.668" /><!-- duration: 1655ms -->
+    </step><!-- duration: 1710ms -->
+  </step><!-- duration: 1766ms -->
+  <step title="Outgoing response" date="2026-09-22T21:53:34.387" type="response" statusCode="202" statusText="Accepted" /><!-- duration: 32ms -->
+</step><!-- duration: 1887ms -->

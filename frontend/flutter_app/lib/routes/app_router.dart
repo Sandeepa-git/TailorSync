@@ -46,71 +46,103 @@ final GoRouter appRouter = GoRouter(
 
 
     // Main app with bottom nav
-    ShellRoute(
-      navigatorKey: _shellNavigatorKey,
-      builder: (BuildContext context, GoRouterState state, Widget child) {
-        return MainLayout(child: child);
+    StatefulShellRoute.indexedStack(
+      builder: (BuildContext context, GoRouterState state, StatefulNavigationShell navigationShell) {
+        return MainLayout(navigationShell: navigationShell);
       },
-      routes: <RouteBase>[
-        GoRoute(
-          path: '/home',
-          pageBuilder: (BuildContext context, GoRouterState state) => fadeThroughPage(state, const DashboardScreen()),
-        ),
-        GoRoute(
-          path: '/customers',
-          pageBuilder: (BuildContext context, GoRouterState state) => fadeThroughPage(state, const CustomersListScreen()),
+      branches: <StatefulShellBranch>[
+        StatefulShellBranch(
           routes: [
             GoRoute(
-              path: 'new',
-              builder: (BuildContext context, GoRouterState state) => const CustomerFormScreen(),
-            ),
-            GoRoute(
-              path: 'edit',
-              builder: (BuildContext context, GoRouterState state) => CustomerFormScreen(customer: state.extra as Customer),
+              path: '/home',
+              pageBuilder: (BuildContext context, GoRouterState state) => fadeThroughPage(state, const DashboardScreen()),
             ),
           ],
         ),
-        GoRoute(
-          path: '/orders',
-          pageBuilder: (BuildContext context, GoRouterState state) => fadeThroughPage(state, const OrdersListScreen()),
+        StatefulShellBranch(
           routes: [
             GoRoute(
-              path: 'details',
-              builder: (BuildContext context, GoRouterState state) => OrderDetailsScreen(order: state.extra as Order),
+              path: '/orders',
+              pageBuilder: (BuildContext context, GoRouterState state) => fadeThroughPage(state, const OrdersListScreen()),
+              routes: [
+                GoRoute(
+                  path: 'details',
+                  builder: (BuildContext context, GoRouterState state) => OrderDetailsScreen(order: state.extra as Order),
+                ),
+              ],
             ),
           ],
         ),
-        GoRoute(
-          path: '/tasks',
-          pageBuilder: (BuildContext context, GoRouterState state) => fadeThroughPage(state, const TasksScreen()),
-        ),
-        GoRoute(
-          path: '/reports',
-          pageBuilder: (BuildContext context, GoRouterState state) => fadeThroughPage(state, const ReportsScreen()),
-        ),
-        GoRoute(
-          path: '/ai',
-          pageBuilder: (BuildContext context, GoRouterState state) => fadeThroughPage(state, const AiToolsScreen()),
-        ),
-        GoRoute(
-          path: '/pattern',
-          pageBuilder: (BuildContext context, GoRouterState state) => fadeThroughPage(state, const PatternViewerScreen()),
-        ),
-        GoRoute(
-          path: '/profile',
-          pageBuilder: (BuildContext context, GoRouterState state) => fadeThroughPage(state, const ProfileScreen()),
+        StatefulShellBranch(
           routes: [
             GoRoute(
-              path: 'business',
-              builder: (BuildContext context, GoRouterState state) => const BusinessProfileScreen(),
+              path: '/customers',
+              pageBuilder: (BuildContext context, GoRouterState state) => fadeThroughPage(state, const CustomersListScreen()),
+              routes: [
+                GoRoute(
+                  path: 'new',
+                  builder: (BuildContext context, GoRouterState state) => const CustomerFormScreen(),
+                ),
+                GoRoute(
+                  path: 'edit',
+                  builder: (BuildContext context, GoRouterState state) => CustomerFormScreen(customer: state.extra as Customer),
+                ),
+              ],
             ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
             GoRoute(
-              path: 'staff',
-              builder: (BuildContext context, GoRouterState state) => const StaffManagementScreen(),
+              path: '/tasks',
+              pageBuilder: (BuildContext context, GoRouterState state) => fadeThroughPage(state, const TasksScreen()),
             ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
             GoRoute(
-              path: 'templates',
-              builder: (BuildContext context, GoRouterState state) => const MeasurementTemplatesScreen(),
+              path: '/reports',
+              pageBuilder: (BuildContext context, GoRouterState state) => fadeThroughPage(state, const ReportsScreen()),
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: '/profile',
+              pageBuilder: (BuildContext context, GoRouterState state) => fadeThroughPage(state, const ProfileScreen()),
+              routes: [
+                GoRoute(
+                  path: 'business',
+                  builder: (BuildContext context, GoRouterState state) => const BusinessProfileScreen(),
+                ),
+                GoRoute(
+                  path: 'staff',
+                  builder: (BuildContext context, GoRouterState state) => const StaffManagementScreen(),
+                ),
+                GoRoute(
+                  path: 'templates',
+                  builder: (BuildContext context, GoRouterState state) => const MeasurementTemplatesScreen(),
+                ),
+              ],
+            ),
+          ],
+        ),
+        // Hidden branches for tools
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: '/ai',
+              pageBuilder: (BuildContext context, GoRouterState state) => fadeThroughPage(state, const AiToolsScreen()),
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: '/pattern',
+              pageBuilder: (BuildContext context, GoRouterState state) => fadeThroughPage(state, const PatternViewerScreen()),
             ),
           ],
         ),

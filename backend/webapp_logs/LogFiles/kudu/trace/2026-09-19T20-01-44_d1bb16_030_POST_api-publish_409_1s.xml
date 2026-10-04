@@ -1,0 +1,15 @@
+<step title="Incoming Request" date="2026-09-19T20:01:44.397" instance="d1bb16" url="/api/publish?async=true&amp;deployer=GITHUB_ONE_DEPLOY&amp;type=zip&amp;message=%7B%22type%22%3A%22deployment%22%2C%22sha%22%3A%22c79c49693a72383b236a5fdc58882ab422b43bfb%22%2C%22repoName%22%3A%22Sandeepa-git%2FTailorSync%22%2C%22actor%22%3A%22Sandeepa-git%22%2C%22slotName%22%3A%22Production%22%2C%22commitMessage%22%3A%22fix(config)%3A%20allow%20ALLOWED_HOSTS%20to%20accept%20string%20or%20list%20format%22%7D" method="POST" type="request" pid="836,1,15" Host="tailorsync-api-prod-gxgvdaawe5a6bffn.scm.centralus-01.azurewebsites.net" User-Agent="GITHUBACTIONS_DeployWebAppToAzure_f129415d1f87bb1deee995e9bd6a8a49863bca433d880e9275dd3641cbfb5532_v3.0.8" Authorization="Bea..." Content-Type="application/octet-stream" Cookie="ARRAffinity=d1bb16b0b07ed500a5589d686efd8d41b70fdb89fc955c56e7582796ccdcce9e; ARRAffinitySameSite=d1bb16b0b07ed500a5589d686efd8d41b70fdb89fc955c56e7582796ccdcce9e" Transfer-Encoding="chunked" X-ARR-LOG-ID="a5ca977b-4b68-4f59-a20f-fb84ff9c2549" CLIENT-IP="40.76.117.243:62497" X-SITE-DEPLOYMENT-ID="tailorsync-api-prod" WAS-DEFAULT-HOSTNAME="tailorsync-api-prod-gxgvdaawe5a6bffn.scm.centralus-01.azurewebsites.net" X-Forwarded-Proto="https" X-AppService-Proto="https" X-Forwarded-TlsVersion="1.3" X-WAWS-Unencoded-URL="/api/publish?async=true&amp;deployer=GITHUB_ONE_DEPLOY&amp;type=zip&amp;message=%7B%22type%22%3A%22deployment%22%2C%22sha%22%3A%22c79c49693a72383b236a5fdc58882ab422b43bfb%22%2C%22repoName%22%3A%22Sandeepa-git%2FTailorSync%22%2C%22actor%22%3A%22Sandeepa-git%22%2C%22slotName%22%3A%22Production%22%2C%22commitMessage%22%3A%22fix(config)%3A%20allow%20ALLOWED_HOSTS%20to%20accept%20string%20or%20list%20format%22%7D" X-Client-IP="40.76.117.243" X-Client-Port="62497" >
+  <step title="OneDeploy" date="2026-09-19T20:01:44.440" >
+    <step title="Starting PushDeployAsync" date="2026-09-19T20:01:44.456" /><!-- duration: 6ms -->
+    <step title="Writing artifact to /tmp/zipdeploy/c120c5b4-5fb5-454a-a776-79d1850179f6.zip" date="2026-09-19T20:01:44.498" >
+      <step title="Writing multipart request body to /tmp/zipdeploy/c120c5b4-5fb5-454a-a776-79d1850179f6.zip" date="2026-09-19T20:01:44.528" /><!-- duration: 10ms -->
+      <step title="Writing zip file to /tmp/zipdeploy/c120c5b4-5fb5-454a-a776-79d1850179f6.zip" date="2026-09-19T20:01:44.549" /><!-- duration: 18ms -->
+    </step><!-- duration: 80ms -->
+    <step title="Start deployment in the background" date="2026-09-19T20:01:44.608" >
+      <step title="Acquiring Deployment Lock" date="2026-09-19T20:01:44.696" /><!-- duration: 11ms -->
+      <step title="Cannot Acquire Deployment Lock already held" date="2026-09-19T20:01:44.737" /><!-- duration: 19ms -->
+    </step><!-- duration: 221ms -->
+    <step title="There is a deployment currently in progress. Please try again when it completes." date="2026-09-19T20:01:44.845" /><!-- duration: 4ms -->
+  </step><!-- duration: 418ms -->
+  <step title="Outgoing response" date="2026-09-19T20:01:44.898" type="response" statusCode="409" statusText="Conflict" /><!-- duration: 39ms -->
+</step><!-- duration: 570ms -->

@@ -1,0 +1,569 @@
+2026-10-02T08:55:29.7720767Z State: Starting, Action: EstablishingSiteNetworks, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: , DetailsLevel: INFO
+2026-10-02T08:55:35.1172384Z State: Starting, Action: StartingMsiContainer, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: , DetailsLevel: INFO
+2026-10-02T08:55:53.4053034Z State: Starting, Action: StartingSiteContainers, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: , DetailsLevel: INFO
+2026-10-02T08:55:53.4054044Z Container start method called.
+2026-10-02T08:55:53.4059822Z State: Starting, Action: PullingImage, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Pulling image 10.1.0.4:13209/appsvc/python:3.11_20260910.3.tuxprod for tailorsync-api-prod., DetailsLevel: INFO
+2026-10-02T08:55:53.4060803Z Establishing network.
+2026-10-02T08:55:53.4061846Z Pulling image: appsvc/python:3.11_20260910.3.tuxprod.
+2026-10-02T08:55:53.7261594Z Container is starting.
+2026-10-02T08:55:53.7274641Z State: Starting, Action: MountingVolumes, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Mounting volumes for tailorsync-api-prod., DetailsLevel: INFO
+2026-10-02T08:55:53.7344928Z Establishing user namespace if not established already.
+2026-10-02T08:55:53.7355984Z Establishing network if not established already.
+2026-10-02T08:55:53.7359730Z Mounting volumes.
+2026-10-02T08:55:53.7464606Z Nested mountpoint 
+2026-10-02T08:55:53.7938439Z Nested mountpoint volatile/logs
+2026-10-02T08:55:53.8539362Z Nested mountpoint 
+2026-10-02T08:55:53.9656591Z Nested mountpoint 
+2026-10-02T08:55:54.0245034Z Nested mountpoint 
+2026-10-02T08:55:54.0917031Z Nested mountpoint 
+2026-10-02T08:55:54.7317272Z State: Starting, Action: CreatingContainer, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Finished pulling container image and mounting volumes for tailorsync-api-prod. Allocatinng the rest of the container resources to finish container creation., DetailsLevel: INFO
+2026-10-02T08:55:54.7319107Z Creating container.
+2026-10-02T08:55:54.7322545Z Creating pipes for streaming container io.
+2026-10-02T08:55:54.7323800Z Creating stdout named pipe at /podr/container/pipe/1ae38e0c2007_tailorsync-api-prod/stdout_0b7b163585c7428dac96aeed03a23f99.
+2026-10-02T08:55:54.7326266Z Successfully created stdout named pipe at: /podr/container/pipe/1ae38e0c2007_tailorsync-api-prod/stdout_0b7b163585c7428dac96aeed03a23f99.
+2026-10-02T08:55:54.7328918Z Opening named pipe /podr/container/pipe/1ae38e0c2007_tailorsync-api-prod/stdout_0b7b163585c7428dac96aeed03a23f99 for reading in non-blocking mode.
+2026-10-02T08:55:54.7335745Z Successfully opened named pipe: /podr/container/pipe/1ae38e0c2007_tailorsync-api-prod/stdout_0b7b163585c7428dac96aeed03a23f99.
+2026-10-02T08:55:54.7345034Z Successfully removed non-blocking flag from /podr/container/pipe/1ae38e0c2007_tailorsync-api-prod/stdout_0b7b163585c7428dac96aeed03a23f99.
+2026-10-02T08:55:54.8193826Z Creating stderr named pipe at /podr/container/pipe/1ae38e0c2007_tailorsync-api-prod/stderr_d00a8281128d4e2fb619b60c633754a7.
+2026-10-02T08:55:54.8196791Z Successfully created stderr named pipe at: /podr/container/pipe/1ae38e0c2007_tailorsync-api-prod/stderr_d00a8281128d4e2fb619b60c633754a7.
+2026-10-02T08:55:54.8202989Z Opening named pipe /podr/container/pipe/1ae38e0c2007_tailorsync-api-prod/stderr_d00a8281128d4e2fb619b60c633754a7 for reading in non-blocking mode.
+2026-10-02T08:55:54.8704020Z Successfully opened named pipe: /podr/container/pipe/1ae38e0c2007_tailorsync-api-prod/stderr_d00a8281128d4e2fb619b60c633754a7.
+2026-10-02T08:55:54.8903587Z Successfully removed non-blocking flag from /podr/container/pipe/1ae38e0c2007_tailorsync-api-prod/stderr_d00a8281128d4e2fb619b60c633754a7.
+2026-10-02T08:55:54.9079431Z Creating container with image: appsvc/python:3.11_20260910.3.tuxprod from registry: 10.1.0.4:13209 and fully qualified image name: 10.1.0.4:13209/appsvc/python:3.11_20260910.3.tuxprod
+2026-10-02T08:55:56.5503606Z Starting container: 1ae38e0c2007_tailorsync-api-prod.
+2026-10-02T08:55:56.7694595Z Starting watchers and probes.
+2026-10-02T08:55:56.7961586Z Starting metrics collection.
+2026-10-02T08:55:56.7964230Z Container is running.
+2026-10-02T08:55:56.7993324Z State: Starting, Action: CreatingContainer, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Container tailorsync-api-prod successfully created and is running., DetailsLevel: INFO
+2026-10-02T08:55:57.2203503Z Container start method finished after 3814 ms.
+2026-10-02T08:55:57.2205600Z State: Starting, Action: InitiatingSiteWarmUpProbe, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Container tailorsync-api-prod successfully created and is running., DetailsLevel: INFO
+2026-10-02T08:55:57.2603032Z State: Starting, Action: WaitingForSiteWarmUpProbeSuccess, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Pinging warmup path to ensure container is ready to receive requests., DetailsLevel: INFO
+2026-10-02T08:57:46.5092064Z Site startup probe succeeded after 109.0790742 seconds.
+2026-10-02T08:57:46.8948021Z State: Starting, Action: WarmUpProbeSucceeded, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Site startup probe succeeded after 109.0790742 seconds., DetailsLevel: INFO
+2026-10-02T08:57:47.7942658Z Site is running with deployment version: 9ceb99f2-e987-4f61-b70f-7c594f6f8d3e
+2026-10-02T08:57:47.8060540Z Site started.
+2026-10-02T08:57:47.8143202Z State: Started, Action: None, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Site started at 10/02/2026 08:57:47 (UTC), DetailsLevel: INFO
+2026-10-02T08:57:47.8339907Z Site is running with patch version PYTHON-3.11.15
+2026-10-02T08:58:08.1921480Z State: Stopping, Action: StoppingSite, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Site started at 09/27/2026 13:39:49 (UTC), DetailsLevel: INFO
+2026-10-02T08:58:08.2120196Z State: Stopping, Action: StoppingSiteContainers, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Site started at 09/27/2026 13:39:49 (UTC), DetailsLevel: INFO
+2026-10-02T08:58:08.2150257Z Container is terminating. Grace period: 5 seconds.
+2026-10-02T08:58:08.3135224Z Stop and delete container. Retry count = 0
+2026-10-02T08:58:08.3198413Z Stopping container: fbed9a4a25bc_tailorsync-api-prod.
+2026-10-02T08:58:14.1901776Z Deleting container: fbed9a4a25bc_tailorsync-api-prod. Retry count = 0
+2026-10-02T08:58:17.8793079Z Container spec TerminationMessagePolicy  path 
+2026-10-02T08:58:17.8884994Z Container is terminated. Total time elapsed: 9649 ms.
+2026-10-02T08:58:19.4406404Z Site: tailorsync-api-prod stopped.
+2026-10-02T09:36:34.9029295Z State: Starting, Action: EstablishingSiteNetworks, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: , DetailsLevel: INFO
+2026-10-02T09:36:39.5334532Z State: Starting, Action: StartingMsiContainer, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: , DetailsLevel: INFO
+2026-10-02T09:36:58.0236890Z State: Starting, Action: StartingSiteContainers, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: , DetailsLevel: INFO
+2026-10-02T09:36:58.0242964Z Container start method called.
+2026-10-02T09:36:58.0252627Z State: Starting, Action: PullingImage, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Pulling image 10.1.0.5:13209/appsvc/python:3.11_20260910.3.tuxprod for tailorsync-api-prod., DetailsLevel: INFO
+2026-10-02T09:36:58.0265371Z Establishing network.
+2026-10-02T09:36:58.0273462Z Pulling image: appsvc/python:3.11_20260910.3.tuxprod.
+2026-10-02T09:36:58.3564922Z Image appsvc/python:3.11_20260910.3.tuxprod is pulled from registry 10.1.0.5:13209
+2026-10-02T09:36:58.3566180Z Container is starting.
+2026-10-02T09:36:58.3566922Z State: Starting, Action: MountingVolumes, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Mounting volumes for tailorsync-api-prod., DetailsLevel: INFO
+2026-10-02T09:36:58.3567475Z Establishing user namespace if not established already.
+2026-10-02T09:36:58.3568028Z Establishing network if not established already.
+2026-10-02T09:36:58.3568782Z Mounting volumes.
+2026-10-02T09:36:58.3569712Z Nested mountpoint 
+2026-10-02T09:36:58.4644346Z Nested mountpoint volatile/logs
+2026-10-02T09:36:58.4875565Z Nested mountpoint 
+2026-10-02T09:36:58.5669117Z Nested mountpoint 
+2026-10-02T09:36:58.5847914Z Nested mountpoint 
+2026-10-02T09:36:58.6434779Z Nested mountpoint 
+2026-10-02T09:36:59.5934377Z State: Starting, Action: CreatingContainer, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Finished pulling container image and mounting volumes for tailorsync-api-prod. Allocatinng the rest of the container resources to finish container creation., DetailsLevel: INFO
+2026-10-02T09:36:59.5935746Z Creating container.
+2026-10-02T09:36:59.6004210Z Creating pipes for streaming container io.
+2026-10-02T09:36:59.6022065Z Creating stdout named pipe at /podr/container/pipe/4b6ae9900c54_tailorsync-api-prod/stdout_61c7974a2f49420d9ff218f0564b0139.
+2026-10-02T09:36:59.6035186Z Successfully created stdout named pipe at: /podr/container/pipe/4b6ae9900c54_tailorsync-api-prod/stdout_61c7974a2f49420d9ff218f0564b0139.
+2026-10-02T09:36:59.6035979Z Opening named pipe /podr/container/pipe/4b6ae9900c54_tailorsync-api-prod/stdout_61c7974a2f49420d9ff218f0564b0139 for reading in non-blocking mode.
+2026-10-02T09:36:59.6133286Z Successfully opened named pipe: /podr/container/pipe/4b6ae9900c54_tailorsync-api-prod/stdout_61c7974a2f49420d9ff218f0564b0139.
+2026-10-02T09:36:59.6209191Z Successfully removed non-blocking flag from /podr/container/pipe/4b6ae9900c54_tailorsync-api-prod/stdout_61c7974a2f49420d9ff218f0564b0139.
+2026-10-02T09:36:59.6300278Z Creating stderr named pipe at /podr/container/pipe/4b6ae9900c54_tailorsync-api-prod/stderr_987ebe30348942849370ae13ee9515f2.
+2026-10-02T09:36:59.6301808Z Successfully created stderr named pipe at: /podr/container/pipe/4b6ae9900c54_tailorsync-api-prod/stderr_987ebe30348942849370ae13ee9515f2.
+2026-10-02T09:36:59.6310077Z Opening named pipe /podr/container/pipe/4b6ae9900c54_tailorsync-api-prod/stderr_987ebe30348942849370ae13ee9515f2 for reading in non-blocking mode.
+2026-10-02T09:36:59.6400623Z Successfully opened named pipe: /podr/container/pipe/4b6ae9900c54_tailorsync-api-prod/stderr_987ebe30348942849370ae13ee9515f2.
+2026-10-02T09:36:59.6401740Z Successfully removed non-blocking flag from /podr/container/pipe/4b6ae9900c54_tailorsync-api-prod/stderr_987ebe30348942849370ae13ee9515f2.
+2026-10-02T09:36:59.6540070Z Creating container with image: appsvc/python:3.11_20260910.3.tuxprod from registry: 10.1.0.5:13209 and fully qualified image name: 10.1.0.5:13209/appsvc/python:3.11_20260910.3.tuxprod
+2026-10-02T09:37:00.6871998Z Starting container: 4b6ae9900c54_tailorsync-api-prod.
+2026-10-02T09:37:00.7470463Z Starting watchers and probes.
+2026-10-02T09:37:00.7505601Z Starting metrics collection.
+2026-10-02T09:37:00.7585467Z Container is running.
+2026-10-02T09:37:00.7587862Z State: Starting, Action: CreatingContainer, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Container tailorsync-api-prod successfully created and is running., DetailsLevel: INFO
+2026-10-02T09:37:00.9175696Z Container start method finished after 2893 ms.
+2026-10-02T09:37:00.9180564Z State: Starting, Action: InitiatingSiteWarmUpProbe, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Container tailorsync-api-prod successfully created and is running., DetailsLevel: INFO
+2026-10-02T09:37:00.9190300Z State: Starting, Action: WaitingForSiteWarmUpProbeSuccess, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Pinging warmup path to ensure container is ready to receive requests., DetailsLevel: INFO
+2026-10-02T09:38:42.1186085Z Site startup probe succeeded after 101.074981 seconds.
+2026-10-02T09:38:42.5886204Z State: Starting, Action: WarmUpProbeSucceeded, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Site startup probe succeeded after 101.074981 seconds., DetailsLevel: INFO
+2026-10-02T09:38:43.8150025Z Site is running with deployment version: ad2af7ad-ff5d-4fc4-93d3-2e4d5d5a4d4f
+2026-10-02T09:38:43.8717264Z Site started.
+2026-10-02T09:38:43.8739642Z State: Started, Action: None, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Site started at 10/02/2026 09:38:43 (UTC), DetailsLevel: INFO
+2026-10-02T09:38:43.9012970Z Site is running with patch version PYTHON-3.11.15
+2026-10-02T09:39:04.4308161Z State: Stopping, Action: StoppingSite, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Site started at 10/02/2026 08:57:47 (UTC), DetailsLevel: INFO
+2026-10-02T09:39:04.4383004Z State: Stopping, Action: StoppingSiteContainers, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Site started at 10/02/2026 08:57:47 (UTC), DetailsLevel: INFO
+2026-10-02T09:39:04.4457191Z Container is terminating. Grace period: 5 seconds.
+2026-10-02T09:39:04.5111286Z Stop and delete container. Retry count = 0
+2026-10-02T09:39:04.5148540Z Stopping container: 1ae38e0c2007_tailorsync-api-prod.
+2026-10-02T09:39:09.8857000Z Deleting container: 1ae38e0c2007_tailorsync-api-prod. Retry count = 0
+2026-10-02T09:39:13.1566304Z Container spec TerminationMessagePolicy  path 
+2026-10-02T09:39:13.1627115Z Container is terminated. Total time elapsed: 8704 ms.
+2026-10-02T09:39:15.3999476Z Site: tailorsync-api-prod stopped.
+2026-10-02T09:56:29.8707339Z State: Starting, Action: EstablishingSiteNetworks, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: , DetailsLevel: INFO
+2026-10-02T09:56:34.8721069Z State: Starting, Action: StartingMsiContainer, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: , DetailsLevel: INFO
+2026-10-02T09:56:57.8446454Z State: Starting, Action: StartingSiteContainers, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: , DetailsLevel: INFO
+2026-10-02T09:56:57.8523553Z Container start method called.
+2026-10-02T09:56:57.8550158Z State: Starting, Action: PullingImage, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Pulling image 10.1.0.4:13209/appsvc/python:3.11_20260910.3.tuxprod for tailorsync-api-prod., DetailsLevel: INFO
+2026-10-02T09:56:57.8611532Z Establishing network.
+2026-10-02T09:56:57.8613121Z Pulling image: appsvc/python:3.11_20260910.3.tuxprod.
+2026-10-02T09:56:58.2634639Z Container is starting.
+2026-10-02T09:56:58.2636006Z State: Starting, Action: MountingVolumes, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Mounting volumes for tailorsync-api-prod., DetailsLevel: INFO
+2026-10-02T09:56:58.2638255Z Establishing user namespace if not established already.
+2026-10-02T09:56:58.2639605Z Establishing network if not established already.
+2026-10-02T09:56:58.2640870Z Mounting volumes.
+2026-10-02T09:56:58.2722204Z Nested mountpoint 
+2026-10-02T09:56:58.3425234Z Nested mountpoint volatile/logs
+2026-10-02T09:56:58.4008332Z Nested mountpoint 
+2026-10-02T09:56:58.5789957Z Nested mountpoint 
+2026-10-02T09:56:58.5887479Z Nested mountpoint 
+2026-10-02T09:56:58.7981368Z Nested mountpoint 
+2026-10-02T09:56:59.3763327Z State: Starting, Action: CreatingContainer, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Finished pulling container image and mounting volumes for tailorsync-api-prod. Allocatinng the rest of the container resources to finish container creation., DetailsLevel: INFO
+2026-10-02T09:56:59.3764432Z Creating container.
+2026-10-02T09:56:59.3765054Z Creating pipes for streaming container io.
+2026-10-02T09:56:59.3765558Z Creating stdout named pipe at /podr/container/pipe/34338e714dd1_tailorsync-api-prod/stdout_62de29c4b2c546308c878370c244851f.
+2026-10-02T09:56:59.3767364Z Successfully created stdout named pipe at: /podr/container/pipe/34338e714dd1_tailorsync-api-prod/stdout_62de29c4b2c546308c878370c244851f.
+2026-10-02T09:56:59.3767891Z Opening named pipe /podr/container/pipe/34338e714dd1_tailorsync-api-prod/stdout_62de29c4b2c546308c878370c244851f for reading in non-blocking mode.
+2026-10-02T09:56:59.3768568Z Successfully opened named pipe: /podr/container/pipe/34338e714dd1_tailorsync-api-prod/stdout_62de29c4b2c546308c878370c244851f.
+2026-10-02T09:56:59.3769104Z Successfully removed non-blocking flag from /podr/container/pipe/34338e714dd1_tailorsync-api-prod/stdout_62de29c4b2c546308c878370c244851f.
+2026-10-02T09:56:59.3889986Z Creating stderr named pipe at /podr/container/pipe/34338e714dd1_tailorsync-api-prod/stderr_1b6608bfb35347b9afe6a20967f461dd.
+2026-10-02T09:56:59.4661671Z Successfully created stderr named pipe at: /podr/container/pipe/34338e714dd1_tailorsync-api-prod/stderr_1b6608bfb35347b9afe6a20967f461dd.
+2026-10-02T09:56:59.4663945Z Opening named pipe /podr/container/pipe/34338e714dd1_tailorsync-api-prod/stderr_1b6608bfb35347b9afe6a20967f461dd for reading in non-blocking mode.
+2026-10-02T09:56:59.4664893Z Successfully opened named pipe: /podr/container/pipe/34338e714dd1_tailorsync-api-prod/stderr_1b6608bfb35347b9afe6a20967f461dd.
+2026-10-02T09:56:59.4665937Z Successfully removed non-blocking flag from /podr/container/pipe/34338e714dd1_tailorsync-api-prod/stderr_1b6608bfb35347b9afe6a20967f461dd.
+2026-10-02T09:56:59.4746832Z Creating container with image: appsvc/python:3.11_20260910.3.tuxprod from registry: 10.1.0.4:13209 and fully qualified image name: 10.1.0.4:13209/appsvc/python:3.11_20260910.3.tuxprod
+2026-10-02T09:57:00.7470266Z Starting container: 34338e714dd1_tailorsync-api-prod.
+2026-10-02T09:57:00.9131660Z Starting watchers and probes.
+2026-10-02T09:57:00.9314803Z Starting metrics collection.
+2026-10-02T09:57:00.9316611Z Container is running.
+2026-10-02T09:57:00.9317446Z State: Starting, Action: CreatingContainer, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Container tailorsync-api-prod successfully created and is running., DetailsLevel: INFO
+2026-10-02T09:57:01.2382156Z Container start method finished after 3385 ms.
+2026-10-02T09:57:01.2383838Z State: Starting, Action: InitiatingSiteWarmUpProbe, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Container tailorsync-api-prod successfully created and is running., DetailsLevel: INFO
+2026-10-02T09:57:01.3479243Z State: Starting, Action: WaitingForSiteWarmUpProbeSuccess, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Pinging warmup path to ensure container is ready to receive requests., DetailsLevel: INFO
+2026-10-02T09:58:50.5647839Z Site startup probe succeeded after 109.0337522 seconds.
+2026-10-02T09:58:51.0895868Z State: Starting, Action: WarmUpProbeSucceeded, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Site startup probe succeeded after 109.0337522 seconds., DetailsLevel: INFO
+2026-10-02T09:58:52.5244245Z Site is running with deployment version: dacbd72b-e49f-46a0-8d11-709b13122f3f
+2026-10-02T09:58:52.5311181Z Site started.
+2026-10-02T09:58:52.5328692Z State: Started, Action: None, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Site started at 10/02/2026 09:58:52 (UTC), DetailsLevel: INFO
+2026-10-02T09:58:52.5479437Z Site is running with patch version PYTHON-3.11.15
+2026-10-02T09:59:12.9617156Z State: Stopping, Action: StoppingSite, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Site started at 10/02/2026 09:38:43 (UTC), DetailsLevel: INFO
+2026-10-02T09:59:12.9788987Z State: Stopping, Action: StoppingSiteContainers, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Site started at 10/02/2026 09:38:43 (UTC), DetailsLevel: INFO
+2026-10-02T09:59:12.9883318Z Container is terminating. Grace period: 5 seconds.
+2026-10-02T09:59:13.1879171Z Stop and delete container. Retry count = 0
+2026-10-02T09:59:13.1899492Z Stopping container: 4b6ae9900c54_tailorsync-api-prod.
+2026-10-02T09:59:18.4222071Z Deleting container: 4b6ae9900c54_tailorsync-api-prod. Retry count = 0
+2026-10-02T09:59:22.1707617Z Container spec TerminationMessagePolicy  path 
+2026-10-02T09:59:22.1738634Z Container is terminated. Total time elapsed: 9183 ms.
+2026-10-02T09:59:24.6302288Z Site: tailorsync-api-prod stopped.
+2026-10-02T11:55:59.4435550Z State: Starting, Action: EstablishingSiteNetworks, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: , DetailsLevel: INFO
+2026-10-02T11:56:08.1727583Z State: Starting, Action: StartingMsiContainer, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: , DetailsLevel: INFO
+2026-10-02T11:56:33.2407066Z State: Starting, Action: StartingSiteContainers, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: , DetailsLevel: INFO
+2026-10-02T11:56:33.2409338Z Container start method called.
+2026-10-02T11:56:33.2409878Z State: Starting, Action: PullingImage, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Pulling image 10.1.0.5:13209/appsvc/python:3.11_20260910.3.tuxprod for tailorsync-api-prod., DetailsLevel: INFO
+2026-10-02T11:56:33.2410673Z Establishing network.
+2026-10-02T11:56:33.2411512Z Pulling image: appsvc/python:3.11_20260910.3.tuxprod.
+2026-10-02T11:56:33.4911317Z Container is starting.
+2026-10-02T11:56:33.4914112Z State: Starting, Action: MountingVolumes, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Mounting volumes for tailorsync-api-prod., DetailsLevel: INFO
+2026-10-02T11:56:33.4915240Z Establishing user namespace if not established already.
+2026-10-02T11:56:33.4917671Z Establishing network if not established already.
+2026-10-02T11:56:33.4918935Z Mounting volumes.
+2026-10-02T11:56:33.4920320Z Nested mountpoint 
+2026-10-02T11:56:33.5391828Z Nested mountpoint volatile/logs
+2026-10-02T11:56:33.5800560Z Nested mountpoint 
+2026-10-02T11:56:33.6380490Z Nested mountpoint 
+2026-10-02T11:56:33.6464838Z Nested mountpoint 
+2026-10-02T11:56:33.7576399Z Nested mountpoint 
+2026-10-02T11:56:35.1546543Z State: Starting, Action: CreatingContainer, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Finished pulling container image and mounting volumes for tailorsync-api-prod. Allocatinng the rest of the container resources to finish container creation., DetailsLevel: INFO
+2026-10-02T11:56:35.1547529Z Creating container.
+2026-10-02T11:56:35.1548179Z Creating pipes for streaming container io.
+2026-10-02T11:56:35.1548759Z Creating stdout named pipe at /podr/container/pipe/fa581d7211ab_tailorsync-api-prod/stdout_7251367be9fb4fd8be8d00c3258dca03.
+2026-10-02T11:56:35.1550828Z Successfully created stdout named pipe at: /podr/container/pipe/fa581d7211ab_tailorsync-api-prod/stdout_7251367be9fb4fd8be8d00c3258dca03.
+2026-10-02T11:56:35.1551397Z Opening named pipe /podr/container/pipe/fa581d7211ab_tailorsync-api-prod/stdout_7251367be9fb4fd8be8d00c3258dca03 for reading in non-blocking mode.
+2026-10-02T11:56:35.1552219Z Successfully opened named pipe: /podr/container/pipe/fa581d7211ab_tailorsync-api-prod/stdout_7251367be9fb4fd8be8d00c3258dca03.
+2026-10-02T11:56:35.1552741Z Successfully removed non-blocking flag from /podr/container/pipe/fa581d7211ab_tailorsync-api-prod/stdout_7251367be9fb4fd8be8d00c3258dca03.
+2026-10-02T11:56:35.1611920Z Creating stderr named pipe at /podr/container/pipe/fa581d7211ab_tailorsync-api-prod/stderr_5c4f33ef9eb84850a99d312ef69cbb60.
+2026-10-02T11:56:35.1613910Z Successfully created stderr named pipe at: /podr/container/pipe/fa581d7211ab_tailorsync-api-prod/stderr_5c4f33ef9eb84850a99d312ef69cbb60.
+2026-10-02T11:56:35.1614587Z Opening named pipe /podr/container/pipe/fa581d7211ab_tailorsync-api-prod/stderr_5c4f33ef9eb84850a99d312ef69cbb60 for reading in non-blocking mode.
+2026-10-02T11:56:35.1615413Z Successfully opened named pipe: /podr/container/pipe/fa581d7211ab_tailorsync-api-prod/stderr_5c4f33ef9eb84850a99d312ef69cbb60.
+2026-10-02T11:56:35.1616050Z Successfully removed non-blocking flag from /podr/container/pipe/fa581d7211ab_tailorsync-api-prod/stderr_5c4f33ef9eb84850a99d312ef69cbb60.
+2026-10-02T11:56:35.1901924Z Creating container with image: appsvc/python:3.11_20260910.3.tuxprod from registry: 10.1.0.5:13209 and fully qualified image name: 10.1.0.5:13209/appsvc/python:3.11_20260910.3.tuxprod
+2026-10-02T11:56:36.6482366Z Starting container: fa581d7211ab_tailorsync-api-prod.
+2026-10-02T11:56:36.7861984Z Starting watchers and probes.
+2026-10-02T11:56:36.7957595Z Starting metrics collection.
+2026-10-02T11:56:36.8040401Z Container is running.
+2026-10-02T11:56:36.8051239Z State: Starting, Action: CreatingContainer, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Container tailorsync-api-prod successfully created and is running., DetailsLevel: INFO
+2026-10-02T11:56:37.0588996Z Container start method finished after 3809 ms.
+2026-10-02T11:56:37.0688842Z State: Starting, Action: InitiatingSiteWarmUpProbe, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Container tailorsync-api-prod successfully created and is running., DetailsLevel: INFO
+2026-10-02T11:56:37.0873198Z State: Starting, Action: WaitingForSiteWarmUpProbeSuccess, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Pinging warmup path to ensure container is ready to receive requests., DetailsLevel: INFO
+2026-10-02T11:57:40.3972076Z Container has finished running with exit code: 127.
+2026-10-02T11:57:40.4150328Z Container is terminating. Grace period: 5 seconds.
+2026-10-02T11:57:40.5240193Z Stop and delete container. Retry count = 0
+2026-10-02T11:57:40.5241290Z Stopping container: fa581d7211ab_tailorsync-api-prod.
+2026-10-02T11:57:40.8886277Z Deleting container: fa581d7211ab_tailorsync-api-prod. Retry count = 0
+2026-10-02T11:57:42.9019420Z Container spec TerminationMessagePolicy  path 
+2026-10-02T11:57:42.9506494Z Container is terminated. Total time elapsed: 2455 ms.
+2026-10-02T11:57:42.9509709Z Site container: tailorsync-api-prod terminated during site startup.
+2026-10-02T11:57:43.3220513Z State: Stopping, Action: CancellingStartup, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Site container: tailorsync-api-prod terminated during site startup. Cancelling site startup., DetailsLevel: ERR
+2026-10-02T11:57:46.5416084Z Site startup probe failed after 69.0697679 seconds.
+2026-10-02T11:57:49.5571107Z State: Stopping, Action: CancellingStartup, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 11:57:49, LastErrorDetails: Container exited with exit code 127 during startup after 66.2s. Please inspect your container logs for more details., Details: Site container: tailorsync-api-prod terminated during site startup. Cancelling site startup., DetailsLevel: ERR
+2026-10-02T11:57:49.8776832Z Failed to start site. Revert by stopping site.
+2026-10-02T11:57:49.9167326Z State: Stopping, Action: StoppingSite, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 11:57:49, LastErrorDetails: Container exited with exit code 127 during startup after 66.2s. Please inspect your container logs for more details., Details: Site container: tailorsync-api-prod terminated during site startup. Cancelling site startup., DetailsLevel: ERR
+2026-10-02T11:57:49.9674492Z State: Stopping, Action: StoppingSiteContainers, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 11:57:49, LastErrorDetails: Container exited with exit code 127 during startup after 66.2s. Please inspect your container logs for more details., Details: Site container: tailorsync-api-prod terminated during site startup. Cancelling site startup., DetailsLevel: ERR
+2026-10-02T11:57:52.8312180Z Site container: tailorsync-api-prod_managedIdentity terminated during site startup.
+2026-10-02T11:57:52.8810171Z State: Stopping, Action: StoppingSiteContainers, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 11:57:49, LastErrorDetails: Container exited with exit code 127 during startup after 66.2s. Please inspect your container logs for more details., Details: Site container: tailorsync-api-prod terminated during site startup. Cancelling site startup., DetailsLevel: ERR
+2026-10-02T11:57:52.9201031Z Site: tailorsync-api-prod stopped.
+2026-10-02T11:58:23.7155468Z State: Stopping, Action: StoppingSite, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Site started at 10/02/2026 09:58:52 (UTC), DetailsLevel: INFO
+2026-10-02T11:58:23.7182701Z State: Stopping, Action: StoppingSiteContainers, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Site started at 10/02/2026 09:58:52 (UTC), DetailsLevel: INFO
+2026-10-02T11:58:23.7184066Z Container is terminating. Grace period: 5 seconds.
+2026-10-02T11:58:23.7864728Z Stop and delete container. Retry count = 0
+2026-10-02T11:58:23.7865712Z Stopping container: 34338e714dd1_tailorsync-api-prod.
+2026-10-02T11:58:29.4068233Z Deleting container: 34338e714dd1_tailorsync-api-prod. Retry count = 0
+2026-10-02T11:58:37.3650452Z Container spec TerminationMessagePolicy  path 
+2026-10-02T11:58:37.3661566Z Container is terminated. Total time elapsed: 13646 ms.
+2026-10-02T11:58:39.4924662Z Site: tailorsync-api-prod stopped.
+2026-10-02T11:57:53.0841610Z State: Stopping, Action: UnmountingVolumes, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 11:57:49, LastErrorDetails: Container exited with exit code 127 during startup after 66.2s. Please inspect your container logs for more details., Details: Site container: tailorsync-api-prod terminated during site startup. Cancelling site startup., DetailsLevel: ERR
+2026-10-02T11:57:55.8773079Z State: Stopping, Action: StoppingSiteNetworks, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 11:57:49, LastErrorDetails: Container exited with exit code 127 during startup after 66.2s. Please inspect your container logs for more details., Details: Site container: tailorsync-api-prod terminated during site startup. Cancelling site startup., DetailsLevel: ERR
+2026-10-02T11:57:59.0004170Z State: Stopped, Action: None, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 11:57:49, LastErrorDetails: Container exited with exit code 127 during startup after 66.2s. Please inspect your container logs for more details., Details: Site stopped at 10/02/2026 11:57:58 (UTC), DetailsLevel: ERR
+2026-10-02T11:58:02.5105611Z State: Stopped, Action: None, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 11:57:49, LastErrorDetails: Container exited with exit code 127 during startup after 66.2s. Please inspect your container logs for more details., Details: Site stopped at 10/02/2026 11:57:58 (UTC), DetailsLevel: ERR
+2026-10-02T12:08:22.0831463Z State: Starting, Action: EstablishingSiteNetworks, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 11:57:49, LastErrorDetails: Container exited with exit code 127 during startup after 66.2s. Please inspect your container logs for more details., Details: Site stopped at 10/02/2026 11:57:58 (UTC), DetailsLevel: ERR
+2026-10-02T12:08:25.7882855Z State: Starting, Action: StartingMsiContainer, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 11:57:49, LastErrorDetails: Container exited with exit code 127 during startup after 66.2s. Please inspect your container logs for more details., Details: Site stopped at 10/02/2026 11:57:58 (UTC), DetailsLevel: ERR
+2026-10-02T12:08:42.6678917Z State: Starting, Action: StartingSiteContainers, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 11:57:49, LastErrorDetails: Container exited with exit code 127 during startup after 66.2s. Please inspect your container logs for more details., Details: Site stopped at 10/02/2026 11:57:58 (UTC), DetailsLevel: ERR
+2026-10-02T12:08:42.6741667Z Container start method called.
+2026-10-02T12:08:42.6747135Z State: Starting, Action: PullingImage, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 11:57:49, LastErrorDetails: Container exited with exit code 127 during startup after 66.2s. Please inspect your container logs for more details., Details: Pulling image 10.1.0.5:13209/appsvc/python:3.11_20260910.3.tuxprod for tailorsync-api-prod., DetailsLevel: INFO
+2026-10-02T12:08:42.6748770Z Establishing network.
+2026-10-02T12:08:42.6754946Z Pulling image: appsvc/python:3.11_20260910.3.tuxprod.
+2026-10-02T12:08:43.0281506Z Container is starting.
+2026-10-02T12:08:43.0282854Z State: Starting, Action: MountingVolumes, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 11:57:49, LastErrorDetails: Container exited with exit code 127 during startup after 66.2s. Please inspect your container logs for more details., Details: Mounting volumes for tailorsync-api-prod., DetailsLevel: INFO
+2026-10-02T12:08:43.0445266Z Establishing user namespace if not established already.
+2026-10-02T12:08:43.0460541Z Establishing network if not established already.
+2026-10-02T12:08:43.0466450Z Mounting volumes.
+2026-10-02T12:08:43.0473290Z Nested mountpoint 
+2026-10-02T12:08:43.0680226Z Nested mountpoint volatile/logs
+2026-10-02T12:08:43.1354056Z Nested mountpoint 
+2026-10-02T12:08:43.2730541Z Nested mountpoint 
+2026-10-02T12:08:43.2744548Z Nested mountpoint 
+2026-10-02T12:08:43.3628722Z Nested mountpoint 
+2026-10-02T12:08:44.1539711Z State: Starting, Action: CreatingContainer, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 11:57:49, LastErrorDetails: Container exited with exit code 127 during startup after 66.2s. Please inspect your container logs for more details., Details: Finished pulling container image and mounting volumes for tailorsync-api-prod. Allocatinng the rest of the container resources to finish container creation., DetailsLevel: INFO
+2026-10-02T12:08:44.1546064Z Creating container.
+2026-10-02T12:08:44.3134218Z Creating pipes for streaming container io.
+2026-10-02T12:08:44.3413295Z Creating stdout named pipe at /podr/container/pipe/4f28ef03b76e_tailorsync-api-prod/stdout_2c1e6edd487341659a1c22d9c63f1b05.
+2026-10-02T12:08:44.3616578Z Successfully created stdout named pipe at: /podr/container/pipe/4f28ef03b76e_tailorsync-api-prod/stdout_2c1e6edd487341659a1c22d9c63f1b05.
+2026-10-02T12:08:44.3618575Z Opening named pipe /podr/container/pipe/4f28ef03b76e_tailorsync-api-prod/stdout_2c1e6edd487341659a1c22d9c63f1b05 for reading in non-blocking mode.
+2026-10-02T12:08:44.3620365Z Successfully opened named pipe: /podr/container/pipe/4f28ef03b76e_tailorsync-api-prod/stdout_2c1e6edd487341659a1c22d9c63f1b05.
+2026-10-02T12:08:44.3786633Z Successfully removed non-blocking flag from /podr/container/pipe/4f28ef03b76e_tailorsync-api-prod/stdout_2c1e6edd487341659a1c22d9c63f1b05.
+2026-10-02T12:08:44.3793339Z Creating stderr named pipe at /podr/container/pipe/4f28ef03b76e_tailorsync-api-prod/stderr_809b920db59140c281c6ce37e247b5dc.
+2026-10-02T12:08:44.3795018Z Successfully created stderr named pipe at: /podr/container/pipe/4f28ef03b76e_tailorsync-api-prod/stderr_809b920db59140c281c6ce37e247b5dc.
+2026-10-02T12:08:44.3795565Z Opening named pipe /podr/container/pipe/4f28ef03b76e_tailorsync-api-prod/stderr_809b920db59140c281c6ce37e247b5dc for reading in non-blocking mode.
+2026-10-02T12:08:44.3797796Z Successfully opened named pipe: /podr/container/pipe/4f28ef03b76e_tailorsync-api-prod/stderr_809b920db59140c281c6ce37e247b5dc.
+2026-10-02T12:08:44.3798671Z Successfully removed non-blocking flag from /podr/container/pipe/4f28ef03b76e_tailorsync-api-prod/stderr_809b920db59140c281c6ce37e247b5dc.
+2026-10-02T12:08:44.3809033Z Creating container with image: appsvc/python:3.11_20260910.3.tuxprod from registry: 10.1.0.5:13209 and fully qualified image name: 10.1.0.5:13209/appsvc/python:3.11_20260910.3.tuxprod
+2026-10-02T12:08:46.4007673Z Starting container: 4f28ef03b76e_tailorsync-api-prod.
+2026-10-02T12:08:46.6199952Z Starting watchers and probes.
+2026-10-02T12:08:46.6299943Z Starting metrics collection.
+2026-10-02T12:08:46.6703074Z Container is running.
+2026-10-02T12:08:46.6710616Z State: Starting, Action: CreatingContainer, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 11:57:49, LastErrorDetails: Container exited with exit code 127 during startup after 66.2s. Please inspect your container logs for more details., Details: Container tailorsync-api-prod successfully created and is running., DetailsLevel: INFO
+2026-10-02T12:08:47.2684625Z Container start method finished after 4593 ms.
+2026-10-02T12:08:47.2879948Z State: Starting, Action: InitiatingSiteWarmUpProbe, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 11:57:49, LastErrorDetails: Container exited with exit code 127 during startup after 66.2s. Please inspect your container logs for more details., Details: Container tailorsync-api-prod successfully created and is running., DetailsLevel: INFO
+2026-10-02T12:08:47.3278119Z State: Starting, Action: WaitingForSiteWarmUpProbeSuccess, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 11:57:49, LastErrorDetails: Container exited with exit code 127 during startup after 66.2s. Please inspect your container logs for more details., Details: Pinging warmup path to ensure container is ready to receive requests., DetailsLevel: INFO
+2026-10-02T12:10:07.7265108Z Site startup probe succeeded after 80.369422 seconds.
+2026-10-02T12:10:08.5696284Z State: Starting, Action: WarmUpProbeSucceeded, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 11:57:49, LastErrorDetails: Container exited with exit code 127 during startup after 66.2s. Please inspect your container logs for more details., Details: Site startup probe succeeded after 80.369422 seconds., DetailsLevel: INFO
+2026-10-02T12:10:10.3198824Z Site is running with deployment version: 6961143e-2f01-4622-9a80-ac8d12252661
+2026-10-02T12:10:10.3278466Z Site started.
+2026-10-02T12:10:10.3297095Z State: Started, Action: None, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 11:57:49, LastErrorDetails: Container exited with exit code 127 during startup after 66.2s. Please inspect your container logs for more details., Details: Site started at 10/02/2026 12:10:10 (UTC), DetailsLevel: INFO
+2026-10-02T12:10:10.4556930Z Site is running with patch version PYTHON-3.11.15
+2026-10-02T12:51:14.9656658Z State: Starting, Action: EstablishingSiteNetworks, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: , DetailsLevel: INFO
+2026-10-02T12:51:20.3285500Z State: Starting, Action: StartingMsiContainer, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: , DetailsLevel: INFO
+2026-10-02T12:51:42.3665699Z State: Starting, Action: StartingSiteContainers, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: , DetailsLevel: INFO
+2026-10-02T12:51:42.3679356Z Container start method called.
+2026-10-02T12:51:42.3694942Z State: Starting, Action: PullingImage, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Pulling image 10.1.0.4:13209/appsvc/python:3.11_20260910.3.tuxprod for tailorsync-api-prod., DetailsLevel: INFO
+2026-10-02T12:51:42.3763665Z Establishing network.
+2026-10-02T12:51:42.3767729Z Pulling image: appsvc/python:3.11_20260910.3.tuxprod.
+2026-10-02T12:51:42.5563469Z Container is starting.
+2026-10-02T12:51:42.5569042Z State: Starting, Action: MountingVolumes, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Mounting volumes for tailorsync-api-prod., DetailsLevel: INFO
+2026-10-02T12:51:42.5569932Z Establishing user namespace if not established already.
+2026-10-02T12:51:42.5570561Z Establishing network if not established already.
+2026-10-02T12:51:42.5571352Z Mounting volumes.
+2026-10-02T12:51:42.5572369Z Nested mountpoint 
+2026-10-02T12:51:42.6167067Z Nested mountpoint volatile/logs
+2026-10-02T12:51:42.6542461Z Nested mountpoint 
+2026-10-02T12:51:42.8632566Z Nested mountpoint 
+2026-10-02T12:51:42.8786358Z Nested mountpoint 
+2026-10-02T12:51:42.8980854Z Nested mountpoint 
+2026-10-02T12:51:43.7169152Z State: Starting, Action: CreatingContainer, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Finished pulling container image and mounting volumes for tailorsync-api-prod. Allocatinng the rest of the container resources to finish container creation., DetailsLevel: INFO
+2026-10-02T12:51:43.7172187Z Creating container.
+2026-10-02T12:51:43.7365222Z Creating pipes for streaming container io.
+2026-10-02T12:51:43.7367623Z Creating stdout named pipe at /podr/container/pipe/b1351a24bec8_tailorsync-api-prod/stdout_c7c7d475470a4179a7bb2d200d7959c5.
+2026-10-02T12:51:43.7651652Z Successfully created stdout named pipe at: /podr/container/pipe/b1351a24bec8_tailorsync-api-prod/stdout_c7c7d475470a4179a7bb2d200d7959c5.
+2026-10-02T12:51:43.7654180Z Opening named pipe /podr/container/pipe/b1351a24bec8_tailorsync-api-prod/stdout_c7c7d475470a4179a7bb2d200d7959c5 for reading in non-blocking mode.
+2026-10-02T12:51:43.7656643Z Successfully opened named pipe: /podr/container/pipe/b1351a24bec8_tailorsync-api-prod/stdout_c7c7d475470a4179a7bb2d200d7959c5.
+2026-10-02T12:51:43.7664862Z Successfully removed non-blocking flag from /podr/container/pipe/b1351a24bec8_tailorsync-api-prod/stdout_c7c7d475470a4179a7bb2d200d7959c5.
+2026-10-02T12:51:43.7671511Z Creating stderr named pipe at /podr/container/pipe/b1351a24bec8_tailorsync-api-prod/stderr_86827b7e1f4c4b2cb26410b642c63adc.
+2026-10-02T12:51:43.7744286Z Successfully created stderr named pipe at: /podr/container/pipe/b1351a24bec8_tailorsync-api-prod/stderr_86827b7e1f4c4b2cb26410b642c63adc.
+2026-10-02T12:51:43.7745279Z Opening named pipe /podr/container/pipe/b1351a24bec8_tailorsync-api-prod/stderr_86827b7e1f4c4b2cb26410b642c63adc for reading in non-blocking mode.
+2026-10-02T12:51:43.7746337Z Successfully opened named pipe: /podr/container/pipe/b1351a24bec8_tailorsync-api-prod/stderr_86827b7e1f4c4b2cb26410b642c63adc.
+2026-10-02T12:51:43.7758425Z Successfully removed non-blocking flag from /podr/container/pipe/b1351a24bec8_tailorsync-api-prod/stderr_86827b7e1f4c4b2cb26410b642c63adc.
+2026-10-02T12:51:43.7780835Z Creating container with image: appsvc/python:3.11_20260910.3.tuxprod from registry: 10.1.0.4:13209 and fully qualified image name: 10.1.0.4:13209/appsvc/python:3.11_20260910.3.tuxprod
+2026-10-02T12:51:44.7957578Z Starting container: b1351a24bec8_tailorsync-api-prod.
+2026-10-02T12:51:44.9797506Z Starting watchers and probes.
+2026-10-02T12:51:44.9975640Z Starting metrics collection.
+2026-10-02T12:51:45.0229431Z Container is running.
+2026-10-02T12:51:45.0240487Z State: Starting, Action: CreatingContainer, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Container tailorsync-api-prod successfully created and is running., DetailsLevel: INFO
+2026-10-02T12:51:45.5988998Z Container start method finished after 3230 ms.
+2026-10-02T12:51:45.6007587Z State: Starting, Action: InitiatingSiteWarmUpProbe, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Container tailorsync-api-prod successfully created and is running., DetailsLevel: INFO
+2026-10-02T12:51:45.6167317Z State: Starting, Action: WaitingForSiteWarmUpProbeSuccess, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Pinging warmup path to ensure container is ready to receive requests., DetailsLevel: INFO
+2026-10-02T12:53:38.9503721Z Site startup probe succeeded after 113.128226 seconds.
+2026-10-02T12:53:39.5219249Z State: Starting, Action: WarmUpProbeSucceeded, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Site startup probe succeeded after 113.128226 seconds., DetailsLevel: INFO
+2026-10-02T12:53:40.9520507Z Site is running with deployment version: a4143801-52a4-488b-a678-dc093cc8baeb
+2026-10-02T12:53:40.9647491Z Site started.
+2026-10-02T12:53:40.9724852Z State: Started, Action: None, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Site started at 10/02/2026 12:53:40 (UTC), DetailsLevel: INFO
+2026-10-02T12:53:41.0014676Z Site is running with patch version PYTHON-3.11.15
+2026-10-02T12:54:01.5185500Z State: Stopping, Action: StoppingSite, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 11:57:49, LastErrorDetails: Container exited with exit code 127 during startup after 66.2s. Please inspect your container logs for more details., Details: Site started at 10/02/2026 12:10:10 (UTC), DetailsLevel: INFO
+2026-10-02T12:54:01.5468550Z State: Stopping, Action: StoppingSiteContainers, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 11:57:49, LastErrorDetails: Container exited with exit code 127 during startup after 66.2s. Please inspect your container logs for more details., Details: Site started at 10/02/2026 12:10:10 (UTC), DetailsLevel: INFO
+2026-10-02T12:54:01.5640062Z Container is terminating. Grace period: 5 seconds.
+2026-10-02T12:54:02.0045664Z Stop and delete container. Retry count = 0
+2026-10-02T12:54:02.0706461Z Stopping container: 4f28ef03b76e_tailorsync-api-prod.
+2026-10-02T12:54:07.2878871Z Deleting container: 4f28ef03b76e_tailorsync-api-prod. Retry count = 0
+2026-10-02T12:54:11.3112838Z Container spec TerminationMessagePolicy  path 
+2026-10-02T12:54:11.3210849Z Container is terminated. Total time elapsed: 9755 ms.
+2026-10-02T12:54:13.4772735Z Site: tailorsync-api-prod stopped.
+2026-10-02T13:04:53.5807676Z State: Starting, Action: EstablishingSiteNetworks, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: , DetailsLevel: INFO
+2026-10-02T13:04:58.4105609Z State: Starting, Action: StartingMsiContainer, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: , DetailsLevel: INFO
+2026-10-02T13:05:31.2061871Z State: Starting, Action: StartingSiteContainers, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: , DetailsLevel: INFO
+2026-10-02T13:05:31.2064520Z Container start method called.
+2026-10-02T13:05:31.2065962Z State: Starting, Action: PullingImage, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Pulling image 10.1.0.4:13209/appsvc/python:3.11_20260910.3.tuxprod for tailorsync-api-prod., DetailsLevel: INFO
+2026-10-02T13:05:31.2067000Z Establishing network.
+2026-10-02T13:05:31.2067902Z Pulling image: appsvc/python:3.11_20260910.3.tuxprod.
+2026-10-02T13:05:31.8102364Z Container is starting.
+2026-10-02T13:05:31.8103199Z State: Starting, Action: MountingVolumes, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Mounting volumes for tailorsync-api-prod., DetailsLevel: INFO
+2026-10-02T13:05:31.8103820Z Establishing user namespace if not established already.
+2026-10-02T13:05:31.8104525Z Establishing network if not established already.
+2026-10-02T13:05:31.8105276Z Mounting volumes.
+2026-10-02T13:05:31.8121526Z Nested mountpoint 
+2026-10-02T13:05:31.9679812Z Nested mountpoint volatile/logs
+2026-10-02T13:05:31.9952140Z Nested mountpoint 
+2026-10-02T13:05:32.0937689Z Nested mountpoint 
+2026-10-02T13:05:32.1043174Z Nested mountpoint 
+2026-10-02T13:05:32.1653497Z Nested mountpoint 
+2026-10-02T13:05:33.9943776Z State: Starting, Action: CreatingContainer, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Finished pulling container image and mounting volumes for tailorsync-api-prod. Allocatinng the rest of the container resources to finish container creation., DetailsLevel: INFO
+2026-10-02T13:05:34.0149977Z Creating container.
+2026-10-02T13:05:34.0844033Z Creating pipes for streaming container io.
+2026-10-02T13:05:34.0856602Z Creating stdout named pipe at /podr/container/pipe/65c8c2bbd564_tailorsync-api-prod/stdout_020302b45e904daab5712a7194de7ea6.
+2026-10-02T13:05:34.0948606Z Successfully created stdout named pipe at: /podr/container/pipe/65c8c2bbd564_tailorsync-api-prod/stdout_020302b45e904daab5712a7194de7ea6.
+2026-10-02T13:05:34.1040663Z Opening named pipe /podr/container/pipe/65c8c2bbd564_tailorsync-api-prod/stdout_020302b45e904daab5712a7194de7ea6 for reading in non-blocking mode.
+2026-10-02T13:05:34.1645447Z Successfully opened named pipe: /podr/container/pipe/65c8c2bbd564_tailorsync-api-prod/stdout_020302b45e904daab5712a7194de7ea6.
+2026-10-02T13:05:34.1715653Z Successfully removed non-blocking flag from /podr/container/pipe/65c8c2bbd564_tailorsync-api-prod/stdout_020302b45e904daab5712a7194de7ea6.
+2026-10-02T13:05:34.1717141Z Creating stderr named pipe at /podr/container/pipe/65c8c2bbd564_tailorsync-api-prod/stderr_6cb797456a3942c78928d9e806920f92.
+2026-10-02T13:05:34.1723284Z Successfully created stderr named pipe at: /podr/container/pipe/65c8c2bbd564_tailorsync-api-prod/stderr_6cb797456a3942c78928d9e806920f92.
+2026-10-02T13:05:34.1723991Z Opening named pipe /podr/container/pipe/65c8c2bbd564_tailorsync-api-prod/stderr_6cb797456a3942c78928d9e806920f92 for reading in non-blocking mode.
+2026-10-02T13:05:34.1724844Z Successfully opened named pipe: /podr/container/pipe/65c8c2bbd564_tailorsync-api-prod/stderr_6cb797456a3942c78928d9e806920f92.
+2026-10-02T13:05:34.1725737Z Successfully removed non-blocking flag from /podr/container/pipe/65c8c2bbd564_tailorsync-api-prod/stderr_6cb797456a3942c78928d9e806920f92.
+2026-10-02T13:05:34.1726563Z Creating container with image: appsvc/python:3.11_20260910.3.tuxprod from registry: 10.1.0.4:13209 and fully qualified image name: 10.1.0.4:13209/appsvc/python:3.11_20260910.3.tuxprod
+2026-10-02T13:05:37.5317594Z Starting container: 65c8c2bbd564_tailorsync-api-prod.
+2026-10-02T13:05:37.7806246Z Starting watchers and probes.
+2026-10-02T13:05:37.7917214Z Starting metrics collection.
+2026-10-02T13:05:37.7926041Z Container is running.
+2026-10-02T13:05:37.7999207Z State: Starting, Action: CreatingContainer, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Container tailorsync-api-prod successfully created and is running., DetailsLevel: INFO
+2026-10-02T13:05:38.5864073Z Container start method finished after 7371 ms.
+2026-10-02T13:05:38.5867804Z State: Starting, Action: InitiatingSiteWarmUpProbe, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Container tailorsync-api-prod successfully created and is running., DetailsLevel: INFO
+2026-10-02T13:05:38.5872135Z State: Starting, Action: WaitingForSiteWarmUpProbeSuccess, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Pinging warmup path to ensure container is ready to receive requests., DetailsLevel: INFO
+2026-10-02T13:06:39.5190563Z Container has finished running with exit code: 127.
+2026-10-02T13:06:39.5372414Z Container is terminating. Grace period: 5 seconds.
+2026-10-02T13:06:39.5670262Z Stop and delete container. Retry count = 0
+2026-10-02T13:06:39.5678798Z Stopping container: 65c8c2bbd564_tailorsync-api-prod.
+2026-10-02T13:06:39.7962047Z Deleting container: 65c8c2bbd564_tailorsync-api-prod. Retry count = 0
+2026-10-02T13:06:40.7638241Z Container spec TerminationMessagePolicy  path 
+2026-10-02T13:06:40.7833833Z Container is terminated. Total time elapsed: 1235 ms.
+2026-10-02T13:06:40.7851354Z Site container: tailorsync-api-prod terminated during site startup.
+2026-10-02T13:06:40.7946721Z State: Stopping, Action: CancellingStartup, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Site container: tailorsync-api-prod terminated during site startup. Cancelling site startup., DetailsLevel: ERR
+2026-10-02T13:06:42.3440551Z Site startup probe failed after 63.6797317 seconds.
+2026-10-02T13:06:43.8825098Z State: Stopping, Action: CancellingStartup, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 13:06:43, LastErrorDetails: Container exited with exit code 127 during startup after 63.0s. Please inspect your container logs for more details., Details: Site container: tailorsync-api-prod terminated during site startup. Cancelling site startup., DetailsLevel: ERR
+2026-10-02T13:06:43.9229517Z Failed to start site. Revert by stopping site.
+2026-10-02T13:06:43.9686400Z State: Stopping, Action: StoppingSite, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 13:06:43, LastErrorDetails: Container exited with exit code 127 during startup after 63.0s. Please inspect your container logs for more details., Details: Site container: tailorsync-api-prod terminated during site startup. Cancelling site startup., DetailsLevel: ERR
+2026-10-02T13:06:43.9789826Z State: Stopping, Action: StoppingSiteContainers, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 13:06:43, LastErrorDetails: Container exited with exit code 127 during startup after 63.0s. Please inspect your container logs for more details., Details: Site container: tailorsync-api-prod terminated during site startup. Cancelling site startup., DetailsLevel: ERR
+2026-10-02T13:06:45.4222706Z Site container: tailorsync-api-prod_managedIdentity terminated during site startup.
+2026-10-02T13:06:45.4228418Z State: Stopping, Action: StoppingSiteContainers, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 13:06:43, LastErrorDetails: Container exited with exit code 127 during startup after 63.0s. Please inspect your container logs for more details., Details: Site container: tailorsync-api-prod terminated during site startup. Cancelling site startup., DetailsLevel: ERR
+2026-10-02T13:06:45.4331364Z Site: tailorsync-api-prod stopped.
+2026-10-02T13:07:10.5528166Z State: Stopping, Action: StoppingSite, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 11:57:49, LastErrorDetails: Container exited with exit code 127 during startup after 66.2s. Please inspect your container logs for more details., Details: Site started at 10/02/2026 12:53:40 (UTC), DetailsLevel: INFO
+2026-10-02T13:07:10.5594000Z State: Stopping, Action: StoppingSiteContainers, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 11:57:49, LastErrorDetails: Container exited with exit code 127 during startup after 66.2s. Please inspect your container logs for more details., Details: Site started at 10/02/2026 12:53:40 (UTC), DetailsLevel: INFO
+2026-10-02T13:07:10.5595680Z Container is terminating. Grace period: 5 seconds.
+2026-10-02T13:07:10.6517681Z Stop and delete container. Retry count = 0
+2026-10-02T13:07:10.6519679Z Stopping container: b1351a24bec8_tailorsync-api-prod.
+2026-10-02T13:07:16.9629845Z Deleting container: b1351a24bec8_tailorsync-api-prod. Retry count = 0
+2026-10-02T13:07:33.6102927Z Container spec TerminationMessagePolicy  path 
+2026-10-02T13:07:33.6387882Z Container is terminated. Total time elapsed: 23050 ms.
+2026-10-02T13:07:36.5237825Z Site: tailorsync-api-prod stopped.
+2026-10-02T13:06:45.5040264Z State: Stopping, Action: UnmountingVolumes, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 13:06:43, LastErrorDetails: Container exited with exit code 127 during startup after 63.0s. Please inspect your container logs for more details., Details: Site container: tailorsync-api-prod terminated during site startup. Cancelling site startup., DetailsLevel: ERR
+2026-10-02T13:06:47.0843175Z State: Stopping, Action: StoppingSiteNetworks, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 13:06:43, LastErrorDetails: Container exited with exit code 127 during startup after 63.0s. Please inspect your container logs for more details., Details: Site container: tailorsync-api-prod terminated during site startup. Cancelling site startup., DetailsLevel: ERR
+2026-10-02T13:06:48.3089289Z State: Stopped, Action: None, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 13:06:43, LastErrorDetails: Container exited with exit code 127 during startup after 63.0s. Please inspect your container logs for more details., Details: Site stopped at 10/02/2026 13:06:48 (UTC), DetailsLevel: ERR
+2026-10-02T13:06:50.1446184Z State: Stopped, Action: None, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 13:06:43, LastErrorDetails: Container exited with exit code 127 during startup after 63.0s. Please inspect your container logs for more details., Details: Site stopped at 10/02/2026 13:06:48 (UTC), DetailsLevel: ERR
+2026-10-02T13:10:32.7862746Z State: Starting, Action: EstablishingSiteNetworks, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 13:06:43, LastErrorDetails: Container exited with exit code 127 during startup after 63.0s. Please inspect your container logs for more details., Details: Site stopped at 10/02/2026 13:06:48 (UTC), DetailsLevel: ERR
+2026-10-02T13:10:37.4152066Z State: Starting, Action: StartingMsiContainer, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 13:06:43, LastErrorDetails: Container exited with exit code 127 during startup after 63.0s. Please inspect your container logs for more details., Details: Site stopped at 10/02/2026 13:06:48 (UTC), DetailsLevel: ERR
+2026-10-02T13:10:58.6580126Z State: Starting, Action: StartingSiteContainers, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 13:06:43, LastErrorDetails: Container exited with exit code 127 during startup after 63.0s. Please inspect your container logs for more details., Details: Site stopped at 10/02/2026 13:06:48 (UTC), DetailsLevel: ERR
+2026-10-02T13:10:58.6587803Z Container start method called.
+2026-10-02T13:10:58.6597250Z State: Starting, Action: PullingImage, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 13:06:43, LastErrorDetails: Container exited with exit code 127 during startup after 63.0s. Please inspect your container logs for more details., Details: Pulling image 10.1.0.4:13209/appsvc/python:3.11_20260910.3.tuxprod for tailorsync-api-prod., DetailsLevel: INFO
+2026-10-02T13:10:58.6604967Z Establishing network.
+2026-10-02T13:10:58.6682036Z Pulling image: appsvc/python:3.11_20260910.3.tuxprod.
+2026-10-02T13:10:58.9448431Z Container is starting.
+2026-10-02T13:10:58.9449794Z State: Starting, Action: MountingVolumes, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 13:06:43, LastErrorDetails: Container exited with exit code 127 during startup after 63.0s. Please inspect your container logs for more details., Details: Mounting volumes for tailorsync-api-prod., DetailsLevel: INFO
+2026-10-02T13:10:58.9450804Z Establishing user namespace if not established already.
+2026-10-02T13:10:58.9451829Z Establishing network if not established already.
+2026-10-02T13:10:58.9453917Z Mounting volumes.
+2026-10-02T13:10:58.9455939Z Nested mountpoint 
+2026-10-02T13:10:58.9826893Z Nested mountpoint volatile/logs
+2026-10-02T13:10:59.0477279Z Nested mountpoint 
+2026-10-02T13:10:59.0849780Z Nested mountpoint 
+2026-10-02T13:10:59.1070397Z Nested mountpoint 
+2026-10-02T13:10:59.1799239Z Nested mountpoint 
+2026-10-02T13:10:59.9826319Z State: Starting, Action: CreatingContainer, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 13:06:43, LastErrorDetails: Container exited with exit code 127 during startup after 63.0s. Please inspect your container logs for more details., Details: Finished pulling container image and mounting volumes for tailorsync-api-prod. Allocatinng the rest of the container resources to finish container creation., DetailsLevel: INFO
+2026-10-02T13:10:59.9827191Z Creating container.
+2026-10-02T13:10:59.9827824Z Creating pipes for streaming container io.
+2026-10-02T13:10:59.9828482Z Creating stdout named pipe at /podr/container/pipe/f1760a0e8243_tailorsync-api-prod/stdout_f5ec13d8736c4602ae8a1a3d051e8e5a.
+2026-10-02T13:10:59.9830512Z Successfully created stdout named pipe at: /podr/container/pipe/f1760a0e8243_tailorsync-api-prod/stdout_f5ec13d8736c4602ae8a1a3d051e8e5a.
+2026-10-02T13:10:59.9831159Z Opening named pipe /podr/container/pipe/f1760a0e8243_tailorsync-api-prod/stdout_f5ec13d8736c4602ae8a1a3d051e8e5a for reading in non-blocking mode.
+2026-10-02T13:10:59.9832985Z Successfully opened named pipe: /podr/container/pipe/f1760a0e8243_tailorsync-api-prod/stdout_f5ec13d8736c4602ae8a1a3d051e8e5a.
+2026-10-02T13:10:59.9833694Z Successfully removed non-blocking flag from /podr/container/pipe/f1760a0e8243_tailorsync-api-prod/stdout_f5ec13d8736c4602ae8a1a3d051e8e5a.
+2026-10-02T13:10:59.9926367Z Creating stderr named pipe at /podr/container/pipe/f1760a0e8243_tailorsync-api-prod/stderr_f6e8906f8fdf4402b817e0a287b1bd5b.
+2026-10-02T13:10:59.9928102Z Successfully created stderr named pipe at: /podr/container/pipe/f1760a0e8243_tailorsync-api-prod/stderr_f6e8906f8fdf4402b817e0a287b1bd5b.
+2026-10-02T13:10:59.9928812Z Opening named pipe /podr/container/pipe/f1760a0e8243_tailorsync-api-prod/stderr_f6e8906f8fdf4402b817e0a287b1bd5b for reading in non-blocking mode.
+2026-10-02T13:10:59.9929622Z Successfully opened named pipe: /podr/container/pipe/f1760a0e8243_tailorsync-api-prod/stderr_f6e8906f8fdf4402b817e0a287b1bd5b.
+2026-10-02T13:10:59.9930140Z Successfully removed non-blocking flag from /podr/container/pipe/f1760a0e8243_tailorsync-api-prod/stderr_f6e8906f8fdf4402b817e0a287b1bd5b.
+2026-10-02T13:11:00.0515351Z Creating container with image: appsvc/python:3.11_20260910.3.tuxprod from registry: 10.1.0.4:13209 and fully qualified image name: 10.1.0.4:13209/appsvc/python:3.11_20260910.3.tuxprod
+2026-10-02T13:11:00.9005677Z Starting container: f1760a0e8243_tailorsync-api-prod.
+2026-10-02T13:11:00.9947820Z Starting watchers and probes.
+2026-10-02T13:11:01.0295934Z Starting metrics collection.
+2026-10-02T13:11:01.0309836Z Container is running.
+2026-10-02T13:11:01.0320614Z State: Starting, Action: CreatingContainer, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 13:06:43, LastErrorDetails: Container exited with exit code 127 during startup after 63.0s. Please inspect your container logs for more details., Details: Container tailorsync-api-prod successfully created and is running., DetailsLevel: INFO
+2026-10-02T13:11:01.1967342Z Container start method finished after 2526 ms.
+2026-10-02T13:11:01.1972214Z State: Starting, Action: InitiatingSiteWarmUpProbe, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 13:06:43, LastErrorDetails: Container exited with exit code 127 during startup after 63.0s. Please inspect your container logs for more details., Details: Container tailorsync-api-prod successfully created and is running., DetailsLevel: INFO
+2026-10-02T13:11:01.3799133Z State: Starting, Action: WaitingForSiteWarmUpProbeSuccess, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 13:06:43, LastErrorDetails: Container exited with exit code 127 during startup after 63.0s. Please inspect your container logs for more details., Details: Pinging warmup path to ensure container is ready to receive requests., DetailsLevel: INFO
+2026-10-02T13:12:50.5952618Z Site startup probe succeeded after 109.0467869 seconds.
+2026-10-02T13:12:50.9833154Z State: Starting, Action: WarmUpProbeSucceeded, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 13:06:43, LastErrorDetails: Container exited with exit code 127 during startup after 63.0s. Please inspect your container logs for more details., Details: Site startup probe succeeded after 109.0467869 seconds., DetailsLevel: INFO
+2026-10-02T13:12:52.2951134Z Site is running with deployment version: 82c34366-260e-4e26-a618-a3ddf5cc09de
+2026-10-02T13:12:52.2963239Z Site started.
+2026-10-02T13:12:52.3050326Z State: Started, Action: None, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 13:06:43, LastErrorDetails: Container exited with exit code 127 during startup after 63.0s. Please inspect your container logs for more details., Details: Site started at 10/02/2026 13:12:52 (UTC), DetailsLevel: INFO
+2026-10-02T13:12:52.4016873Z Site is running with patch version PYTHON-3.11.15
+2026-10-02T13:16:50.6008281Z State: Starting, Action: EstablishingSiteNetworks, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: , DetailsLevel: INFO
+2026-10-02T13:16:57.4493058Z State: Starting, Action: StartingMsiContainer, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: , DetailsLevel: INFO
+2026-10-02T13:17:50.0730835Z State: Starting, Action: StartingSiteContainers, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: , DetailsLevel: INFO
+2026-10-02T13:17:50.0734369Z Container start method called.
+2026-10-02T13:17:50.0746712Z State: Starting, Action: PullingImage, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Pulling image 10.1.0.5:13209/appsvc/python:3.11_20260910.3.tuxprod for tailorsync-api-prod., DetailsLevel: INFO
+2026-10-02T13:17:50.0748440Z Establishing network.
+2026-10-02T13:17:50.0749944Z Pulling image: appsvc/python:3.11_20260910.3.tuxprod.
+2026-10-02T13:17:51.0855008Z Container is starting.
+2026-10-02T13:17:51.0868107Z State: Starting, Action: MountingVolumes, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Mounting volumes for tailorsync-api-prod., DetailsLevel: INFO
+2026-10-02T13:17:51.0945746Z Establishing user namespace if not established already.
+2026-10-02T13:17:51.1368757Z Establishing network if not established already.
+2026-10-02T13:17:51.1431856Z Mounting volumes.
+2026-10-02T13:17:51.1433476Z Nested mountpoint 
+2026-10-02T13:17:51.2597530Z Nested mountpoint volatile/logs
+2026-10-02T13:17:51.3453829Z Nested mountpoint 
+2026-10-02T13:17:51.3852791Z Nested mountpoint 
+2026-10-02T13:17:51.5270306Z Nested mountpoint 
+2026-10-02T13:17:52.4228660Z Nested mountpoint 
+2026-10-02T13:17:54.4100580Z State: Starting, Action: CreatingContainer, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Finished pulling container image and mounting volumes for tailorsync-api-prod. Allocatinng the rest of the container resources to finish container creation., DetailsLevel: INFO
+2026-10-02T13:17:54.4107799Z Creating container.
+2026-10-02T13:17:54.4110490Z Creating pipes for streaming container io.
+2026-10-02T13:17:54.4118625Z Creating stdout named pipe at /podr/container/pipe/c89b98efc83f_tailorsync-api-prod/stdout_677059b533dc4e8690226b5fdb542330.
+2026-10-02T13:17:54.4414758Z Successfully created stdout named pipe at: /podr/container/pipe/c89b98efc83f_tailorsync-api-prod/stdout_677059b533dc4e8690226b5fdb542330.
+2026-10-02T13:17:54.4416228Z Opening named pipe /podr/container/pipe/c89b98efc83f_tailorsync-api-prod/stdout_677059b533dc4e8690226b5fdb542330 for reading in non-blocking mode.
+2026-10-02T13:17:54.4417677Z Successfully opened named pipe: /podr/container/pipe/c89b98efc83f_tailorsync-api-prod/stdout_677059b533dc4e8690226b5fdb542330.
+2026-10-02T13:17:54.4426347Z Successfully removed non-blocking flag from /podr/container/pipe/c89b98efc83f_tailorsync-api-prod/stdout_677059b533dc4e8690226b5fdb542330.
+2026-10-02T13:17:54.4606265Z Creating stderr named pipe at /podr/container/pipe/c89b98efc83f_tailorsync-api-prod/stderr_abcb57e60367494aa2a2c5e428e88a8c.
+2026-10-02T13:17:54.4702526Z Successfully created stderr named pipe at: /podr/container/pipe/c89b98efc83f_tailorsync-api-prod/stderr_abcb57e60367494aa2a2c5e428e88a8c.
+2026-10-02T13:17:54.4789339Z Opening named pipe /podr/container/pipe/c89b98efc83f_tailorsync-api-prod/stderr_abcb57e60367494aa2a2c5e428e88a8c for reading in non-blocking mode.
+2026-10-02T13:17:54.4793035Z Successfully opened named pipe: /podr/container/pipe/c89b98efc83f_tailorsync-api-prod/stderr_abcb57e60367494aa2a2c5e428e88a8c.
+2026-10-02T13:17:54.4864092Z Successfully removed non-blocking flag from /podr/container/pipe/c89b98efc83f_tailorsync-api-prod/stderr_abcb57e60367494aa2a2c5e428e88a8c.
+2026-10-02T13:17:54.4971017Z Creating container with image: appsvc/python:3.11_20260910.3.tuxprod from registry: 10.1.0.5:13209 and fully qualified image name: 10.1.0.5:13209/appsvc/python:3.11_20260910.3.tuxprod
+2026-10-02T13:17:57.5986434Z Starting container: c89b98efc83f_tailorsync-api-prod.
+2026-10-02T13:17:57.7880386Z Starting watchers and probes.
+2026-10-02T13:17:57.8010015Z Starting metrics collection.
+2026-10-02T13:17:57.8180925Z Container is running.
+2026-10-02T13:17:57.8202691Z State: Starting, Action: CreatingContainer, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Container tailorsync-api-prod successfully created and is running., DetailsLevel: INFO
+2026-10-02T13:17:58.2799572Z Container start method finished after 8205 ms.
+2026-10-02T13:17:58.4451073Z State: Starting, Action: InitiatingSiteWarmUpProbe, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Container tailorsync-api-prod successfully created and is running., DetailsLevel: INFO
+2026-10-02T13:17:58.4451828Z State: Starting, Action: WaitingForSiteWarmUpProbeSuccess, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Pinging warmup path to ensure container is ready to receive requests., DetailsLevel: INFO
+2026-10-02T13:18:56.2117678Z Container has finished running with exit code: 127.
+2026-10-02T13:18:56.2356340Z Container is terminating. Grace period: 5 seconds.
+2026-10-02T13:18:56.2603413Z Stop and delete container. Retry count = 0
+2026-10-02T13:18:56.2663996Z Stopping container: c89b98efc83f_tailorsync-api-prod.
+2026-10-02T13:18:56.4636301Z Deleting container: c89b98efc83f_tailorsync-api-prod. Retry count = 0
+2026-10-02T13:18:57.6655435Z Container spec TerminationMessagePolicy  path 
+2026-10-02T13:18:57.7023558Z Container is terminated. Total time elapsed: 1455 ms.
+2026-10-02T13:18:57.7026275Z Site container: tailorsync-api-prod terminated during site startup.
+2026-10-02T13:18:57.7399785Z State: Stopping, Action: CancellingStartup, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Site container: tailorsync-api-prod terminated during site startup. Cancelling site startup., DetailsLevel: ERR
+2026-10-02T13:18:59.3416371Z Site startup probe failed after 60.6630495 seconds.
+2026-10-02T13:19:00.6512352Z State: Stopping, Action: CancellingStartup, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 13:19:00, LastErrorDetails: Container exited with exit code 127 during startup after 59.9s. Please inspect your container logs for more details., Details: Site container: tailorsync-api-prod terminated during site startup. Cancelling site startup., DetailsLevel: ERR
+2026-10-02T13:19:01.1958722Z Failed to start site. Revert by stopping site.
+2026-10-02T13:19:01.2348249Z State: Stopping, Action: StoppingSite, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 13:19:00, LastErrorDetails: Container exited with exit code 127 during startup after 59.9s. Please inspect your container logs for more details., Details: Site container: tailorsync-api-prod terminated during site startup. Cancelling site startup., DetailsLevel: ERR
+2026-10-02T13:19:01.2745689Z State: Stopping, Action: StoppingSiteContainers, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 13:19:00, LastErrorDetails: Container exited with exit code 127 during startup after 59.9s. Please inspect your container logs for more details., Details: Site container: tailorsync-api-prod terminated during site startup. Cancelling site startup., DetailsLevel: ERR
+2026-10-02T13:19:04.0071627Z Site container: tailorsync-api-prod_managedIdentity terminated during site startup.
+2026-10-02T13:19:04.0161081Z State: Stopping, Action: StoppingSiteContainers, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 13:19:00, LastErrorDetails: Container exited with exit code 127 during startup after 59.9s. Please inspect your container logs for more details., Details: Site container: tailorsync-api-prod terminated during site startup. Cancelling site startup., DetailsLevel: ERR
+2026-10-02T13:19:04.0232713Z Site: tailorsync-api-prod stopped.
+2026-10-02T13:19:30.4070017Z State: Stopping, Action: StoppingSite, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 13:06:43, LastErrorDetails: Container exited with exit code 127 during startup after 63.0s. Please inspect your container logs for more details., Details: Site started at 10/02/2026 13:12:52 (UTC), DetailsLevel: INFO
+2026-10-02T13:19:30.4184041Z State: Stopping, Action: StoppingSiteContainers, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 13:06:43, LastErrorDetails: Container exited with exit code 127 during startup after 63.0s. Please inspect your container logs for more details., Details: Site started at 10/02/2026 13:12:52 (UTC), DetailsLevel: INFO
+2026-10-02T13:19:30.4257116Z Container is terminating. Grace period: 5 seconds.
+2026-10-02T13:19:30.4681212Z Stop and delete container. Retry count = 0
+2026-10-02T13:19:30.4682098Z Stopping container: f1760a0e8243_tailorsync-api-prod.
+2026-10-02T13:19:36.0878883Z Deleting container: f1760a0e8243_tailorsync-api-prod. Retry count = 0
+2026-10-02T13:19:44.9804355Z Container spec TerminationMessagePolicy  path 
+2026-10-02T13:19:44.9972055Z Container is terminated. Total time elapsed: 14554 ms.
+2026-10-02T13:19:47.3813317Z Site: tailorsync-api-prod stopped.
+2026-10-02T13:19:04.0650406Z State: Stopping, Action: UnmountingVolumes, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 13:19:00, LastErrorDetails: Container exited with exit code 127 during startup after 59.9s. Please inspect your container logs for more details., Details: Site container: tailorsync-api-prod terminated during site startup. Cancelling site startup., DetailsLevel: ERR
+2026-10-02T13:19:05.9542886Z State: Stopping, Action: StoppingSiteNetworks, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 13:19:00, LastErrorDetails: Container exited with exit code 127 during startup after 59.9s. Please inspect your container logs for more details., Details: Site container: tailorsync-api-prod terminated during site startup. Cancelling site startup., DetailsLevel: ERR
+2026-10-02T13:19:07.4454129Z State: Stopped, Action: None, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 13:19:00, LastErrorDetails: Container exited with exit code 127 during startup after 59.9s. Please inspect your container logs for more details., Details: Site stopped at 10/02/2026 13:19:07 (UTC), DetailsLevel: ERR
+2026-10-02T13:19:09.7977649Z State: Stopped, Action: None, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 13:19:00, LastErrorDetails: Container exited with exit code 127 during startup after 59.9s. Please inspect your container logs for more details., Details: Site stopped at 10/02/2026 13:19:07 (UTC), DetailsLevel: ERR
+2026-10-02T13:44:43.3854400Z State: Starting, Action: EstablishingSiteNetworks, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 13:19:00, LastErrorDetails: Container exited with exit code 127 during startup after 59.9s. Please inspect your container logs for more details., Details: Site stopped at 10/02/2026 13:19:07 (UTC), DetailsLevel: ERR
+2026-10-02T13:44:47.1012466Z State: Starting, Action: StartingMsiContainer, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 13:19:00, LastErrorDetails: Container exited with exit code 127 during startup after 59.9s. Please inspect your container logs for more details., Details: Site stopped at 10/02/2026 13:19:07 (UTC), DetailsLevel: ERR
+2026-10-02T13:45:05.2695538Z State: Starting, Action: StartingSiteContainers, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 13:19:00, LastErrorDetails: Container exited with exit code 127 during startup after 59.9s. Please inspect your container logs for more details., Details: Site stopped at 10/02/2026 13:19:07 (UTC), DetailsLevel: ERR
+2026-10-02T13:45:05.2713023Z Container start method called.
+2026-10-02T13:45:05.2879576Z State: Starting, Action: PullingImage, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 13:19:00, LastErrorDetails: Container exited with exit code 127 during startup after 59.9s. Please inspect your container logs for more details., Details: Pulling image 10.1.0.5:13209/appsvc/python:3.11_20260910.3.tuxprod for tailorsync-api-prod., DetailsLevel: INFO
+2026-10-02T13:45:05.2886642Z Establishing network.
+2026-10-02T13:45:05.2899275Z Pulling image: appsvc/python:3.11_20260910.3.tuxprod.
+2026-10-02T13:45:05.5267825Z Container is starting.
+2026-10-02T13:45:05.5273450Z State: Starting, Action: MountingVolumes, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 13:19:00, LastErrorDetails: Container exited with exit code 127 during startup after 59.9s. Please inspect your container logs for more details., Details: Mounting volumes for tailorsync-api-prod., DetailsLevel: INFO
+2026-10-02T13:45:05.5275072Z Establishing user namespace if not established already.
+2026-10-02T13:45:05.5276613Z Establishing network if not established already.
+2026-10-02T13:45:05.5278059Z Mounting volumes.
+2026-10-02T13:45:05.5365450Z Nested mountpoint 
+2026-10-02T13:45:05.5650079Z Nested mountpoint volatile/logs
+2026-10-02T13:45:05.5862400Z Nested mountpoint 
+2026-10-02T13:45:05.7953740Z Nested mountpoint 
+2026-10-02T13:45:05.8162132Z Nested mountpoint 
+2026-10-02T13:45:05.9045135Z Nested mountpoint 
+2026-10-02T13:45:06.6764748Z State: Starting, Action: CreatingContainer, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 13:19:00, LastErrorDetails: Container exited with exit code 127 during startup after 59.9s. Please inspect your container logs for more details., Details: Finished pulling container image and mounting volumes for tailorsync-api-prod. Allocatinng the rest of the container resources to finish container creation., DetailsLevel: INFO
+2026-10-02T13:45:06.6765756Z Creating container.
+2026-10-02T13:45:06.6766364Z Creating pipes for streaming container io.
+2026-10-02T13:45:06.6767021Z Creating stdout named pipe at /podr/container/pipe/939181503875_tailorsync-api-prod/stdout_132ac66f5051498ca2041871b2f83afc.
+2026-10-02T13:45:06.6768981Z Successfully created stdout named pipe at: /podr/container/pipe/939181503875_tailorsync-api-prod/stdout_132ac66f5051498ca2041871b2f83afc.
+2026-10-02T13:45:06.6769582Z Opening named pipe /podr/container/pipe/939181503875_tailorsync-api-prod/stdout_132ac66f5051498ca2041871b2f83afc for reading in non-blocking mode.
+2026-10-02T13:45:06.6770339Z Successfully opened named pipe: /podr/container/pipe/939181503875_tailorsync-api-prod/stdout_132ac66f5051498ca2041871b2f83afc.
+2026-10-02T13:45:06.6770891Z Successfully removed non-blocking flag from /podr/container/pipe/939181503875_tailorsync-api-prod/stdout_132ac66f5051498ca2041871b2f83afc.
+2026-10-02T13:45:06.7073452Z Creating stderr named pipe at /podr/container/pipe/939181503875_tailorsync-api-prod/stderr_fbaa83e324e044c6b5585721cc53a7e0.
+2026-10-02T13:45:06.7148774Z Successfully created stderr named pipe at: /podr/container/pipe/939181503875_tailorsync-api-prod/stderr_fbaa83e324e044c6b5585721cc53a7e0.
+2026-10-02T13:45:06.7149983Z Opening named pipe /podr/container/pipe/939181503875_tailorsync-api-prod/stderr_fbaa83e324e044c6b5585721cc53a7e0 for reading in non-blocking mode.
+2026-10-02T13:45:06.7151235Z Successfully opened named pipe: /podr/container/pipe/939181503875_tailorsync-api-prod/stderr_fbaa83e324e044c6b5585721cc53a7e0.
+2026-10-02T13:45:06.7151825Z Successfully removed non-blocking flag from /podr/container/pipe/939181503875_tailorsync-api-prod/stderr_fbaa83e324e044c6b5585721cc53a7e0.
+2026-10-02T13:45:06.7156858Z Creating container with image: appsvc/python:3.11_20260910.3.tuxprod from registry: 10.1.0.5:13209 and fully qualified image name: 10.1.0.5:13209/appsvc/python:3.11_20260910.3.tuxprod
+2026-10-02T13:45:08.6269603Z Starting container: 939181503875_tailorsync-api-prod.
+2026-10-02T13:45:08.8651276Z Starting watchers and probes.
+2026-10-02T13:45:08.8873395Z Starting metrics collection.
+2026-10-02T13:45:08.8882976Z Container is running.
+2026-10-02T13:45:08.8883893Z State: Starting, Action: CreatingContainer, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 13:19:00, LastErrorDetails: Container exited with exit code 127 during startup after 59.9s. Please inspect your container logs for more details., Details: Container tailorsync-api-prod successfully created and is running., DetailsLevel: INFO
+2026-10-02T13:45:09.1382314Z Container start method finished after 3866 ms.
+2026-10-02T13:45:09.1384174Z State: Starting, Action: InitiatingSiteWarmUpProbe, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 13:19:00, LastErrorDetails: Container exited with exit code 127 during startup after 59.9s. Please inspect your container logs for more details., Details: Container tailorsync-api-prod successfully created and is running., DetailsLevel: INFO
+2026-10-02T13:45:09.1635515Z State: Starting, Action: WaitingForSiteWarmUpProbeSuccess, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 13:19:00, LastErrorDetails: Container exited with exit code 127 during startup after 59.9s. Please inspect your container logs for more details., Details: Pinging warmup path to ensure container is ready to receive requests., DetailsLevel: INFO
+2026-10-02T13:46:37.3973615Z Site startup probe succeeded after 88.0410007 seconds.
+2026-10-02T13:46:37.8135076Z State: Starting, Action: WarmUpProbeSucceeded, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 13:19:00, LastErrorDetails: Container exited with exit code 127 during startup after 59.9s. Please inspect your container logs for more details., Details: Site startup probe succeeded after 88.0410007 seconds., DetailsLevel: INFO
+2026-10-02T13:46:38.5492119Z Site is running with deployment version: c93b6283-6ec9-4ed5-bf15-b2817094781c
+2026-10-02T13:46:38.5498879Z Site started.
+2026-10-02T13:46:38.5499813Z State: Started, Action: None, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 13:19:00, LastErrorDetails: Container exited with exit code 127 during startup after 59.9s. Please inspect your container logs for more details., Details: Site started at 10/02/2026 13:46:38 (UTC), DetailsLevel: INFO
+2026-10-02T13:46:38.6296837Z Site is running with patch version PYTHON-3.11.15

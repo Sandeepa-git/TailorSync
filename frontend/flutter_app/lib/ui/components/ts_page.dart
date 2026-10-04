@@ -58,10 +58,23 @@ class TsScrollPage extends StatelessWidget {
       flexibleSpace: ClipRect(
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-          child: const SizedBox.expand(),
+          child: FlexibleSpaceBar(
+            titlePadding: EdgeInsets.fromLTRB(pad, 0, pad, headerBottom == null ? 16 : headerBottomHeight + 16),
+            centerTitle: false,
+            title: Text(
+              title,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: context.text.headlineMedium?.copyWith(
+                color: cs.onSurface,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
         ),
       ),
-      title: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis),
+      // We remove the default title because FlexibleSpaceBar handles it
+      // title: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis),
       bottom: headerBottom == null
           ? null
           : PreferredSize(

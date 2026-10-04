@@ -1,0 +1,818 @@
+========== New Cold Start Attempt (2026-10-02T09:58:52.5244245+00:00) ==========
+2026-10-02T09:58:52.5244245+00:00 ContainerStatus: Site is running with deployment version: dacbd72b-e49f-46a0-8d11-709b13122f3f
+2026-10-02T09:58:52.5311181+00:00 ContainerStatus: Site started.
+2026-10-02T09:58:52.5328692+00:00 ContainerStatus: State: Started, Action: None, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Site started at 10/02/2026 09:58:52 (UTC), DetailsLevel: INFO
+2026-10-02T09:58:52.5479437+00:00 ContainerStatus: Site is running with patch version PYTHON-3.11.15
+2026-10-02T09:59:12.9788987+00:00 ContainerStatus: State: Stopping, Action: StoppingSiteContainers, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Site started at 10/02/2026 09:38:43 (UTC), DetailsLevel: INFO
+2026-10-02T09:59:12.9883318+00:00 ContainerStatus: Container is terminating. Grace period: 5 seconds.
+2026-10-02T09:59:13.1879171+00:00 ContainerStatus: Stop and delete container. Retry count = 0
+2026-10-02T09:59:13.1899492+00:00 ContainerStatus: Stopping container: 4b6ae9900c54_tailorsync-api-prod.
+2026-10-02T09:59:18.4222071+00:00 ContainerStatus: Deleting container: 4b6ae9900c54_tailorsync-api-prod. Retry count = 0
+2026-10-02T09:59:22.1707617+00:00 ContainerStatus: Container spec TerminationMessagePolicy  path 
+2026-10-02T09:59:22.1738634+00:00 ContainerStatus: Container is terminated. Total time elapsed: 9183 ms.
+2026-10-02T09:59:24.6302288+00:00 ContainerStatus: Site: tailorsync-api-prod stopped.
+2026-10-02T11:31:55.3027246+00:00 ContainerStream: 2026-10-02 11:31:55,290 - app.api.deps - INFO - Token expired
+2026-10-02T11:31:58.7984775+00:00 ContainerStream: 2026-10-02 11:31:58,797 - app.api.deps - INFO - Token expired
+2026-10-02T11:31:58.8247391+00:00 ContainerStream: INFO:     169.254.130.1:41241 - "GET /api/v1/auth/verify HTTP/1.1" 401 Unauthorized
+2026-10-02T11:32:32.5064672+00:00 ContainerStream: 2026-10-02 11:32:32,506 - app.services.auth_service - INFO - Login failed: no user found for email agsvwimalasiri@gmai.com
+2026-10-02T11:32:32.5361109+00:00 ContainerStream: INFO:     169.254.130.1:37079 - "POST /api/v1/auth/login HTTP/1.1" 401 Unauthorized
+2026-10-02T11:32:46.4884481+00:00 ContainerStream: INFO:     169.254.130.1:57895 - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+2026-10-02T11:32:46.9068382+00:00 ContainerStream: INFO:     169.254.130.1:57895 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-10-02T11:32:47.3328863+00:00 ContainerStream: INFO:     169.254.130.1:57895 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-10-02T11:32:48.5291086+00:00 ContainerStream: INFO:     169.254.130.1:57895 - "GET /api/v1/orders/stats HTTP/1.1" 200 OK
+2026-10-02T11:32:48.9429552+00:00 ContainerStream: INFO:     169.254.130.1:57895 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-10-02T11:32:49.6225448+00:00 ContainerStream: INFO:     169.254.130.1:57895 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-10-02T11:32:50.3037674+00:00 ContainerStream: INFO:     169.254.130.1:57895 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-10-02T11:32:56.2986746+00:00 ContainerStream: INFO:     169.254.130.1:43031 - "GET /api/v1/customers/ HTTP/1.1" 200 OK
+2026-10-02T11:33:37.0755571+00:00 ContainerStream: INFO:     169.254.130.1:56521 - "POST /api/v1/customers/ HTTP/1.1" 200 OK
+2026-10-02T11:33:37.5426387+00:00 ContainerStream: INFO:     169.254.130.1:56521 - "GET /api/v1/customers/ HTTP/1.1" 200 OK
+2026-10-02T11:33:40.6542172+00:00 ContainerStream: INFO:     169.254.130.1:56521 - "GET /api/v1/orders/stats HTTP/1.1" 200 OK
+2026-10-02T11:33:41.0877326+00:00 ContainerStream: INFO:     169.254.130.1:56521 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-10-02T11:33:41.6875102+00:00 ContainerStream: INFO:     169.254.130.1:56521 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-10-02T11:33:42.3365015+00:00 ContainerStream: INFO:     169.254.130.1:56521 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-10-02T11:33:43.2249748+00:00 ContainerStream: INFO:     169.254.130.1:56521 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-10-02T11:33:43.6675322+00:00 ContainerStream: INFO:     169.254.130.1:56521 - "GET /api/v1/staff/ HTTP/1.1" 200 OK
+2026-10-02T11:33:44.1752841+00:00 ContainerStream: INFO:     169.254.130.1:56521 - "GET /api/v1/customers/ HTTP/1.1" 200 OK
+2026-10-02T11:34:01.5900915+00:00 ContainerStream: INFO:     169.254.130.1:11921 - "GET /api/v1/ai/input-ranges/trouser HTTP/1.1" 200 OK
+2026-10-02T11:34:09.7896158+00:00 ContainerStream: INFO:     169.254.130.1:28695 - "GET /api/v1/ai/input-ranges/trouser HTTP/1.1" 200 OK
+2026-10-02T11:35:06.6524076+00:00 ContainerStream: INFO:     169.254.130.1:50337 - "GET /api/v1/ai/input-ranges/trouser HTTP/1.1" 200 OK
+2026-10-02T11:35:25.0171953+00:00 ContainerStream: /tmp/8df206af12e10f0/antenv/lib/python3.11/site-packages/sklearn/utils/validation.py:2739: UserWarning: X does not have valid feature names, but ExtraTreesRegressor was fitted with feature names
+2026-10-02T11:35:25.0172432+00:00 ContainerStream:   warnings.warn(
+2026-10-02T11:35:25.9873395+00:00 ContainerStream: INFO:     169.254.130.1:54699 - "POST /api/v1/ai/predict-measurements HTTP/1.1" 200 OK
+2026-10-02T11:36:25.7649454+00:00 ContainerStream: 2026-10-02 11:36:25,764 - app.services.ai_service - INFO - AI [recommend_fabrics] called for user 8 using Microsoft Foundry
+2026-10-02T11:36:25.7650121+00:00 ContainerStream: 2026-10-02 11:36:25,764 - app.services.foundry_client - WARNING - FOUNDRY_API_KEY is not set.
+2026-10-02T11:36:25.9657716+00:00 ContainerStream: 2026-10-02 11:36:25,965 - azure.identity._credentials.environment - INFO - No environment configuration found.
+2026-10-02T11:36:25.9835620+00:00 ContainerStream: 2026-10-02 11:36:25,983 - azure.identity._credentials.managed_identity - INFO - ManagedIdentityCredential will use App Service managed identity
+2026-10-02T11:36:26.0074087+00:00 ContainerStream: 2026-10-02 11:36:26,007 - azure.core.pipeline.policies.http_logging_policy - INFO - Request URL: 'http://169.254.130.4:8081/msi/token?api-version=2019-08-01&resource=REDACTED'
+2026-10-02T11:36:26.0074629+00:00 ContainerStream: Request method: 'GET'
+2026-10-02T11:36:26.0074661+00:00 ContainerStream: Request headers:
+2026-10-02T11:36:26.0074693+00:00 ContainerStream:     'X-IDENTITY-HEADER': 'REDACTED'
+2026-10-02T11:36:26.0074717+00:00 ContainerStream:     'Metadata': 'REDACTED'
+2026-10-02T11:36:26.0074740+00:00 ContainerStream:     'x-ms-client-request-id': '8059cb08-be55-11f1-aea7-e613542fd7d1'
+2026-10-02T11:36:26.0074764+00:00 ContainerStream:     'User-Agent': 'azsdk-python-identity/1.26.0 Python/3.11.15 (Linux-6.6.150.1-1.azl3-x86_64-with-glibc2.36)'
+2026-10-02T11:36:26.0074883+00:00 ContainerStream: No body was attached to the request
+2026-10-02T11:36:32.3310081+00:00 ContainerStream: 2026-10-02 11:36:32,330 - azure.core.pipeline.policies.http_logging_policy - INFO - Response status: 200
+2026-10-02T11:36:32.3310659+00:00 ContainerStream: Response headers:
+2026-10-02T11:36:32.3310691+00:00 ContainerStream:     'Content-Type': 'application/json; charset=utf-8'
+2026-10-02T11:36:32.3310713+00:00 ContainerStream:     'Date': 'Fri, 02 Oct 2026 11:36:32 GMT'
+2026-10-02T11:36:32.3310739+00:00 ContainerStream:     'Server': 'Kestrel'
+2026-10-02T11:36:32.3310761+00:00 ContainerStream:     'Transfer-Encoding': 'chunked'
+2026-10-02T11:36:32.3310780+00:00 ContainerStream:     'X-CORRELATION-ID': 'REDACTED'
+2026-10-02T11:36:32.3510559+00:00 ContainerStream: 2026-10-02 11:36:32,350 - azure.identity._credentials.chained - INFO - DefaultAzureCredential acquired a token from ManagedIdentityCredential
+2026-10-02T11:36:32.3613559+00:00 ContainerStream: 2026-10-02 11:36:32,359 - azure.core.pipeline.policies.http_logging_policy - INFO - Request URL: 'https://tailorsync-ai-resource.services.ai.azure.com/models/chat/completions?api-version=2024-05-01-preview'
+2026-10-02T11:36:32.3613955+00:00 ContainerStream: Request method: 'POST'
+2026-10-02T11:36:32.3614152+00:00 ContainerStream: Request headers:
+2026-10-02T11:36:32.3614175+00:00 ContainerStream:     'Content-Type': 'application/json'
+2026-10-02T11:36:32.3614196+00:00 ContainerStream:     'Content-Length': '750'
+2026-10-02T11:36:32.3614217+00:00 ContainerStream:     'Accept': 'application/json'
+2026-10-02T11:36:32.3614238+00:00 ContainerStream:     'x-ms-client-request-id': '80582ea6-be55-11f1-aea7-e613542fd7d1'
+2026-10-02T11:36:32.3614264+00:00 ContainerStream:     'User-Agent': 'azsdk-python-ai-inference/1.0.0b9 Python/3.11.15 (Linux-6.6.150.1-1.azl3-x86_64-with-glibc2.36)'
+2026-10-02T11:36:32.3614286+00:00 ContainerStream:     'Authorization': 'REDACTED'
+2026-10-02T11:36:32.3614307+00:00 ContainerStream: A body is sent with the request
+2026-10-02T11:36:39.2923175+00:00 ContainerStream: 2026-10-02 11:36:39,292 - azure.core.pipeline.policies.http_logging_policy - INFO - Response status: 200
+2026-10-02T11:36:39.2923654+00:00 ContainerStream: Response headers:
+2026-10-02T11:36:39.2923684+00:00 ContainerStream:     'Content-Length': '2458'
+2026-10-02T11:36:39.2923711+00:00 ContainerStream:     'Content-Type': 'application/json'
+2026-10-02T11:36:39.2923839+00:00 ContainerStream:     'Date': 'Fri, 02 Oct 2026 11:36:32 GMT'
+2026-10-02T11:36:39.2923863+00:00 ContainerStream:     'Server': 'istio-envoy'
+2026-10-02T11:36:39.2923883+00:00 ContainerStream:     'Vary': 'REDACTED'
+2026-10-02T11:36:39.2923906+00:00 ContainerStream:     'azureai-fe-is-streaming': 'REDACTED'
+2026-10-02T11:36:39.2923927+00:00 ContainerStream:     'azureai-fe-offer-type': 'REDACTED'
+2026-10-02T11:36:39.2923949+00:00 ContainerStream:     'azureml-model-session': 'REDACTED'
+2026-10-02T11:36:39.2923970+00:00 ContainerStream:     'skip-error-remapping': 'REDACTED'
+2026-10-02T11:36:39.2923991+00:00 ContainerStream:     'x-accel-buffering': 'REDACTED'
+2026-10-02T11:36:39.2924012+00:00 ContainerStream:     'x-ms-is-spilled-over': 'REDACTED'
+2026-10-02T11:36:39.2924033+00:00 ContainerStream:     'x-ms-rai-invoked': 'REDACTED'
+2026-10-02T11:36:39.2924054+00:00 ContainerStream:     'x-ms-served-model': 'REDACTED'
+2026-10-02T11:36:39.2924076+00:00 ContainerStream:     'x-ratelimit-abusepenalty-active': 'REDACTED'
+2026-10-02T11:36:39.2924097+00:00 ContainerStream:     'x-ratelimit-key': 'REDACTED'
+2026-10-02T11:36:39.2924118+00:00 ContainerStream:     'x-ratelimit-limit-requests': 'REDACTED'
+2026-10-02T11:36:39.2924164+00:00 ContainerStream:     'x-ratelimit-limit-tokens': 'REDACTED'
+2026-10-02T11:36:39.2924186+00:00 ContainerStream:     'x-ratelimit-remaining-requests': 'REDACTED'
+2026-10-02T11:36:39.2924208+00:00 ContainerStream:     'x-ratelimit-remaining-tokens': 'REDACTED'
+2026-10-02T11:36:39.2924230+00:00 ContainerStream:     'x-ratelimit-renewalperiod-requests': 'REDACTED'
+2026-10-02T11:36:39.2924251+00:00 ContainerStream:     'x-ratelimit-renewalperiod-tokens': 'REDACTED'
+2026-10-02T11:36:39.2924273+00:00 ContainerStream:     'x-ratelimit-reset-requests': 'REDACTED'
+2026-10-02T11:36:39.2924293+00:00 ContainerStream:     'x-ratelimit-reset-tokens': 'REDACTED'
+2026-10-02T11:36:39.2924314+00:00 ContainerStream:     'x-request-id': 'REDACTED'
+2026-10-02T11:36:39.2924334+00:00 ContainerStream:     'apim-request-id': 'REDACTED'
+2026-10-02T11:36:39.2924356+00:00 ContainerStream:     'Strict-Transport-Security': 'REDACTED'
+2026-10-02T11:36:39.2924378+00:00 ContainerStream:     'x-ms-client-request-id': '80582ea6-be55-11f1-aea7-e613542fd7d1'
+2026-10-02T11:36:39.2924399+00:00 ContainerStream:     'X-Content-Type-Options': 'REDACTED'
+2026-10-02T11:36:39.2924419+00:00 ContainerStream:     'x-ms-region': 'REDACTED'
+2026-10-02T11:36:39.3065783+00:00 ContainerStream: INFO:     169.254.130.1:35343 - "POST /api/v1/ai/recommend-fabric HTTP/1.1" 200 OK
+2026-10-02T11:36:46.0748165+00:00 ContainerStream: 2026-10-02 11:36:46,074 - app.services.ai_service - INFO - AI [estimate_fabric] called for user 8 using Microsoft Foundry
+2026-10-02T11:36:46.0814339+00:00 ContainerStream: 2026-10-02 11:36:46,074 - app.services.foundry_client - WARNING - FOUNDRY_API_KEY is not set.
+2026-10-02T11:36:46.0814553+00:00 ContainerStream: 2026-10-02 11:36:46,075 - azure.identity._credentials.environment - INFO - No environment configuration found.
+2026-10-02T11:36:46.0829699+00:00 ContainerStream: 2026-10-02 11:36:46,076 - azure.identity._credentials.managed_identity - INFO - ManagedIdentityCredential will use App Service managed identity
+2026-10-02T11:36:46.0930353+00:00 ContainerStream: 2026-10-02 11:36:46,092 - azure.core.pipeline.policies.http_logging_policy - INFO - Request URL: 'http://169.254.130.4:8081/msi/token?api-version=2019-08-01&resource=REDACTED'
+2026-10-02T11:36:46.0930848+00:00 ContainerStream: Request method: 'GET'
+2026-10-02T11:36:46.0930882+00:00 ContainerStream: Request headers:
+2026-10-02T11:36:46.0930906+00:00 ContainerStream:     'X-IDENTITY-HEADER': 'REDACTED'
+2026-10-02T11:36:46.0930926+00:00 ContainerStream:     'Metadata': 'REDACTED'
+2026-10-02T11:36:46.0930950+00:00 ContainerStream:     'x-ms-client-request-id': '8c529fb6-be55-11f1-aea7-e613542fd7d1'
+2026-10-02T11:36:46.0931256+00:00 ContainerStream:     'User-Agent': 'azsdk-python-identity/1.26.0 Python/3.11.15 (Linux-6.6.150.1-1.azl3-x86_64-with-glibc2.36)'
+2026-10-02T11:36:46.0931288+00:00 ContainerStream: No body was attached to the request
+2026-10-02T11:36:46.2222445+00:00 ContainerStream: 2026-10-02 11:36:46,220 - azure.core.pipeline.policies.http_logging_policy - INFO - Response status: 200
+2026-10-02T11:36:46.2223021+00:00 ContainerStream: Response headers:
+2026-10-02T11:36:46.2223057+00:00 ContainerStream:     'Content-Type': 'application/json; charset=utf-8'
+2026-10-02T11:36:46.2223080+00:00 ContainerStream:     'Date': 'Fri, 02 Oct 2026 11:36:46 GMT'
+2026-10-02T11:36:46.2223104+00:00 ContainerStream:     'Server': 'Kestrel'
+2026-10-02T11:36:46.2223130+00:00 ContainerStream:     'Transfer-Encoding': 'chunked'
+2026-10-02T11:36:46.2223151+00:00 ContainerStream:     'X-CORRELATION-ID': 'REDACTED'
+2026-10-02T11:36:46.2223178+00:00 ContainerStream: 2026-10-02 11:36:46,220 - azure.identity._credentials.chained - INFO - DefaultAzureCredential acquired a token from ManagedIdentityCredential
+2026-10-02T11:36:46.2223209+00:00 ContainerStream: 2026-10-02 11:36:46,221 - azure.core.pipeline.policies.http_logging_policy - INFO - Request URL: 'https://tailorsync-ai-resource.services.ai.azure.com/models/chat/completions?api-version=2024-05-01-preview'
+2026-10-02T11:36:46.2223230+00:00 ContainerStream: Request method: 'POST'
+2026-10-02T11:36:46.2223518+00:00 ContainerStream: Request headers:
+2026-10-02T11:36:46.2223546+00:00 ContainerStream:     'Content-Type': 'application/json'
+2026-10-02T11:36:46.2223567+00:00 ContainerStream:     'Content-Length': '2143'
+2026-10-02T11:36:46.2223588+00:00 ContainerStream:     'Accept': 'application/json'
+2026-10-02T11:36:46.2223612+00:00 ContainerStream:     'x-ms-client-request-id': '8c5286fc-be55-11f1-aea7-e613542fd7d1'
+2026-10-02T11:36:46.2223638+00:00 ContainerStream:     'User-Agent': 'azsdk-python-ai-inference/1.0.0b9 Python/3.11.15 (Linux-6.6.150.1-1.azl3-x86_64-with-glibc2.36)'
+2026-10-02T11:36:46.2223659+00:00 ContainerStream:     'Authorization': 'REDACTED'
+2026-10-02T11:36:46.2223680+00:00 ContainerStream: A body is sent with the request
+2026-10-02T11:36:57.6560978+00:00 ContainerStream: 2026-10-02 11:36:57,654 - azure.core.pipeline.policies.http_logging_policy - INFO - Response status: 200
+2026-10-02T11:36:57.6561532+00:00 ContainerStream: Response headers:
+2026-10-02T11:36:57.6561569+00:00 ContainerStream:     'Content-Length': '2149'
+2026-10-02T11:36:57.6561592+00:00 ContainerStream:     'Content-Type': 'application/json'
+2026-10-02T11:36:57.6561615+00:00 ContainerStream:     'Date': 'Fri, 02 Oct 2026 11:36:45 GMT'
+2026-10-02T11:36:57.6561883+00:00 ContainerStream:     'Server': 'istio-envoy'
+2026-10-02T11:36:57.6561907+00:00 ContainerStream:     'Vary': 'REDACTED'
+2026-10-02T11:36:57.6561929+00:00 ContainerStream:     'azureai-fe-is-streaming': 'REDACTED'
+2026-10-02T11:36:57.6561949+00:00 ContainerStream:     'azureai-fe-offer-type': 'REDACTED'
+2026-10-02T11:36:57.6561970+00:00 ContainerStream:     'azureml-model-session': 'REDACTED'
+2026-10-02T11:36:57.6561990+00:00 ContainerStream:     'skip-error-remapping': 'REDACTED'
+2026-10-02T11:36:57.6562010+00:00 ContainerStream:     'x-accel-buffering': 'REDACTED'
+2026-10-02T11:36:57.6562029+00:00 ContainerStream:     'x-ms-is-spilled-over': 'REDACTED'
+2026-10-02T11:36:57.6562049+00:00 ContainerStream:     'x-ms-rai-invoked': 'REDACTED'
+2026-10-02T11:36:57.6562069+00:00 ContainerStream:     'x-ms-served-model': 'REDACTED'
+2026-10-02T11:36:57.6562090+00:00 ContainerStream:     'x-ratelimit-abusepenalty-active': 'REDACTED'
+2026-10-02T11:36:57.6562110+00:00 ContainerStream:     'x-ratelimit-key': 'REDACTED'
+2026-10-02T11:36:57.6562131+00:00 ContainerStream:     'x-ratelimit-limit-requests': 'REDACTED'
+2026-10-02T11:36:57.6562230+00:00 ContainerStream:     'x-ratelimit-limit-tokens': 'REDACTED'
+2026-10-02T11:36:57.6562255+00:00 ContainerStream:     'x-ratelimit-remaining-requests': 'REDACTED'
+2026-10-02T11:36:57.6562276+00:00 ContainerStream:     'x-ratelimit-remaining-tokens': 'REDACTED'
+2026-10-02T11:36:57.6562297+00:00 ContainerStream:     'x-ratelimit-renewalperiod-requests': 'REDACTED'
+2026-10-02T11:36:57.6562318+00:00 ContainerStream:     'x-ratelimit-renewalperiod-tokens': 'REDACTED'
+2026-10-02T11:36:57.6562339+00:00 ContainerStream:     'x-ratelimit-reset-requests': 'REDACTED'
+2026-10-02T11:36:57.6562359+00:00 ContainerStream:     'x-ratelimit-reset-tokens': 'REDACTED'
+2026-10-02T11:36:57.6562379+00:00 ContainerStream:     'x-request-id': 'REDACTED'
+2026-10-02T11:36:57.6562399+00:00 ContainerStream:     'apim-request-id': 'REDACTED'
+2026-10-02T11:36:57.6562419+00:00 ContainerStream:     'Strict-Transport-Security': 'REDACTED'
+2026-10-02T11:36:57.6562441+00:00 ContainerStream:     'x-ms-client-request-id': '8c5286fc-be55-11f1-aea7-e613542fd7d1'
+2026-10-02T11:36:57.6562461+00:00 ContainerStream:     'X-Content-Type-Options': 'REDACTED'
+2026-10-02T11:36:57.6562481+00:00 ContainerStream:     'x-ms-region': 'REDACTED'
+2026-10-02T11:36:57.6860329+00:00 ContainerStream: INFO:     169.254.130.1:60357 - "POST /api/v1/ai/estimate-fabric HTTP/1.1" 200 OK
+2026-10-02T11:37:08.9938737+00:00 ContainerStream: INFO:     169.254.130.1:21517 - "POST /api/v1/orders/ HTTP/1.1" 200 OK
+2026-10-02T11:37:09.7524140+00:00 ContainerStream: INFO:     169.254.130.1:21517 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-10-02T11:37:10.7024861+00:00 ContainerStream: 2026-10-02 11:37:10,702 - app.services.email_service - INFO - Email sent successfully to agsvwimalasiri@gmail.com
+2026-10-02T11:37:21.7944208+00:00 ContainerStream: INFO:     169.254.130.1:36255 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-10-02T11:37:30.8151560+00:00 ContainerStream: INFO:     169.254.130.1:43537 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-10-02T11:37:37.6964685+00:00 ContainerStream: INFO:     169.254.130.1:36455 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-10-02T11:37:38.3361631+00:00 ContainerStream: INFO:     169.254.130.1:36455 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-10-02T11:37:46.3367072+00:00 ContainerStream: INFO:     169.254.130.1:34895 - "PUT /api/v1/orders/23 HTTP/1.1" 200 OK
+2026-10-02T11:37:46.7312174+00:00 ContainerStream: INFO:     169.254.130.1:34895 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-10-02T11:37:47.4267882+00:00 ContainerStream: INFO:     169.254.130.1:34895 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-10-02T11:37:56.4569695+00:00 ContainerStream: INFO:     169.254.130.1:26147 - "PUT /api/v1/orders/23 HTTP/1.1" 200 OK
+2026-10-02T11:37:56.8433420+00:00 ContainerStream: INFO:     169.254.130.1:26147 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-10-02T11:37:56.9488482+00:00 ContainerStream: 2026-10-02 11:37:56,947 - app.services.email_service - ERROR - Failed to send email to youwillbehappy987gmail.com: {'youwillbehappy987gmail.com': (553, b'5.1.3 The recipient address <youwillbehappy987gmail.com> is not a valid RFC\n5.1.3 5321 address. For more information, go to\n5.1.3  https://support.google.com/a/answer/3221692 and review RFC 5321\n5.1.3 specifications. 46e09a7af769-82279b7dbd9sm2582815a34.12 - gsmtp')}
+2026-10-02T11:37:57.4858400+00:00 ContainerStream: INFO:     169.254.130.1:26147 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-10-02T11:38:20.0500693+00:00 ContainerStream: INFO:     169.254.130.1:35037 - "GET /api/v1/orders/stats HTTP/1.1" 200 OK
+2026-10-02T11:38:20.4656019+00:00 ContainerStream: INFO:     169.254.130.1:35037 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-10-02T11:38:21.0873005+00:00 ContainerStream: INFO:     169.254.130.1:35037 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-10-02T11:38:21.7308024+00:00 ContainerStream: INFO:     169.254.130.1:35037 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-10-02T11:38:24.9328710+00:00 ContainerStream: INFO:     169.254.130.1:35037 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-10-02T11:38:25.5385827+00:00 ContainerStream: INFO:     169.254.130.1:35037 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-10-02T11:38:33.6165320+00:00 ContainerStream: INFO:     169.254.130.1:64719 - "PUT /api/v1/orders/23 HTTP/1.1" 200 OK
+2026-10-02T11:38:34.0274193+00:00 ContainerStream: INFO:     169.254.130.1:64719 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-10-02T11:38:34.6589222+00:00 ContainerStream: INFO:     169.254.130.1:64719 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-10-02T11:38:45.5507364+00:00 ContainerStream: INFO:     169.254.130.1:16071 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-10-02T11:38:46.1771900+00:00 ContainerStream: INFO:     169.254.130.1:16071 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-10-02T11:39:00.5777865+00:00 ContainerStream: INFO:     169.254.130.1:47105 - "GET /api/v1/customers/ HTTP/1.1" 200 OK
+2026-10-02T11:39:01.1020694+00:00 ContainerStream: INFO:     169.254.130.1:47105 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-10-02T11:39:01.7193056+00:00 ContainerStream: INFO:     169.254.130.1:47105 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-10-02T11:39:02.2373970+00:00 ContainerStream: INFO:     169.254.130.1:47105 - "GET /api/v1/orders/stats HTTP/1.1" 200 OK
+2026-10-02T11:39:02.8727266+00:00 ContainerStream: INFO:     169.254.130.1:47105 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-10-02T11:39:03.2978685+00:00 ContainerStream: INFO:     169.254.130.1:47105 - "GET /api/v1/staff/ HTTP/1.1" 200 OK
+2026-10-02T11:39:10.0125078+00:00 ContainerStream: INFO:     169.254.130.1:44819 - "GET /api/v1/orders/stats HTTP/1.1" 200 OK
+2026-10-02T11:39:10.4194306+00:00 ContainerStream: INFO:     169.254.130.1:44819 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-10-02T11:39:11.0901709+00:00 ContainerStream: INFO:     169.254.130.1:44819 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-10-02T11:39:11.7831319+00:00 ContainerStream: INFO:     169.254.130.1:44819 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-10-02T11:39:13.4274692+00:00 ContainerStream: INFO:     169.254.130.1:44819 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-10-02T11:39:13.8601823+00:00 ContainerStream: INFO:     169.254.130.1:44819 - "GET /api/v1/staff/ HTTP/1.1" 200 OK
+2026-10-02T11:39:14.4536874+00:00 ContainerStream: INFO:     169.254.130.1:44819 - "GET /api/v1/customers/ HTTP/1.1" 200 OK
+2026-10-02T11:39:22.2196356+00:00 ContainerStream: INFO:     169.254.130.1:50621 - "GET /api/v1/ai/input-ranges/trouser HTTP/1.1" 200 OK
+2026-10-02T11:39:32.1379582+00:00 ContainerStream: 2026-10-02 11:39:32,135 - app.services.ai_service - INFO - AI [predict_measurements] called for user 8 using Microsoft Foundry
+2026-10-02T11:39:32.1380080+00:00 ContainerStream: 2026-10-02 11:39:32,135 - app.services.foundry_client - WARNING - FOUNDRY_API_KEY is not set.
+2026-10-02T11:39:32.1380114+00:00 ContainerStream: 2026-10-02 11:39:32,135 - azure.identity._credentials.environment - INFO - No environment configuration found.
+2026-10-02T11:39:32.1380141+00:00 ContainerStream: 2026-10-02 11:39:32,136 - azure.identity._credentials.managed_identity - INFO - ManagedIdentityCredential will use App Service managed identity
+2026-10-02T11:39:32.1418950+00:00 ContainerStream: 2026-10-02 11:39:32,140 - azure.core.pipeline.policies.http_logging_policy - INFO - Request URL: 'http://169.254.130.4:8081/msi/token?api-version=2019-08-01&resource=REDACTED'
+2026-10-02T11:39:32.1419086+00:00 ContainerStream: Request method: 'GET'
+2026-10-02T11:39:32.1419111+00:00 ContainerStream: Request headers:
+2026-10-02T11:39:32.1419133+00:00 ContainerStream:     'X-IDENTITY-HEADER': 'REDACTED'
+2026-10-02T11:39:32.1419154+00:00 ContainerStream:     'Metadata': 'REDACTED'
+2026-10-02T11:39:32.1419177+00:00 ContainerStream:     'x-ms-client-request-id': 'ef4bac98-be55-11f1-b057-e613542fd7d1'
+2026-10-02T11:39:32.1419203+00:00 ContainerStream:     'User-Agent': 'azsdk-python-identity/1.26.0 Python/3.11.15 (Linux-6.6.150.1-1.azl3-x86_64-with-glibc2.36)'
+2026-10-02T11:39:32.1419224+00:00 ContainerStream: No body was attached to the request
+2026-10-02T11:39:32.2220340+00:00 ContainerStream: 2026-10-02 11:39:32,220 - azure.core.pipeline.policies.http_logging_policy - INFO - Response status: 200
+2026-10-02T11:39:32.2220918+00:00 ContainerStream: Response headers:
+2026-10-02T11:39:32.2220955+00:00 ContainerStream:     'Content-Type': 'application/json; charset=utf-8'
+2026-10-02T11:39:32.2220978+00:00 ContainerStream:     'Date': 'Fri, 02 Oct 2026 11:39:31 GMT'
+2026-10-02T11:39:32.2220998+00:00 ContainerStream:     'Server': 'Kestrel'
+2026-10-02T11:39:32.2221019+00:00 ContainerStream:     'Transfer-Encoding': 'chunked'
+2026-10-02T11:39:32.2221040+00:00 ContainerStream:     'X-CORRELATION-ID': 'REDACTED'
+2026-10-02T11:39:32.2391288+00:00 ContainerStream: 2026-10-02 11:39:32,232 - azure.identity._credentials.chained - INFO - DefaultAzureCredential acquired a token from ManagedIdentityCredential
+2026-10-02T11:39:32.2391923+00:00 ContainerStream: 2026-10-02 11:39:32,232 - azure.core.pipeline.policies.http_logging_policy - INFO - Request URL: 'https://tailorsync-ai-resource.services.ai.azure.com/models/chat/completions?api-version=2024-05-01-preview'
+2026-10-02T11:39:32.2391956+00:00 ContainerStream: Request method: 'POST'
+2026-10-02T11:39:32.2391977+00:00 ContainerStream: Request headers:
+2026-10-02T11:39:32.2392096+00:00 ContainerStream:     'Content-Type': 'application/json'
+2026-10-02T11:39:32.2392121+00:00 ContainerStream:     'Content-Length': '2066'
+2026-10-02T11:39:32.2392142+00:00 ContainerStream:     'Accept': 'application/json'
+2026-10-02T11:39:32.2392166+00:00 ContainerStream:     'x-ms-client-request-id': 'ef4b9852-be55-11f1-b057-e613542fd7d1'
+2026-10-02T11:39:32.2392192+00:00 ContainerStream:     'User-Agent': 'azsdk-python-ai-inference/1.0.0b9 Python/3.11.15 (Linux-6.6.150.1-1.azl3-x86_64-with-glibc2.36)'
+2026-10-02T11:39:32.2392212+00:00 ContainerStream:     'Authorization': 'REDACTED'
+2026-10-02T11:39:32.2392233+00:00 ContainerStream: A body is sent with the request
+2026-10-02T11:39:58.5344250+00:00 ContainerStream: 2026-10-02 11:39:58,534 - azure.core.pipeline.policies.http_logging_policy - INFO - Response status: 200
+2026-10-02T11:39:58.5344980+00:00 ContainerStream: Response headers:
+2026-10-02T11:39:58.5345014+00:00 ContainerStream:     'Content-Length': '3258'
+2026-10-02T11:39:58.5345037+00:00 ContainerStream:     'Content-Type': 'application/json'
+2026-10-02T11:39:58.5345061+00:00 ContainerStream:     'Date': 'Fri, 02 Oct 2026 11:39:31 GMT'
+2026-10-02T11:39:58.5345082+00:00 ContainerStream:     'Server': 'istio-envoy'
+2026-10-02T11:39:58.5345205+00:00 ContainerStream:     'Vary': 'REDACTED'
+2026-10-02T11:39:58.5345228+00:00 ContainerStream:     'azureai-fe-is-streaming': 'REDACTED'
+2026-10-02T11:39:58.5345249+00:00 ContainerStream:     'azureai-fe-offer-type': 'REDACTED'
+2026-10-02T11:39:58.5345270+00:00 ContainerStream:     'azureml-model-session': 'REDACTED'
+2026-10-02T11:39:58.5345290+00:00 ContainerStream:     'skip-error-remapping': 'REDACTED'
+2026-10-02T11:39:58.5345311+00:00 ContainerStream:     'x-accel-buffering': 'REDACTED'
+2026-10-02T11:39:58.5345332+00:00 ContainerStream:     'x-ms-is-spilled-over': 'REDACTED'
+2026-10-02T11:39:58.5345353+00:00 ContainerStream:     'x-ms-rai-invoked': 'REDACTED'
+2026-10-02T11:39:58.5345374+00:00 ContainerStream:     'x-ms-served-model': 'REDACTED'
+2026-10-02T11:39:58.5345396+00:00 ContainerStream:     'x-ratelimit-abusepenalty-active': 'REDACTED'
+2026-10-02T11:39:58.5345416+00:00 ContainerStream:     'x-ratelimit-key': 'REDACTED'
+2026-10-02T11:39:58.5345437+00:00 ContainerStream:     'x-ratelimit-limit-requests': 'REDACTED'
+2026-10-02T11:39:58.5345459+00:00 ContainerStream:     'x-ratelimit-limit-tokens': 'REDACTED'
+2026-10-02T11:39:58.5345504+00:00 ContainerStream:     'x-ratelimit-remaining-requests': 'REDACTED'
+2026-10-02T11:39:58.5345526+00:00 ContainerStream:     'x-ratelimit-remaining-tokens': 'REDACTED'
+2026-10-02T11:39:58.5345548+00:00 ContainerStream:     'x-ratelimit-renewalperiod-requests': 'REDACTED'
+2026-10-02T11:39:58.5345569+00:00 ContainerStream:     'x-ratelimit-renewalperiod-tokens': 'REDACTED'
+2026-10-02T11:39:58.5345590+00:00 ContainerStream:     'x-ratelimit-reset-requests': 'REDACTED'
+2026-10-02T11:39:58.5345611+00:00 ContainerStream:     'x-ratelimit-reset-tokens': 'REDACTED'
+2026-10-02T11:39:58.5345631+00:00 ContainerStream:     'x-request-id': 'REDACTED'
+2026-10-02T11:39:58.5345652+00:00 ContainerStream:     'apim-request-id': 'REDACTED'
+2026-10-02T11:39:58.5345673+00:00 ContainerStream:     'Strict-Transport-Security': 'REDACTED'
+2026-10-02T11:39:58.5345695+00:00 ContainerStream:     'x-ms-client-request-id': 'ef4b9852-be55-11f1-b057-e613542fd7d1'
+2026-10-02T11:39:58.5345716+00:00 ContainerStream:     'X-Content-Type-Options': 'REDACTED'
+2026-10-02T11:39:58.5345736+00:00 ContainerStream:     'x-ms-region': 'REDACTED'
+2026-10-02T11:39:58.5462998+00:00 ContainerStream: INFO:     169.254.130.1:27215 - "POST /api/v1/ai/foundry-predict HTTP/1.1" 200 OK
+2026-10-02T11:40:21.1023015+00:00 ContainerStream: INFO:     169.254.130.1:59113 - "GET /api/v1/auth/verify HTTP/1.1" 200 OK
+2026-10-02T11:40:21.5056979+00:00 ContainerStream: INFO:     169.254.130.1:59113 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-10-02T11:40:22.2368238+00:00 ContainerStream: INFO:     169.254.130.1:59113 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-10-02T11:40:23.2561112+00:00 ContainerStream: INFO:     169.254.130.1:59113 - "GET /api/v1/orders/stats HTTP/1.1" 200 OK
+2026-10-02T11:40:23.7197205+00:00 ContainerStream: INFO:     169.254.130.1:59113 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-10-02T11:40:24.3376647+00:00 ContainerStream: INFO:     169.254.130.1:59113 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-10-02T11:40:25.0975525+00:00 ContainerStream: INFO:     169.254.130.1:59113 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-10-02T11:40:27.0763126+00:00 ContainerStream: INFO:     169.254.130.1:59113 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-10-02T11:40:27.7212309+00:00 ContainerStream: INFO:     169.254.130.1:59113 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-10-02T11:40:30.2288383+00:00 ContainerStream: INFO:     169.254.130.1:59113 - "GET /api/v1/orders/stats HTTP/1.1" 200 OK
+2026-10-02T11:40:30.6462005+00:00 ContainerStream: INFO:     169.254.130.1:59113 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-10-02T11:40:31.2790145+00:00 ContainerStream: INFO:     169.254.130.1:59113 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-10-02T11:40:31.9409137+00:00 ContainerStream: INFO:     169.254.130.1:59113 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-10-02T11:40:32.7332887+00:00 ContainerStream: INFO:     169.254.130.1:59113 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-10-02T11:40:33.1782664+00:00 ContainerStream: INFO:     169.254.130.1:59113 - "GET /api/v1/staff/ HTTP/1.1" 200 OK
+2026-10-02T11:40:33.7563045+00:00 ContainerStream: INFO:     169.254.130.1:59113 - "GET /api/v1/customers/ HTTP/1.1" 200 OK
+2026-10-02T11:40:40.1105174+00:00 ContainerStream: INFO:     169.254.130.1:52833 - "GET /api/v1/ai/input-ranges/trouser HTTP/1.1" 200 OK
+2026-10-02T11:40:56.5996970+00:00 ContainerStream: 2026-10-02 11:40:56,598 - app.services.ai_service - INFO - AI [predict_measurements] called for user 8 using Microsoft Foundry
+2026-10-02T11:40:56.5997554+00:00 ContainerStream: 2026-10-02 11:40:56,598 - app.services.foundry_client - WARNING - FOUNDRY_API_KEY is not set.
+2026-10-02T11:40:56.5997588+00:00 ContainerStream: 2026-10-02 11:40:56,598 - azure.identity._credentials.environment - INFO - No environment configuration found.
+2026-10-02T11:40:56.6074991+00:00 ContainerStream: 2026-10-02 11:40:56,600 - azure.identity._credentials.managed_identity - INFO - ManagedIdentityCredential will use App Service managed identity
+2026-10-02T11:40:56.6185332+00:00 ContainerStream: 2026-10-02 11:40:56,618 - azure.core.pipeline.policies.http_logging_policy - INFO - Request URL: 'http://169.254.130.4:8081/msi/token?api-version=2019-08-01&resource=REDACTED'
+2026-10-02T11:40:56.6185873+00:00 ContainerStream: Request method: 'GET'
+2026-10-02T11:40:56.6185907+00:00 ContainerStream: Request headers:
+2026-10-02T11:40:56.6185937+00:00 ContainerStream:     'X-IDENTITY-HEADER': 'REDACTED'
+2026-10-02T11:40:56.6185959+00:00 ContainerStream:     'Metadata': 'REDACTED'
+2026-10-02T11:40:56.6185983+00:00 ContainerStream:     'x-ms-client-request-id': '21a5e47e-be56-11f1-b057-e613542fd7d1'
+2026-10-02T11:40:56.6186009+00:00 ContainerStream:     'User-Agent': 'azsdk-python-identity/1.26.0 Python/3.11.15 (Linux-6.6.150.1-1.azl3-x86_64-with-glibc2.36)'
+2026-10-02T11:40:56.6186122+00:00 ContainerStream: No body was attached to the request
+2026-10-02T11:40:56.7294621+00:00 ContainerStream: 2026-10-02 11:40:56,729 - azure.core.pipeline.policies.http_logging_policy - INFO - Response status: 200
+2026-10-02T11:40:56.7295220+00:00 ContainerStream: Response headers:
+2026-10-02T11:40:56.7295255+00:00 ContainerStream:     'Content-Type': 'application/json; charset=utf-8'
+2026-10-02T11:40:56.7295278+00:00 ContainerStream:     'Date': 'Fri, 02 Oct 2026 11:40:56 GMT'
+2026-10-02T11:40:56.7295299+00:00 ContainerStream:     'Server': 'Kestrel'
+2026-10-02T11:40:56.7295321+00:00 ContainerStream:     'Transfer-Encoding': 'chunked'
+2026-10-02T11:40:56.7295344+00:00 ContainerStream:     'X-CORRELATION-ID': 'REDACTED'
+2026-10-02T11:40:56.7369342+00:00 ContainerStream: 2026-10-02 11:40:56,735 - azure.identity._credentials.chained - INFO - DefaultAzureCredential acquired a token from ManagedIdentityCredential
+2026-10-02T11:40:56.7369759+00:00 ContainerStream: 2026-10-02 11:40:56,736 - azure.core.pipeline.policies.http_logging_policy - INFO - Request URL: 'https://tailorsync-ai-resource.services.ai.azure.com/models/chat/completions?api-version=2024-05-01-preview'
+2026-10-02T11:40:56.7369799+00:00 ContainerStream: Request method: 'POST'
+2026-10-02T11:40:56.7369821+00:00 ContainerStream: Request headers:
+2026-10-02T11:40:56.7369879+00:00 ContainerStream:     'Content-Type': 'application/json'
+2026-10-02T11:40:56.7369901+00:00 ContainerStream:     'Content-Length': '2066'
+2026-10-02T11:40:56.7369921+00:00 ContainerStream:     'Accept': 'application/json'
+2026-10-02T11:40:56.7369944+00:00 ContainerStream:     'x-ms-client-request-id': '21a5c430-be56-11f1-b057-e613542fd7d1'
+2026-10-02T11:40:56.7369971+00:00 ContainerStream:     'User-Agent': 'azsdk-python-ai-inference/1.0.0b9 Python/3.11.15 (Linux-6.6.150.1-1.azl3-x86_64-with-glibc2.36)'
+2026-10-02T11:40:56.7369992+00:00 ContainerStream:     'Authorization': 'REDACTED'
+2026-10-02T11:40:56.7370011+00:00 ContainerStream: A body is sent with the request
+2026-10-02T11:41:19.6860326+00:00 ContainerStream: 2026-10-02 11:41:19,683 - azure.core.pipeline.policies.http_logging_policy - INFO - Response status: 200
+2026-10-02T11:41:19.6861067+00:00 ContainerStream: Response headers:
+2026-10-02T11:41:19.6861098+00:00 ContainerStream:     'Content-Length': '3211'
+2026-10-02T11:41:19.6861124+00:00 ContainerStream:     'Content-Type': 'application/json'
+2026-10-02T11:41:19.6861145+00:00 ContainerStream:     'Date': 'Fri, 02 Oct 2026 11:40:56 GMT'
+2026-10-02T11:41:19.6861275+00:00 ContainerStream:     'Server': 'istio-envoy'
+2026-10-02T11:41:19.6861299+00:00 ContainerStream:     'Vary': 'REDACTED'
+2026-10-02T11:41:19.6861320+00:00 ContainerStream:     'azureai-fe-is-streaming': 'REDACTED'
+2026-10-02T11:41:19.6861342+00:00 ContainerStream:     'azureai-fe-offer-type': 'REDACTED'
+2026-10-02T11:41:19.6861363+00:00 ContainerStream:     'azureml-model-session': 'REDACTED'
+2026-10-02T11:41:19.6861384+00:00 ContainerStream:     'skip-error-remapping': 'REDACTED'
+2026-10-02T11:41:19.6861405+00:00 ContainerStream:     'x-accel-buffering': 'REDACTED'
+2026-10-02T11:41:19.6861426+00:00 ContainerStream:     'x-ms-is-spilled-over': 'REDACTED'
+2026-10-02T11:41:19.6861448+00:00 ContainerStream:     'x-ms-rai-invoked': 'REDACTED'
+2026-10-02T11:41:19.6861468+00:00 ContainerStream:     'x-ms-served-model': 'REDACTED'
+2026-10-02T11:41:19.6861490+00:00 ContainerStream:     'x-ratelimit-abusepenalty-active': 'REDACTED'
+2026-10-02T11:41:19.6861512+00:00 ContainerStream:     'x-ratelimit-key': 'REDACTED'
+2026-10-02T11:41:19.6861533+00:00 ContainerStream:     'x-ratelimit-limit-requests': 'REDACTED'
+2026-10-02T11:41:19.6861554+00:00 ContainerStream:     'x-ratelimit-limit-tokens': 'REDACTED'
+2026-10-02T11:41:19.6861688+00:00 ContainerStream:     'x-ratelimit-remaining-requests': 'REDACTED'
+2026-10-02T11:41:19.6861710+00:00 ContainerStream:     'x-ratelimit-remaining-tokens': 'REDACTED'
+2026-10-02T11:41:19.6861732+00:00 ContainerStream:     'x-ratelimit-renewalperiod-requests': 'REDACTED'
+2026-10-02T11:41:19.6861753+00:00 ContainerStream:     'x-ratelimit-renewalperiod-tokens': 'REDACTED'
+2026-10-02T11:41:19.6861774+00:00 ContainerStream:     'x-ratelimit-reset-requests': 'REDACTED'
+2026-10-02T11:41:19.6861794+00:00 ContainerStream:     'x-ratelimit-reset-tokens': 'REDACTED'
+2026-10-02T11:41:19.6861815+00:00 ContainerStream:     'x-request-id': 'REDACTED'
+2026-10-02T11:41:19.6861835+00:00 ContainerStream:     'apim-request-id': 'REDACTED'
+2026-10-02T11:41:19.6861856+00:00 ContainerStream:     'Strict-Transport-Security': 'REDACTED'
+2026-10-02T11:41:19.6861879+00:00 ContainerStream:     'x-ms-client-request-id': '21a5c430-be56-11f1-b057-e613542fd7d1'
+2026-10-02T11:41:19.6861900+00:00 ContainerStream:     'X-Content-Type-Options': 'REDACTED'
+2026-10-02T11:41:19.6861921+00:00 ContainerStream:     'x-ms-region': 'REDACTED'
+2026-10-02T11:41:19.7024359+00:00 ContainerStream: INFO:     169.254.130.1:61151 - "POST /api/v1/ai/foundry-predict HTTP/1.1" 200 OK
+2026-10-02T11:42:15.0318141+00:00 ContainerStream: 2026-10-02 11:42:15,031 - app.services.ai_service - INFO - AI [recommend_fabrics] called for user 8 using Microsoft Foundry
+2026-10-02T11:42:15.0324913+00:00 ContainerStream: 2026-10-02 11:42:15,032 - app.services.foundry_client - WARNING - FOUNDRY_API_KEY is not set.
+2026-10-02T11:42:15.0419476+00:00 ContainerStream: 2026-10-02 11:42:15,041 - azure.identity._credentials.environment - INFO - No environment configuration found.
+2026-10-02T11:42:15.0495128+00:00 ContainerStream: 2026-10-02 11:42:15,049 - azure.identity._credentials.managed_identity - INFO - ManagedIdentityCredential will use App Service managed identity
+2026-10-02T11:42:15.0519066+00:00 ContainerStream: 2026-10-02 11:42:15,051 - azure.core.pipeline.policies.http_logging_policy - INFO - Request URL: 'http://169.254.130.4:8081/msi/token?api-version=2019-08-01&resource=REDACTED'
+2026-10-02T11:42:15.0519286+00:00 ContainerStream: Request method: 'GET'
+2026-10-02T11:42:15.0519316+00:00 ContainerStream: Request headers:
+2026-10-02T11:42:15.0519343+00:00 ContainerStream:     'X-IDENTITY-HEADER': 'REDACTED'
+2026-10-02T11:42:15.0519365+00:00 ContainerStream:     'Metadata': 'REDACTED'
+2026-10-02T11:42:15.0519393+00:00 ContainerStream:     'x-ms-client-request-id': '5065e5fc-be56-11f1-b057-e613542fd7d1'
+2026-10-02T11:42:15.0519463+00:00 ContainerStream:     'User-Agent': 'azsdk-python-identity/1.26.0 Python/3.11.15 (Linux-6.6.150.1-1.azl3-x86_64-with-glibc2.36)'
+2026-10-02T11:42:15.0519486+00:00 ContainerStream: No body was attached to the request
+2026-10-02T11:42:15.3899555+00:00 ContainerStream: 2026-10-02 11:42:15,382 - azure.core.pipeline.policies.http_logging_policy - INFO - Response status: 200
+2026-10-02T11:42:15.3900266+00:00 ContainerStream: Response headers:
+2026-10-02T11:42:15.3900307+00:00 ContainerStream:     'Content-Type': 'application/json; charset=utf-8'
+2026-10-02T11:42:15.3900332+00:00 ContainerStream:     'Date': 'Fri, 02 Oct 2026 11:42:14 GMT'
+2026-10-02T11:42:15.3900352+00:00 ContainerStream:     'Server': 'Kestrel'
+2026-10-02T11:42:15.3900373+00:00 ContainerStream:     'Transfer-Encoding': 'chunked'
+2026-10-02T11:42:15.3900394+00:00 ContainerStream:     'X-CORRELATION-ID': 'REDACTED'
+2026-10-02T11:42:15.3938364+00:00 ContainerStream: 2026-10-02 11:42:15,393 - azure.identity._credentials.chained - INFO - DefaultAzureCredential acquired a token from ManagedIdentityCredential
+2026-10-02T11:42:15.3938785+00:00 ContainerStream: 2026-10-02 11:42:15,393 - azure.core.pipeline.policies.http_logging_policy - INFO - Request URL: 'https://tailorsync-ai-resource.services.ai.azure.com/models/chat/completions?api-version=2024-05-01-preview'
+2026-10-02T11:42:15.3938817+00:00 ContainerStream: Request method: 'POST'
+2026-10-02T11:42:15.3938991+00:00 ContainerStream: Request headers:
+2026-10-02T11:42:15.3939017+00:00 ContainerStream:     'Content-Type': 'application/json'
+2026-10-02T11:42:15.3939037+00:00 ContainerStream:     'Content-Length': '759'
+2026-10-02T11:42:15.3939058+00:00 ContainerStream:     'Accept': 'application/json'
+2026-10-02T11:42:15.3939081+00:00 ContainerStream:     'x-ms-client-request-id': '5065d594-be56-11f1-b057-e613542fd7d1'
+2026-10-02T11:42:15.3939107+00:00 ContainerStream:     'User-Agent': 'azsdk-python-ai-inference/1.0.0b9 Python/3.11.15 (Linux-6.6.150.1-1.azl3-x86_64-with-glibc2.36)'
+2026-10-02T11:42:15.3939127+00:00 ContainerStream:     'Authorization': 'REDACTED'
+2026-10-02T11:42:15.3939148+00:00 ContainerStream: A body is sent with the request
+2026-10-02T11:42:27.4587243+00:00 ContainerStream: 2026-10-02 11:42:27,458 - azure.core.pipeline.policies.http_logging_policy - INFO - Response status: 200
+2026-10-02T11:42:27.4587743+00:00 ContainerStream: Response headers:
+2026-10-02T11:42:27.4587777+00:00 ContainerStream:     'Content-Length': '2468'
+2026-10-02T11:42:27.4587951+00:00 ContainerStream:     'Content-Type': 'application/json'
+2026-10-02T11:42:27.4588079+00:00 ContainerStream:     'Date': 'Fri, 02 Oct 2026 11:42:16 GMT'
+2026-10-02T11:42:27.4588101+00:00 ContainerStream:     'Server': 'istio-envoy'
+2026-10-02T11:42:27.4588121+00:00 ContainerStream:     'Vary': 'REDACTED'
+2026-10-02T11:42:27.4588142+00:00 ContainerStream:     'azureai-fe-is-streaming': 'REDACTED'
+2026-10-02T11:42:27.4588162+00:00 ContainerStream:     'azureai-fe-offer-type': 'REDACTED'
+2026-10-02T11:42:27.4588278+00:00 ContainerStream:     'azureml-model-session': 'REDACTED'
+2026-10-02T11:42:27.4588299+00:00 ContainerStream:     'skip-error-remapping': 'REDACTED'
+2026-10-02T11:42:27.4588319+00:00 ContainerStream:     'x-accel-buffering': 'REDACTED'
+2026-10-02T11:42:27.4588339+00:00 ContainerStream:     'x-ms-is-spilled-over': 'REDACTED'
+2026-10-02T11:42:27.4588362+00:00 ContainerStream:     'x-ms-rai-invoked': 'REDACTED'
+2026-10-02T11:42:27.4588382+00:00 ContainerStream:     'x-ms-served-model': 'REDACTED'
+2026-10-02T11:42:27.4588403+00:00 ContainerStream:     'x-ratelimit-abusepenalty-active': 'REDACTED'
+2026-10-02T11:42:27.4588423+00:00 ContainerStream:     'x-ratelimit-key': 'REDACTED'
+2026-10-02T11:42:27.4588443+00:00 ContainerStream:     'x-ratelimit-limit-requests': 'REDACTED'
+2026-10-02T11:42:27.4588490+00:00 ContainerStream:     'x-ratelimit-limit-tokens': 'REDACTED'
+2026-10-02T11:42:27.4588511+00:00 ContainerStream:     'x-ratelimit-remaining-requests': 'REDACTED'
+2026-10-02T11:42:27.4588531+00:00 ContainerStream:     'x-ratelimit-remaining-tokens': 'REDACTED'
+2026-10-02T11:42:27.4588554+00:00 ContainerStream:     'x-ratelimit-renewalperiod-requests': 'REDACTED'
+2026-10-02T11:42:27.4588574+00:00 ContainerStream:     'x-ratelimit-renewalperiod-tokens': 'REDACTED'
+2026-10-02T11:42:27.4588596+00:00 ContainerStream:     'x-ratelimit-reset-requests': 'REDACTED'
+2026-10-02T11:42:27.4588616+00:00 ContainerStream:     'x-ratelimit-reset-tokens': 'REDACTED'
+2026-10-02T11:42:27.4588636+00:00 ContainerStream:     'x-request-id': 'REDACTED'
+2026-10-02T11:42:27.4588655+00:00 ContainerStream:     'apim-request-id': 'REDACTED'
+2026-10-02T11:42:27.4588675+00:00 ContainerStream:     'Strict-Transport-Security': 'REDACTED'
+2026-10-02T11:42:27.4588697+00:00 ContainerStream:     'x-ms-client-request-id': '5065d594-be56-11f1-b057-e613542fd7d1'
+2026-10-02T11:42:27.4588717+00:00 ContainerStream:     'X-Content-Type-Options': 'REDACTED'
+2026-10-02T11:42:27.4588736+00:00 ContainerStream:     'x-ms-region': 'REDACTED'
+2026-10-02T11:42:27.4810041+00:00 ContainerStream: INFO:     169.254.130.1:25105 - "POST /api/v1/ai/recommend-fabric HTTP/1.1" 200 OK
+2026-10-02T11:42:32.3361210+00:00 ContainerStream: 2026-10-02 11:42:32,334 - app.services.ai_service - INFO - AI [estimate_fabric] called for user 8 using Microsoft Foundry
+2026-10-02T11:42:32.3362028+00:00 ContainerStream: 2026-10-02 11:42:32,334 - app.services.foundry_client - WARNING - FOUNDRY_API_KEY is not set.
+2026-10-02T11:42:32.3362070+00:00 ContainerStream: 2026-10-02 11:42:32,334 - azure.identity._credentials.environment - INFO - No environment configuration found.
+2026-10-02T11:42:32.3362100+00:00 ContainerStream: 2026-10-02 11:42:32,335 - azure.identity._credentials.managed_identity - INFO - ManagedIdentityCredential will use App Service managed identity
+2026-10-02T11:42:32.3500416+00:00 ContainerStream: 2026-10-02 11:42:32,341 - azure.core.pipeline.policies.http_logging_policy - INFO - Request URL: 'http://169.254.130.4:8081/msi/token?api-version=2019-08-01&resource=REDACTED'
+2026-10-02T11:42:32.3500683+00:00 ContainerStream: Request method: 'GET'
+2026-10-02T11:42:32.3500713+00:00 ContainerStream: Request headers:
+2026-10-02T11:42:32.3500736+00:00 ContainerStream:     'X-IDENTITY-HEADER': 'REDACTED'
+2026-10-02T11:42:32.3500757+00:00 ContainerStream:     'Metadata': 'REDACTED'
+2026-10-02T11:42:32.3500780+00:00 ContainerStream:     'x-ms-client-request-id': '5ab41a88-be56-11f1-b057-e613542fd7d1'
+2026-10-02T11:42:32.3500811+00:00 ContainerStream:     'User-Agent': 'azsdk-python-identity/1.26.0 Python/3.11.15 (Linux-6.6.150.1-1.azl3-x86_64-with-glibc2.36)'
+2026-10-02T11:42:32.3500928+00:00 ContainerStream: No body was attached to the request
+2026-10-02T11:42:32.4427413+00:00 ContainerStream: 2026-10-02 11:42:32,442 - azure.core.pipeline.policies.http_logging_policy - INFO - Response status: 200
+2026-10-02T11:42:32.4428065+00:00 ContainerStream: Response headers:
+2026-10-02T11:42:32.4428099+00:00 ContainerStream:     'Content-Type': 'application/json; charset=utf-8'
+2026-10-02T11:42:32.4428121+00:00 ContainerStream:     'Date': 'Fri, 02 Oct 2026 11:42:31 GMT'
+2026-10-02T11:42:32.4428141+00:00 ContainerStream:     'Server': 'Kestrel'
+2026-10-02T11:42:32.4428169+00:00 ContainerStream:     'Transfer-Encoding': 'chunked'
+2026-10-02T11:42:32.4428193+00:00 ContainerStream:     'X-CORRELATION-ID': 'REDACTED'
+2026-10-02T11:42:32.4618930+00:00 ContainerStream: 2026-10-02 11:42:32,460 - azure.identity._credentials.chained - INFO - DefaultAzureCredential acquired a token from ManagedIdentityCredential
+2026-10-02T11:42:32.4619598+00:00 ContainerStream: 2026-10-02 11:42:32,460 - azure.core.pipeline.policies.http_logging_policy - INFO - Request URL: 'https://tailorsync-ai-resource.services.ai.azure.com/models/chat/completions?api-version=2024-05-01-preview'
+2026-10-02T11:42:32.4619630+00:00 ContainerStream: Request method: 'POST'
+2026-10-02T11:42:32.4619656+00:00 ContainerStream: Request headers:
+2026-10-02T11:42:32.4619781+00:00 ContainerStream:     'Content-Type': 'application/json'
+2026-10-02T11:42:32.4619802+00:00 ContainerStream:     'Content-Length': '2023'
+2026-10-02T11:42:32.4619823+00:00 ContainerStream:     'Accept': 'application/json'
+2026-10-02T11:42:32.4619846+00:00 ContainerStream:     'x-ms-client-request-id': '5ab405c0-be56-11f1-b057-e613542fd7d1'
+2026-10-02T11:42:32.4619872+00:00 ContainerStream:     'User-Agent': 'azsdk-python-ai-inference/1.0.0b9 Python/3.11.15 (Linux-6.6.150.1-1.azl3-x86_64-with-glibc2.36)'
+2026-10-02T11:42:32.4619893+00:00 ContainerStream:     'Authorization': 'REDACTED'
+2026-10-02T11:42:32.4619913+00:00 ContainerStream: A body is sent with the request
+2026-10-02T11:42:40.1980416+00:00 ContainerStream: 2026-10-02 11:42:40,195 - azure.core.pipeline.policies.http_logging_policy - INFO - Response status: 200
+2026-10-02T11:42:40.1980975+00:00 ContainerStream: Response headers:
+2026-10-02T11:42:40.1981007+00:00 ContainerStream:     'Content-Length': '2032'
+2026-10-02T11:42:40.1981034+00:00 ContainerStream:     'Content-Type': 'application/json'
+2026-10-02T11:42:40.1981059+00:00 ContainerStream:     'Date': 'Fri, 02 Oct 2026 11:42:32 GMT'
+2026-10-02T11:42:40.1981183+00:00 ContainerStream:     'Server': 'istio-envoy'
+2026-10-02T11:42:40.1981205+00:00 ContainerStream:     'Vary': 'REDACTED'
+2026-10-02T11:42:40.1981228+00:00 ContainerStream:     'azureai-fe-is-streaming': 'REDACTED'
+2026-10-02T11:42:40.1981249+00:00 ContainerStream:     'azureai-fe-offer-type': 'REDACTED'
+2026-10-02T11:42:40.1981271+00:00 ContainerStream:     'azureml-model-session': 'REDACTED'
+2026-10-02T11:42:40.1981292+00:00 ContainerStream:     'skip-error-remapping': 'REDACTED'
+2026-10-02T11:42:40.1981312+00:00 ContainerStream:     'x-accel-buffering': 'REDACTED'
+2026-10-02T11:42:40.1981334+00:00 ContainerStream:     'x-ms-is-spilled-over': 'REDACTED'
+2026-10-02T11:42:40.1981354+00:00 ContainerStream:     'x-ms-rai-invoked': 'REDACTED'
+2026-10-02T11:42:40.1981375+00:00 ContainerStream:     'x-ms-served-model': 'REDACTED'
+2026-10-02T11:42:40.1981398+00:00 ContainerStream:     'x-ratelimit-abusepenalty-active': 'REDACTED'
+2026-10-02T11:42:40.1981419+00:00 ContainerStream:     'x-ratelimit-key': 'REDACTED'
+2026-10-02T11:42:40.1981441+00:00 ContainerStream:     'x-ratelimit-limit-requests': 'REDACTED'
+2026-10-02T11:42:40.1981462+00:00 ContainerStream:     'x-ratelimit-limit-tokens': 'REDACTED'
+2026-10-02T11:42:40.1981507+00:00 ContainerStream:     'x-ratelimit-remaining-requests': 'REDACTED'
+2026-10-02T11:42:40.1981530+00:00 ContainerStream:     'x-ratelimit-remaining-tokens': 'REDACTED'
+2026-10-02T11:42:40.1981552+00:00 ContainerStream:     'x-ratelimit-renewalperiod-requests': 'REDACTED'
+2026-10-02T11:42:40.1981574+00:00 ContainerStream:     'x-ratelimit-renewalperiod-tokens': 'REDACTED'
+2026-10-02T11:42:40.1981596+00:00 ContainerStream:     'x-ratelimit-reset-requests': 'REDACTED'
+2026-10-02T11:42:40.1981617+00:00 ContainerStream:     'x-ratelimit-reset-tokens': 'REDACTED'
+2026-10-02T11:42:40.1981638+00:00 ContainerStream:     'x-request-id': 'REDACTED'
+2026-10-02T11:42:40.1981659+00:00 ContainerStream:     'apim-request-id': 'REDACTED'
+2026-10-02T11:42:40.1981679+00:00 ContainerStream:     'Strict-Transport-Security': 'REDACTED'
+2026-10-02T11:42:40.1981702+00:00 ContainerStream:     'x-ms-client-request-id': '5ab405c0-be56-11f1-b057-e613542fd7d1'
+2026-10-02T11:42:40.1981723+00:00 ContainerStream:     'X-Content-Type-Options': 'REDACTED'
+2026-10-02T11:42:40.1981744+00:00 ContainerStream:     'x-ms-region': 'REDACTED'
+2026-10-02T11:42:40.2010437+00:00 ContainerStream: INFO:     169.254.130.1:25105 - "POST /api/v1/ai/estimate-fabric HTTP/1.1" 200 OK
+2026-10-02T11:49:35.9703005+00:00 ContainerStream: INFO:     169.254.130.1:59439 - "GET /api/v1/orders/stats HTTP/1.1" 200 OK
+2026-10-02T11:49:36.5755039+00:00 ContainerStream: INFO:     169.254.130.1:59439 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-10-02T11:49:37.2537735+00:00 ContainerStream: INFO:     169.254.130.1:59439 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-10-02T11:49:38.0018620+00:00 ContainerStream: INFO:     169.254.130.1:59439 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-10-02T11:49:40.4453632+00:00 ContainerStream: INFO:     169.254.130.1:59439 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-10-02T11:49:41.3438843+00:00 ContainerStream: INFO:     169.254.130.1:59439 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-10-02T11:49:48.6907773+00:00 ContainerStream: INFO:     169.254.130.1:24423 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-10-02T11:49:49.3710146+00:00 ContainerStream: INFO:     169.254.130.1:24423 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-10-02T11:49:49.6985113+00:00 ContainerStream: INFO:     169.254.130.1:24423 - "GET /api/v1/orders/stats HTTP/1.1" 200 OK
+2026-10-02T11:49:50.1143391+00:00 ContainerStream: INFO:     169.254.130.1:24423 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-10-02T11:49:50.7243057+00:00 ContainerStream: INFO:     169.254.130.1:24423 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-10-02T11:49:51.4115972+00:00 ContainerStream: INFO:     169.254.130.1:24423 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-10-02T11:50:28.2576011+00:00 ContainerStream: INFO:     169.254.130.1:36671 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-10-02T11:50:28.9922518+00:00 ContainerStream: INFO:     169.254.130.1:36671 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-10-02T11:50:36.6151087+00:00 ContainerStream: INFO:     169.254.130.1:32721 - "GET /api/v1/orders/stats HTTP/1.1" 200 OK
+2026-10-02T11:50:37.0386508+00:00 ContainerStream: INFO:     169.254.130.1:32721 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-10-02T11:50:37.6610819+00:00 ContainerStream: INFO:     169.254.130.1:32721 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-10-02T11:50:38.4164649+00:00 ContainerStream: INFO:     169.254.130.1:32721 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-10-02T11:51:05.6064899+00:00 ContainerStream: INFO:     169.254.130.1:40557 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-10-02T11:51:13.0001336+00:00 ContainerStream: INFO:     169.254.130.1:40567 - "GET /api/v1/measurement-templates/ HTTP/1.1" 200 OK
+2026-10-02T11:51:15.9290175+00:00 ContainerStream: INFO:     169.254.130.1:40567 - "GET /api/v1/business/me HTTP/1.1" 200 OK
+2026-10-02T11:52:06.4117443+00:00 ContainerStream: INFO:     169.254.130.1:55653 - "GET /api/v1/orders/stats HTTP/1.1" 200 OK
+2026-10-02T11:52:06.8180873+00:00 ContainerStream: INFO:     169.254.130.1:55653 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-10-02T11:52:07.6707361+00:00 ContainerStream: INFO:     169.254.130.1:55653 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-10-02T11:52:08.5299401+00:00 ContainerStream: INFO:     169.254.130.1:55653 - "GET /api/v1/orders/ HTTP/1.1" 200 OK
+2026-10-02T11:52:09.2270646+00:00 ContainerStream: INFO:     169.254.130.1:55653 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-10-02T11:52:21.1026557+00:00 ContainerStream: INFO:     169.254.130.1:29509 - "GET /api/v1/staff/ HTTP/1.1" 200 OK
+2026-10-02T11:52:34.1384801+00:00 ContainerStream: INFO:     169.254.130.1:54463 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+2026-10-02T11:55:59.4435550+00:00 ContainerStatus: State: Starting, Action: EstablishingSiteNetworks, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: , DetailsLevel: INFO
+2026-10-02T11:56:08.1727583+00:00 ContainerStatus: State: Starting, Action: StartingMsiContainer, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: , DetailsLevel: INFO
+2026-10-02T11:56:33.2407066+00:00 ContainerStatus: State: Starting, Action: StartingSiteContainers, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: , DetailsLevel: INFO
+2026-10-02T11:56:33.2409338+00:00 ContainerStatus: Container start method called.
+2026-10-02T11:56:33.2409878+00:00 ContainerStatus: State: Starting, Action: PullingImage, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Pulling image 10.1.0.5:13209/appsvc/python:3.11_20260910.3.tuxprod for tailorsync-api-prod., DetailsLevel: INFO
+2026-10-02T11:56:33.2410673+00:00 ContainerStatus: Establishing network.
+2026-10-02T11:56:33.2411512+00:00 ContainerStatus: Pulling image: appsvc/python:3.11_20260910.3.tuxprod.
+2026-10-02T11:56:33.4911317+00:00 ContainerStatus: Container is starting.
+2026-10-02T11:56:33.4914112+00:00 ContainerStatus: State: Starting, Action: MountingVolumes, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Mounting volumes for tailorsync-api-prod., DetailsLevel: INFO
+2026-10-02T11:56:33.4915240+00:00 ContainerStatus: Establishing user namespace if not established already.
+2026-10-02T11:56:33.4917671+00:00 ContainerStatus: Establishing network if not established already.
+2026-10-02T11:56:33.4918935+00:00 ContainerStatus: Mounting volumes.
+2026-10-02T11:56:33.4920320+00:00 ContainerStatus: Nested mountpoint 
+2026-10-02T11:56:33.5391828+00:00 ContainerStatus: Nested mountpoint volatile/logs
+2026-10-02T11:56:33.5800560+00:00 ContainerStatus: Nested mountpoint 
+2026-10-02T11:56:33.6380490+00:00 ContainerStatus: Nested mountpoint 
+2026-10-02T11:56:33.6464838+00:00 ContainerStatus: Nested mountpoint 
+2026-10-02T11:56:33.7576399+00:00 ContainerStatus: Nested mountpoint 
+2026-10-02T11:56:35.1546543+00:00 ContainerStatus: State: Starting, Action: CreatingContainer, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Finished pulling container image and mounting volumes for tailorsync-api-prod. Allocatinng the rest of the container resources to finish container creation., DetailsLevel: INFO
+2026-10-02T11:56:35.1547529+00:00 ContainerStatus: Creating container.
+2026-10-02T11:56:35.1548179+00:00 ContainerStatus: Creating pipes for streaming container io.
+2026-10-02T11:56:35.1548759+00:00 ContainerStatus: Creating stdout named pipe at /podr/container/pipe/fa581d7211ab_tailorsync-api-prod/stdout_7251367be9fb4fd8be8d00c3258dca03.
+2026-10-02T11:56:35.1550828+00:00 ContainerStatus: Successfully created stdout named pipe at: /podr/container/pipe/fa581d7211ab_tailorsync-api-prod/stdout_7251367be9fb4fd8be8d00c3258dca03.
+2026-10-02T11:56:35.1551397+00:00 ContainerStatus: Opening named pipe /podr/container/pipe/fa581d7211ab_tailorsync-api-prod/stdout_7251367be9fb4fd8be8d00c3258dca03 for reading in non-blocking mode.
+2026-10-02T11:56:35.1552219+00:00 ContainerStatus: Successfully opened named pipe: /podr/container/pipe/fa581d7211ab_tailorsync-api-prod/stdout_7251367be9fb4fd8be8d00c3258dca03.
+2026-10-02T11:56:35.1552741+00:00 ContainerStatus: Successfully removed non-blocking flag from /podr/container/pipe/fa581d7211ab_tailorsync-api-prod/stdout_7251367be9fb4fd8be8d00c3258dca03.
+2026-10-02T11:56:35.1611920+00:00 ContainerStatus: Creating stderr named pipe at /podr/container/pipe/fa581d7211ab_tailorsync-api-prod/stderr_5c4f33ef9eb84850a99d312ef69cbb60.
+2026-10-02T11:56:35.1613910+00:00 ContainerStatus: Successfully created stderr named pipe at: /podr/container/pipe/fa581d7211ab_tailorsync-api-prod/stderr_5c4f33ef9eb84850a99d312ef69cbb60.
+2026-10-02T11:56:35.1614587+00:00 ContainerStatus: Opening named pipe /podr/container/pipe/fa581d7211ab_tailorsync-api-prod/stderr_5c4f33ef9eb84850a99d312ef69cbb60 for reading in non-blocking mode.
+2026-10-02T11:56:35.1615413+00:00 ContainerStatus: Successfully opened named pipe: /podr/container/pipe/fa581d7211ab_tailorsync-api-prod/stderr_5c4f33ef9eb84850a99d312ef69cbb60.
+2026-10-02T11:56:35.1616050+00:00 ContainerStatus: Successfully removed non-blocking flag from /podr/container/pipe/fa581d7211ab_tailorsync-api-prod/stderr_5c4f33ef9eb84850a99d312ef69cbb60.
+2026-10-02T11:56:35.1901924+00:00 ContainerStatus: Creating container with image: appsvc/python:3.11_20260910.3.tuxprod from registry: 10.1.0.5:13209 and fully qualified image name: 10.1.0.5:13209/appsvc/python:3.11_20260910.3.tuxprod
+2026-10-02T11:56:36.6482366+00:00 ContainerStatus: Starting container: fa581d7211ab_tailorsync-api-prod.
+2026-10-02T11:56:36.7861984+00:00 ContainerStatus: Starting watchers and probes.
+2026-10-02T11:56:36.7957595+00:00 ContainerStatus: Starting metrics collection.
+2026-10-02T11:56:36.8040401+00:00 ContainerStatus: Container is running.
+2026-10-02T11:56:36.8051239+00:00 ContainerStatus: State: Starting, Action: CreatingContainer, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Container tailorsync-api-prod successfully created and is running., DetailsLevel: INFO
+2026-10-02T11:56:37.0588996+00:00 ContainerStatus: Container start method finished after 3809 ms.
+2026-10-02T11:56:37.0688842+00:00 ContainerStatus: State: Starting, Action: InitiatingSiteWarmUpProbe, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Container tailorsync-api-prod successfully created and is running., DetailsLevel: INFO
+2026-10-02T11:56:37.0873198+00:00 ContainerStatus: State: Starting, Action: WaitingForSiteWarmUpProbeSuccess, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Pinging warmup path to ensure container is ready to receive requests., DetailsLevel: INFO
+2026-10-02T11:56:37.5257244+00:00 ContainerStream:    _____                               
+2026-10-02T11:56:37.5343823+00:00 ContainerStream:   /  _  \ __________ _________   ____  
+2026-10-02T11:56:37.5344053+00:00 ContainerStream:  /  /_\  \\___   /  |  \_  __ \_/ __ \ 
+2026-10-02T11:56:37.5344145+00:00 ContainerStream: /    |    \/    /|  |  /|  | \/\  ___/ 
+2026-10-02T11:56:37.5344170+00:00 ContainerStream: \____|__  /_____ \____/ |__|    \___  >
+2026-10-02T11:56:37.5344206+00:00 ContainerStream:         \/      \/                  \/ 
+2026-10-02T11:56:37.5344235+00:00 ContainerStream: A P P   S E R V I C E   O N   L I N U X
+2026-10-02T11:56:37.5344260+00:00 ContainerStream: 
+2026-10-02T11:56:37.5344303+00:00 ContainerStream: Documentation     : https://aka.ms/webapp-linux
+2026-10-02T11:56:37.5344334+00:00 ContainerStream: Python quickstart : https://aka.ms/python-qs
+2026-10-02T11:56:37.5344386+00:00 ContainerStream: Python version    : 3.11.15
+2026-10-02T11:56:37.5344415+00:00 ContainerStream: Instance name     : lw1sdlwk00053T
+2026-10-02T11:56:37.5344458+00:00 ContainerStream: Instance id       : 18025e67f858a493297eae2e9fe43b620598102b03f88540a26a9d187d38ad91
+2026-10-02T11:56:37.5344482+00:00 ContainerStream: 
+2026-10-02T11:56:37.5344507+00:00 ContainerStream: App port          : 8000
+2026-10-02T11:56:37.5344534+00:00 ContainerStream: Port selected by  : Default for this image
+2026-10-02T11:56:37.5344563+00:00 ContainerStream: (Learn more about the PORT appsetting https://aka.ms/webapp-python-settings)
+2026-10-02T11:56:37.5344610+00:00 ContainerStream: 
+2026-10-02T11:56:37.5344638+00:00 ContainerStream: Note: Any data outside '/home' is not persisted
+2026-10-02T11:56:37.5344661+00:00 ContainerStream: 
+2026-10-02T11:56:37.5344709+00:00 ContainerStream: ────────────────────────────────────────────────────────────────
+2026-10-02T11:56:37.5344743+00:00 ContainerStream:  Run 'apphelp' for available commands and aliases.
+2026-10-02T11:56:37.5344770+00:00 ContainerStream:  Run 'install-nettools' to install networking utilities.
+2026-10-02T11:56:37.5344828+00:00 ContainerStream: ────────────────────────────────────────────────────────────────
+2026-10-02T11:56:42.8089852+00:00 ContainerStream: Starting OpenBSD Secure Shell server: sshd.
+2026-10-02T11:56:42.9071318+00:00 ContainerStream: WEBSITES_INCLUDE_CLOUD_CERTS is not set to true.
+2026-10-02T11:56:43.0460164+00:00 ContainerStream: Updating certificates in /etc/ssl/certs...
+2026-10-02T11:57:28.4750237+00:00 ContainerStream: rehash: warning: skipping duplicate certificate in azl_SSL.com_TLS_ECC_Root_CA_2022.pem
+2026-10-02T11:57:28.5442367+00:00 ContainerStream: rehash: warning: skipping duplicate certificate in azl_SSL.com_TLS_RSA_Root_CA_2022.pem
+2026-10-02T11:57:30.9687473+00:00 ContainerStream: rehash: warning: skipping ca-certificates.crt,it does not contain exactly one certificate or CRL
+2026-10-02T11:57:31.4120392+00:00 ContainerStream: 4 added, 0 removed; done.
+2026-10-02T11:57:31.4403285+00:00 ContainerStream: Running hooks in /etc/ca-certificates/update.d...
+2026-10-02T11:57:31.5995027+00:00 ContainerStream: done.
+2026-10-02T11:57:31.8062423+00:00 ContainerStream: CA certificates copied and updated successfully.
+2026-10-02T11:57:32.5187848+00:00 ContainerStream: Site's appCommandLine: uvicorn app.main:app --host 0.0.0.0 --port 8000
+2026-10-02T11:57:34.5154104+00:00 ContainerStream: Starting periodic command scheduler: cron.
+2026-10-02T11:57:34.5154812+00:00 ContainerStream: Launching oryx with: create-script -appPath /home/site/wwwroot -output /opt/startup/startup.sh -virtualEnvName antenv -defaultApp /opt/defaultsite -userStartupCommand 'uvicorn app.main:app --host 0.0.0.0 --port 8000'
+2026-10-02T11:57:36.4442839+00:00 ContainerStream: Could not find build manifest file at '/home/site/wwwroot/oryx-manifest.toml'
+2026-10-02T11:57:36.4443634+00:00 ContainerStream: Could not find operation ID in manifest. Generating an operation id...
+2026-10-02T11:57:36.4443687+00:00 ContainerStream: Build Operation ID: ac7d0e3b-46d1-4696-80c3-d95aae3fd63f
+2026-10-02T11:57:39.5506150+00:00 ContainerStream: Oryx Version: 0.2.20260710.1, Commit: 079b5b6294eb97d462d8f96bfa3243e9b85251da, ReleaseTagName: 20260710.1
+2026-10-02T11:57:39.6073715+00:00 ContainerStream: Writing output script to '/opt/startup/startup.sh'
+2026-10-02T11:57:39.8830470+00:00 ContainerStream: WARNING: Could not find virtual environment directory /home/site/wwwroot/antenv.
+2026-10-02T11:57:39.9101881+00:00 ContainerStream: WARNING: Could not find package directory /home/site/wwwroot/__oryx_packages__.
+2026-10-02T11:57:39.9385237+00:00 ContainerStream: /opt/startup/startup.sh: 23: uvicorn: not found
+2026-10-02T11:57:40.3972076+00:00 ContainerStatus: Container has finished running with exit code: 127.
+2026-10-02T11:57:40.4150328+00:00 ContainerStatus: Container is terminating. Grace period: 5 seconds.
+2026-10-02T11:57:40.5240193+00:00 ContainerStatus: Stop and delete container. Retry count = 0
+2026-10-02T11:57:40.5241290+00:00 ContainerStatus: Stopping container: fa581d7211ab_tailorsync-api-prod.
+2026-10-02T11:57:40.8886277+00:00 ContainerStatus: Deleting container: fa581d7211ab_tailorsync-api-prod. Retry count = 0
+2026-10-02T11:57:42.9019420+00:00 ContainerStatus: Container spec TerminationMessagePolicy  path 
+2026-10-02T11:57:42.9506494+00:00 ContainerStatus: Container is terminated. Total time elapsed: 2455 ms.
+2026-10-02T11:57:42.9509709+00:00 ContainerStatus: Site container: tailorsync-api-prod terminated during site startup.
+2026-10-02T11:57:43.3220513+00:00 ContainerStatus: State: Stopping, Action: CancellingStartup, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Site container: tailorsync-api-prod terminated during site startup. Cancelling site startup., DetailsLevel: ERR
+2026-10-02T11:57:46.5416084+00:00 ContainerStatus: Site startup probe failed after 69.0697679 seconds.
+2026-10-02T11:57:49.5571107+00:00 ContainerStatus: State: Stopping, Action: CancellingStartup, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 11:57:49, LastErrorDetails: Container exited with exit code 127 during startup after 66.2s. Please inspect your container logs for more details., Details: Site container: tailorsync-api-prod terminated during site startup. Cancelling site startup., DetailsLevel: ERR
+2026-10-02T11:57:49.8776832+00:00 ContainerStatus: Failed to start site. Revert by stopping site.
+2026-10-02T11:57:49.9167326+00:00 ContainerStatus: State: Stopping, Action: StoppingSite, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 11:57:49, LastErrorDetails: Container exited with exit code 127 during startup after 66.2s. Please inspect your container logs for more details., Details: Site container: tailorsync-api-prod terminated during site startup. Cancelling site startup., DetailsLevel: ERR
+2026-10-02T11:57:49.9674492+00:00 ContainerStatus: State: Stopping, Action: StoppingSiteContainers, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 11:57:49, LastErrorDetails: Container exited with exit code 127 during startup after 66.2s. Please inspect your container logs for more details., Details: Site container: tailorsync-api-prod terminated during site startup. Cancelling site startup., DetailsLevel: ERR
+2026-10-02T11:57:52.8312180+00:00 ContainerStatus: Site container: tailorsync-api-prod_managedIdentity terminated during site startup.
+2026-10-02T11:57:52.8810171+00:00 ContainerStatus: State: Stopping, Action: StoppingSiteContainers, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 11:57:49, LastErrorDetails: Container exited with exit code 127 during startup after 66.2s. Please inspect your container logs for more details., Details: Site container: tailorsync-api-prod terminated during site startup. Cancelling site startup., DetailsLevel: ERR
+2026-10-02T11:57:52.9201031+00:00 ContainerStatus: Site: tailorsync-api-prod stopped.
+========== New Cold Start Attempt (2026-10-02T12:54:01.5468550+00:00) ==========
+2026-10-02T12:54:01.5468550+00:00 ContainerStatus: State: Stopping, Action: StoppingSiteContainers, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 11:57:49, LastErrorDetails: Container exited with exit code 127 during startup after 66.2s. Please inspect your container logs for more details., Details: Site started at 10/02/2026 12:10:10 (UTC), DetailsLevel: INFO
+2026-10-02T12:54:01.5640062+00:00 ContainerStatus: Container is terminating. Grace period: 5 seconds.
+2026-10-02T12:54:02.0045664+00:00 ContainerStatus: Stop and delete container. Retry count = 0
+2026-10-02T12:54:02.0706461+00:00 ContainerStatus: Stopping container: 4f28ef03b76e_tailorsync-api-prod.
+2026-10-02T12:54:07.2878871+00:00 ContainerStatus: Deleting container: 4f28ef03b76e_tailorsync-api-prod. Retry count = 0
+2026-10-02T12:54:11.3112838+00:00 ContainerStatus: Container spec TerminationMessagePolicy  path 
+2026-10-02T12:54:11.3210849+00:00 ContainerStatus: Container is terminated. Total time elapsed: 9755 ms.
+2026-10-02T12:54:13.4772735+00:00 ContainerStatus: Site: tailorsync-api-prod stopped.
+2026-10-02T13:04:53.5807676+00:00 ContainerStatus: State: Starting, Action: EstablishingSiteNetworks, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: , DetailsLevel: INFO
+2026-10-02T13:04:58.4105609+00:00 ContainerStatus: State: Starting, Action: StartingMsiContainer, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: , DetailsLevel: INFO
+2026-10-02T13:05:31.2061871+00:00 ContainerStatus: State: Starting, Action: StartingSiteContainers, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: , DetailsLevel: INFO
+2026-10-02T13:05:31.2064520+00:00 ContainerStatus: Container start method called.
+2026-10-02T13:05:31.2065962+00:00 ContainerStatus: State: Starting, Action: PullingImage, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Pulling image 10.1.0.4:13209/appsvc/python:3.11_20260910.3.tuxprod for tailorsync-api-prod., DetailsLevel: INFO
+2026-10-02T13:05:31.2067000+00:00 ContainerStatus: Establishing network.
+2026-10-02T13:05:31.2067902+00:00 ContainerStatus: Pulling image: appsvc/python:3.11_20260910.3.tuxprod.
+2026-10-02T13:05:31.8102364+00:00 ContainerStatus: Container is starting.
+2026-10-02T13:05:31.8103199+00:00 ContainerStatus: State: Starting, Action: MountingVolumes, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Mounting volumes for tailorsync-api-prod., DetailsLevel: INFO
+2026-10-02T13:05:31.8103820+00:00 ContainerStatus: Establishing user namespace if not established already.
+2026-10-02T13:05:31.8104525+00:00 ContainerStatus: Establishing network if not established already.
+2026-10-02T13:05:31.8105276+00:00 ContainerStatus: Mounting volumes.
+2026-10-02T13:05:31.8121526+00:00 ContainerStatus: Nested mountpoint 
+2026-10-02T13:05:31.9679812+00:00 ContainerStatus: Nested mountpoint volatile/logs
+2026-10-02T13:05:31.9952140+00:00 ContainerStatus: Nested mountpoint 
+2026-10-02T13:05:32.0937689+00:00 ContainerStatus: Nested mountpoint 
+2026-10-02T13:05:32.1043174+00:00 ContainerStatus: Nested mountpoint 
+2026-10-02T13:05:32.1653497+00:00 ContainerStatus: Nested mountpoint 
+2026-10-02T13:05:33.9943776+00:00 ContainerStatus: State: Starting, Action: CreatingContainer, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Finished pulling container image and mounting volumes for tailorsync-api-prod. Allocatinng the rest of the container resources to finish container creation., DetailsLevel: INFO
+2026-10-02T13:05:34.0149977+00:00 ContainerStatus: Creating container.
+2026-10-02T13:05:34.0844033+00:00 ContainerStatus: Creating pipes for streaming container io.
+2026-10-02T13:05:34.0856602+00:00 ContainerStatus: Creating stdout named pipe at /podr/container/pipe/65c8c2bbd564_tailorsync-api-prod/stdout_020302b45e904daab5712a7194de7ea6.
+2026-10-02T13:05:34.0948606+00:00 ContainerStatus: Successfully created stdout named pipe at: /podr/container/pipe/65c8c2bbd564_tailorsync-api-prod/stdout_020302b45e904daab5712a7194de7ea6.
+2026-10-02T13:05:34.1040663+00:00 ContainerStatus: Opening named pipe /podr/container/pipe/65c8c2bbd564_tailorsync-api-prod/stdout_020302b45e904daab5712a7194de7ea6 for reading in non-blocking mode.
+2026-10-02T13:05:34.1645447+00:00 ContainerStatus: Successfully opened named pipe: /podr/container/pipe/65c8c2bbd564_tailorsync-api-prod/stdout_020302b45e904daab5712a7194de7ea6.
+2026-10-02T13:05:34.1715653+00:00 ContainerStatus: Successfully removed non-blocking flag from /podr/container/pipe/65c8c2bbd564_tailorsync-api-prod/stdout_020302b45e904daab5712a7194de7ea6.
+2026-10-02T13:05:34.1717141+00:00 ContainerStatus: Creating stderr named pipe at /podr/container/pipe/65c8c2bbd564_tailorsync-api-prod/stderr_6cb797456a3942c78928d9e806920f92.
+2026-10-02T13:05:34.1723284+00:00 ContainerStatus: Successfully created stderr named pipe at: /podr/container/pipe/65c8c2bbd564_tailorsync-api-prod/stderr_6cb797456a3942c78928d9e806920f92.
+2026-10-02T13:05:34.1723991+00:00 ContainerStatus: Opening named pipe /podr/container/pipe/65c8c2bbd564_tailorsync-api-prod/stderr_6cb797456a3942c78928d9e806920f92 for reading in non-blocking mode.
+2026-10-02T13:05:34.1724844+00:00 ContainerStatus: Successfully opened named pipe: /podr/container/pipe/65c8c2bbd564_tailorsync-api-prod/stderr_6cb797456a3942c78928d9e806920f92.
+2026-10-02T13:05:34.1725737+00:00 ContainerStatus: Successfully removed non-blocking flag from /podr/container/pipe/65c8c2bbd564_tailorsync-api-prod/stderr_6cb797456a3942c78928d9e806920f92.
+2026-10-02T13:05:34.1726563+00:00 ContainerStatus: Creating container with image: appsvc/python:3.11_20260910.3.tuxprod from registry: 10.1.0.4:13209 and fully qualified image name: 10.1.0.4:13209/appsvc/python:3.11_20260910.3.tuxprod
+2026-10-02T13:05:37.5317594+00:00 ContainerStatus: Starting container: 65c8c2bbd564_tailorsync-api-prod.
+2026-10-02T13:05:37.7806246+00:00 ContainerStatus: Starting watchers and probes.
+2026-10-02T13:05:37.7917214+00:00 ContainerStatus: Starting metrics collection.
+2026-10-02T13:05:37.7926041+00:00 ContainerStatus: Container is running.
+2026-10-02T13:05:37.7999207+00:00 ContainerStatus: State: Starting, Action: CreatingContainer, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Container tailorsync-api-prod successfully created and is running., DetailsLevel: INFO
+2026-10-02T13:05:38.5864073+00:00 ContainerStatus: Container start method finished after 7371 ms.
+2026-10-02T13:05:38.5867804+00:00 ContainerStatus: State: Starting, Action: InitiatingSiteWarmUpProbe, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Container tailorsync-api-prod successfully created and is running., DetailsLevel: INFO
+2026-10-02T13:05:38.5872135+00:00 ContainerStatus: State: Starting, Action: WaitingForSiteWarmUpProbeSuccess, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Pinging warmup path to ensure container is ready to receive requests., DetailsLevel: INFO
+2026-10-02T13:05:39.1041537+00:00 ContainerStream:    _____                               
+2026-10-02T13:05:39.1047415+00:00 ContainerStream:   /  _  \ __________ _________   ____  
+2026-10-02T13:05:39.1047506+00:00 ContainerStream:  /  /_\  \\___   /  |  \_  __ \_/ __ \ 
+2026-10-02T13:05:39.1047611+00:00 ContainerStream: /    |    \/    /|  |  /|  | \/\  ___/ 
+2026-10-02T13:05:39.1047637+00:00 ContainerStream: \____|__  /_____ \____/ |__|    \___  >
+2026-10-02T13:05:39.1047667+00:00 ContainerStream:         \/      \/                  \/ 
+2026-10-02T13:05:39.1047694+00:00 ContainerStream: A P P   S E R V I C E   O N   L I N U X
+2026-10-02T13:05:39.1047718+00:00 ContainerStream: 
+2026-10-02T13:05:39.1047757+00:00 ContainerStream: Documentation     : https://aka.ms/webapp-linux
+2026-10-02T13:05:39.1047786+00:00 ContainerStream: Python quickstart : https://aka.ms/python-qs
+2026-10-02T13:05:39.1047842+00:00 ContainerStream: Python version    : 3.11.15
+2026-10-02T13:05:39.1047867+00:00 ContainerStream: Instance name     : lw1sdlwk00053T
+2026-10-02T13:05:39.1047899+00:00 ContainerStream: Instance id       : 18025e67f858a493297eae2e9fe43b620598102b03f88540a26a9d187d38ad91
+2026-10-02T13:05:39.1047923+00:00 ContainerStream: 
+2026-10-02T13:05:39.1047946+00:00 ContainerStream: App port          : 8000
+2026-10-02T13:05:39.1047973+00:00 ContainerStream: Port selected by  : Default for this image
+2026-10-02T13:05:39.1048000+00:00 ContainerStream: (Learn more about the PORT appsetting https://aka.ms/webapp-python-settings)
+2026-10-02T13:05:39.1048705+00:00 ContainerStream: 
+2026-10-02T13:05:39.1048792+00:00 ContainerStream: Note: Any data outside '/home' is not persisted
+2026-10-02T13:05:39.1048817+00:00 ContainerStream: 
+2026-10-02T13:05:39.1048867+00:00 ContainerStream: ────────────────────────────────────────────────────────────────
+2026-10-02T13:05:39.1048901+00:00 ContainerStream:  Run 'apphelp' for available commands and aliases.
+2026-10-02T13:05:39.1048926+00:00 ContainerStream:  Run 'install-nettools' to install networking utilities.
+2026-10-02T13:05:39.1049004+00:00 ContainerStream: ────────────────────────────────────────────────────────────────
+2026-10-02T13:05:48.3892342+00:00 ContainerStream: Starting OpenBSD Secure Shell server: sshd.
+2026-10-02T13:05:48.4471357+00:00 ContainerStream: WEBSITES_INCLUDE_CLOUD_CERTS is not set to true.
+2026-10-02T13:05:48.5801399+00:00 ContainerStream: Updating certificates in /etc/ssl/certs...
+2026-10-02T13:06:34.5157430+00:00 ContainerStream: rehash: warning: skipping duplicate certificate in azl_SSL.com_TLS_ECC_Root_CA_2022.pem
+2026-10-02T13:06:34.5420592+00:00 ContainerStream: rehash: warning: skipping duplicate certificate in azl_SSL.com_TLS_RSA_Root_CA_2022.pem
+2026-10-02T13:06:35.2617114+00:00 ContainerStream: rehash: warning: skipping ca-certificates.crt,it does not contain exactly one certificate or CRL
+2026-10-02T13:06:35.3876830+00:00 ContainerStream: 4 added, 0 removed; done.
+2026-10-02T13:06:35.4151724+00:00 ContainerStream: Running hooks in /etc/ca-certificates/update.d...
+2026-10-02T13:06:35.4151974+00:00 ContainerStream: done.
+2026-10-02T13:06:35.4828002+00:00 ContainerStream: CA certificates copied and updated successfully.
+2026-10-02T13:06:35.8808976+00:00 ContainerStream: Site's appCommandLine: uvicorn app.main:app --host 0.0.0.0 --port 8000
+2026-10-02T13:06:36.7846956+00:00 ContainerStream: Starting periodic command scheduler: cron.
+2026-10-02T13:06:36.7867088+00:00 ContainerStream: Launching oryx with: create-script -appPath /home/site/wwwroot -output /opt/startup/startup.sh -virtualEnvName antenv -defaultApp /opt/defaultsite -userStartupCommand 'uvicorn app.main:app --host 0.0.0.0 --port 8000'
+2026-10-02T13:06:37.4460311+00:00 ContainerStream: Could not find build manifest file at '/home/site/wwwroot/oryx-manifest.toml'
+2026-10-02T13:06:37.4559532+00:00 ContainerStream: Could not find operation ID in manifest. Generating an operation id...
+2026-10-02T13:06:37.4747872+00:00 ContainerStream: Build Operation ID: ab904cdd-6532-4743-b3f1-26f8dc5c7282
+2026-10-02T13:06:38.8354509+00:00 ContainerStream: Oryx Version: 0.2.20260710.1, Commit: 079b5b6294eb97d462d8f96bfa3243e9b85251da, ReleaseTagName: 20260710.1
+2026-10-02T13:06:38.9139043+00:00 ContainerStream: Writing output script to '/opt/startup/startup.sh'
+2026-10-02T13:06:39.1078294+00:00 ContainerStream: WARNING: Could not find virtual environment directory /home/site/wwwroot/antenv.
+2026-10-02T13:06:39.1093116+00:00 ContainerStream: WARNING: Could not find package directory /home/site/wwwroot/__oryx_packages__.
+2026-10-02T13:06:39.1291257+00:00 ContainerStream: /opt/startup/startup.sh: 23: uvicorn: not found
+2026-10-02T13:06:39.5190563+00:00 ContainerStatus: Container has finished running with exit code: 127.
+2026-10-02T13:06:39.5372414+00:00 ContainerStatus: Container is terminating. Grace period: 5 seconds.
+2026-10-02T13:06:39.5670262+00:00 ContainerStatus: Stop and delete container. Retry count = 0
+2026-10-02T13:06:39.5678798+00:00 ContainerStatus: Stopping container: 65c8c2bbd564_tailorsync-api-prod.
+2026-10-02T13:06:39.7962047+00:00 ContainerStatus: Deleting container: 65c8c2bbd564_tailorsync-api-prod. Retry count = 0
+2026-10-02T13:06:40.7638241+00:00 ContainerStatus: Container spec TerminationMessagePolicy  path 
+2026-10-02T13:06:40.7833833+00:00 ContainerStatus: Container is terminated. Total time elapsed: 1235 ms.
+2026-10-02T13:06:40.7851354+00:00 ContainerStatus: Site container: tailorsync-api-prod terminated during site startup.
+2026-10-02T13:06:40.7946721+00:00 ContainerStatus: State: Stopping, Action: CancellingStartup, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Site container: tailorsync-api-prod terminated during site startup. Cancelling site startup., DetailsLevel: ERR
+2026-10-02T13:06:42.3440551+00:00 ContainerStatus: Site startup probe failed after 63.6797317 seconds.
+2026-10-02T13:06:43.8825098+00:00 ContainerStatus: State: Stopping, Action: CancellingStartup, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 13:06:43, LastErrorDetails: Container exited with exit code 127 during startup after 63.0s. Please inspect your container logs for more details., Details: Site container: tailorsync-api-prod terminated during site startup. Cancelling site startup., DetailsLevel: ERR
+2026-10-02T13:06:43.9229517+00:00 ContainerStatus: Failed to start site. Revert by stopping site.
+2026-10-02T13:06:43.9686400+00:00 ContainerStatus: State: Stopping, Action: StoppingSite, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 13:06:43, LastErrorDetails: Container exited with exit code 127 during startup after 63.0s. Please inspect your container logs for more details., Details: Site container: tailorsync-api-prod terminated during site startup. Cancelling site startup., DetailsLevel: ERR
+2026-10-02T13:06:43.9789826+00:00 ContainerStatus: State: Stopping, Action: StoppingSiteContainers, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 13:06:43, LastErrorDetails: Container exited with exit code 127 during startup after 63.0s. Please inspect your container logs for more details., Details: Site container: tailorsync-api-prod terminated during site startup. Cancelling site startup., DetailsLevel: ERR
+2026-10-02T13:06:45.4222706+00:00 ContainerStatus: Site container: tailorsync-api-prod_managedIdentity terminated during site startup.
+2026-10-02T13:06:45.4228418+00:00 ContainerStatus: State: Stopping, Action: StoppingSiteContainers, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 13:06:43, LastErrorDetails: Container exited with exit code 127 during startup after 63.0s. Please inspect your container logs for more details., Details: Site container: tailorsync-api-prod terminated during site startup. Cancelling site startup., DetailsLevel: ERR
+2026-10-02T13:06:45.4331364+00:00 ContainerStatus: Site: tailorsync-api-prod stopped.
+========== New Cold Start Attempt (2026-10-02T13:12:52.2951134+00:00) ==========
+2026-10-02T13:12:52.2951134+00:00 ContainerStatus: Site is running with deployment version: 82c34366-260e-4e26-a618-a3ddf5cc09de
+2026-10-02T13:12:52.2963239+00:00 ContainerStatus: Site started.
+2026-10-02T13:12:52.3050326+00:00 ContainerStatus: State: Started, Action: None, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 13:06:43, LastErrorDetails: Container exited with exit code 127 during startup after 63.0s. Please inspect your container logs for more details., Details: Site started at 10/02/2026 13:12:52 (UTC), DetailsLevel: INFO
+2026-10-02T13:12:52.4016873+00:00 ContainerStatus: Site is running with patch version PYTHON-3.11.15
+2026-10-02T13:12:52.9351369+00:00 ContainerStream: INFO:     169.254.130.1:47705 - "OPTIONS /api/v1/orders/ HTTP/1.1" 200 OK
+2026-10-02T13:16:50.6008281+00:00 ContainerStatus: State: Starting, Action: EstablishingSiteNetworks, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: , DetailsLevel: INFO
+2026-10-02T13:16:57.4493058+00:00 ContainerStatus: State: Starting, Action: StartingMsiContainer, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: , DetailsLevel: INFO
+2026-10-02T13:17:50.0730835+00:00 ContainerStatus: State: Starting, Action: StartingSiteContainers, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: , DetailsLevel: INFO
+2026-10-02T13:17:50.0734369+00:00 ContainerStatus: Container start method called.
+2026-10-02T13:17:50.0746712+00:00 ContainerStatus: State: Starting, Action: PullingImage, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Pulling image 10.1.0.5:13209/appsvc/python:3.11_20260910.3.tuxprod for tailorsync-api-prod., DetailsLevel: INFO
+2026-10-02T13:17:50.0748440+00:00 ContainerStatus: Establishing network.
+2026-10-02T13:17:50.0749944+00:00 ContainerStatus: Pulling image: appsvc/python:3.11_20260910.3.tuxprod.
+2026-10-02T13:17:51.0855008+00:00 ContainerStatus: Container is starting.
+2026-10-02T13:17:51.0868107+00:00 ContainerStatus: State: Starting, Action: MountingVolumes, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Mounting volumes for tailorsync-api-prod., DetailsLevel: INFO
+2026-10-02T13:17:51.0945746+00:00 ContainerStatus: Establishing user namespace if not established already.
+2026-10-02T13:17:51.1368757+00:00 ContainerStatus: Establishing network if not established already.
+2026-10-02T13:17:51.1431856+00:00 ContainerStatus: Mounting volumes.
+2026-10-02T13:17:51.1433476+00:00 ContainerStatus: Nested mountpoint 
+2026-10-02T13:17:51.2597530+00:00 ContainerStatus: Nested mountpoint volatile/logs
+2026-10-02T13:17:51.3453829+00:00 ContainerStatus: Nested mountpoint 
+2026-10-02T13:17:51.3852791+00:00 ContainerStatus: Nested mountpoint 
+2026-10-02T13:17:51.5270306+00:00 ContainerStatus: Nested mountpoint 
+2026-10-02T13:17:52.4228660+00:00 ContainerStatus: Nested mountpoint 
+2026-10-02T13:17:54.4100580+00:00 ContainerStatus: State: Starting, Action: CreatingContainer, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Finished pulling container image and mounting volumes for tailorsync-api-prod. Allocatinng the rest of the container resources to finish container creation., DetailsLevel: INFO
+2026-10-02T13:17:54.4107799+00:00 ContainerStatus: Creating container.
+2026-10-02T13:17:54.4110490+00:00 ContainerStatus: Creating pipes for streaming container io.
+2026-10-02T13:17:54.4118625+00:00 ContainerStatus: Creating stdout named pipe at /podr/container/pipe/c89b98efc83f_tailorsync-api-prod/stdout_677059b533dc4e8690226b5fdb542330.
+2026-10-02T13:17:54.4414758+00:00 ContainerStatus: Successfully created stdout named pipe at: /podr/container/pipe/c89b98efc83f_tailorsync-api-prod/stdout_677059b533dc4e8690226b5fdb542330.
+2026-10-02T13:17:54.4416228+00:00 ContainerStatus: Opening named pipe /podr/container/pipe/c89b98efc83f_tailorsync-api-prod/stdout_677059b533dc4e8690226b5fdb542330 for reading in non-blocking mode.
+2026-10-02T13:17:54.4417677+00:00 ContainerStatus: Successfully opened named pipe: /podr/container/pipe/c89b98efc83f_tailorsync-api-prod/stdout_677059b533dc4e8690226b5fdb542330.
+2026-10-02T13:17:54.4426347+00:00 ContainerStatus: Successfully removed non-blocking flag from /podr/container/pipe/c89b98efc83f_tailorsync-api-prod/stdout_677059b533dc4e8690226b5fdb542330.
+2026-10-02T13:17:54.4606265+00:00 ContainerStatus: Creating stderr named pipe at /podr/container/pipe/c89b98efc83f_tailorsync-api-prod/stderr_abcb57e60367494aa2a2c5e428e88a8c.
+2026-10-02T13:17:54.4702526+00:00 ContainerStatus: Successfully created stderr named pipe at: /podr/container/pipe/c89b98efc83f_tailorsync-api-prod/stderr_abcb57e60367494aa2a2c5e428e88a8c.
+2026-10-02T13:17:54.4789339+00:00 ContainerStatus: Opening named pipe /podr/container/pipe/c89b98efc83f_tailorsync-api-prod/stderr_abcb57e60367494aa2a2c5e428e88a8c for reading in non-blocking mode.
+2026-10-02T13:17:54.4793035+00:00 ContainerStatus: Successfully opened named pipe: /podr/container/pipe/c89b98efc83f_tailorsync-api-prod/stderr_abcb57e60367494aa2a2c5e428e88a8c.
+2026-10-02T13:17:54.4864092+00:00 ContainerStatus: Successfully removed non-blocking flag from /podr/container/pipe/c89b98efc83f_tailorsync-api-prod/stderr_abcb57e60367494aa2a2c5e428e88a8c.
+2026-10-02T13:17:54.4971017+00:00 ContainerStatus: Creating container with image: appsvc/python:3.11_20260910.3.tuxprod from registry: 10.1.0.5:13209 and fully qualified image name: 10.1.0.5:13209/appsvc/python:3.11_20260910.3.tuxprod
+2026-10-02T13:17:57.5986434+00:00 ContainerStatus: Starting container: c89b98efc83f_tailorsync-api-prod.
+2026-10-02T13:17:57.7880386+00:00 ContainerStatus: Starting watchers and probes.
+2026-10-02T13:17:57.8010015+00:00 ContainerStatus: Starting metrics collection.
+2026-10-02T13:17:57.8180925+00:00 ContainerStatus: Container is running.
+2026-10-02T13:17:57.8202691+00:00 ContainerStatus: State: Starting, Action: CreatingContainer, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Container tailorsync-api-prod successfully created and is running., DetailsLevel: INFO
+2026-10-02T13:17:58.2799572+00:00 ContainerStatus: Container start method finished after 8205 ms.
+2026-10-02T13:17:58.4451073+00:00 ContainerStatus: State: Starting, Action: InitiatingSiteWarmUpProbe, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Container tailorsync-api-prod successfully created and is running., DetailsLevel: INFO
+2026-10-02T13:17:58.4451828+00:00 ContainerStatus: State: Starting, Action: WaitingForSiteWarmUpProbeSuccess, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Pinging warmup path to ensure container is ready to receive requests., DetailsLevel: INFO
+2026-10-02T13:17:59.6687349+00:00 ContainerStream:    _____                               
+2026-10-02T13:17:59.6858660+00:00 ContainerStream:   /  _  \ __________ _________   ____  
+2026-10-02T13:17:59.6858965+00:00 ContainerStream:  /  /_\  \\___   /  |  \_  __ \_/ __ \ 
+2026-10-02T13:17:59.6858999+00:00 ContainerStream: /    |    \/    /|  |  /|  | \/\  ___/ 
+2026-10-02T13:17:59.6859029+00:00 ContainerStream: \____|__  /_____ \____/ |__|    \___  >
+2026-10-02T13:17:59.6859101+00:00 ContainerStream:         \/      \/                  \/ 
+2026-10-02T13:17:59.6859136+00:00 ContainerStream: A P P   S E R V I C E   O N   L I N U X
+2026-10-02T13:17:59.6859239+00:00 ContainerStream: 
+2026-10-02T13:17:59.6859289+00:00 ContainerStream: Documentation     : https://aka.ms/webapp-linux
+2026-10-02T13:17:59.6859318+00:00 ContainerStream: Python quickstart : https://aka.ms/python-qs
+2026-10-02T13:17:59.6859346+00:00 ContainerStream: Python version    : 3.11.15
+2026-10-02T13:17:59.6859372+00:00 ContainerStream: Instance name     : lw1sdlwk00053T
+2026-10-02T13:17:59.6859411+00:00 ContainerStream: Instance id       : 18025e67f858a493297eae2e9fe43b620598102b03f88540a26a9d187d38ad91
+2026-10-02T13:17:59.6859436+00:00 ContainerStream: 
+2026-10-02T13:17:59.6859488+00:00 ContainerStream: App port          : 8000
+2026-10-02T13:17:59.6859515+00:00 ContainerStream: Port selected by  : Default for this image
+2026-10-02T13:17:59.6859543+00:00 ContainerStream: (Learn more about the PORT appsetting https://aka.ms/webapp-python-settings)
+2026-10-02T13:17:59.6859569+00:00 ContainerStream: 
+2026-10-02T13:17:59.6859597+00:00 ContainerStream: Note: Any data outside '/home' is not persisted
+2026-10-02T13:17:59.6859620+00:00 ContainerStream: 
+2026-10-02T13:17:59.6859666+00:00 ContainerStream: ────────────────────────────────────────────────────────────────
+2026-10-02T13:17:59.6859727+00:00 ContainerStream:  Run 'apphelp' for available commands and aliases.
+2026-10-02T13:17:59.6859756+00:00 ContainerStream:  Run 'install-nettools' to install networking utilities.
+2026-10-02T13:17:59.6859795+00:00 ContainerStream: ────────────────────────────────────────────────────────────────
+2026-10-02T13:18:10.6119727+00:00 ContainerStream: Starting OpenBSD Secure Shell server: sshd.
+2026-10-02T13:18:10.7373782+00:00 ContainerStream: WEBSITES_INCLUDE_CLOUD_CERTS is not set to true.
+2026-10-02T13:18:10.8911843+00:00 ContainerStream: Updating certificates in /etc/ssl/certs...
+2026-10-02T13:18:50.7742248+00:00 ContainerStream: rehash: warning: skipping duplicate certificate in azl_SSL.com_TLS_ECC_Root_CA_2022.pem
+2026-10-02T13:18:50.7750160+00:00 ContainerStream: rehash: warning: skipping duplicate certificate in azl_SSL.com_TLS_RSA_Root_CA_2022.pem
+2026-10-02T13:18:51.7361416+00:00 ContainerStream: rehash: warning: skipping ca-certificates.crt,it does not contain exactly one certificate or CRL
+2026-10-02T13:18:52.0232840+00:00 ContainerStream: 4 added, 0 removed; done.
+2026-10-02T13:18:52.0628458+00:00 ContainerStream: Running hooks in /etc/ca-certificates/update.d...
+2026-10-02T13:18:52.1001548+00:00 ContainerStream: done.
+2026-10-02T13:18:52.2018127+00:00 ContainerStream: CA certificates copied and updated successfully.
+2026-10-02T13:18:52.5871690+00:00 ContainerStream: Site's appCommandLine: uvicorn app.main:app --host 0.0.0.0 --port 8000
+2026-10-02T13:18:53.6796680+00:00 ContainerStream: Starting periodic command scheduler: cron.
+2026-10-02T13:18:53.7095325+00:00 ContainerStream: Launching oryx with: create-script -appPath /home/site/wwwroot -output /opt/startup/startup.sh -virtualEnvName antenv -defaultApp /opt/defaultsite -userStartupCommand 'uvicorn app.main:app --host 0.0.0.0 --port 8000'
+2026-10-02T13:18:54.4594910+00:00 ContainerStream: Could not find build manifest file at '/home/site/wwwroot/oryx-manifest.toml'
+2026-10-02T13:18:54.4600647+00:00 ContainerStream: Could not find operation ID in manifest. Generating an operation id...
+2026-10-02T13:18:54.4869692+00:00 ContainerStream: Build Operation ID: db89d2bf-61c0-4d4c-a534-efaf5e57ce49
+2026-10-02T13:18:55.6361933+00:00 ContainerStream: Oryx Version: 0.2.20260710.1, Commit: 079b5b6294eb97d462d8f96bfa3243e9b85251da, ReleaseTagName: 20260710.1
+2026-10-02T13:18:55.7366542+00:00 ContainerStream: Writing output script to '/opt/startup/startup.sh'
+2026-10-02T13:18:55.9138130+00:00 ContainerStream: /opt/startup/startup.sh: 23: uvicorn: not found
+2026-10-02T13:18:55.9139270+00:00 ContainerStream: WARNING: Could not find virtual environment directory /home/site/wwwroot/antenv.
+2026-10-02T13:18:55.9139352+00:00 ContainerStream: WARNING: Could not find package directory /home/site/wwwroot/__oryx_packages__.
+2026-10-02T13:18:56.2117678+00:00 ContainerStatus: Container has finished running with exit code: 127.
+2026-10-02T13:18:56.2356340+00:00 ContainerStatus: Container is terminating. Grace period: 5 seconds.
+2026-10-02T13:18:56.2603413+00:00 ContainerStatus: Stop and delete container. Retry count = 0
+2026-10-02T13:18:56.2663996+00:00 ContainerStatus: Stopping container: c89b98efc83f_tailorsync-api-prod.
+2026-10-02T13:18:56.4636301+00:00 ContainerStatus: Deleting container: c89b98efc83f_tailorsync-api-prod. Retry count = 0
+2026-10-02T13:18:57.6655435+00:00 ContainerStatus: Container spec TerminationMessagePolicy  path 
+2026-10-02T13:18:57.7023558+00:00 ContainerStatus: Container is terminated. Total time elapsed: 1455 ms.
+2026-10-02T13:18:57.7026275+00:00 ContainerStatus: Site container: tailorsync-api-prod terminated during site startup.
+2026-10-02T13:18:57.7399785+00:00 ContainerStatus: State: Stopping, Action: CancellingStartup, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Site container: tailorsync-api-prod terminated during site startup. Cancelling site startup., DetailsLevel: ERR
+2026-10-02T13:18:59.3416371+00:00 ContainerStatus: Site startup probe failed after 60.6630495 seconds.
+2026-10-02T13:19:00.6512352+00:00 ContainerStatus: State: Stopping, Action: CancellingStartup, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 13:19:00, LastErrorDetails: Container exited with exit code 127 during startup after 59.9s. Please inspect your container logs for more details., Details: Site container: tailorsync-api-prod terminated during site startup. Cancelling site startup., DetailsLevel: ERR
+2026-10-02T13:19:01.1958722+00:00 ContainerStatus: Failed to start site. Revert by stopping site.
+2026-10-02T13:19:01.2348249+00:00 ContainerStatus: State: Stopping, Action: StoppingSite, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 13:19:00, LastErrorDetails: Container exited with exit code 127 during startup after 59.9s. Please inspect your container logs for more details., Details: Site container: tailorsync-api-prod terminated during site startup. Cancelling site startup., DetailsLevel: ERR
+2026-10-02T13:19:01.2745689+00:00 ContainerStatus: State: Stopping, Action: StoppingSiteContainers, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 13:19:00, LastErrorDetails: Container exited with exit code 127 during startup after 59.9s. Please inspect your container logs for more details., Details: Site container: tailorsync-api-prod terminated during site startup. Cancelling site startup., DetailsLevel: ERR
+2026-10-02T13:19:04.0071627+00:00 ContainerStatus: Site container: tailorsync-api-prod_managedIdentity terminated during site startup.
+2026-10-02T13:19:04.0161081+00:00 ContainerStatus: State: Stopping, Action: StoppingSiteContainers, LastError: ContainerStartupFailure, LastErrorTimestamp: 10/02/2026 13:19:00, LastErrorDetails: Container exited with exit code 127 during startup after 59.9s. Please inspect your container logs for more details., Details: Site container: tailorsync-api-prod terminated during site startup. Cancelling site startup., DetailsLevel: ERR
+2026-10-02T13:19:04.0232713+00:00 ContainerStatus: Site: tailorsync-api-prod stopped.

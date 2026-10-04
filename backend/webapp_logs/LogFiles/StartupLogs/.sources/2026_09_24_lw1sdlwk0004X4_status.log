@@ -1,0 +1,9 @@
+2026-09-24T22:20:16.4932053Z State: Stopping, Action: StoppingSite, LastError: ContainerStartupFailure, LastErrorTimestamp: 09/24/2026 21:03:44, LastErrorDetails: Container exited with exit code 127 during startup after 52.9s. Please inspect your container logs for more details., Details: Site started at 09/24/2026 21:09:37 (UTC), DetailsLevel: INFO
+2026-09-24T22:20:16.5089709Z State: Stopping, Action: StoppingSiteContainers, LastError: ContainerStartupFailure, LastErrorTimestamp: 09/24/2026 21:03:44, LastErrorDetails: Container exited with exit code 127 during startup after 52.9s. Please inspect your container logs for more details., Details: Site started at 09/24/2026 21:09:37 (UTC), DetailsLevel: INFO
+2026-09-24T22:20:16.5115535Z Container is terminating. Grace period: 5 seconds.
+2026-09-24T22:20:16.5724898Z Stop and delete container. Retry count = 0
+2026-09-24T22:20:16.5791389Z Stopping container: 863051557930_tailorsync-api-prod.
+2026-09-24T22:20:22.3854294Z Deleting container: 863051557930_tailorsync-api-prod. Retry count = 0
+2026-09-24T22:20:24.8383915Z Container spec TerminationMessagePolicy  path 
+2026-09-24T22:20:24.8414415Z Container is terminated. Total time elapsed: 8321 ms.
+2026-09-24T22:20:27.2412044Z Site: tailorsync-api-prod stopped.

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import '../../../../core/network/providers/api_provider.dart';
 import '../../../../core/widgets/skeleton_loading.dart';
 import '../../../../ui/ui.dart';
@@ -16,27 +17,57 @@ class ReportsScreen extends ConsumerStatefulWidget {
 }
 
 class _ReportsScreenState extends ConsumerState<ReportsScreen> {
-  String _selectedPeriod = 'This Month';
+  String _selectedPeriod = 'All Time';
   bool _loading = true;
-  Map<String, dynamic>? _stats;
-  List<dynamic> _allOrders = [];
-  List<dynamic> _staffList = [];
+  
+  Map<String, dynamic>? _dashboardData;
+  List<dynamic> _staffPerformance = [];
+  List<dynamic> _allOrders = []; // To preserve existing status breakdown
+
   @override
   void initState() {
     super.initState();
     _loadData();
   }
+
+  String _getFromDate() {
+    final now = DateTime.now();
+    if (_selectedPeriod == 'Today') {
+      return DateFormat('yyyy-MM-dd').format(now);
+    } else if (_selectedPeriod == 'This Week') {
+      return DateFormat('yyyy-MM-dd').format(now.subtract(const Duration(days: 7)));
+    } else if (_selectedPeriod == 'This Month') {
+      return DateFormat('yyyy-MM-dd').format(DateTime(now.year, now.month, 1));
+    }
+    return 'all'; // All Time
+  }
+
+  String? _getToDate() {
+    if (_selectedPeriod == 'All Time') return null;
+    return DateFormat('yyyy-MM-dd').format(DateTime.now());
+  }
+
   Future<void> _loadData() async {
     try {
+      setState(() => _loading = true);
       final api = ref.read(apiClientProvider);
-      final statsResp = await api.getOrderStats();
-      final ordersResp = await api.listOrders();
-      final staffResp = await api.listStaff();
+      
+      final fromDate = _getFromDate();
+      final toDate = _getToDate();
+
+      final dashResp = await api.getDashboard(fromDate: fromDate, toDate: toDate);
+      final staffResp = await api.getStaffPerformance(fromDate: fromDate, toDate: toDate);
+      final ordersResp = await api.listOrders(); // Fallback for local order status calculations
+      
       if (mounted) {
         setState(() {
-          _stats = statsResp.data;
+          if (dashResp.data['items'] != null && dashResp.data['items'].isNotEmpty) {
+            _dashboardData = dashResp.data['items'][0]['metrics'];
+          }
+          if (staffResp.data['items'] != null && staffResp.data['items'].isNotEmpty) {
+            _staffPerformance = staffResp.data['items'][0]['metrics']['staff_performance'] ?? [];
+          }
           _allOrders = ordersResp.data;
-          _staffList = staffResp.data;
           _loading = false;
         });
       }
@@ -47,41 +78,6 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    int sewingCount = 0;
-    int cuttingCount = 0;
-    int readyCount = 0;
-    int otherCount = 0;
-    int thisWeekCount = 0;
-    int thisMonthCount = 0;
-    
-    final now = DateTime.now();
-    final weekAgo = now.subtract(const Duration(days: 7));
-
-    for (var o in _allOrders) {
-      final status = o['status'] ?? 'Other';
-      if (status == 'Sewing') sewingCount++;
-      else if (status == 'Cutting') cuttingCount++;
-      else if (status == 'Ready') readyCount++;
-      else otherCount++;
-
-      if (o['created_at'] != null) {
-        final createdAt = DateTime.tryParse(o['created_at'].toString());
-        if (createdAt != null) {
-          if (createdAt.isAfter(weekAgo)) thisWeekCount++;
-          if (createdAt.year == now.year && createdAt.month == now.month) thisMonthCount++;
-        }
-      }
-    }
-
-    final totalForStatus = _allOrders.length;
-    final sewingPct = totalForStatus > 0 ? ((sewingCount / totalForStatus) * 100).round() : 0;
-    final cuttingPct = totalForStatus > 0 ? ((cuttingCount / totalForStatus) * 100).round() : 0;
-    final readyPct = totalForStatus > 0 ? ((readyCount / totalForStatus) * 100).round() : 0;
-    final otherPct = totalForStatus > 0 ? ((otherCount / totalForStatus) * 100).round() : 0;
-
-    final cs = context.colors;
-    final st = context.status;
-
     if (_loading) {
       return TsScrollPage(
         title: 'Reports',
@@ -91,6 +87,52 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
       );
     }
 
+    final cs = context.colors;
+    final st = context.status;
+    
+    // Overall metrics from dashboard
+    final overall = _dashboardData?['overall'] ?? {};
+    final totalOrders = overall['total_orders'] ?? 0;
+    final activeOrders = overall['active_orders'] ?? 0;
+    final completedOrders = overall['orders_completed'] ?? 0;
+    final ordersDelayed = overall['orders_delayed'] ?? 0;
+
+    final kpis = [
+      _Kpi(Icons.shopping_bag_rounded, 'Total Orders', totalOrders, cs.tertiary),
+      _Kpi(Icons.pending_actions_rounded, 'Ongoing Orders', activeOrders, st.warning),
+      _Kpi(Icons.check_circle_rounded, 'Completed', completedOrders, st.success),
+      _Kpi(Icons.warning_rounded, 'Delayed Orders', ordersDelayed, cs.error),
+    ];
+
+    // Local order status calculations for 'Order Insights' based on the selected date range
+    int sewingCount = 0;
+    int cuttingCount = 0;
+    int readyCount = 0;
+    int otherCount = 0;
+    
+    final fromDateStr = _getFromDate();
+    final fromDate = DateTime.tryParse(fromDateStr) ?? DateTime.now();
+
+    for (var o in _allOrders) {
+      if (o['created_at'] != null) {
+        final createdAt = DateTime.tryParse(o['created_at'].toString());
+        if (createdAt != null && createdAt.isBefore(fromDate)) {
+          continue; // Filter orders by selected period
+        }
+      }
+      final status = o['status'] ?? 'Other';
+      if (status == 'Sewing') sewingCount++;
+      else if (status == 'Cutting') cuttingCount++;
+      else if (status == 'Ready') readyCount++;
+      else otherCount++;
+    }
+
+    final totalForStatus = sewingCount + cuttingCount + readyCount + otherCount;
+    final sewingPct = totalForStatus > 0 ? ((sewingCount / totalForStatus) * 100).round() : 0;
+    final cuttingPct = totalForStatus > 0 ? ((cuttingCount / totalForStatus) * 100).round() : 0;
+    final readyPct = totalForStatus > 0 ? ((readyCount / totalForStatus) * 100).round() : 0;
+    final otherPct = totalForStatus > 0 ? ((otherCount / totalForStatus) * 100).round() : 0;
+
     final slices = [
       _Slice('Sewing', sewingCount, sewingPct, cs.primary),
       _Slice('Cutting', cuttingCount, cuttingPct, st.warning),
@@ -98,14 +140,9 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
       _Slice('Ready', readyCount, readyPct, st.success),
     ];
 
-    num kpi(String k) => num.tryParse(_stats?[k]?.toString() ?? '0') ?? 0;
-
-    final kpis = [
-      _Kpi(Icons.people_rounded, 'Total Customers', kpi('total_customers'), st.info),
-      _Kpi(Icons.shopping_bag_rounded, 'Total Orders', kpi('total_orders'), cs.tertiary),
-      _Kpi(Icons.pending_actions_rounded, 'Ongoing Orders', kpi('ongoing_orders'), st.warning),
-      _Kpi(Icons.check_circle_rounded, 'Completed Orders', kpi('completed_orders'), st.success),
-    ];
+    // Garments and Customers
+    final garmentPerformance = (_dashboardData?['garment_performance'] as List?) ?? [];
+    final customerAnalytics = (_dashboardData?['customer_analytics'] as List?) ?? [];
 
     return TsScrollPage(
       title: 'Reports & Analytics',
@@ -116,15 +153,21 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
           child: Padding(
             padding: const EdgeInsets.only(bottom: Space.md),
             child: _PeriodTabs(
-              options: const ['This Month', 'Today', 'This Week'],
+              options: const ['All Time', 'This Month', 'This Week', 'Today'],
               selected: _selectedPeriod,
               onSelected: (p) {
                 HapticFeedback.selectionClick();
-                setState(() => _selectedPeriod = p);
+                setState(() {
+                  _selectedPeriod = p;
+                  _loadData();
+                });
               },
             ),
           ),
         ),
+        
+        // 1. OVERVIEW
+        const SliverToBoxAdapter(child: SectionHeader(title: 'Overview')),
         SliverGrid.builder(
           gridDelegate: adaptiveGrid(
             maxTileWidth: context.isWide ? 200 : 240,
@@ -134,7 +177,10 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
           itemCount: kpis.length,
           itemBuilder: (context, i) => EntranceFade.indexed(i, child: _KpiCard(kpi: kpis[i])),
         ),
-        const SliverToBoxAdapter(child: SectionHeader(title: 'Order Insights')),
+
+        // 2. ORDER PERFORMANCE
+        const SliverToBoxAdapter(child: SizedBox(height: Space.md)),
+        const SliverToBoxAdapter(child: SectionHeader(title: 'Order Performance')),
         SliverToBoxAdapter(
           child: EntranceFade(
             delay: Motion.stagger(4),
@@ -185,47 +231,108 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                       );
                     },
                   ),
-                  const SizedBox(height: Space.lg),
-                  _InsightRow(label: 'Orders This Week', value: thisWeekCount, color: st.info),
-                  const SizedBox(height: Space.sm),
-                  _InsightRow(label: 'Orders This Month', value: thisMonthCount, color: cs.tertiary),
                 ],
               ),
             ),
           ),
         ),
-        const SliverToBoxAdapter(child: SectionHeader(title: 'Staff Performance')),
+
+        // 3. FABRIC USAGE
+        const SliverToBoxAdapter(child: SizedBox(height: Space.md)),
+        const SliverToBoxAdapter(child: SectionHeader(title: 'Fabric Usage')),
         SliverToBoxAdapter(
           child: EntranceFade(
             delay: Motion.stagger(5),
             child: TsCard(
               padding: EdgeInsets.all(context.isSmallPhone ? Space.md : Space.lg),
-              child: _staffList.isEmpty
+              child: (_dashboardData?['fabric_usage'] as List?)?.isEmpty ?? true
+                  ? Padding(
+                      padding: const EdgeInsets.symmetric(vertical: Space.md),
+                      child: Column(
+                        children: [
+                          Icon(Icons.inventory_2_outlined, size: 36, color: cs.onSurfaceVariant),
+                          const SizedBox(height: Space.xs),
+                          Text('No fabric usage data available for this period', style: context.text.bodyMedium),
+                        ],
+                      ),
+                    )
+                  : Column(
+                      children: ((_dashboardData?['fabric_usage'] as List?) ?? []).map((f) {
+                        return _InsightRow(
+                          label: f['fabric_name']?.toString() ?? 'Unknown',
+                          value: (f['quantity'] as num).toInt(),
+                          color: cs.secondary,
+                        );
+                      }).toList(),
+                    ),
+            ),
+          ),
+        ),
+
+        // 4. GARMENT PERFORMANCE
+        const SliverToBoxAdapter(child: SizedBox(height: Space.md)),
+        const SliverToBoxAdapter(child: SectionHeader(title: 'Garment Performance')),
+        SliverToBoxAdapter(
+          child: EntranceFade(
+            delay: Motion.stagger(6),
+            child: TsCard(
+              padding: EdgeInsets.all(context.isSmallPhone ? Space.md : Space.lg),
+              child: garmentPerformance.isEmpty
+                  ? Padding(
+                      padding: const EdgeInsets.symmetric(vertical: Space.md),
+                      child: Column(
+                        children: [
+                          Icon(Icons.checkroom_rounded, size: 36, color: cs.onSurfaceVariant),
+                          const SizedBox(height: Space.xs),
+                          Text('No garment data available', style: context.text.bodyMedium),
+                        ],
+                      ),
+                    )
+                  : Column(
+                      children: garmentPerformance.map((g) {
+                        return _InsightRow(
+                          label: g['garment_type'] ?? 'Unknown',
+                          value: g['count'] ?? 0,
+                          color: cs.primary,
+                        );
+                      }).toList(),
+                    ),
+            ),
+          ),
+        ),
+
+        // 5. STAFF PERFORMANCE
+        const SliverToBoxAdapter(child: SizedBox(height: Space.md)),
+        const SliverToBoxAdapter(child: SectionHeader(title: 'Staff Performance')),
+        SliverToBoxAdapter(
+          child: EntranceFade(
+            delay: Motion.stagger(7),
+            child: TsCard(
+              padding: EdgeInsets.all(context.isSmallPhone ? Space.md : Space.lg),
+              child: _staffPerformance.isEmpty
                   ? Padding(
                       padding: const EdgeInsets.symmetric(vertical: Space.md),
                       child: Column(
                         children: [
                           Icon(Icons.groups_rounded, size: 36, color: cs.onSurfaceVariant),
                           const SizedBox(height: Space.xs),
-                          Text('No staff data available', style: context.text.bodyMedium),
+                          Text('No staff performance data (or unauthorized)', style: context.text.bodyMedium),
                         ],
                       ),
                     )
                   : Column(
                       children: [
-                        ..._staffList.map((s) {
-                          final staffOrders = _allOrders.where((o) => o['staff_id'] == s['id']).toList();
-                          final completedCount = staffOrders.where((o) => o['status'] == 'Delivered' || o['status'] == 'Ready').length;
-                          final totalAssigned = staffOrders.length;
-                          final progress = totalAssigned > 0 ? (completedCount / totalAssigned) : 0.0;
-                          final name = s['full_name']?.toString() ?? 'Staff';
+                        ..._staffPerformance.map((s) {
+                          final name = s['staff_name']?.toString() ?? 'Staff';
+                          final completed = s['tasks_completed'] ?? 0;
+                          final rate = s['on_time_completion_rate'] ?? 0.0;
 
                           return Padding(
                             padding: const EdgeInsets.symmetric(vertical: Space.xs),
-                            child: _StaffProgress(
+                            child: _StaffPerformanceRow(
                               name: name,
-                              completed: completedCount,
-                              progress: progress,
+                              completed: completed,
+                              onTimeRate: (rate as num).toDouble(),
                             ),
                           );
                         }),
@@ -234,6 +341,40 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
             ),
           ),
         ),
+
+        // 6. CUSTOMER ANALYTICS
+        const SliverToBoxAdapter(child: SizedBox(height: Space.md)),
+        const SliverToBoxAdapter(child: SectionHeader(title: 'Customer Analytics (Top 5)')),
+        SliverToBoxAdapter(
+          child: EntranceFade(
+            delay: Motion.stagger(8),
+            child: TsCard(
+              padding: EdgeInsets.all(context.isSmallPhone ? Space.md : Space.lg),
+              child: customerAnalytics.isEmpty
+                  ? Padding(
+                      padding: const EdgeInsets.symmetric(vertical: Space.md),
+                      child: Column(
+                        children: [
+                          Icon(Icons.person_outline_rounded, size: 36, color: cs.onSurfaceVariant),
+                          const SizedBox(height: Space.xs),
+                          Text('No customer data available', style: context.text.bodyMedium),
+                        ],
+                      ),
+                    )
+                  : Column(
+                      children: customerAnalytics.map((c) {
+                        return _InsightRow(
+                          label: c['customer_name'] ?? 'Unknown',
+                          value: c['count'] ?? 0,
+                          color: cs.tertiary,
+                        );
+                      }).toList(),
+                    ),
+            ),
+          ),
+        ),
+        
+        const SliverToBoxAdapter(child: SizedBox(height: Space.xl)),
       ],
     );
   }
@@ -255,7 +396,6 @@ class _Kpi {
   _Kpi(this.icon, this.title, this.value, this.color);
 }
 
-/// Pill-style segmented tabs with a sliding indicator.
 class _PeriodTabs extends StatelessWidget {
   final List<String> options;
   final String selected;
@@ -352,7 +492,6 @@ class _KpiCard extends StatelessWidget {
   }
 }
 
-/// Animated donut chart drawn with a CustomPainter.
 class _Donut extends StatelessWidget {
   final List<_Slice> slices;
   final int total;
@@ -440,28 +579,31 @@ class _InsightRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: Space.md, vertical: Space.sm),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: context.isDark ? 0.16 : 0.08),
-        borderRadius: Radii.brMd,
-      ),
-      child: Row(
-        children: [
-          Expanded(child: Text(label, style: context.text.bodyMedium?.copyWith(color: context.colors.onSurface))),
-          AnimatedCount(value: value, style: context.text.titleMedium?.copyWith(color: color)),
-        ],
+    return Padding(
+      padding: const EdgeInsets.only(bottom: Space.sm),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: Space.md, vertical: Space.sm),
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: context.isDark ? 0.16 : 0.08),
+          borderRadius: Radii.brMd,
+        ),
+        child: Row(
+          children: [
+            Expanded(child: Text(label, style: context.text.bodyMedium?.copyWith(color: context.colors.onSurface))),
+            AnimatedCount(value: value, style: context.text.titleMedium?.copyWith(color: color)),
+          ],
+        ),
       ),
     );
   }
 }
 
-class _StaffProgress extends StatelessWidget {
+class _StaffPerformanceRow extends StatelessWidget {
   final String name;
   final int completed;
-  final double progress;
+  final double onTimeRate;
 
-  const _StaffProgress({required this.name, required this.completed, required this.progress});
+  const _StaffPerformanceRow({required this.name, required this.completed, required this.onTimeRate});
 
   @override
   Widget build(BuildContext context) {
@@ -476,7 +618,13 @@ class _StaffProgress extends StatelessWidget {
             children: [
               Text(name, style: context.text.titleSmall, maxLines: 1, overflow: TextOverflow.ellipsis),
               const SizedBox(height: 6),
-              StageProgressBar(value: progress, color: cs.primary),
+              Row(
+                children: [
+                  Icon(Icons.timer_outlined, size: 12, color: cs.onSurfaceVariant),
+                  const SizedBox(width: 4),
+                  Text('${onTimeRate.toStringAsFixed(0)}% On-Time', style: context.text.labelSmall?.copyWith(color: cs.onSurfaceVariant)),
+                ],
+              ),
             ],
           ),
         ),

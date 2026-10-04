@@ -1,0 +1,236 @@
+import 'package:dio/dio.dart';
+
+class ApiClient {
+  final Dio dio;
+  String? _accessToken;
+  void Function()? onUnauthorized;
+  Future<String?> Function()? tokenGetter;
+
+  ApiClient(this.dio);
+
+  static ApiClient create(String baseUrl) {
+    final dio = Dio(BaseOptions(
+      baseUrl: baseUrl,
+      connectTimeout: const Duration(seconds: 90),
+      receiveTimeout: const Duration(seconds: 90),
+      sendTimeout: const Duration(seconds: 90),
+    ));
+    final client = ApiClient(dio);
+
+    dio.interceptors.add(InterceptorsWrapper(
+      onRequest: (options, handler) async {
+        if (client._accessToken == null && client.tokenGetter != null) {
+          try {
+            final stored = await client.tokenGetter!();
+            if (stored != null && stored.isNotEmpty) {
+              client._accessToken = stored;
+            }
+          } catch (_) {}
+        }
+        if (client._accessToken != null) {
+          options.headers['Authorization'] = 'Bearer ${client._accessToken}';
+        }
+        return handler.next(options);
+      },
+      onError: (DioException e, handler) {
+        if (e.response?.statusCode == 401) {
+          // final path = e.requestOptions.path;
+          // if (!path.contains('/auth/login') &&
+          //     !path.contains('/auth/signup') &&
+          //     !path.contains('/auth/verify')) {
+          //   client.onUnauthorized?.call();
+          // }
+        }
+        return handler.next(e);
+      },
+    ));
+    return client;
+  }
+
+  void setToken(String token) {
+    _accessToken = token;
+  }
+
+  void clearToken() {
+    _accessToken = null;
+  }
+
+  bool get hasToken => _accessToken != null && _accessToken!.isNotEmpty;
+
+  // Token Verification
+  Future<Response> verifyToken() async {
+    return dio.get('/auth/verify');
+  }
+
+  // User Profile
+  Future<Response> getMe() async {
+    return dio.get('/users/me');
+  }
+
+  Future<Response> updateProfile(Map<String, dynamic> payload) async {
+    return dio.put('/users/me', data: payload);
+  }
+
+  Future<Response> changePassword(String currentPassword, String newPassword) async {
+    return dio.put('/users/me/password', data: {
+      'current_password': currentPassword,
+      'new_password': newPassword,
+    });
+  }
+
+  Future<Response> deleteMyAccount(String password) async {
+    return dio.post('/users/me/delete', data: {
+      'password': password
+    });
+  }
+
+  // Business Profile
+  Future<Response> getBusiness() async {
+    return dio.get('/business/me');
+  }
+
+  Future<Response> updateBusiness(Map<String, dynamic> payload) async {
+    return dio.put('/business/me', data: payload);
+  }
+
+  // Staff Management
+  Future<Response> listStaff() async {
+    return dio.get('/staff/');
+  }
+
+  Future<Response> createStaff(Map<String, dynamic> payload) async {
+    return dio.post('/staff/', data: payload);
+  }
+
+  Future<Response> deactivateStaff(int id) async {
+    return dio.patch('/staff/$id/deactivate');
+  }
+
+  Future<Response> reactivateStaff(int id) async {
+    return dio.patch('/staff/$id/reactivate');
+  }
+
+  Future<Response> removeStaff(int id) async {
+    return dio.delete('/staff/$id');
+  }
+
+  // Authentication  // Auth
+  Future<Response> login(String email, String password) async {
+    return dio.post('/auth/login', data: {
+      'email': email,
+      'password': password
+    });
+  }
+
+  Future<Response> signup({
+    required String businessName,
+    required String businessRegistrationNumber,
+    required String businessContactNumber,
+    required String email,
+    required String password,
+    String? fullName,
+    String? phone,
+  }) async {
+    return dio.post('/auth/signup', data: {
+      'business_name': businessName,
+      'business_registration_number': businessRegistrationNumber,
+      'business_contact_number': businessContactNumber,
+      'email': email,
+      'password': password,
+      'full_name': fullName ?? '',
+      'phone': phone ?? '',
+    });
+  }
+
+  Future<Response> googleLogin(String firebaseToken) async {
+    return dio.post('/auth/google', data: {'firebase_token': firebaseToken});
+  }
+
+  Future<Response> refreshToken(String refreshToken) async {
+    return dio.post('/auth/refresh', data: {'refresh_token': refreshToken});
+  }
+
+  // Customers
+  Future<Response> listCustomers({Map<String, dynamic>? params}) async {
+    return dio.get('/customers/', queryParameters: params);
+  }
+
+  Future<Response> createCustomer(Map<String, dynamic> payload) async {
+    return dio.post('/customers/', data: payload);
+  }
+
+  Future<Response> updateCustomer(int id, Map<String, dynamic> payload) async {
+    return dio.put('/customers/$id', data: payload);
+  }
+
+  Future<Response> deleteCustomer(int id) async {
+    return dio.delete('/customers/$id');
+  }
+
+  // Orders
+  Future<Response> listOrders({Map<String, dynamic>? params}) async {
+    return dio.get('/orders/', queryParameters: params);
+  }
+
+  Future<Response> createOrder(Map<String, dynamic> payload) async {
+    return dio.post('/orders/', data: payload);
+  }
+
+  Future<Response> getOrder(int id) async {
+    return dio.get('/orders/$id');
+  }
+
+  Future<Response> updateOrder(int id, Map<String, dynamic> payload) async {
+    return dio.put('/orders/$id', data: payload);
+  }
+
+  Future<Response> deleteOrder(int id) async {
+    return dio.delete('/orders/$id');
+  }
+
+  Future<Response> getOrderStats() async {
+    return dio.get('/orders/stats');
+  }
+
+  // AI
+  Future<Response> estimateFabric(Map<String, dynamic> payload) async {
+    return dio.post('/ai/estimate-fabric', data: payload);
+  }
+
+  Future<Response> recommendFabric(Map<String, dynamic> payload) async {
+    return dio.post('/ai/recommend-fabric', data: payload);
+  }
+
+  Future<Response> predictMeasurements(Map<String, dynamic> payload) async {
+    return dio.post('/ai/predict-measurements', data: payload);
+  }
+
+  Future<Response> predictMeasurementsFoundry(Map<String, dynamic> payload) async {
+    return dio.post('/ai/foundry-predict', data: payload);
+  }
+
+  Future<Response> getMeasurementInputRanges(String garmentType) async {
+    return dio.get('/ai/input-ranges/$garmentType');
+  }
+
+  // Measurement Templates
+  Future<Response> getMeasurementTemplates() async {
+    return dio.get('/measurement-templates/');
+  }
+
+  Future<Response> getMeasurementTemplateByCategory(String categoryName) async {
+    return dio.get('/measurement-templates/$categoryName');
+  }
+
+  Future<Response> createMeasurementTemplate(Map<String, dynamic> payload) async {
+    return dio.post('/measurement-templates/', data: payload);
+  }
+
+  Future<Response> updateMeasurementTemplate(int id, Map<String, dynamic> payload) async {
+    return dio.put('/measurement-templates/$id', data: payload);
+  }
+
+  Future<Response> deleteMeasurementTemplate(int id) async {
+    return dio.delete('/measurement-templates/$id');
+  }
+}

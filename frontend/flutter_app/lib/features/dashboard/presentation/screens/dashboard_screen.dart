@@ -156,20 +156,23 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     ];
 
     return Scaffold(
-      body: RefreshIndicator(
+      body: TsScrollPage(
+        title: 'Home',
+        automaticallyImplyLeading: false,
+        padSlivers: false,
         onRefresh: _loadData,
-        edgeOffset: MediaQuery.paddingOf(context).top + kToolbarHeight,
-        child: CustomScrollView(
-          physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
-          slivers: [
-            _BrandAppBar(
-              initial: firstName.isNotEmpty ? firstName[0].toUpperCase() : 'T',
-              onProfile: () => context.push('/profile'),
-            ),
-            SliverPadding(
-              padding: EdgeInsets.symmetric(horizontal: pad),
-              sliver: SliverList.list(
-                children: [
+        actions: [
+          IconButton(
+            icon: InitialsAvatar(name: firstName.isNotEmpty ? firstName : 'T', size: 32),
+            onPressed: () => context.push('/profile'),
+          ),
+          const SizedBox(width: Space.xs),
+        ],
+        slivers: [
+          SliverPadding(
+            padding: EdgeInsets.symmetric(horizontal: pad),
+            sliver: SliverList.list(
+              children: [
                   MaxWidthBox(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -203,7 +206,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                           physics: const NeverScrollableScrollPhysics(),
                           gridDelegate: adaptiveGrid(
                             maxTileWidth: context.isWide ? 220 : 240,
-                            mainAxisExtent: context.isSmallPhone ? 104 : 112,
+                            mainAxisExtent: context.isSmallPhone ? 120 : 128,
                             spacing: gap,
                           ),
                           itemCount: stats.length,
@@ -302,7 +305,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             ),
             SliverToBoxAdapter(child: SizedBox(height: MediaQuery.paddingOf(context).bottom + Space.xl)),
           ],
-        ),
       ),
     );
   }

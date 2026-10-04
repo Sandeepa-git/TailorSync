@@ -1,0 +1,9 @@
+2026-09-27T13:40:10.0213199Z State: Stopping, Action: StoppingSite, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Site started at 09/27/2026 12:49:54 (UTC), DetailsLevel: INFO
+2026-09-27T13:40:10.0577244Z State: Stopping, Action: StoppingSiteContainers, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Site started at 09/27/2026 12:49:54 (UTC), DetailsLevel: INFO
+2026-09-27T13:40:10.0873467Z Container is terminating. Grace period: 5 seconds.
+2026-09-27T13:40:10.2296082Z Stop and delete container. Retry count = 0
+2026-09-27T13:40:10.2404603Z Stopping container: 2e5bc6778d2a_tailorsync-api-prod.
+2026-09-27T13:40:15.3621874Z Deleting container: 2e5bc6778d2a_tailorsync-api-prod. Retry count = 0
+2026-09-27T13:40:19.5568766Z Container spec TerminationMessagePolicy  path 
+2026-09-27T13:40:19.5706069Z Container is terminated. Total time elapsed: 9481 ms.
+2026-09-27T13:40:20.5674341Z Site: tailorsync-api-prod stopped.

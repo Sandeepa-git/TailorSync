@@ -192,6 +192,21 @@ class ApiClient {
     return dio.get('/orders/stats');
   }
 
+  // Reports & Analytics
+  Future<Response> getDashboard({String? fromDate, String? toDate}) async {
+    final params = <String, dynamic>{};
+    if (fromDate != null) params['from_date'] = fromDate;
+    if (toDate != null) params['to_date'] = toDate;
+    return dio.get('/reports/dashboard', queryParameters: params);
+  }
+
+  Future<Response> getStaffPerformance({String? fromDate, String? toDate}) async {
+    final params = <String, dynamic>{};
+    if (fromDate != null) params['from_date'] = fromDate;
+    if (toDate != null) params['to_date'] = toDate;
+    return dio.get('/reports/staff-performance', queryParameters: params);
+  }
+
   // AI
   Future<Response> estimateFabric(Map<String, dynamic> payload) async {
     return dio.post('/ai/estimate-fabric', data: payload);
