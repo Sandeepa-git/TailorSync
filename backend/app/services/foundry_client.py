@@ -1,6 +1,7 @@
 import os
 import json
 import logging
+import time
 from azure.ai.inference import ChatCompletionsClient
 from azure.ai.inference.models import SystemMessage, UserMessage
 from azure.core.credentials import AzureKeyCredential
@@ -29,7 +30,10 @@ class FoundryClient:
         # gpt-5-mini is a reasoning model: "low" effort is much faster and is
         # plenty for these structured tasks. Set FOUNDRY_REASONING_EFFORT to change.
         self.reasoning_effort = os.environ.get("FOUNDRY_REASONING_EFFORT", "low").strip()
-        self._agent_extra_ok = True  # flips off if the agent rejects reasoning/format options
+        # Foundry rejects reasoning/format overrides when an agent is used
+        # ("Not allowed when agent is specified"), so they're off by default to avoid
+        # a wasted round-trip. Set these on the agent itself in the Foundry portal.
+        self._agent_extra_ok = os.environ.get("FOUNDRY_AGENT_OVERRIDES", "false").lower() == "true"
         
         if not self.endpoint:
             logger.warning("FOUNDRY_ENDPOINT is not set.")
@@ -85,6 +89,7 @@ class FoundryClient:
                 kwargs["reasoning"] = {"effort": self.reasoning_effort}
             kwargs["text"] = {"format": {"type": "json_object"}}
         client = self._get_agent_client()
+        t0 = time.perf_counter()
         try:
             response = client.responses.create(**kwargs)
         except Exception as e:
@@ -97,10 +102,21 @@ class FoundryClient:
                 response = client.responses.create(**kwargs)
             else:
                 raise
-        logger.info(f"Foundry agent '{self.agent_name}' answered")
+        self.last_stats = self._stats(response, time.perf_counter() - t0)
+        logger.info(f"Foundry agent '{self.agent_name}' answered | {self.last_stats}")
         return response.output_text
 
+    @staticmethod
+    def _stats(response, seconds: float) -> str:
+        """Timing + which model really answered + token counts (incl. hidden reasoning)."""
+        u = getattr(response, "usage", None)
+        reasoning = getattr(getattr(u, "output_tokens_details", None), "reasoning_tokens", None)
+        return (f"{seconds:.1f}s model={getattr(response, 'model', '?')} "
+                f"in={getattr(u, 'input_tokens', '?')} out={getattr(u, 'output_tokens', '?')} "
+                f"reasoning={reasoning}")
+
     def _call_model(self, prompt: str, system_instruction: str) -> str:
+        t0 = time.perf_counter()
         if not self.client:
             raise ValueError("Foundry client is not initialized properly. Check credentials and endpoint.")
         response = self.client.complete(
@@ -110,7 +126,8 @@ class FoundryClient:
             ],
             model=self.model_name
         )
-        logger.info(f"Foundry model '{self.model_name}' answered (fallback / no agent configured)")
+        logger.info(f"Foundry model '{self.model_name}' answered (fallback / no agent configured) "
+                    f"in {time.perf_counter() - t0:.1f}s")
         return response.choices[0].message.content
 
     def _call_foundry(self, prompt: str, system_instruction: str, agent_message: str = None) -> str:

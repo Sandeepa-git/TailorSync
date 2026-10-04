@@ -40,6 +40,18 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.middleware("http")
+async def timing_middleware(request, call_next):
+    """Logs how long the SERVER spends on each request (compare with what the phone sees)."""
+    import time as _t
+    start = _t.perf_counter()
+    response = await call_next(request)
+    took = _t.perf_counter() - start
+    response.headers["X-Server-Time"] = f"{took:.2f}s"
+    if took > 1 or "/ai/" in request.url.path:
+        logger.info(f"TIMING {request.method} {request.url.path} -> {response.status_code} in {took:.2f}s")
+    return response
+
 app.include_router(api_router, prefix="/api/v1")
 
 @app.on_event("startup")
