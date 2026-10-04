@@ -262,6 +262,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                           label: f['fabric_name']?.toString() ?? 'Unknown',
                           value: (f['quantity'] as num).toInt(),
                           color: cs.secondary,
+                          unit: ' m',
                         );
                       }).toList(),
                     ),
@@ -575,7 +576,8 @@ class _InsightRow extends StatelessWidget {
   final String label;
   final int value;
   final Color color;
-  const _InsightRow({required this.label, required this.value, required this.color});
+  final String? unit;
+  const _InsightRow({required this.label, required this.value, required this.color, this.unit});
 
   @override
   Widget build(BuildContext context) {
@@ -591,6 +593,8 @@ class _InsightRow extends StatelessWidget {
           children: [
             Expanded(child: Text(label, style: context.text.bodyMedium?.copyWith(color: context.colors.onSurface))),
             AnimatedCount(value: value, style: context.text.titleMedium?.copyWith(color: color)),
+            if (unit != null)
+              Text(unit!, style: context.text.titleMedium?.copyWith(color: color)),
           ],
         ),
       ),
