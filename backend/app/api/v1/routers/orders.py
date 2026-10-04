@@ -8,6 +8,36 @@ from app.models.user import User
 
 router = APIRouter()
 
+
+def _fabric_info(o) -> dict:
+    """Chosen fabric + estimated quantity saved with the order (latest entries)."""
+    info = {"selected_fabric": None, "fabric_quantity": None, "fabric_unit": None}
+    try:
+        recs = list(getattr(o, "fabric_recommendations", None) or [])
+        if recs:
+            rec = recs[-1]
+            info["selected_fabric"] = rec.fabric.fabric_name if getattr(rec, "fabric", None) else None
+        ests = list(getattr(o, "fabric_estimations", None) or [])
+        if ests:
+            est = ests[-1]
+            info["fabric_quantity"] = float(est.required_length) if est.required_length is not None else None
+            info["fabric_unit"] = est.unit or "meters"
+    except Exception:
+        pass
+    return info
+
+
+def _measurements(o) -> list:
+    return [
+        {
+            "field_id": m.field_id,
+            "field_name": m.field.field_name,
+            "value": m.value,
+            "unit": m.field.unit,
+            "is_ai_generated": bool(getattr(m, "is_ai_generated", False)),
+        } for m in o.measurements
+    ] if hasattr(o, 'measurements') and o.measurements else []
+
 @router.get("/", response_model=List[OrderRead])
 def list_orders(skip: int = 0, limit: int = 1000, status: Optional[str] = None, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     from app.services.order_service import list_orders as svc_list
@@ -33,14 +63,8 @@ def list_orders(skip: int = 0, limit: int = 1000, status: Optional[str] = None, 
             "staff_id": assignment.staff_id if assignment else None,
             "staff_name": assignment.staff.full_name if assignment and assignment.staff else None,
             "prediction_method": o.prediction_method,
-            "measurements": [
-                {
-                    "field_id": m.field_id,
-                    "field_name": m.field.field_name,
-                    "value": m.value,
-                    "unit": m.field.unit
-                } for m in o.measurements
-            ] if hasattr(o, 'measurements') and o.measurements else []
+            "measurements": _measurements(o),
+            **_fabric_info(o),
         }
         result.append(data)
     return result
@@ -105,14 +129,9 @@ def get_order(order_id: int, db: Session = Depends(get_db), current_user: User =
         "customer_phone": o.customer.phone if o.customer else None,
         "staff_id": assignment.staff_id if assignment else None,
         "staff_name": assignment.staff.full_name if assignment and assignment.staff else None,
-        "measurements": [
-            {
-                "field_id": m.field_id,
-                "field_name": m.field.field_name,
-                "value": m.value,
-                "unit": m.field.unit
-            } for m in o.measurements
-        ] if hasattr(o, 'measurements') and o.measurements else []
+        "prediction_method": o.prediction_method,
+        "measurements": _measurements(o),
+        **_fabric_info(o),
     }
 
 @router.put("/{order_id}", response_model=OrderRead)

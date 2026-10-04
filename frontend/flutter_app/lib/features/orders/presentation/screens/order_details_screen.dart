@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../../../ui/ui.dart';
+import '../../blueprints/garment_blueprints.dart';
 
 class OrderDetailsScreen extends ConsumerWidget {
   final Order order;
@@ -174,11 +175,21 @@ class OrderDetailsScreen extends ConsumerWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text(
-                                    m['field_name'] ?? 'Unknown',
-                                    style: context.text.labelSmall?.copyWith(color: cs.onSurfaceVariant),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
+                                  Row(
+                                    children: [
+                                      Flexible(
+                                        child: Text(
+                                          m['field_name'] ?? 'Unknown',
+                                          style: context.text.labelSmall?.copyWith(color: cs.onSurfaceVariant),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                      if (m['is_ai_generated'] == true) ...[
+                                        const SizedBox(width: 4),
+                                        Icon(Icons.auto_awesome_rounded, size: 12, color: cs.primary),
+                                      ],
+                                    ],
                                   ),
                                   const SizedBox(height: 2),
                                   Text(
@@ -194,6 +205,37 @@ class OrderDetailsScreen extends ConsumerWidget {
                         },
                       ),
                     ],
+                    const SectionHeader(title: 'Fabric'),
+                    TsCard(
+                      child: Column(
+                        children: [
+                          _DetailRow(
+                            icon: Icons.texture_rounded,
+                            label: 'Fabric',
+                            value: (order.selectedFabric != null && order.selectedFabric!.isNotEmpty)
+                                ? order.selectedFabric!
+                                : 'Not recorded',
+                          ),
+                          const _RowDivider(),
+                          _DetailRow(
+                            icon: Icons.straighten_rounded,
+                            label: 'Estimated quantity',
+                            value: order.fabricQuantity != null
+                                ? '${_trim(order.fabricQuantity!)} ${order.fabricUnit ?? 'meters'}'
+                                : 'Not recorded',
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SectionHeader(title: 'Cutting Blueprint'),
+                    GarmentBlueprintSection(
+                      garment: order.garmentType,
+                      measurements: {
+                        for (final m in (order.measurements ?? const []))
+                          if (m is Map && m['field_name'] != null && m['value'] != null)
+                            m['field_name'].toString(): m['value'].toString(),
+                      },
+                    ),
                     const SizedBox(height: Space.lg),
                     TsButton(
                       label: 'Share Order Details',
@@ -211,6 +253,8 @@ class OrderDetailsScreen extends ConsumerWidget {
     );
   }
 }
+
+String _trim(double v) => v.toStringAsFixed(2).replaceFirst(RegExp(r'\.?0+$'), '');
 
 class _RowDivider extends StatelessWidget {
   const _RowDivider();

@@ -14,6 +14,9 @@ class Order {
   final String? customerPhone;
   final String? predictionMethod;
   final List<dynamic>? measurements;
+  final String? selectedFabric;
+  final double? fabricQuantity;
+  final String? fabricUnit;
 
   Order({
     this.id,
@@ -31,6 +34,9 @@ class Order {
     this.customerPhone,
     this.predictionMethod,
     this.measurements,
+    this.selectedFabric,
+    this.fabricQuantity,
+    this.fabricUnit,
   });
 
   factory Order.fromJson(Map<String, dynamic> json) => Order(
@@ -49,5 +55,8 @@ class Order {
         customerPhone: json['customer_phone'],
         predictionMethod: json['prediction_method'],
         measurements: json['measurements'],
+        selectedFabric: json['selected_fabric'],
+        fabricQuantity: (json['fabric_quantity'] as num?)?.toDouble(),
+        fabricUnit: json['fabric_unit'],
       );
 }

@@ -40,6 +40,9 @@ class OrderRead(BaseModel):
     staff_name: Optional[str] = None
     prediction_method: Optional[str] = None
     measurements: List[dict] = []
+    selected_fabric: Optional[str] = None
+    fabric_quantity: Optional[float] = None
+    fabric_unit: Optional[str] = None
 
     class Config:
         orm_mode = True
