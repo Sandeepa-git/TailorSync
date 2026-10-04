@@ -199,6 +199,11 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                             onTap: () => context.go('/orders/new'),
                           ),
                         ),
+                        const SizedBox(height: Space.sm),
+                        EntranceFade(
+                          delay: Motion.staggerStep * 2,
+                          child: _TryOnHeroCard(onTap: () => context.push('/tryon')),
+                        ),
                         const SectionHeader(title: 'Today at a glance'),
                         GridView.builder(
                           shrinkWrap: true,
@@ -444,6 +449,91 @@ class _NewOrderHeroCard extends StatelessWidget {
                           boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.18), blurRadius: 12, offset: const Offset(0, 6))],
                         ),
                         child: Icon(Icons.add_rounded, color: cs.primary, size: 30),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Secondary hero card that opens the AI Virtual Try-On screen.
+class _TryOnHeroCard extends StatelessWidget {
+  final VoidCallback onTap;
+  const _TryOnHeroCard({required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final compact = context.isSmallPhone;
+    final dark = context.isDark;
+    return Semantics(
+      button: true,
+      label: 'Open virtual try-on',
+      child: Pressable(
+        onTap: onTap,
+        haptic: true,
+        child: ClipRRect(
+          borderRadius: Radii.brXl,
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: dark
+                    ? const [Color(0xFF5B2A86), Color(0xFF3A1A5E)]
+                    : const [Color(0xFF7B3FB5), Color(0xFF4A1F7A)],
+              ),
+              boxShadow: Shadows.raised(context.colors),
+            ),
+            child: Stack(
+              children: [
+                Positioned(
+                  right: -18,
+                  bottom: -24,
+                  child: Icon(Icons.checkroom_rounded, size: 132, color: Colors.white.withValues(alpha: 0.08)),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(compact ? Space.md : Space.lg),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            StatusPill(
+                              label: 'New · AI image',
+                              icon: Icons.auto_awesome_rounded,
+                              color: Colors.white,
+                              background: Colors.white.withValues(alpha: 0.16),
+                              dense: true,
+                            ),
+                            const SizedBox(height: Space.sm),
+                            Text('Virtual Try-On', style: context.text.headlineSmall?.copyWith(color: Colors.white)),
+                            const SizedBox(height: 2),
+                            Text(
+                              'See a design on your customer before cutting',
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: context.text.bodyMedium?.copyWith(color: Colors.white.withValues(alpha: 0.85)),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: Space.sm),
+                      Container(
+                        width: compact ? 48 : 56,
+                        height: compact ? 48 : 56,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: Radii.brLg,
+                          boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.18), blurRadius: 12, offset: const Offset(0, 6))],
+                        ),
+                        child: const Icon(Icons.checkroom_rounded, color: Color(0xFF5B2A86), size: 28),
                       ),
                     ],
                   ),

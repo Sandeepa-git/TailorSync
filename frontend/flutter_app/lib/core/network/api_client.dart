@@ -228,6 +228,25 @@ class ApiClient {
     return dio.get('/ai/input-ranges/$garmentType');
   }
 
+  /// Virtual try-on: sends the customer photo + dress description, returns
+  /// `{image_base64, mime_type}`. Image generation can take a while.
+  Future<Response> virtualTryOn(List<int> imageBytes, String filename, String dressDescription) async {
+    final form = FormData.fromMap({
+      'dress_description': dressDescription,
+      'image': MultipartFile.fromBytes(imageBytes, filename: filename),
+    });
+    return dio.post(
+      '/ai/virtual-tryon',
+      data: form,
+      options: Options(receiveTimeout: const Duration(seconds: 150), sendTimeout: const Duration(seconds: 60)),
+    );
+  }
+
+  /// Estimated free try-ons left today.
+  Future<Response> getTryOnUsage() async {
+    return dio.get('/ai/virtual-tryon/usage');
+  }
+
   // Measurement Templates
   Future<Response> getMeasurementTemplates() async {
     return dio.get('/measurement-templates/');

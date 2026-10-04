@@ -2,3 +2,6 @@
 __pycache__/
 *.pyc
 venv/
+
+tryon_result.png
+data/tryon_usage.json

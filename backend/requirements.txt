@@ -17,4 +17,5 @@ firebase-admin==6.2.0
 azure-ai-inference
 azure-identity
 pillow
-python-multipart
+python-multipart
+requests
