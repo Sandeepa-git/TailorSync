@@ -115,11 +115,14 @@ class ApiClient {
   }
 
   // Authentication  // Auth
-  Future<Response> login(String email, String password) async {
+  static Options? _captchaOptions(String? captchaToken) =>
+      captchaToken == null || captchaToken.isEmpty ? null : Options(headers: {'X-Captcha-Token': captchaToken});
+
+  Future<Response> login(String email, String password, {String? captchaToken}) async {
     return dio.post('/auth/login', data: {
       'email': email,
       'password': password
-    });
+    }, options: _captchaOptions(captchaToken));
   }
 
   Future<Response> signup({
@@ -130,6 +133,7 @@ class ApiClient {
     required String password,
     String? fullName,
     String? phone,
+    String? captchaToken,
   }) async {
     return dio.post('/auth/signup', data: {
       'business_name': businessName,
@@ -139,7 +143,7 @@ class ApiClient {
       'password': password,
       'full_name': fullName ?? '',
       'phone': phone ?? '',
-    });
+    }, options: _captchaOptions(captchaToken));
   }
 
   Future<Response> googleLogin(String firebaseToken) async {
