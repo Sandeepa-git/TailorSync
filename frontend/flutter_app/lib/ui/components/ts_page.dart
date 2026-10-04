@@ -47,34 +47,29 @@ class TsScrollPage extends StatelessWidget {
     final pad = context.pagePadding;
     final bottomInset = MediaQuery.paddingOf(context).bottom;
 
-    final appBar = SliverAppBar.large(
+    final appBar = SliverAppBar(
       pinned: true,
-      stretch: true,
+      floating: true,
       leading: leading,
       automaticallyImplyLeading: automaticallyImplyLeading,
+      title: Text(
+        title,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: context.text.titleLarge?.copyWith(
+          color: cs.onSurface,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
       actions: [...?actions, SizedBox(width: pad - Space.xs)],
       backgroundColor: cs.surface.withValues(alpha: 0.86),
       surfaceTintColor: Colors.transparent,
       flexibleSpace: ClipRect(
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-          child: FlexibleSpaceBar(
-            titlePadding: EdgeInsets.fromLTRB(pad, 0, pad, headerBottom == null ? 16 : headerBottomHeight + 16),
-            centerTitle: false,
-            title: Text(
-              title,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: context.text.headlineMedium?.copyWith(
-                color: cs.onSurface,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
+          child: const SizedBox.expand(),
         ),
       ),
-      // We remove the default title because FlexibleSpaceBar handles it
-      // title: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis),
       bottom: headerBottom == null
           ? null
           : PreferredSize(
