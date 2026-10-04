@@ -26,8 +26,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   
   bool _navigating = false;
   Future<void> _checkAuthAndNavigate() async {
-    // Ensure the splash screen is visible for at least 2 seconds
-    await Future.delayed(const Duration(seconds: 2));
+    // Removed artificial delay to speed up cold start
     if (!mounted) return;
 
     final storage = ref.read(secureStorageProvider);
