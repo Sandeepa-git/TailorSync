@@ -8,81 +8,81 @@ def seed():
     db = SessionLocal()
     categories = {
         'Short Sleeve Shirt': [
-            ("Shoulder Length", "cm", True),
-            ("Height", "cm", True),
-            ("Short Sleeve Length", "cm", False),
-            ("Chest", "cm", False),
-            ("Collar Size", "cm", False),
-            ("Sleeve Opening", "cm", False)
+            ("Shoulder Length", "in", True),
+            ("Height", "in", True),
+            ("Short Sleeve Length", "in", False),
+            ("Chest", "in", False),
+            ("Collar Size", "in", False),
+            ("Sleeve Opening", "in", False)
         ],
         'Long Sleeve Shirt': [
-            ("Shoulder Length", "cm", True),
-            ("Height", "cm", True),
-            ("Chest", "cm", False),
-            ("Collar Size", "cm", False),
-            ("Long Sleeve Length", "cm", False),
-            ("Sleeve Opening", "cm", False)
+            ("Shoulder Length", "in", True),
+            ("Height", "in", True),
+            ("Chest", "in", False),
+            ("Collar Size", "in", False),
+            ("Long Sleeve Length", "in", False),
+            ("Sleeve Opening", "in", False)
         ],
         'Short Trouser': [
-            ("Height Till Knee", "cm", True),
-            ("Waist", "cm", True),
-            ("Around Knee", "cm", False),
-            ("Seat", "cm", False),
-            ("Crotch", "cm", False),
-            ("Short Trouser Leg Opening", "cm", False)
+            ("Height Till Knee", "in", True),
+            ("Waist", "in", True),
+            ("Around Knee", "in", False),
+            ("Seat", "in", False),
+            ("Crotch", "in", False),
+            ("Short Trouser Leg Opening", "in", False)
         ],
         'Long Trouser': [
-            ("Height Till Knee", "cm", True),
-            ("Waist", "cm", True),
-            ("Around Knee", "cm", False),
-            ("Seat", "cm", False),
-            ("Crotch", "cm", False),
-            ("Long Trouser Leg Opening", "cm", False)
+            ("Height Till Knee", "in", True),
+            ("Waist", "in", True),
+            ("Around Knee", "in", False),
+            ("Seat", "in", False),
+            ("Crotch", "in", False),
+            ("Long Trouser Leg Opening", "in", False)
         ],
         'Shirts': [
-            ("Shoulder Length", "cm", True), ("Height", "cm", True),
-            ("Neck", "cm", False), ("Chest", "cm", False), ("Sleeve Length", "cm", False),
-            ("Waist", "cm", False), ("Cuff", "cm", False)
+            ("Shoulder Length", "in", True), ("Height", "in", True),
+            ("Neck", "in", False), ("Chest", "in", False), ("Sleeve Length", "in", False),
+            ("Waist", "in", False), ("Cuff", "in", False)
         ],
         'Trousers': [
-            ("Height Till Knee", "cm", True), ("Waist", "cm", True),
-            ("Hip", "cm", False), ("Thigh", "cm", False), ("Inseam", "cm", False),
-            ("Outseam", "cm", False), ("Bottom Width", "cm", False)
+            ("Height Till Knee", "in", True), ("Waist", "in", True),
+            ("Hip", "in", False), ("Thigh", "in", False), ("Inseam", "in", False),
+            ("Outseam", "in", False), ("Bottom Width", "in", False)
         ],
         'Jackets': [
-            ("Shoulder Length", "cm", True), ("Height", "cm", True),
-            ("Chest", "cm", False), ("Sleeve Length", "cm", False),
-            ("Jacket Length", "cm", False), ("Waist", "cm", False)
+            ("Shoulder Length", "in", True), ("Height", "in", True),
+            ("Chest", "in", False), ("Sleeve Length", "in", False),
+            ("Jacket Length", "in", False), ("Waist", "in", False)
         ],
         'Dresses': [
-            ("Shoulder Length", "cm", True), ("Height", "cm", True),
-            ("Bust", "cm", False), ("Waist", "cm", False), ("Hip", "cm", False),
-            ("Dress Length", "cm", False)
+            ("Shoulder Length", "in", True), ("Height", "in", True),
+            ("Bust", "in", False), ("Waist", "in", False), ("Hip", "in", False),
+            ("Dress Length", "in", False)
         ],
         'Suits': [
-            ("Shoulder Length", "cm", True), ("Height", "cm", True),
-            ("Chest", "cm", False), ("Waist", "cm", False), ("Hip", "cm", False),
-            ("Sleeve Length", "cm", False), ("Inseam", "cm", False)
+            ("Shoulder Length", "in", True), ("Height", "in", True),
+            ("Chest", "in", False), ("Waist", "in", False), ("Hip", "in", False),
+            ("Sleeve Length", "in", False), ("Inseam", "in", False)
         ],
         'Coats': [
-            ("Shoulder Length", "cm", True), ("Height", "cm", True),
-            ("Chest", "cm", False), ("Coat Length", "cm", False)
+            ("Shoulder Length", "in", True), ("Height", "in", True),
+            ("Chest", "in", False), ("Coat Length", "in", False)
         ],
         'School Uniforms': [
-            ("Shoulder Length", "cm", True), ("Height", "cm", True),
-            ("Chest", "cm", False), ("Waist", "cm", False), ("Length", "cm", False)
+            ("Shoulder Length", "in", True), ("Height", "in", True),
+            ("Chest", "in", False), ("Waist", "in", False), ("Length", "in", False)
         ],
         'Office Uniforms': [
-            ("Shoulder Length", "cm", True), ("Height", "cm", True),
-            ("Chest", "cm", False), ("Waist", "cm", False), ("Hip", "cm", False)
+            ("Shoulder Length", "in", True), ("Height", "in", True),
+            ("Chest", "in", False), ("Waist", "in", False), ("Hip", "in", False)
         ],
         'Waistcoats': [
-            ("Shoulder Length", "cm", True), ("Height", "cm", True),
-            ("Chest", "cm", False), ("Waist", "cm", False)
+            ("Shoulder Length", "in", True), ("Height", "in", True),
+            ("Chest", "in", False), ("Waist", "in", False)
         ],
         'Traditional': [
-            ("Shoulder Length", "cm", True), ("Height", "cm", True),
-            ("Chest", "cm", False), ("Waist", "cm", False), ("Hip", "cm", False)
+            ("Shoulder Length", "in", True), ("Height", "in", True),
+            ("Chest", "in", False), ("Waist", "in", False), ("Hip", "in", False)
         ]
     }
 
@@ -109,6 +109,7 @@ def seed():
         for idx, (fname, unit, req) in enumerate(fields):
             if fname.lower() in existing_fields:
                 existing_fields[fname.lower()].is_required = req
+                existing_fields[fname.lower()].unit = unit
                 existing_fields[fname.lower()].display_order = idx
             else:
                 field = MeasurementField(

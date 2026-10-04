@@ -9,7 +9,7 @@ class MeasurementField(Base):
     field_id = Column(Integer, primary_key=True, index=True)
     template_id = Column(Integer, ForeignKey("measurement_templates.template_id"), nullable=False)
     field_name = Column(String, nullable=False)
-    unit = Column(String, default="cm")
+    unit = Column(String, default="in")
     required = Column(Boolean, default=True, nullable=False)
     display_order = Column(Integer, default=0)
     

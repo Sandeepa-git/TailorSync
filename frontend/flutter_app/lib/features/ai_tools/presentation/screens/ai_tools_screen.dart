@@ -126,7 +126,7 @@ class AiToolsScreen extends ConsumerWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6.0),
       child: TextFormField(
-        decoration: InputDecoration(labelText: key.toUpperCase(), suffixText: 'cm'),
+        decoration: InputDecoration(labelText: key.toUpperCase(), suffixText: 'in'),
         initialValue: state.inputMeasurements[key],
         keyboardType: TextInputType.number,
         textInputAction: TextInputAction.next,

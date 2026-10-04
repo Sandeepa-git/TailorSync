@@ -4,7 +4,7 @@ from datetime import datetime
 
 class MeasurementFieldBase(BaseModel):
     field_name: str
-    unit: Optional[str] = "cm"
+    unit: Optional[str] = "in"
     is_required: Optional[bool] = True
     placeholder: Optional[str] = None
     display_order: Optional[int] = 0

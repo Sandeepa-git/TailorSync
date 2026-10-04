@@ -120,15 +120,15 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
       List<Map<String, dynamic>> fields = [];
       if (cat.contains('Shirt')) {
         fields = [
-          {'id': 1, 'field_name': 'Shoulder', 'unit': 'in', 'is_required': true, 'placeholder': 'e.g. 18.0'},
-          {'id': 2, 'field_name': 'Height', 'unit': 'in', 'is_required': true, 'placeholder': 'e.g. 68.0'},
-          {'id': 3, 'field_name': 'Chest', 'unit': 'in', 'is_required': true, 'placeholder': 'e.g. 40.0'},
+          {'id': 1, 'field_name': 'Shoulder', 'unit': 'in', 'is_required': true, 'placeholder': 'e.g. 9.5', 'help': 'Shoulder width'},
+          {'id': 2, 'field_name': 'Height', 'unit': 'in', 'is_required': true, 'placeholder': 'e.g. 29', 'help': 'Shirt length (not body height)'},
+          {'id': 3, 'field_name': 'Chest', 'unit': 'in', 'is_required': true, 'placeholder': 'e.g. 38', 'help': 'Around the chest'},
         ];
       } else if (cat.contains('Trouser')) {
         fields = [
-          {'id': 1, 'field_name': 'Height', 'unit': 'in', 'is_required': true, 'placeholder': 'e.g. 68.0'},
-          {'id': 2, 'field_name': 'Waist', 'unit': 'in', 'is_required': true, 'placeholder': 'e.g. 34.0'},
-          {'id': 3, 'field_name': 'Seat', 'unit': 'in', 'is_required': true, 'placeholder': 'e.g. 40.0'},
+          {'id': 1, 'field_name': 'Height', 'unit': 'in', 'is_required': true, 'placeholder': 'e.g. 32', 'help': 'Trouser length (not body height)'},
+          {'id': 2, 'field_name': 'Waist', 'unit': 'in', 'is_required': true, 'placeholder': 'e.g. 32', 'help': 'Around the waist'},
+          {'id': 3, 'field_name': 'Seat', 'unit': 'in', 'is_required': true, 'placeholder': 'e.g. 36', 'help': 'Around the hips/seat'},
         ];
       }
       return {'category_name': cat, 'fields': fields};
@@ -250,7 +250,6 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
              if (rangeData != null) {
                  f['min'] = rangeData['min'];
                  f['max'] = rangeData['max'];
-                 f['placeholder'] = '${rangeData['min']} - ${rangeData['max']}';
              }
          }
       } catch(e) {
@@ -1006,7 +1005,11 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
                     ],
                   ),
                   Text(
-                    isRequired ? 'Required' : 'Optional',
+                    [
+                      if (f['help'] != null) f['help'],
+                      if (f['min'] != null && f['max'] != null) '${f['min']}–${f['max']} in',
+                      if (f['help'] == null) (isRequired ? 'Required' : 'Optional'),
+                    ].join(' · '),
                     style: context.text.labelSmall?.copyWith(color: isRequired ? cs.primary : cs.onSurfaceVariant),
                   ),
                 ],

@@ -182,7 +182,7 @@ class OrderDetailsScreen extends ConsumerWidget {
                                   ),
                                   const SizedBox(height: 2),
                                   Text(
-                                    '${m['value']} ${m['unit'] ?? 'cm'}',
+                                    '${m['value']} ${m['unit'] ?? 'in'}',
                                     style: context.text.titleMedium,
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,

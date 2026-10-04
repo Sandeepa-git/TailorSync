@@ -8,6 +8,11 @@ from app.services.dataset_service import DatasetService
 
 logger = logging.getLogger(__name__)
 
+# The measurement data/ML models use inches, and "Height" means the GARMENT length
+# (shirt or trouser length), not the person's body height.
+UNITS_NOTE = ("All measurements are in inches. 'Height' is the garment length "
+              "(shirt length or trouser length), not the person's body height.")
+
 class FoundryClient:
     def __init__(self):
         self.endpoint = os.environ.get("FOUNDRY_ENDPOINT", "")
@@ -143,6 +148,7 @@ class FoundryClient:
     def predict_measurements(self, garment_type: str, provided_measurements: dict) -> dict:
         agent_message = json.dumps({
             "task": "predict_missing_measurements",
+            "units_note": UNITS_NOTE,
             "garment_type": garment_type,
             "provided_measurements": provided_measurements,
             "reply_format": {"predictions": [{"measurement": "name", "recommended": "number as string",
@@ -173,6 +179,7 @@ Dataset Context:
 
         prompt = f"""
 Garment Type: {garment_type}
+Note: {UNITS_NOTE}
 Tailor's Provided Measurements:
 {json.dumps(provided_measurements, indent=2)}
 
@@ -245,6 +252,7 @@ Return ONLY a JSON object with exactly 3 recommendations in this structure:
     def estimate_fabric(self, garment_type: str, fabric: str, measurements: dict) -> dict:
         agent_message = json.dumps({
             "task": "estimate_fabric_meters",
+            "units_note": UNITS_NOTE,
             "garment_type": garment_type, "fabric": fabric, "measurements": measurements,
             "reply_format": {"recommended_quantity_meters": 2.1, "estimated_range": {"min": 2.0, "max": 2.25},
                              "fabric_width_inches": 60, "reason": "short"},
