@@ -7,12 +7,12 @@ import '../../config/env_config.dart';
 import '../slide_captcha.dart';
 import 'captcha_view_mobile.dart' if (dart.library.js_interop) 'captcha_view_web.dart';
 
-/// Google reCAPTCHA v2 check for login / signup.
+/// Google reCAPTCHA v2 "I'm not a robot" box, shown inline in the form.
 ///
 /// 1. Asks the backend if reCAPTCHA is enabled (`/auth/captcha-config`).
-/// 2. Enabled  → shows an "I'm not a robot" box; tapping opens Google's real
-///    widget (full screen, so image puzzles fit). The token goes to [onToken]
-///    and must be sent to the backend, which verifies it with Google.
+/// 2. Enabled  → embeds Google's checkbox right here (it grows in place if
+///    Google shows an image puzzle). The token goes to [onToken] and is sent
+///    to the backend, which verifies it with Google.
 /// 3. Disabled / unreachable → falls back to the offline [SlideCaptcha].
 class RecaptchaCheck extends StatefulWidget {
   final ValueChanged<String?> onToken; // token, or null when using the offline fallback
@@ -28,9 +28,14 @@ class RecaptchaCheck extends StatefulWidget {
 enum _Mode { checking, recaptcha, fallback }
 
 class _RecaptchaCheckState extends State<RecaptchaCheck> {
+  static const double _boxHeight = 80;
+
   _Mode _mode = _Mode.checking;
+  bool _loading = true;
   bool _verified = false;
+  double _height = _boxHeight;
   String? _error;
+  int _reloadKey = 0;
 
   String get _base => EnvConfig.backendUrl;
 
@@ -53,21 +58,49 @@ class _RecaptchaCheckState extends State<RecaptchaCheck> {
     }
   }
 
-  Future<void> _openChallenge() async {
-    if (!widget.enabled || _verified) return;
-    HapticFeedback.selectionClick();
-    setState(() => _error = null);
-    final token = await showDialog<String>(
-      context: context,
-      useSafeArea: false,
-      builder: (_) => _RecaptchaDialog(url: '$_base/auth/captcha-page'),
-    );
+  void _onMessage(String m) {
     if (!mounted) return;
-    if (token != null && token.isNotEmpty) {
+    if (m == 'ready') {
+      setState(() => _loading = false);
+    } else if (m.startsWith('height:')) {
+      final h = double.tryParse(m.substring(7));
+      if (h != null) setState(() => _height = h.clamp(60.0, 700.0));
+    } else if (m.startsWith('token:')) {
       HapticFeedback.lightImpact();
-      setState(() => _verified = true);
-      widget.onToken(token);
+      setState(() {
+        _verified = true;
+        _error = null;
+        _height = _boxHeight;
+      });
+      widget.onToken(m.substring(6));
+    } else if (m == 'expired') {
+      setState(() {
+        _verified = false;
+        _error = 'That took a little while, so it timed out. Just tick the box once more.';
+      });
+      widget.onReset();
+    } else if (m.startsWith('error:')) {
+      setState(() {
+        _loading = false;
+        _verified = false;
+        _error = m == 'error:unsupported'
+            ? 'This check isn\'t available here, so we\'ll use a quick slider instead.'
+            : 'Hmm, we couldn\'t load the check. Make sure you\'re online, then tap Try again.';
+      });
+      widget.onReset();
+      if (m == 'error:unsupported') setState(() => _mode = _Mode.fallback);
     }
+  }
+
+  void _reload() {
+    widget.onReset();
+    setState(() {
+      _reloadKey++;
+      _loading = true;
+      _verified = false;
+      _error = null;
+      _height = _boxHeight;
+    });
   }
 
   @override
@@ -81,134 +114,67 @@ class _RecaptchaCheckState extends State<RecaptchaCheck> {
           onChanged: (ok) => ok ? widget.onToken(null) : widget.onReset(),
         );
       case _Mode.recaptcha:
-        return _buildBox(context);
+        return _buildInline(context);
     }
   }
 
-  Widget _buildBox(BuildContext context) {
+  Widget _buildInline(BuildContext context) {
     final cs = context.colors;
     final st = context.status;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Material(
-          color: _verified ? st.success.withValues(alpha: 0.08) : cs.surface,
-          shape: RoundedRectangleBorder(
-            borderRadius: Radii.brMd,
-            side: BorderSide(color: _verified ? st.success.withValues(alpha: 0.6) : cs.outlineVariant),
-          ),
-          child: InkWell(
-            borderRadius: Radii.brMd,
-            onTap: _verified ? null : _openChallenge,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: Space.md, vertical: Space.sm),
-              child: Row(
-                children: [
-                  AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 200),
-                    child: _verified
-                        ? Icon(Icons.check_box_rounded, key: const ValueKey('on'), color: st.success, size: 30)
-                        : Icon(Icons.check_box_outline_blank_rounded,
-                            key: const ValueKey('off'), color: cs.outline, size: 30),
-                  ),
-                  const SizedBox(width: Space.sm),
-                  Expanded(
-                    child: Text(
-                      _verified ? 'Verified — you\'re not a robot' : 'I\'m not a robot',
-                      style: context.text.titleSmall,
+        AnimatedContainer(
+          duration: const Duration(milliseconds: 250),
+          curve: Curves.easeOutCubic,
+          height: _height,
+          child: Stack(
+            children: [
+              Positioned.fill(
+                child: KeyedSubtree(
+                  key: ValueKey(_reloadKey),
+                  child: buildCaptchaView('$_base/auth/captcha-page', _onMessage),
+                ),
+              ),
+              if (_loading)
+                Positioned.fill(
+                  child: IgnorePointer(
+                    child: Container(
+                      alignment: Alignment.centerLeft,
+                      padding: const EdgeInsets.symmetric(horizontal: Space.md),
+                      decoration: BoxDecoration(
+                        color: cs.surfaceContainerHighest.withValues(alpha: 0.6),
+                        borderRadius: Radii.brSm,
+                      ),
+                      child: Row(
+                        children: [
+                          SizedBox(
+                            width: 18,
+                            height: 18,
+                            child: CircularProgressIndicator(strokeWidth: 2, color: cs.primary),
+                          ),
+                          const SizedBox(width: Space.sm),
+                          Text('Getting your quick check ready…', style: context.text.bodySmall),
+                        ],
+                      ),
                     ),
                   ),
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.security_rounded, color: cs.primary, size: 22),
-                      Text('reCAPTCHA', style: context.text.labelSmall?.copyWith(fontSize: 9)),
-                    ],
-                  ),
-                ],
-              ),
-            ),
+                ),
+            ],
           ),
         ),
         if (_error != null)
-          Padding(
-            padding: const EdgeInsets.only(top: Space.xxs),
-            child: Text(_error!, style: context.text.bodySmall?.copyWith(color: st.danger)),
+          Row(
+            children: [
+              Expanded(child: Text(_error!, style: context.text.bodySmall?.copyWith(color: st.danger))),
+              TextButton.icon(
+                onPressed: _reload,
+                icon: const Icon(Icons.refresh_rounded, size: 18),
+                label: const Text('Try again'),
+              ),
+            ],
           ),
       ],
-    );
-  }
-}
-
-/// Full-screen dialog hosting Google's widget. Pops with the token on success.
-class _RecaptchaDialog extends StatefulWidget {
-  final String url;
-  const _RecaptchaDialog({required this.url});
-
-  @override
-  State<_RecaptchaDialog> createState() => _RecaptchaDialogState();
-}
-
-class _RecaptchaDialogState extends State<_RecaptchaDialog> {
-  bool _loading = true;
-  String? _error;
-  int _reloadKey = 0;
-
-  void _onMessage(String m) {
-    if (!mounted) return;
-    if (m == 'ready') {
-      setState(() => _loading = false);
-    } else if (m.startsWith('token:')) {
-      Navigator.of(context).pop(m.substring(6));
-    } else if (m == 'expired') {
-      setState(() => _error = 'The check expired. Please tick the box again.');
-    } else if (m.startsWith('error:')) {
-      setState(() {
-        _loading = false;
-        _error = m == 'error:unsupported'
-            ? 'reCAPTCHA is not supported on this device.'
-            : 'Could not reach Google reCAPTCHA. Check your internet connection.';
-      });
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Dialog.fullscreen(
-      child: Scaffold(
-        appBar: AppBar(
-          leading: const CloseButton(),
-          title: const Text('Security check'),
-          actions: [
-            IconButton(
-              tooltip: 'Reload',
-              icon: const Icon(Icons.refresh_rounded),
-              onPressed: () => setState(() {
-                _reloadKey++;
-                _loading = true;
-                _error = null;
-              }),
-            ),
-          ],
-        ),
-        body: Column(
-          children: [
-            if (_error != null)
-              MaterialBanner(
-                content: Text(_error!),
-                leading: Icon(Icons.error_outline_rounded, color: context.status.danger),
-                actions: [TextButton(onPressed: () => setState(() => _error = null), child: const Text('OK'))],
-              ),
-            if (_loading) const LinearProgressIndicator(minHeight: 2),
-            Expanded(
-              child: KeyedSubtree(
-                key: ValueKey(_reloadKey),
-                child: buildCaptchaView(widget.url, _onMessage),
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

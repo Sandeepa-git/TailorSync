@@ -31,7 +31,9 @@ class _WebCaptchaViewState extends State<_WebCaptchaView> {
     ui_web.platformViewRegistry.registerViewFactory(_viewType, (int viewId) {
       return web.HTMLIFrameElement()
         ..src = widget.url
+        ..setAttribute('scrolling', 'no')
         ..style.border = 'none'
+        ..style.overflow = 'hidden'
         ..style.width = '100%'
         ..style.height = '100%';
     });

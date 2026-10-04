@@ -23,7 +23,8 @@ class _MobileCaptchaViewState extends State<_MobileCaptchaView> {
     try {
       _controller = WebViewController()
         ..setJavaScriptMode(JavaScriptMode.unrestricted)
-        ..setBackgroundColor(Colors.white)
+        ..setBackgroundColor(Colors.transparent)
+        ..enableZoom(false)
         ..addJavaScriptChannel('CaptchaChannel', onMessageReceived: (m) => widget.onMessage(m.message))
         ..setNavigationDelegate(NavigationDelegate(
           onWebResourceError: (e) {

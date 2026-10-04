@@ -63,7 +63,7 @@ class _SlideCaptchaState extends State<SlideCaptcha> with SingleTickerProviderSt
       });
       widget.onChanged(true);
     } else {
-      if (_pos >= 0.95) _hint = 'Too fast — please slide again.';
+      if (_pos >= 0.95) _hint = 'Whoa, that was quick! Try sliding a little slower.';
       _backFrom = _pos;
       _back.forward(from: 0);
     }
@@ -102,7 +102,7 @@ class _SlideCaptchaState extends State<SlideCaptcha> with SingleTickerProviderSt
                 ),
                 Center(
                   child: Text(
-                    _verified ? 'Verified' : 'Slide to verify you are human',
+                    _verified ? 'All set, thanks!' : 'Slide to continue',
                     style: context.text.bodyMedium?.copyWith(
                       color: _verified ? st.success : cs.onSurfaceVariant,
                       fontWeight: FontWeight.w600,
