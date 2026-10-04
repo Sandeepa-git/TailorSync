@@ -152,9 +152,9 @@ class FoundryClient:
             "garment_type": garment_type,
             "provided_measurements": provided_measurements,
             "reply_format": {"predictions": [{"measurement": "name", "recommended": "number as string",
-                                              "alternatives": ["number", "number"], "reason": "short"}]},
-            "rules": "Predict every missing measurement for this garment. Reply with JSON only.",
-        })
+                                              "alternatives": ["number", "number"]}]},
+            "rules": "Predict every missing measurement. No reasons. JSON only.",
+        }, separators=(",", ":"))
 
         exact_match = self._dataset_service.get_exact_match(garment_type, provided_measurements)
         context = self._dataset_service.get_dataset_context(garment_type)
@@ -243,9 +243,9 @@ Return ONLY a JSON object with exactly 3 recommendations in this structure:
             "task": "recommend_fabrics",
             "garment_type": garment_type, "occasion": occasion, "weather": weather,
             "fabric_preferences": fabric_preferences, "fit": fit,
-            "reply_format": {"recommendations": [{"fabric_name": "name", "suitability_percentage": 90, "reason": "short"}]},
-            "rules": "Exactly 3 recommendations. Reply with JSON only.",
-        })
+            "reply_format": {"recommendations": [{"fabric_name": "name", "suitability_percentage": 90, "reason": "max 12 words"}]},
+            "rules": "Exactly 3. JSON only.",
+        }, separators=(",", ":"))
         response_text = self._call_foundry(prompt, system_instruction, agent_message)
         return json.loads(response_text)
 
@@ -255,9 +255,9 @@ Return ONLY a JSON object with exactly 3 recommendations in this structure:
             "units_note": UNITS_NOTE,
             "garment_type": garment_type, "fabric": fabric, "measurements": measurements,
             "reply_format": {"recommended_quantity_meters": 2.1, "estimated_range": {"min": 2.0, "max": 2.25},
-                             "fabric_width_inches": 60, "reason": "short"},
-            "rules": "Reply with JSON only.",
-        })
+                             "fabric_width_inches": 60, "reason": "max 15 words"},
+            "rules": "JSON only.",
+        }, separators=(",", ":"))
         context = self._dataset_service.get_dataset_context(garment_type)
         system_instruction = f"""
 You are the AI fabric estimator for TailorSync.
