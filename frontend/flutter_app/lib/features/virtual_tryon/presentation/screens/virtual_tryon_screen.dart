@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart' show CameraDevice, ImagePicker, ImageSource;
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart' show SharePlus, ShareParams, XFile;
@@ -160,7 +161,9 @@ class _VirtualTryOnScreenState extends ConsumerState<VirtualTryOnScreen> {
       String msg = 'Something went wrong. Please try again.';
       if (e is DioException) {
         final data = e.response?.data;
-        if (data is Map && data['detail'] != null) {
+        if (e.response?.statusCode == 404) {
+          msg = 'The try-on service is not available on the server yet. Please make sure the latest backend is deployed.';
+        } else if (data is Map && data['detail'] != null) {
           msg = data['detail'].toString();
         } else if (e.type == DioExceptionType.receiveTimeout || e.type == DioExceptionType.connectionTimeout) {
           msg = 'The AI took too long to respond. Please try again.';
@@ -192,6 +195,17 @@ class _VirtualTryOnScreenState extends ConsumerState<VirtualTryOnScreen> {
     final cs = context.colors;
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          tooltip: 'Back',
+          icon: const Icon(Icons.arrow_back_rounded),
+          onPressed: () {
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              context.go('/home');
+            }
+          },
+        ),
         title: const Text('Virtual Try-On'),
         actions: [
           if (_photo != null)

@@ -8,6 +8,7 @@ import '../../../../core/widgets/tailorsync_text_field.dart';
 import '../../../../core/widgets/tailorsync_password_field.dart';
 import '../../../../core/widgets/tailorsync_button.dart';
 import '../../../../core/widgets/tailorsync_password_requirements.dart';
+import '../../../../core/widgets/simple_captcha.dart';
 import '../../../../ui/ui.dart';
 import 'terms_and_conditions_screen.dart';
 
@@ -35,6 +36,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
   bool _acceptedTerms = false;
+  bool _captchaPassed = false;
+  int _captchaKey = 0; // bump to reset the captcha
   @override
   void initState() {
     super.initState();
@@ -72,6 +75,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   void _submit() async {
     if (!_formKey.currentState!.validate()) return;
     if (_isSignUp && (!_isPasswordValid || !_passwordsMatch || !_acceptedTerms)) return;
+    if (!_captchaPassed) return;
 
     setState(() => _loading = true);
     final api = ref.read(apiClientProvider);
@@ -115,6 +119,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       }
     } on DioException catch (e) {
       if (!mounted) return;
+      // Require a fresh captcha after a failed attempt.
+      setState(() {
+        _captchaPassed = false;
+        _captchaKey++;
+      });
       String error = _isSignUp ? 'Sign up failed' : 'Login failed';
 
       if (e.type == DioExceptionType.connectionTimeout ||
@@ -361,6 +370,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   void _toggleMode() => setState(() {
         _isSignUp = !_isSignUp;
+        _captchaPassed = false;
+        _captchaKey++;
         _name.clear();
         _email.clear();
         _phone.clear();
@@ -379,7 +390,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final bool canSubmit = !_loading && (!_isSignUp || (_isPasswordValid && _passwordsMatch && _acceptedTerms));
+    final bool canSubmit = !_loading && _captchaPassed && (!_isSignUp || (_isPasswordValid && _passwordsMatch && _acceptedTerms));
     final pad = context.pagePadding;
     final logo = (context.screenWidth * 0.2).clamp(64.0, 92.0);
     final gap = context.isCompact ? Space.sm : Space.md;
@@ -605,6 +616,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                         },
                                       ),
                                     ],
+
+                                    const SizedBox(height: Space.sm),
+                                    SimpleCaptcha(
+                                      key: ValueKey('captcha_$_captchaKey'),
+                                      enabled: !_loading,
+                                      onChanged: (ok) => setState(() => _captchaPassed = ok),
+                                    ),
 
                                     if (!_isSignUp)
                                       Align(
