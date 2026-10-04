@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:go_router/go_router.dart';
+import '../../../orders/models/order.dart';
 import '../../../orders/presentation/providers/orders_provider.dart';
 import '../../../../core/network/providers/api_provider.dart';
 import '../../../../core/theme/app_theme.dart';
@@ -344,6 +346,11 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
                       isOverdue: isOverdue,
                       onUpdateStage: () => _showUpdateStageDialog(context, task),
                       onUpdateDueDate: () => _updateDueDateOnly(context, task),
+                      onViewDocument: () {
+                        HapticFeedback.selectionClick();
+                        final orderObj = Order.fromJson(task);
+                        context.push('/orders/details', extra: orderObj);
+                      },
                     ),
                   ),
                 );
@@ -614,6 +621,7 @@ class _TaskCard extends StatelessWidget {
   final bool isOverdue;
   final VoidCallback? onUpdateStage;
   final VoidCallback? onUpdateDueDate;
+  final VoidCallback? onViewDocument;
 
   const _TaskCard({
     required this.orderId,
@@ -629,6 +637,7 @@ class _TaskCard extends StatelessWidget {
     this.isOverdue = false,
     this.onUpdateStage,
     this.onUpdateDueDate,
+    this.onViewDocument,
   });
 
   @override
@@ -714,11 +723,7 @@ class _TaskCard extends StatelessWidget {
                               IconButton(
                                 tooltip: 'Order Document',
                                 icon: Icon(Icons.description_outlined, size: 20, color: cs.onSurfaceVariant),
-                                onPressed: () {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(content: Text('Viewing order document'), duration: Duration(seconds: 1)),
-                                  );
-                                },
+                                onPressed: onViewDocument,
                               ),
                               FilledButton.tonalIcon(
                                 onPressed: onUpdateStage,

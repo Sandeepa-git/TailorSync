@@ -456,10 +456,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   title: 'Privacy Policy',
                   trailingIcon: Icons.chevron_right_rounded,
                   onTap: () {
-                      showTsDialog(
+                      showDialog(
                         context: context,
                         builder: (context) => AlertDialog(
-                          title: Text('Privacy Policy'),
+                          title: const Text('Privacy Policy'),
                           content: const Text('Your privacy is important to us. All personal and business data is securely stored and never shared with third parties without consent. (Placeholder for full policy)'),
                           actions: [
                             TextButton(onPressed: () => Navigator.pop(context), child: const Text('Close')),
@@ -474,23 +474,22 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   title: 'Contact Support',
                   trailingIcon: Icons.chevron_right_rounded,
                   onTap: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Column(
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: const Text('Contact Support'),
+                          content: const Column(
                             mainAxisSize: MainAxisSize.min,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text('Need Help?'),
-                              const SizedBox(height: 4),
+                              SizedBox(height: 8),
                               Text('Reach out to us at: agsvwimalasiri@gmail.com'),
                             ],
                           ),
-                          behavior: SnackBarBehavior.floating,
-                          duration: const Duration(seconds: 5),
-                          action: SnackBarAction(
-                            label: 'Dismiss',
-                            onPressed: () {},
-                          ),
+                          actions: [
+                            TextButton(onPressed: () => Navigator.pop(context), child: const Text('Close')),
+                          ],
                         ),
                       );
                     },
@@ -501,18 +500,18 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   title: 'About',
                   trailingIcon: Icons.chevron_right_rounded,
                   onTap: () {
-                      showTsDialog(
+                      showDialog(
                         context: context,
                         builder: (context) => AlertDialog(
-                          title: Text('About TailorSync'),
-                          content: Column(
+                          title: const Text('About TailorSync'),
+                          content: const Column(
                             mainAxisSize: MainAxisSize.min,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text('TailorSync is a comprehensive tailoring management solution designed to streamline measurements, orders, and customer relationships.'),
-                              const SizedBox(height: 16),
-                              Text('Developer Details:'),
-                              const SizedBox(height: 8),
+                              SizedBox(height: 16),
+                              Text('Developer Details:', style: TextStyle(fontWeight: FontWeight.bold)),
+                              SizedBox(height: 8),
                               Text('A.G.S.V. Wimalasiri'),
                               Text('W.A.E.M. Wijayarathna'),
                               Text('N.D.H.A. Madubhashitha'),
