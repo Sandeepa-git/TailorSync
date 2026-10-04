@@ -111,10 +111,10 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
     int otherCount = 0;
     
     final fromDateStr = _getFromDate();
-    final fromDate = DateTime.tryParse(fromDateStr) ?? DateTime.now();
+    final fromDate = DateTime.tryParse(fromDateStr);
 
     for (var o in _allOrders) {
-      if (o['created_at'] != null) {
+      if (fromDate != null && o['created_at'] != null) {
         final createdAt = DateTime.tryParse(o['created_at'].toString());
         if (createdAt != null && createdAt.isBefore(fromDate)) {
           continue; // Filter orders by selected period
