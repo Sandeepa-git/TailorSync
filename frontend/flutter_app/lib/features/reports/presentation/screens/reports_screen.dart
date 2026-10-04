@@ -128,10 +128,38 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
     }
 
     final totalForStatus = sewingCount + cuttingCount + readyCount + otherCount;
-    final sewingPct = totalForStatus > 0 ? ((sewingCount / totalForStatus) * 100).round() : 0;
-    final cuttingPct = totalForStatus > 0 ? ((cuttingCount / totalForStatus) * 100).round() : 0;
-    final readyPct = totalForStatus > 0 ? ((readyCount / totalForStatus) * 100).round() : 0;
-    final otherPct = totalForStatus > 0 ? ((otherCount / totalForStatus) * 100).round() : 0;
+    int sewingPct = 0, cuttingPct = 0, readyPct = 0, otherPct = 0;
+
+    if (totalForStatus > 0) {
+      final s = (sewingCount / totalForStatus) * 100;
+      final c = (cuttingCount / totalForStatus) * 100;
+      final r = (readyCount / totalForStatus) * 100;
+      final o = (otherCount / totalForStatus) * 100;
+
+      sewingPct = s.floor();
+      cuttingPct = c.floor();
+      readyPct = r.floor();
+      otherPct = o.floor();
+
+      int remainder = 100 - (sewingPct + cuttingPct + readyPct + otherPct);
+
+      final fractions = [
+        {'key': 'sewing', 'val': s - sewingPct},
+        {'key': 'cutting', 'val': c - cuttingPct},
+        {'key': 'ready', 'val': r - readyPct},
+        {'key': 'other', 'val': o - otherPct},
+      ];
+
+      fractions.sort((a, b) => (b['val'] as double).compareTo(a['val'] as double));
+
+      for (int i = 0; i < remainder; i++) {
+        final k = fractions[i]['key'];
+        if (k == 'sewing') sewingPct++;
+        else if (k == 'cutting') cuttingPct++;
+        else if (k == 'ready') readyPct++;
+        else if (k == 'other') otherPct++;
+      }
+    }
 
     final slices = [
       _Slice('Sewing', sewingCount, sewingPct, cs.primary),

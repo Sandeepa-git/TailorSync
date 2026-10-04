@@ -147,3 +147,145 @@ class _StitchPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant _StitchPainter old) => old.color != color || old.track != track;
 }
+
+/// Clean, professional indeterminate spinner: a gradient "comet" arc that
+/// orbits a hairline track, its length easing in and out, with a softly
+/// glowing head. Single painter, 60fps, static ring for reduced motion.
+class OrbitLoader extends StatefulWidget {
+  final double size;
+  final Color color;
+  final Color? highlight;
+  final Color? trackColor;
+  final double strokeWidth;
+
+  const OrbitLoader({
+    super.key,
+    this.size = 44,
+    required this.color,
+    this.highlight,
+    this.trackColor,
+    this.strokeWidth = 3,
+  });
+
+  @override
+  State<OrbitLoader> createState() => _OrbitLoaderState();
+}
+
+class _OrbitLoaderState extends State<OrbitLoader> with SingleTickerProviderStateMixin {
+  late final AnimationController _c = AnimationController(vsync: this, duration: const Duration(milliseconds: 2000));
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (Motion.reduced(context)) {
+      _c.value = 0.25;
+      _c.stop();
+    } else if (!_c.isAnimating) {
+      _c.repeat();
+    }
+  }
+
+  @override
+  void dispose() {
+    _c.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      label: 'Loading',
+      child: RepaintBoundary(
+        child: SizedBox.square(
+          dimension: widget.size,
+          child: CustomPaint(
+            painter: _OrbitPainter(
+              anim: _c,
+              color: widget.color,
+              highlight: widget.highlight ?? widget.color,
+              track: widget.trackColor ?? Colors.white.withValues(alpha: 0.10),
+              stroke: widget.strokeWidth,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _OrbitPainter extends CustomPainter {
+  final Animation<double> anim;
+  final Color color;
+  final Color highlight;
+  final Color track;
+  final double stroke;
+  _OrbitPainter({
+    required this.anim,
+    required this.color,
+    required this.highlight,
+    required this.track,
+    required this.stroke,
+  }) : super(repaint: anim);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final t = anim.value;
+    final c = size.center(Offset.zero);
+    final r = (size.shortestSide - stroke * 2) / 2;
+    final rect = Rect.fromCircle(center: Offset.zero, radius: r);
+
+    // Hairline track.
+    canvas.drawCircle(
+      c,
+      r,
+      Paint()
+        ..color = track
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = stroke * 0.6,
+    );
+
+    // Arc length grows then shrinks (eased) while the whole thing rotates.
+    final phase = t < 0.5 ? t * 2 : (1 - t) * 2;
+    final len = (0.10 + 0.62 * Curves.easeInOutCubic.transform(phase)) * 2 * math.pi;
+    const maxLen = 0.72 * 2 * math.pi;
+    // While shrinking, the tail catches up to the head (Material rhythm).
+    // Base speed chosen so the loop is seamless: 1.38 + 0.62 = 2 full turns.
+    final rotation = t * 2 * math.pi * 1.38 + (t < 0.5 ? 0.0 : maxLen - len);
+
+    canvas.save();
+    canvas.translate(c.dx, c.dy);
+    canvas.rotate(rotation - math.pi / 2);
+
+    canvas.drawArc(
+      rect,
+      0,
+      len,
+      false,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = stroke
+        ..strokeCap = StrokeCap.round
+        ..shader = SweepGradient(
+          endAngle: len,
+          colors: [color.withValues(alpha: 0), color, highlight],
+          stops: const [0.0, 0.7, 1.0],
+        ).createShader(rect),
+    );
+
+    // Glowing head.
+    final head = Offset(math.cos(len), math.sin(len)) * r;
+    canvas.drawCircle(
+      head,
+      stroke * 1.6,
+      Paint()
+        ..color = highlight.withValues(alpha: 0.35)
+        ..maskFilter = MaskFilter.blur(BlurStyle.normal, stroke * 1.2),
+    );
+    canvas.drawCircle(head, stroke * 0.62, Paint()..color = highlight);
+    canvas.restore();
+  }
+
+  @override
+  bool shouldRepaint(covariant _OrbitPainter old) =>
+      old.color != color || old.highlight != highlight || old.track != track || old.stroke != stroke;
+}
