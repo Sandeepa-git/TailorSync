@@ -122,7 +122,7 @@ class _CustomerFormScreenState extends ConsumerState<CustomerFormScreen> {
       'name': _name.text.trim(),
       'phone': _phone.text.replaceAll(RegExp(r'[\s-]'), ''),
       'email': orNull(_email.text),
-      'address': orNull(_address.text),
+      'address': _address.text.trim(),
     };
     try {
       if (_isEdit) {

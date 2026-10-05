@@ -21,6 +21,8 @@ def update_customer(db: Session, customer_id: int, updates: CustomerUpdate, busi
             customer.phone = updates.phone
         if updates.email is not None:
             customer.email = updates.email
+        if updates.address is not None:
+            customer.address = updates.address.strip() or None
         db.commit()
         db.refresh(customer)
     return customer
