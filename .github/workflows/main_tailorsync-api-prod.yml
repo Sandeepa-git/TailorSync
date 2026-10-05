@@ -8,12 +8,15 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'backend/**'
+      - '.github/workflows/**'
   workflow_dispatch:
 
 # Prevent concurrent deployments to avoid Azure 409 Conflict locks
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   build:
