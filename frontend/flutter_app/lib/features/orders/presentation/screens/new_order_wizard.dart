@@ -168,18 +168,25 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
   /// or briefly unavailable (502/503/504, dropped connection). Azure returns
   /// these for ~1-3 min after a deploy or while the container wakes up.
   Future<Response> _aiCall(Future<Response> Function() call) async {
-    const waits = [Duration(seconds: 4), Duration(seconds: 8)];
+    const waits = [Duration(seconds: 5), Duration(seconds: 10), Duration(seconds: 15)];
     for (var attempt = 0; ; attempt++) {
       try {
         return await call();
       } on DioException catch (e) {
         final code = e.response?.statusCode;
-        final transient = code == 502 || code == 503 || code == 504 ||
+        // A 503 with a JSON "detail" comes from our API (the AI itself failed):
+        // retrying won't help, so show it straight away.
+        final transient = (code == 502 || code == 504 || (code == 503 && !_isApiDetail(e))) ||
             e.type == DioExceptionType.connectionError;
         if (!transient || attempt >= waits.length || !mounted) rethrow;
         await Future.delayed(waits[attempt]);
       }
     }
+  }
+
+  bool _isApiDetail(DioException e) {
+    final data = e.response?.data;
+    return data is Map && data['detail'] != null;
   }
 
   /// Human-readable message instead of the raw DioException dump.
@@ -189,6 +196,10 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
       final data = e.response?.data;
       final detail = data is Map && data['detail'] != null ? data['detail'].toString() : null;
       if (code == 401 || code == 403) return 'Your session has expired. Please sign in again.';
+      if (code == 503 && detail != null) {
+        return 'The $what could not be completed by the AI service right now. '
+            'Tap Try again, or go Back and choose Custom ML.\n\n($detail)';
+      }
       if (code == 502 || code == 503 || code == 504) {
         return 'The $what service is restarting or busy right now. Please wait a moment and tap Try again.';
       }

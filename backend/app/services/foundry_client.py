@@ -164,14 +164,24 @@ class FoundryClient:
         used only if the agent is unavailable and we fall back to the plain model."""
         try:
             content = None
+            agent_tried = False
             if self.project_endpoint and time.time() >= self._agent_down_until:
+                agent_tried = True
                 try:
                     content = self._call_agent(agent_message or prompt)
                 except Exception as agent_err:
                     self._agent_down_until = time.time() + 300
                     logger.error(f"Foundry agent call failed, using the model for the next 5 min: {agent_err}")
             if content is None:
-                content = self._call_model(prompt, system_instruction)
+                try:
+                    content = self._call_model(prompt, system_instruction)
+                except Exception as model_err:
+                    if not (self.project_endpoint and not agent_tried):
+                        raise
+                    # The agent was being skipped; the model failed too, so try the agent anyway.
+                    logger.error(f"Foundry model failed, retrying the agent: {model_err}")
+                    content = self._call_agent(agent_message or prompt)
+                    self._agent_down_until = 0.0
             
             # Robust JSON extraction: Find content between ```json and ``` or first { and last }
             import re
