@@ -1,0 +1,41 @@
+TailorSync — Proprietary License
+
+Copyright (c) 2026 The TailorSync Team. All rights reserved.
+
+This software and its associated files, including source code, trained
+machine-learning models, datasets, designs, documentation and assets
+(together, the "Software"), are the exclusive property of the TailorSync
+Team (the "Authors").
+
+1. Viewing. The Software is made publicly visible for academic assessment
+   and portfolio purposes only. You may view and read the source code.
+
+2. Restrictions. Without prior written permission from the Authors, you may
+   not:
+     a. copy, reproduce, modify, translate or create derivative works of the
+        Software, in whole or in part;
+     b. distribute, publish, sublicense, sell, rent or lease the Software;
+     c. use the Software, or any part of it, in a commercial or production
+        environment;
+     d. use the trained models or datasets to train, fine-tune or evaluate
+        other systems;
+     e. remove or alter any copyright, license or attribution notice.
+
+3. Academic use. The Software was produced as a university group project.
+   Examiners and staff of the authors' university may run, test and evaluate
+   the Software for assessment purposes.
+
+4. Third-party components. The Software uses third-party libraries, SDKs and
+   cloud services (including Flutter, FastAPI, scikit-learn and Microsoft
+   Azure services). Those components remain subject to their own licenses
+   and terms, and nothing in this license grants rights to them.
+
+5. No warranty. THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY
+   KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN
+   NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+   FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR ITS USE.
+
+For permission requests, contact the repository owner via GitHub:
+https://github.com/Sandeepa-git/TailorSync
