@@ -367,6 +367,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                           completed: _n(s['tasks_completed']).toInt(),
                           onTimeRate: _n(s['on_time_completion_rate']).toDouble(),
                           active: _n(s['active_tasks']).toInt(),
+                          overdue: _n(s['overdue_tasks']).toInt(),
                         ),
                       ),
                   ]),
@@ -716,8 +717,9 @@ class _StaffPerformanceRow extends StatelessWidget {
   final int completed;
   final double onTimeRate;
   final int active;
+  final int overdue;
 
-  const _StaffPerformanceRow({required this.name, required this.completed, required this.onTimeRate, this.active = 0});
+  const _StaffPerformanceRow({required this.name, required this.completed, required this.onTimeRate, this.active = 0, this.overdue = 0});
 
   @override
   Widget build(BuildContext context) {
@@ -736,7 +738,14 @@ class _StaffPerformanceRow extends StatelessWidget {
                 children: [
                   Icon(Icons.timer_outlined, size: 12, color: cs.onSurfaceVariant),
                   const SizedBox(width: 4),
-                  Text('${onTimeRate.toStringAsFixed(0)}% on time · $active active', style: context.text.labelSmall?.copyWith(color: cs.onSurfaceVariant)),
+                  Flexible(
+                    child: Text(
+                      '${onTimeRate.toStringAsFixed(0)}% on time · $active active${overdue > 0 ? ' · $overdue overdue' : ''}',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: context.text.labelSmall?.copyWith(color: overdue > 0 ? context.status.danger : cs.onSurfaceVariant),
+                    ),
+                  ),
                 ],
               ),
             ],

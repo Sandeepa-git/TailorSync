@@ -174,12 +174,25 @@ def staff_performance(
             (Order.expected_delivery_date == None) | (Order.completed_date <= Order.expected_delivery_date)
         ).count()
         
-        rate = (on_time / tasks_completed * 100) if tasks_completed > 0 else 0.0
+        # Still-open orders already past their due date count as misses too.
+        overdue = (
+            db.query(Order)
+            .join(StaffAssignment, Order.order_id == StaffAssignment.order_id)
+            .filter(StaffAssignment.staff_id == staff.user_id,
+                    Order.status.notin_(['Delivered', 'Ready']),
+                    Order.expected_delivery_date != None,
+                    Order.expected_delivery_date < today)
+            .count()
+        )
+
+        denom = tasks_completed + overdue
+        rate = (on_time / denom * 100) if denom > 0 else 0.0
 
         metrics.append({
             "staff_name": staff.full_name or staff.email,
             "tasks_assigned": tasks_assigned,
             "tasks_completed": tasks_completed,
+            "overdue_tasks": overdue,
             "on_time_completion_rate": round(rate, 1)
         })
 
@@ -271,7 +284,10 @@ def build_overview(days: int, current_user: User, db: Session):
                if o.expected_delivery_date is None or o.completed_date <= o.expected_delivery_date]
     turnaround = [(o.completed_date - cdate(o)).days for o in delivered_in_period if o.completed_date]
     active = [o for o in orders if status_of_order(o) != "Delivered"]
-    overdue = [o for o in active if o.expected_delivery_date and o.expected_delivery_date < today]
+    # Overdue = past due and not finished. "Ready" orders are finished (just not
+    # collected yet), matching how the dashboard and Tasks screens count overdue.
+    overdue = [o for o in active
+               if status_of_order(o) != "Ready" and o.expected_delivery_date and o.expected_delivery_date < today]
     priced = [o for o in period if o.total_price is not None]
     revenue = sum(price_of(o) for o in period)
     prev_revenue = sum(price_of(o) for o in prev)
@@ -289,7 +305,10 @@ def build_overview(days: int, current_user: User, db: Session):
         "revenue": round(revenue, 2),
         "prev_revenue": round(prev_revenue, 2),
         "avg_order_value": round(sum(price_of(o) for o in priced) / len(priced), 2) if priced else 0.0,
-        "on_time_rate": round(len(on_time) / len(delivered_in_period) * 100, 1) if delivered_in_period else None,
+        # On-time rate counts still-open overdue orders as misses, so it can't read
+        # 100% while orders are overdue: on_time / (delivered + overdue).
+        "on_time_rate": round(len(on_time) / (len(delivered_in_period) + len(overdue)) * 100, 1)
+        if (delivered_in_period or overdue) else None,
         "avg_turnaround_days": round(sum(turnaround) / len(turnaround), 1) if turnaround else None,
         "fabric_used_m": round(sum(meters_of(o) for o in period), 2),
         "prediction_methods": dict(methods),
@@ -357,7 +376,7 @@ def build_overview(days: int, current_user: User, db: Session):
 
     # ---------- staff
     staff_rows = []
-    s_stats = defaultdict(lambda: {"name": "", "assigned": 0, "completed": 0, "on_time": 0, "active": 0})
+    s_stats = defaultdict(lambda: {"name": "", "assigned": 0, "completed": 0, "on_time": 0, "active": 0, "overdue": 0})
     for o in orders:
         for a in (o.staff_assignments or []):
             s = s_stats[a.staff_id]
@@ -366,6 +385,9 @@ def build_overview(days: int, current_user: User, db: Session):
                 s["assigned"] += 1
             if status_of_order(o) != "Delivered":
                 s["active"] += 1
+                if (status_of_order(o) != "Ready" and o.expected_delivery_date
+                        and o.expected_delivery_date < today):
+                    s["overdue"] += 1
             elif in_range(o.completed_date):
                 s["completed"] += 1
                 if o.expected_delivery_date is None or o.completed_date <= o.expected_delivery_date:
@@ -374,7 +396,9 @@ def build_overview(days: int, current_user: User, db: Session):
         staff_rows.append({
             "staff_name": s["name"], "tasks_assigned": s["assigned"], "tasks_completed": s["completed"],
             "active_tasks": s["active"],
-            "on_time_completion_rate": round(s["on_time"] / s["completed"] * 100, 1) if s["completed"] else 0.0,
+            "overdue_tasks": s["overdue"],
+            "on_time_completion_rate": round(s["on_time"] / (s["completed"] + s["overdue"]) * 100, 1)
+            if (s["completed"] + s["overdue"]) else 0.0,
         })
     staff_rows.sort(key=lambda x: (-x["tasks_completed"], -x["tasks_assigned"]))
 
