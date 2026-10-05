@@ -19,7 +19,6 @@ import '../features/pattern_viewer/presentation/screens/pattern_viewer_screen.da
 import '../features/profile/presentation/screens/profile_screen.dart';
 import '../features/profile/presentation/screens/business_profile_screen.dart';
 import '../features/profile/presentation/screens/staff_management_screen.dart';
-import '../features/profile/presentation/screens/measurement_templates_screen.dart';
 import '../features/customers/models/customer.dart';
 import '../ui/components/transitions.dart';
 
@@ -138,10 +137,6 @@ final GoRouter appRouter = GoRouter(
                 GoRoute(
                   path: 'staff',
                   builder: (BuildContext context, GoRouterState state) => const StaffManagementScreen(),
-                ),
-                GoRoute(
-                  path: 'templates',
-                  builder: (BuildContext context, GoRouterState state) => const MeasurementTemplatesScreen(),
                 ),
               ],
             ),

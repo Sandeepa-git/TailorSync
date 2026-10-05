@@ -420,14 +420,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     trailingIcon: Icons.chevron_right_rounded,
                     onTap: () => context.push('/profile/business'),
                   ),
-                  _SettingsListTile(
-                    leadingIcon: Icons.straighten_rounded,
-                    leadingColor: st.success,
-                    title: 'Measurement Templates',
-                    subtitle: 'Configure dynamic garmanent measurements',
-                    trailingIcon: Icons.chevron_right_rounded,
-                    onTap: () => context.push('/profile/templates'),
-                  ),
                 ])),
                 Padding(
                   padding: const EdgeInsets.only(top: Space.lg, bottom: Space.sm),

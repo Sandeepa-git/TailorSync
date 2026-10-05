@@ -204,7 +204,8 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
         final orderId = '#ORD-${t['id'].toString().padLeft(4, '0')}'.toLowerCase();
         final customer = (t['customer_name'] ?? '').toString().toLowerCase();
         final garment = (t['garment_type'] ?? '').toString().toLowerCase();
-        final matchesSearch = orderId.contains(_searchQuery) || customer.contains(_searchQuery) || garment.contains(_searchQuery);
+        final staff = (t['staff_name'] ?? '').toString().toLowerCase();
+        final matchesSearch = orderId.contains(_searchQuery) || customer.contains(_searchQuery) || garment.contains(_searchQuery) || staff.contains(_searchQuery);
         return matchesCategory && matchesSearch;
       }
 
@@ -343,6 +344,10 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
                       priorityColor: StageStyle.priorityColor(context, task['priority'] ?? 'Medium'),
                       customerName: task['customer_name'] ?? 'Unknown Customer',
                       garmentType: task['garment_type'] ?? 'Unknown',
+                      // Owners see who is working on each task.
+                      staffName: (_user?['role'] == 'staff' || _user?['role'] == 'STAFF')
+                          ? null
+                          : ((task['staff_name']?.toString().trim().isNotEmpty ?? false) ? task['staff_name'].toString() : 'Unassigned'),
                       stage: currentStage,
                       stageIndex: stageIdx >= 0 ? stageIdx : 0,
                       totalStages: _stages.length,
@@ -618,6 +623,7 @@ class _TaskCard extends StatelessWidget {
   final Color priorityColor;
   final String customerName;
   final String garmentType;
+  final String? staffName;
   final String stage;
   final int stageIndex;
   final int totalStages;
@@ -634,6 +640,7 @@ class _TaskCard extends StatelessWidget {
     required this.priorityColor,
     required this.customerName,
     required this.garmentType,
+    this.staffName,
     required this.stage,
     required this.stageIndex,
     required this.totalStages,
@@ -683,6 +690,30 @@ class _TaskCard extends StatelessWidget {
                       const SizedBox(height: Space.xs),
                       Text(customerName, style: context.text.titleMedium, maxLines: 1, overflow: TextOverflow.ellipsis),
                       Text(garmentType, style: context.text.bodySmall, maxLines: 1, overflow: TextOverflow.ellipsis),
+                      if (staffName != null) ...[
+                        const SizedBox(height: 6),
+                        Row(
+                          children: [
+                            Icon(
+                              staffName == 'Unassigned' ? Icons.person_off_outlined : Icons.person_rounded,
+                              size: 16,
+                              color: staffName == 'Unassigned' ? st.warning : cs.primary,
+                            ),
+                            const SizedBox(width: 6),
+                            Expanded(
+                              child: Text(
+                                staffName == 'Unassigned' ? 'Not assigned yet' : 'Assigned to $staffName',
+                                style: context.text.labelMedium?.copyWith(
+                                  color: staffName == 'Unassigned' ? st.warning : cs.primary,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                       const SizedBox(height: Space.sm),
                       Row(
                         children: [
