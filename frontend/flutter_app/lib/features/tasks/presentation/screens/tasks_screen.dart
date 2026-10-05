@@ -670,8 +670,9 @@ class _TaskCard extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          Text(orderId, style: context.text.labelMedium?.copyWith(color: cs.onSurfaceVariant)),
-                          const Spacer(),
+                          Expanded(
+                            child: Text(orderId, style: context.text.labelMedium?.copyWith(color: cs.onSurfaceVariant), maxLines: 1, overflow: TextOverflow.ellipsis),
+                          ),
                           if (isOverdue) ...[
                             StatusPill(label: 'OVERDUE', color: st.danger, icon: Icons.error_outline_rounded, dense: true),
                             const SizedBox(width: 6),

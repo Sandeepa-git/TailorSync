@@ -187,8 +187,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                           color: passwordsMatch ? const Color(0xFF2E7D32) : const Color(0xFFD32F2F),
                         ),
                         const SizedBox(width: 6),
-                        Text(
-                          passwordsMatch ? 'Passwords match' : 'Passwords do not match',
+                        Flexible(
+                          child: Text(
+                            passwordsMatch ? 'Passwords match' : 'Passwords do not match',
+                          ),
                         ),
                       ],
                     ),

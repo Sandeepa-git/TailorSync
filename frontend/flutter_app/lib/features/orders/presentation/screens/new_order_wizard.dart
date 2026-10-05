@@ -872,16 +872,18 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
                               scale: isSelected ? 1.12 : 1,
                               duration: Motion.of(context, Motion.medium),
                               curve: Motion.spring,
-                              child: IconBadge(icon: g['icon'], color: color, size: 52),
+                              child: IconBadge(icon: g['icon'], color: color, size: context.isSmallPhone ? 44 : 52),
                             ),
-                            const SizedBox(height: Space.sm),
-                            Text(
-                              g['name'],
-                              textAlign: TextAlign.center,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: context.text.labelLarge?.copyWith(
-                                fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+                            SizedBox(height: context.isSmallPhone ? Space.xs : Space.sm),
+                            Flexible(
+                              child: Text(
+                                g['name'],
+                                textAlign: TextAlign.center,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: context.text.labelLarge?.copyWith(
+                                  fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+                                ),
                               ),
                             ),
                           ],

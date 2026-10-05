@@ -69,7 +69,7 @@ class _CustomersListScreenState extends ConsumerState<CustomersListScreen> {
         SliverPadding(
           padding: EdgeInsets.symmetric(horizontal: pad),
           sliver: SliverGrid.builder(
-            gridDelegate: adaptiveGrid(maxTileWidth: 520, mainAxisExtent: 92, spacing: context.gridGap),
+            gridDelegate: adaptiveGrid(maxTileWidth: 520, mainAxisExtent: 96, spacing: context.gridGap),
             itemCount: filtered.length,
             itemBuilder: (context, i) => EntranceFade.indexed(
               i,
@@ -136,58 +136,108 @@ class _CustomersListScreenState extends ConsumerState<CustomersListScreen> {
     return TsCard(
       onTap: () => _showCustomerDetails(context, ref, c),
       padding: const EdgeInsets.fromLTRB(Space.md, Space.sm, Space.xxs, Space.sm),
-      child: Row(
-        children: [
-          Hero(tag: 'customer-${c.id}', child: InitialsAvatar(name: c.name, size: 48)),
-          const SizedBox(width: Space.sm),
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(c.name, style: context.text.titleSmall, maxLines: 1, overflow: TextOverflow.ellipsis),
-                const SizedBox(height: 2),
-                Text(c.email ?? 'No email provided', style: context.text.bodySmall, maxLines: 1, overflow: TextOverflow.ellipsis),
-                if (c.phone != null && c.phone!.isNotEmpty)
-                  Row(
+      child: LayoutBuilder(
+        builder: (context, box) {
+          // The grid tile is a fixed 96dp tall, so the text column can hold
+          // at most 3 lines (name + 2 detail lines). On narrow tiles the three
+          // action buttons collapse into one overflow menu to give the text room.
+          final compact = box.maxWidth < 380;
+          final hasPhone = c.phone != null && c.phone!.isNotEmpty;
+          final hasEmail = c.email != null && c.email!.isNotEmpty;
+          final hasAddress = c.address != null && c.address!.isNotEmpty;
+
+          final details = <Widget>[
+            if (hasPhone) _infoLine(context, Icons.phone_outlined, c.phone!),
+            if (hasEmail) _infoLine(context, Icons.email_outlined, c.email!),
+            if (hasAddress) _infoLine(context, Icons.location_on_outlined, c.address!),
+          ];
+          if (details.isEmpty) {
+            details.add(_infoLine(context, Icons.info_outline_rounded, 'No contact details'));
+          }
+
+          return Row(
+            children: [
+              Hero(tag: 'customer-${c.id}', child: InitialsAvatar(name: c.name, size: compact ? 40 : 48)),
+              const SizedBox(width: Space.sm),
+              Expanded(
+                child: ClipRect(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(Icons.phone_outlined, size: 12, color: cs.onSurfaceVariant),
-                      const SizedBox(width: 4),
-                      Flexible(
-                        child: Text(c.phone!, style: context.text.bodySmall, maxLines: 1, overflow: TextOverflow.ellipsis),
-                      ),
+                      Text(c.name, style: context.text.titleSmall, maxLines: 1, overflow: TextOverflow.ellipsis),
+                      const SizedBox(height: 2),
+                      ...details.take(2),
                     ],
                   ),
-                if (c.address != null && c.address!.isNotEmpty)
-                  Row(
-                    children: [
-                      Icon(Icons.location_on_outlined, size: 12, color: cs.onSurfaceVariant),
-                      const SizedBox(width: 4),
-                      Flexible(
-                        child: Text(c.address!, style: context.text.bodySmall, maxLines: 1, overflow: TextOverflow.ellipsis),
+                ),
+              ),
+              if (compact)
+                PopupMenuButton<String>(
+                  tooltip: 'Actions for ${c.name}',
+                  icon: const Icon(Icons.more_vert_rounded, size: 20),
+                  onSelected: (v) {
+                    switch (v) {
+                      case 'view':
+                        _showCustomerDetails(context, ref, c);
+                      case 'edit':
+                        context.go('/customers/edit', extra: c);
+                      case 'delete':
+                        _confirmDelete(context, ref, c);
+                    }
+                  },
+                  itemBuilder: (_) => [
+                    const PopupMenuItem(
+                      value: 'view',
+                      child: ListTile(leading: Icon(Icons.info_outline_rounded), title: Text('View details'), contentPadding: EdgeInsets.zero),
+                    ),
+                    const PopupMenuItem(
+                      value: 'edit',
+                      child: ListTile(leading: Icon(Icons.edit_outlined), title: Text('Edit'), contentPadding: EdgeInsets.zero),
+                    ),
+                    PopupMenuItem(
+                      value: 'delete',
+                      child: ListTile(
+                        leading: Icon(Icons.delete_outline_rounded, color: cs.error),
+                        title: Text('Delete', style: TextStyle(color: cs.error)),
+                        contentPadding: EdgeInsets.zero,
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
+                )
+              else ...[
+                IconButton(
+                  tooltip: 'View details',
+                  icon: const Icon(Icons.info_outline_rounded, size: 20),
+                  onPressed: () => _showCustomerDetails(context, ref, c),
+                ),
+                IconButton(
+                  tooltip: 'Edit ${c.name}',
+                  icon: const Icon(Icons.edit_outlined, size: 20),
+                  onPressed: () => context.go('/customers/edit', extra: c),
+                ),
+                IconButton(
+                  tooltip: 'Delete ${c.name}',
+                  icon: Icon(Icons.delete_outline_rounded, size: 20, color: cs.error),
+                  onPressed: () => _confirmDelete(context, ref, c),
+                ),
               ],
-            ),
-          ),
-          IconButton(
-            tooltip: 'View details',
-            icon: const Icon(Icons.info_outline_rounded, size: 20),
-            onPressed: () => _showCustomerDetails(context, ref, c),
-          ),
-          IconButton(
-            tooltip: 'Edit ${c.name}',
-            icon: const Icon(Icons.edit_outlined, size: 20),
-            onPressed: () => context.go('/customers/edit', extra: c),
-          ),
-          IconButton(
-            tooltip: 'Delete ${c.name}',
-            icon: Icon(Icons.delete_outline_rounded, size: 20, color: cs.error),
-            onPressed: () => _confirmDelete(context, ref, c),
-          ),
-        ],
+            ],
+          );
+        },
       ),
+    );
+  }
+
+  Widget _infoLine(BuildContext context, IconData icon, String value) {
+    return Row(
+      children: [
+        Icon(icon, size: 12, color: context.colors.onSurfaceVariant),
+        const SizedBox(width: 4),
+        Expanded(
+          child: Text(value, style: context.text.bodySmall, maxLines: 1, overflow: TextOverflow.ellipsis),
+        ),
+      ],
     );
   }
 
@@ -200,9 +250,8 @@ class _CustomersListScreenState extends ConsumerState<CustomersListScreen> {
         return Consumer(
           builder: (context, ref, child) {
             final ordersAsync = ref.watch(ordersProvider);
-            return Container(
+            return SingleChildScrollView(
               padding: const EdgeInsets.all(24),
-              width: double.infinity,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -215,14 +264,21 @@ class _CustomersListScreenState extends ConsumerState<CustomersListScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(customer.name, style: text.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
+                            Text(customer.name, style: text.headlineSmall?.copyWith(fontWeight: FontWeight.bold), maxLines: 2, overflow: TextOverflow.ellipsis),
                             if (customer.email != null) ...[
                               const SizedBox(height: 4),
                               Row(
                                 children: [
                                   Icon(Icons.email_outlined, size: 16, color: cs.onSurfaceVariant),
                                   const SizedBox(width: 8),
-                                  Text(customer.email!, style: text.bodyMedium?.copyWith(color: cs.onSurfaceVariant)),
+                                  Expanded(
+                                    child: Text(
+                                      customer.email!,
+                                      style: text.bodyMedium?.copyWith(color: cs.onSurfaceVariant),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
                                 ],
                               ),
                             ],
@@ -232,7 +288,14 @@ class _CustomersListScreenState extends ConsumerState<CustomersListScreen> {
                                 children: [
                                   Icon(Icons.phone_outlined, size: 16, color: cs.onSurfaceVariant),
                                   const SizedBox(width: 8),
-                                  Text(customer.phone!, style: text.bodyMedium?.copyWith(color: cs.onSurfaceVariant)),
+                                  Expanded(
+                                    child: Text(
+                                      customer.phone!,
+                                      style: text.bodyMedium?.copyWith(color: cs.onSurfaceVariant),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
                                 ],
                               ),
                             ],
@@ -359,9 +422,15 @@ class _StatBox extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Text(title, style: Theme.of(context).textTheme.labelMedium?.copyWith(color: color)),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(title, maxLines: 1, style: Theme.of(context).textTheme.labelMedium?.copyWith(color: color)),
+          ),
           const SizedBox(height: 4),
-          Text(value, style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: color, fontWeight: FontWeight.bold)),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(value, maxLines: 1, style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: color, fontWeight: FontWeight.bold)),
+          ),
         ],
       ),
     );

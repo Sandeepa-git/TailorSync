@@ -250,6 +250,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
             Row(
               children: [
                 Expanded(child: Text(item['fabric_name'], style: ctx.text.titleLarge)),
+                const SizedBox(width: Space.xs),
                 StatusPill(label: label, icon: icon, color: color),
               ],
             ),
