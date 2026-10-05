@@ -313,7 +313,6 @@ class _CustomerFormScreenState extends ConsumerState<CustomerFormScreen> {
   @override
   Widget build(BuildContext context) {
     final cs = context.colors;
-    final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
     return PopScope(
       canPop: !_dirty || _leaving,
       onPopInvokedWithResult: (didPop, _) {
@@ -326,7 +325,10 @@ class _CustomerFormScreenState extends ConsumerState<CustomerFormScreen> {
           title: Text(_isEdit ? 'Edit Customer' : 'New Customer',
               style: context.text.titleLarge?.copyWith(fontWeight: FontWeight.w700)),
         ),
-        body: Stack(
+        body: Column(
+          children: [
+            Expanded(
+              child: Stack(
           fit: StackFit.expand,
           children: [
             const PageBackdrop(),
@@ -426,44 +428,45 @@ class _CustomerFormScreenState extends ConsumerState<CustomerFormScreen> {
             ),
           ],
         ),
-        // Save bar always visible, sits above the keyboard.
-        bottomNavigationBar: AnimatedPadding(
-          duration: const Duration(milliseconds: 120),
-          padding: EdgeInsets.only(bottom: bottomInset),
-          child: Container(
-            decoration: BoxDecoration(
-              color: cs.surface,
-              border: Border(top: BorderSide(color: cs.outlineVariant.withValues(alpha: 0.5))),
             ),
-            child: SafeArea(
-              top: false,
-              child: Padding(
-                padding: EdgeInsets.fromLTRB(context.pagePadding, Space.sm, context.pagePadding, Space.sm),
-                child: MaxWidthBox(
-                  maxWidth: MaxWidth.form,
-                  heightFactor: 1,
-                  alignment: Alignment.bottomCenter,
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: TsButton.secondary(label: 'Cancel', onPressed: _loading ? null : _close),
+            // Save bar: always visible, above the keyboard.
+            Container(
+              decoration: BoxDecoration(
+                color: cs.surface,
+                border: Border(top: BorderSide(color: cs.outlineVariant.withValues(alpha: 0.5))),
+                boxShadow: [BoxShadow(color: cs.shadow.withValues(alpha: 0.06), blurRadius: 12, offset: const Offset(0, -4))],
+              ),
+              child: SafeArea(
+                top: false,
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(context.pagePadding, Space.sm, context.pagePadding, Space.sm),
+                  child: Center(
+                    heightFactor: 1,
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: MaxWidth.form),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: TsButton.secondary(label: 'Cancel', onPressed: _loading ? null : _close),
+                          ),
+                          const SizedBox(width: Space.sm),
+                          Expanded(
+                            flex: 2,
+                            child: TsButton(
+                              label: _isEdit ? 'Save Changes' : 'Save Customer',
+                              icon: Icons.check_rounded,
+                              loading: _loading,
+                              onPressed: _loading ? null : _save,
+                            ),
+                          ),
+                        ],
                       ),
-                      const SizedBox(width: Space.sm),
-                      Expanded(
-                        flex: 2,
-                        child: TsButton(
-                          label: _isEdit ? 'Save Changes' : 'Save Customer',
-                          icon: Icons.check_rounded,
-                          loading: _loading,
-                          onPressed: _loading ? null : _save,
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
+          ],
         ),
       ),
     );

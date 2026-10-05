@@ -97,10 +97,12 @@ final GoRouter appRouter = GoRouter(
               routes: [
                 GoRoute(
                   path: 'new',
+                  parentNavigatorKey: _rootNavigatorKey, // full screen, no bottom nav
                   builder: (BuildContext context, GoRouterState state) => const CustomerFormScreen(),
                 ),
                 GoRoute(
                   path: 'edit',
+                  parentNavigatorKey: _rootNavigatorKey, // full screen, no bottom nav
                   builder: (BuildContext context, GoRouterState state) => CustomerFormScreen(customer: state.extra as Customer),
                 ),
               ],
