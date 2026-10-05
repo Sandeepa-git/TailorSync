@@ -96,14 +96,36 @@ class _CustomersListScreenState extends ConsumerState<CustomersListScreen> {
           setState(() => _searchQuery = '');
         },
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        heroTag: 'fab-new-customer',
-        icon: const Icon(Icons.person_add_alt_1_rounded),
-        label: const Text('New Customer'),
-        onPressed: () {
-          HapticFeedback.selectionClick();
-          context.go('/customers/new');
-        },
+      actions: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: Space.xs),
+          child: FilledButton.icon(
+            style: FilledButton.styleFrom(
+              minimumSize: const Size(0, 40),
+              padding: const EdgeInsets.symmetric(horizontal: Space.md),
+              shape: const StadiumBorder(),
+            ),
+            icon: const Icon(Icons.person_add_alt_1_rounded, size: 20),
+            label: const Text('Add New'),
+            onPressed: () {
+              HapticFeedback.selectionClick();
+              context.go('/customers/new');
+            },
+          ),
+        ),
+      ],
+      // Lifted above the floating bottom navigation bar so it is always visible.
+      floatingActionButton: Padding(
+        padding: EdgeInsets.only(bottom: 84 + MediaQuery.paddingOf(context).bottom),
+        child: FloatingActionButton.extended(
+          heroTag: 'fab-new-customer',
+          icon: const Icon(Icons.person_add_alt_1_rounded),
+          label: const Text('Add New Customer'),
+          onPressed: () {
+            HapticFeedback.selectionClick();
+            context.go('/customers/new');
+          },
+        ),
       ),
       slivers: async.when(
         data: body,
