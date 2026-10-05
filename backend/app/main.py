@@ -68,10 +68,6 @@ def startup_event():
     try:
         from app.services.ml_service import ml_service
         ml_service.load_models()
-        # Warm up the Foundry client in the background so the first AI request is faster.
-        import threading
-        from app.services.foundry_client import get_foundry_client
-        threading.Thread(target=lambda: get_foundry_client().warm_up(), daemon=True).start()
     except Exception as e:
         logger.error(f"Error loading models: {e}")
         # Not failing hard to allow server to start if model isn't completely critical,

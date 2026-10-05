@@ -27,13 +27,6 @@ class FoundryClient:
         self.agent_name = os.environ.get("FOUNDRY_AGENT_NAME", "tailorsync-ai-agent").strip()
         self.agent_version = os.environ.get("FOUNDRY_AGENT_VERSION", "").strip()
         self._agent_client = None
-        self._credential = None
-        # When the agent fails, skip it for a few minutes so every request
-        # doesn't wait for a timeout before falling back to the model.
-        self._agent_down_until = 0.0
-        # Fallback model: ask reasoning models for low effort (much faster);
-        # switched off automatically if the deployment rejects it.
-        self._model_effort_ok = bool(self.reasoning_effort)
         # gpt-5-mini is a reasoning model: "low" effort is much faster and is
         # plenty for these structured tasks. Set FOUNDRY_REASONING_EFFORT to change.
         self.reasoning_effort = os.environ.get("FOUNDRY_REASONING_EFFORT", "low").strip()
@@ -75,10 +68,9 @@ class FoundryClient:
             from azure.ai.projects import AIProjectClient
             from azure.identity import DefaultAzureCredential
 
-            self._credential = DefaultAzureCredential()
-            project = AIProjectClient(endpoint=self.project_endpoint, credential=self._credential)
-            # Fail fast instead of hanging; no automatic retry (it doubled the wait).
-            self._agent_client = project.get_openai_client().with_options(timeout=60.0, max_retries=0)
+            project = AIProjectClient(endpoint=self.project_endpoint, credential=DefaultAzureCredential())
+            # Fail fast instead of hanging; one retry is enough.
+            self._agent_client = project.get_openai_client().with_options(timeout=60.0, max_retries=1)
         return self._agent_client
 
     def _call_agent(self, message: str) -> str:
@@ -114,17 +106,6 @@ class FoundryClient:
         logger.info(f"Foundry agent '{self.agent_name}' answered | {self.last_stats}")
         return response.output_text
 
-    def warm_up(self) -> None:
-        """Create the agent client and fetch the Azure token ahead of the first
-        real request (the first token can take several seconds)."""
-        try:
-            if self.project_endpoint:
-                self._get_agent_client()
-                self._credential.get_token("https://ai.azure.com/.default")
-                logger.info("Foundry agent client warmed up.")
-        except Exception as e:
-            logger.warning(f"Foundry warm-up skipped: {e}")
-
     @staticmethod
     def _stats(response, seconds: float) -> str:
         """Timing + which model really answered + token counts (incl. hidden reasoning)."""
@@ -138,22 +119,13 @@ class FoundryClient:
         t0 = time.perf_counter()
         if not self.client:
             raise ValueError("Foundry client is not initialized properly. Check credentials and endpoint.")
-        messages = [
-            SystemMessage(content=system_instruction),
-            UserMessage(content=prompt),
-        ]
-        response = None
-        if self._model_effort_ok:
-            try:
-                response = self.client.complete(
-                    messages=messages, model=self.model_name,
-                    model_extras={"reasoning_effort": self.reasoning_effort},
-                )
-            except Exception as e:
-                logger.warning(f"Model rejected reasoning_effort, retrying without it: {e}")
-                self._model_effort_ok = False
-        if response is None:
-            response = self.client.complete(messages=messages, model=self.model_name)
+        response = self.client.complete(
+            messages=[
+                SystemMessage(content=system_instruction),
+                UserMessage(content=prompt),
+            ],
+            model=self.model_name
+        )
         logger.info(f"Foundry model '{self.model_name}' answered (fallback / no agent configured) "
                     f"in {time.perf_counter() - t0:.1f}s")
         return response.choices[0].message.content
@@ -164,24 +136,13 @@ class FoundryClient:
         used only if the agent is unavailable and we fall back to the plain model."""
         try:
             content = None
-            agent_tried = False
-            if self.project_endpoint and time.time() >= self._agent_down_until:
-                agent_tried = True
+            if self.project_endpoint:
                 try:
                     content = self._call_agent(agent_message or prompt)
                 except Exception as agent_err:
-                    self._agent_down_until = time.time() + 300
-                    logger.error(f"Foundry agent call failed, using the model for the next 5 min: {agent_err}")
+                    logger.error(f"Foundry agent call failed, falling back to model: {agent_err}")
             if content is None:
-                try:
-                    content = self._call_model(prompt, system_instruction)
-                except Exception as model_err:
-                    if not (self.project_endpoint and not agent_tried):
-                        raise
-                    # The agent was being skipped; the model failed too, so try the agent anyway.
-                    logger.error(f"Foundry model failed, retrying the agent: {model_err}")
-                    content = self._call_agent(agent_message or prompt)
-                    self._agent_down_until = 0.0
+                content = self._call_model(prompt, system_instruction)
             
             # Robust JSON extraction: Find content between ```json and ``` or first { and last }
             import re
