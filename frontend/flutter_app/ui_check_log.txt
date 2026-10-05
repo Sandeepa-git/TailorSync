@@ -1,7 +1,7 @@
-=== START Sun 10/04/2026  9:42:22.38 === 
+=== START Mon 10/05/2026 10:08:26.16 === 
 Flutter 3.47.5 • channel stable • https://github.com/flutter/flutter.git
 Framework • revision 6a19cca564 (2 weeks ago) • 2026-09-17 14:13:22 -0400
-Engine • hash ab598368592da0064197e2bc15c7f5b0a2c6bb1f (revision af7e796e16) (17 days ago) • 2026-09-16 18:35:09.000Z
+Engine • hash ab598368592da0064197e2bc15c7f5b0a2c6bb1f (revision af7e796e16) (18 days ago) • 2026-09-16 18:35:09.000Z
 Tools • Dart 3.13.4 • DevTools 2.60.0
 === PUB GET === 
 Resolving dependencies...
@@ -35,7 +35,7 @@ Downloading packages...
   flutter_secure_storage_platform_interface 1.1.2 (2.1.1 available)
   flutter_secure_storage_web 1.2.1 (2.1.1 available)
   flutter_secure_storage_windows 2.1.1 (4.2.2 available)
-  go_router 6.5.9 (18.0.2 available)
+  go_router 7.1.1 (18.0.2 available)
   google_fonts 8.1.0 (9.0.0 available)
   hooks 2.0.2 (2.2.0 available)
   image_picker 0.8.9 (1.2.3 available)
@@ -76,12 +76,94 @@ Got dependencies!
 66 packages have newer versions incompatible with dependency constraints.
 Try `flutter pub outdated` for more information.
 === ANALYZE === 
+Resolving dependencies...
+Downloading packages...
+  _flutterfire_internals 1.3.73 (1.3.77 available)
+  animations 2.2.0 (3.0.0 available)
+  cached_network_image 3.4.1 (4.0.4 available)
+  cached_network_image_platform_interface 4.1.1 (5.0.3 available)
+  cached_network_image_web 1.3.1 (2.0.3 available)
+  cli_util 0.4.2 (0.6.0 available)
+  clock 1.1.2 (1.1.3 available)
+  code_assets 1.2.1 (2.1.0 available)
+  cross_file 0.3.5+2 (0.4.0 available)
+  dio 5.9.2 (5.11.1 available)
+  dio_web_adapter 2.1.2 (2.2.2 available)
+  file_selector_linux 0.9.4 (0.9.4+1 available)
+  file_selector_macos 0.9.5 (0.9.5+1 available)
+  file_selector_windows 0.9.3+5 (0.9.3+6 available)
+  firebase_auth 6.5.4 (6.7.0 available)
+  firebase_auth_platform_interface 9.0.3 (9.1.0 available)
+  firebase_auth_web 6.2.3 (6.3.0 available)
+  firebase_core 4.11.0 (4.15.0 available)
+  firebase_core_platform_interface 7.1.0 (8.1.1 available)
+  firebase_core_web 3.9.0 (3.12.0 available)
+  flutter_cache_manager 3.4.1 (3.4.5 available)
+  flutter_lints 2.0.3 (6.0.0 available)
+  flutter_riverpod 2.6.1 (3.4.3 available)
+  flutter_secure_storage 8.1.0 (11.2.0 available)
+  flutter_secure_storage_linux 1.2.3 (3.0.3 available)
+  flutter_secure_storage_macos 3.1.3 (4.0.0 available)
+  flutter_secure_storage_platform_interface 1.1.2 (2.1.1 available)
+  flutter_secure_storage_web 1.2.1 (2.1.1 available)
+  flutter_secure_storage_windows 2.1.1 (4.2.2 available)
+  go_router 7.1.1 (18.0.2 available)
+  google_fonts 8.1.0 (9.0.0 available)
+  hooks 2.0.2 (2.2.0 available)
+  image_picker 0.8.9 (1.2.3 available)
+  image_picker_android 0.8.13+19 (0.8.13+25 available)
+  image_picker_for_web 2.2.0 (3.1.1 available)
+  image_picker_ios 0.8.13+6 (0.8.13+9 available)
+  intl 0.19.0 (0.20.3 available)
+  jni 1.0.0 (1.1.0 available)
+  jni_flutter 1.0.1 (1.0.3 available)
+  js 0.6.7 (0.7.2 available)
+  lints 2.1.1 (6.1.0 available)
+  material_color_utilities 0.13.0 (0.13.1 available)
+  mime 1.0.6 (2.1.0 available)
+  objective_c 9.4.1 (9.6.2 available)
+  octo_image 2.1.0 (2.1.2 available)
+  package_config 2.2.0 (3.0.0 available)
+  platform 3.1.6 (3.2.0 available)
+  pub_semver 2.2.0 (2.2.1 available)
+  record_use 0.6.0 (1.1.1 available)
+  riverpod 2.6.1 (3.4.3 available)
+  share_plus 12.0.2 (13.3.1 available)
+  share_plus_platform_interface 6.1.0 (7.2.0 available)
+  sqflite 2.4.3 (2.4.4 available)
+  sqflite_android 2.4.3 (2.4.4 available)
+  sqflite_common 2.5.11 (2.5.13 available)
+  sqflite_darwin 2.4.3 (2.4.4 available)
+  sqflite_platform_interface 2.4.1 (2.4.2 available)
+  stack_trace 1.12.1 (1.12.2 available)
+  syncfusion_flutter_charts 20.4.54 (35.1.37 available)
+  syncfusion_flutter_core 20.4.54 (35.1.37 available)
+  synchronized 3.4.1 (3.4.2 available)
+  test_api 0.7.12 (0.7.14 available)
+  uuid 4.5.3 (4.6.0 available)
+  vm_service 15.2.0 (15.3.0 available)
+  win32 5.15.0 (6.4.0 available)
+  yaml 3.1.3 (3.1.4 available)
+Got dependencies!
+66 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
 Analyzing 2 items...                                            
 
+   info - The import of 'dart:ui' is unnecessary because all of the used elements are also provided by the import of 'package:flutter/material.dart'. Try removing the import directive - lib\core\presentation\layout\main_layout.dart:1:8 - unnecessary_import
+   info - Statements in an if should be enclosed in a block. Try wrapping the statement in a block - lib\core\presentation\layout\main_layout.dart:67:30 - curly_braces_in_flow_control_structures
+   info - Statements in an if should be enclosed in a block. Try wrapping the statement in a block - lib\core\presentation\layout\main_layout.dart:68:35 - curly_braces_in_flow_control_structures
+   info - Statements in an if should be enclosed in a block. Try wrapping the statement in a block - lib\core\presentation\layout\main_layout.dart:69:35 - curly_braces_in_flow_control_structures
+   info - Statements in an if should be enclosed in a block. Try wrapping the statement in a block - lib\core\presentation\layout\main_layout.dart:71:30 - curly_braces_in_flow_control_structures
+   info - Statements in an if should be enclosed in a block. Try wrapping the statement in a block - lib\core\presentation\layout\main_layout.dart:72:35 - curly_braces_in_flow_control_structures
+   info - Statements in an if should be enclosed in a block. Try wrapping the statement in a block - lib\core\presentation\layout\main_layout.dart:73:35 - curly_braces_in_flow_control_structures
+   info - Statements in an if should be enclosed in a block. Try wrapping the statement in a block - lib\core\presentation\layout\main_layout.dart:74:35 - curly_braces_in_flow_control_structures
+   info - Statements in an if should be enclosed in a block. Try wrapping the statement in a block - lib\core\presentation\layout\main_layout.dart:75:35 - curly_braces_in_flow_control_structures
    info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\core\theme\app_theme.dart:49:20 - prefer_const_constructors
    info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\core\theme\app_theme.dart:86:21 - prefer_const_constructors
    info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\core\theme\app_theme.dart:90:23 - prefer_const_constructors
    info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\core\theme\app_theme.dart:94:23 - prefer_const_constructors
+warning - This API is available since SDK 3.4.0, but constraints '>=3.0.0 <4.0.0' don't guarantee it. Try updating the SDK constraints - lib\core\widgets\captcha\captcha_view_web.dart:44:33 - sdk_version_since
+warning - The value of the field '_verified' isn't used. Try removing the field, or using it - lib\core\widgets\captcha\recaptcha_check.dart:36:8 - unused_field
    info - Statements in an if should be enclosed in a block. Try wrapping the statement in a block - lib\features\ai_tools\presentation\screens\ai_tools_screen.dart:35:51 - curly_braces_in_flow_control_structures
    info - Statements in an if should be enclosed in a block. Try wrapping the statement in a block - lib\features\ai_tools\presentation\screens\ai_tools_screen.dart:36:56 - curly_braces_in_flow_control_structures
    info - Statements in an if should be enclosed in a block. Try wrapping the statement in a block - lib\features\ai_tools\presentation\screens\ai_tools_screen.dart:37:56 - curly_braces_in_flow_control_structures
@@ -90,61 +172,87 @@ Analyzing 2 items...
    info - 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre. Try replacing the use of the deprecated member with the replacement - lib\features\ai_tools\presentation\screens\ai_tools_screen.dart:159:15 - deprecated_member_use
    info - 'groupValue' is deprecated and shouldn't be used. Use a RadioGroup ancestor to manage group value instead. This feature was deprecated after v3.32.0-0.0.pre. Try replacing the use of the deprecated member with the replacement - lib\features\ai_tools\presentation\screens\ai_tools_screen.dart:189:23 - deprecated_member_use
    info - 'onChanged' is deprecated and shouldn't be used. Use RadioGroup to handle value change instead. This feature was deprecated after v3.32.0-0.0.pre. Try replacing the use of the deprecated member with the replacement - lib\features\ai_tools\presentation\screens\ai_tools_screen.dart:190:23 - deprecated_member_use
-   info - The private field _obscurePassword could be 'final'. Try making the field 'final' - lib\features\auth\presentation\screens\login_screen.dart:35:8 - prefer_final_fields
-warning - The value of the field '_obscurePassword' isn't used. Try removing the field, or using it - lib\features\auth\presentation\screens\login_screen.dart:35:8 - unused_field
-   info - The private field _obscureConfirmPassword could be 'final'. Try making the field 'final' - lib\features\auth\presentation\screens\login_screen.dart:36:8 - prefer_final_fields
-warning - The value of the field '_obscureConfirmPassword' isn't used. Try removing the field, or using it - lib\features\auth\presentation\screens\login_screen.dart:36:8 - unused_field
-   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\auth\presentation\screens\login_screen.dart:229:35 - prefer_const_constructors
-   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\auth\presentation\screens\login_screen.dart:238:35 - prefer_const_constructors
-   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\auth\presentation\screens\login_screen.dart:247:35 - prefer_const_constructors
-   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\customers\presentation\screens\customer_form_screen.dart:82:25 - prefer_const_constructors
-   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\orders\presentation\screens\new_order_wizard.dart:93:69 - prefer_const_constructors
-   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\orders\presentation\screens\new_order_wizard.dart:94:70 - prefer_const_constructors
-   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\orders\presentation\screens\new_order_wizard.dart:95:65 - prefer_const_constructors
-   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\orders\presentation\screens\new_order_wizard.dart:96:66 - prefer_const_constructors
-   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\orders\presentation\screens\new_order_wizard.dart:97:66 - prefer_const_constructors
-   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\orders\presentation\screens\new_order_wizard.dart:98:53 - prefer_const_constructors
-   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\orders\presentation\screens\new_order_wizard.dart:99:60 - prefer_const_constructors
-   info - The private field _confirmedMeasurements could be 'final'. Try making the field 'final' - lib\features\orders\presentation\screens\new_order_wizard.dart:138:23 - prefer_final_fields
-   info - The private field _isAiGenerated could be 'final'. Try making the field 'final' - lib\features\orders\presentation\screens\new_order_wizard.dart:140:21 - prefer_final_fields
-warning - The value of the field '_fabricEstError' isn't used. Try removing the field, or using it - lib\features\orders\presentation\screens\new_order_wizard.dart:158:11 - unused_field
-   info - The private field _manualQuantityCtrl could be 'final'. Try making the field 'final' - lib\features\orders\presentation\screens\new_order_wizard.dart:159:25 - prefer_final_fields
-   info - Don't invoke 'print' in production code. Try using a logging framework - lib\features\orders\presentation\screens\new_order_wizard.dart:239:10 - avoid_print
-   info - 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre. Try replacing the use of the deprecated member with the replacement - lib\features\orders\presentation\screens\new_order_wizard.dart:1547:15 - deprecated_member_use
-warning - The left operand can't be null, so the right operand is never executed. Try removing the operator and the right operand - lib\features\orders\presentation\screens\order_details_screen.dart:16:49 - dead_null_aware_expression
-   info - 'Share' is deprecated and shouldn't be used. Use SharePlus instead. Try replacing the use of the deprecated member with the replacement - lib\features\orders\presentation\screens\order_details_screen.dart:28:5 - deprecated_member_use
-   info - 'share' is deprecated and shouldn't be used. Use SharePlus.instance.share() instead. Try replacing the use of the deprecated member with the replacement - lib\features\orders\presentation\screens\order_details_screen.dart:28:11 - deprecated_member_use
+   info - The private field _obscurePassword could be 'final'. Try making the field 'final' - lib\features\auth\presentation\screens\login_screen.dart:36:8 - prefer_final_fields
+warning - The value of the field '_obscurePassword' isn't used. Try removing the field, or using it - lib\features\auth\presentation\screens\login_screen.dart:36:8 - unused_field
+   info - The private field _obscureConfirmPassword could be 'final'. Try making the field 'final' - lib\features\auth\presentation\screens\login_screen.dart:37:8 - prefer_final_fields
+warning - The value of the field '_obscureConfirmPassword' isn't used. Try removing the field, or using it - lib\features\auth\presentation\screens\login_screen.dart:37:8 - unused_field
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\auth\presentation\screens\login_screen.dart:241:35 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\auth\presentation\screens\login_screen.dart:250:35 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\auth\presentation\screens\login_screen.dart:259:35 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\orders\blueprints\garment_blueprints_data.dart:5:3 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\orders\blueprints\garment_blueprints_data.dart:6:5 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\orders\blueprints\garment_blueprints_data.dart:7:5 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\orders\blueprints\garment_blueprints_data.dart:8:5 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\orders\blueprints\garment_blueprints_data.dart:9:5 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\orders\blueprints\garment_blueprints_data.dart:10:5 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\orders\blueprints\garment_blueprints_data.dart:11:5 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\orders\blueprints\garment_blueprints_data.dart:13:3 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\orders\blueprints\garment_blueprints_data.dart:14:5 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\orders\blueprints\garment_blueprints_data.dart:15:5 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\orders\blueprints\garment_blueprints_data.dart:16:5 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\orders\blueprints\garment_blueprints_data.dart:17:5 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\orders\blueprints\garment_blueprints_data.dart:19:3 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\orders\blueprints\garment_blueprints_data.dart:20:5 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\orders\blueprints\garment_blueprints_data.dart:25:3 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\orders\blueprints\garment_blueprints_data.dart:26:5 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\orders\blueprints\garment_blueprints_data.dart:27:5 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\orders\blueprints\garment_blueprints_data.dart:28:5 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\orders\blueprints\garment_blueprints_data.dart:29:5 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\orders\blueprints\garment_blueprints_data.dart:31:3 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\orders\blueprints\garment_blueprints_data.dart:32:5 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\orders\blueprints\garment_blueprints_data.dart:33:5 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\orders\blueprints\garment_blueprints_data.dart:34:5 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\orders\blueprints\garment_blueprints_data.dart:35:5 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\orders\blueprints\garment_blueprints_data.dart:37:3 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\orders\blueprints\garment_blueprints_data.dart:38:5 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\orders\blueprints\garment_blueprints_data.dart:43:3 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\orders\blueprints\garment_blueprints_data.dart:44:5 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\orders\blueprints\garment_blueprints_data.dart:45:5 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\orders\blueprints\garment_blueprints_data.dart:46:5 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\orders\blueprints\garment_blueprints_data.dart:48:3 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\orders\blueprints\garment_blueprints_data.dart:49:5 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\orders\blueprints\garment_blueprints_data.dart:50:5 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\orders\blueprints\garment_blueprints_data.dart:51:5 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\orders\blueprints\garment_blueprints_data.dart:53:3 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\orders\blueprints\garment_blueprints_data.dart:54:5 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\orders\blueprints\garment_blueprints_data.dart:56:3 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\orders\blueprints\garment_blueprints_data.dart:57:5 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\orders\blueprints\garment_blueprints_data.dart:58:5 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\orders\blueprints\garment_blueprints_data.dart:59:5 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\orders\blueprints\garment_blueprints_data.dart:61:3 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\orders\blueprints\garment_blueprints_data.dart:62:5 - prefer_const_constructors
+   info - The import of 'dart:ui' is unnecessary because all of the used elements are also provided by the import of 'package:flutter/material.dart'. Try removing the import directive - lib\features\orders\presentation\screens\new_order_wizard.dart:1:8 - unnecessary_import
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\orders\presentation\screens\new_order_wizard.dart:96:69 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\orders\presentation\screens\new_order_wizard.dart:97:70 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\orders\presentation\screens\new_order_wizard.dart:98:65 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\orders\presentation\screens\new_order_wizard.dart:99:66 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\orders\presentation\screens\new_order_wizard.dart:100:66 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\orders\presentation\screens\new_order_wizard.dart:101:53 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\orders\presentation\screens\new_order_wizard.dart:102:60 - prefer_const_constructors
+   info - The private field _confirmedMeasurements could be 'final'. Try making the field 'final' - lib\features\orders\presentation\screens\new_order_wizard.dart:141:23 - prefer_final_fields
+   info - The private field _isAiGenerated could be 'final'. Try making the field 'final' - lib\features\orders\presentation\screens\new_order_wizard.dart:143:21 - prefer_final_fields
+warning - The value of the field '_fabricEstError' isn't used. Try removing the field, or using it - lib\features\orders\presentation\screens\new_order_wizard.dart:161:11 - unused_field
+   info - The private field _manualQuantityCtrl could be 'final'. Try making the field 'final' - lib\features\orders\presentation\screens\new_order_wizard.dart:162:25 - prefer_final_fields
+   info - Don't invoke 'print' in production code. Try using a logging framework - lib\features\orders\presentation\screens\new_order_wizard.dart:260:10 - avoid_print
+   info - 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre. Try replacing the use of the deprecated member with the replacement - lib\features\orders\presentation\screens\new_order_wizard.dart:1601:15 - deprecated_member_use
+warning - The left operand can't be null, so the right operand is never executed. Try removing the operator and the right operand - lib\features\orders\presentation\screens\order_details_screen.dart:17:49 - dead_null_aware_expression
+   info - 'Share' is deprecated and shouldn't be used. Use SharePlus instead. Try replacing the use of the deprecated member with the replacement - lib\features\orders\presentation\screens\order_details_screen.dart:29:5 - deprecated_member_use
+   info - 'share' is deprecated and shouldn't be used. Use SharePlus.instance.share() instead. Try replacing the use of the deprecated member with the replacement - lib\features\orders\presentation\screens\order_details_screen.dart:29:11 - deprecated_member_use
    info - 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre. Try replacing the use of the deprecated member with the replacement - lib\features\orders\presentation\screens\order_form_screen.dart:61:23 - deprecated_member_use
-   info - Use 'const' literals as arguments to constructors of '@immutable' classes. Try adding 'const' before the literal - lib\features\orders\presentation\screens\orders_list_screen.dart:190:26 - prefer_const_literals_to_create_immutables
-   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\profile\presentation\screens\profile_screen.dart:43:16 - prefer_const_constructors
-   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\profile\presentation\screens\profile_screen.dart:44:18 - prefer_const_constructors
-   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\profile\presentation\screens\profile_screen.dart:48:20 - prefer_const_constructors
-   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\profile\presentation\screens\profile_screen.dart:55:20 - prefer_const_constructors
-   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\profile\presentation\screens\profile_screen.dart:113:20 - prefer_const_constructors
-   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\profile\presentation\screens\profile_screen.dart:156:25 - prefer_const_constructors
-   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\profile\presentation\screens\profile_screen.dart:201:24 - prefer_const_constructors
-   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\profile\presentation\screens\profile_screen.dart:256:23 - prefer_const_constructors
-   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\profile\presentation\screens\profile_screen.dart:273:18 - prefer_const_constructors
-   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\profile\presentation\screens\profile_screen.dart:299:22 - prefer_const_constructors
-   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\profile\presentation\screens\profile_screen.dart:315:18 - prefer_const_constructors
-   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\profile\presentation\screens\profile_screen.dart:341:22 - prefer_const_constructors
-   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\profile\presentation\screens\profile_screen.dart:462:34 - prefer_const_constructors
-   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\profile\presentation\screens\profile_screen.dart:479:36 - prefer_const_constructors
-   info - Use 'const' literals as arguments to constructors of '@immutable' classes. Try adding 'const' before the literal - lib\features\profile\presentation\screens\profile_screen.dart:482:39 - prefer_const_literals_to_create_immutables
-   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\profile\presentation\screens\profile_screen.dart:483:31 - prefer_const_constructors
-   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\profile\presentation\screens\profile_screen.dart:485:31 - prefer_const_constructors
-   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\profile\presentation\screens\profile_screen.dart:507:34 - prefer_const_constructors
-   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\profile\presentation\screens\profile_screen.dart:508:36 - prefer_const_constructors
-   info - Use 'const' literals as arguments to constructors of '@immutable' classes. Try adding 'const' before the literal - lib\features\profile\presentation\screens\profile_screen.dart:511:39 - prefer_const_literals_to_create_immutables
-   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\profile\presentation\screens\profile_screen.dart:512:31 - prefer_const_constructors
-   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\profile\presentation\screens\profile_screen.dart:514:31 - prefer_const_constructors
-   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\profile\presentation\screens\profile_screen.dart:516:31 - prefer_const_constructors
-   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\profile\presentation\screens\profile_screen.dart:517:31 - prefer_const_constructors
-   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\profile\presentation\screens\profile_screen.dart:518:31 - prefer_const_constructors
-   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\profile\presentation\screens\profile_screen.dart:519:31 - prefer_const_constructors
-   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\profile\presentation\screens\profile_screen.dart:520:31 - prefer_const_constructors
-   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\profile\presentation\screens\profile_screen.dart:521:31 - prefer_const_constructors
-   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\profile\presentation\screens\profile_screen.dart:523:31 - prefer_const_constructors
+   info - Use 'const' literals as arguments to constructors of '@immutable' classes. Try adding 'const' before the literal - lib\features\orders\presentation\screens\orders_list_screen.dart:191:26 - prefer_const_literals_to_create_immutables
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\profile\presentation\screens\profile_screen.dart:44:16 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\profile\presentation\screens\profile_screen.dart:45:18 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\profile\presentation\screens\profile_screen.dart:49:20 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\profile\presentation\screens\profile_screen.dart:56:20 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\profile\presentation\screens\profile_screen.dart:114:20 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\profile\presentation\screens\profile_screen.dart:157:25 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\profile\presentation\screens\profile_screen.dart:202:24 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\profile\presentation\screens\profile_screen.dart:257:23 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\profile\presentation\screens\profile_screen.dart:274:18 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\profile\presentation\screens\profile_screen.dart:300:22 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\profile\presentation\screens\profile_screen.dart:316:18 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\profile\presentation\screens\profile_screen.dart:342:22 - prefer_const_constructors
+   info - Unnecessary 'const' keyword. Try removing the keyword - lib\features\profile\presentation\screens\profile_screen.dart:513:31 - unnecessary_const
    info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\profile\presentation\screens\staff_management_screen.dart:41:16 - prefer_const_constructors
    info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\profile\presentation\screens\staff_management_screen.dart:69:16 - prefer_const_constructors
    info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\profile\presentation\screens\staff_management_screen.dart:97:16 - prefer_const_constructors
@@ -154,19 +262,88 @@ warning - The left operand can't be null, so the right operand is never executed
    info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check. Guard a 'State.context' use with a 'mounted' check on the State, and other BuildContext use with a 'mounted' check on the BuildContext - lib\features\profile\presentation\screens\staff_management_screen.dart:253:69 - use_build_context_synchronously
    info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\profile\presentation\screens\staff_management_screen.dart:260:31 - prefer_const_constructors
    info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\profile\presentation\screens\staff_management_screen.dart:268:32 - prefer_const_constructors
-   info - Statements in an if should be enclosed in a block. Try wrapping the statement in a block - lib\features\reports\presentation\screens\reports_screen.dart:62:31 - curly_braces_in_flow_control_structures
-   info - Statements in an if should be enclosed in a block. Try wrapping the statement in a block - lib\features\reports\presentation\screens\reports_screen.dart:63:37 - curly_braces_in_flow_control_structures
-   info - Statements in an if should be enclosed in a block. Try wrapping the statement in a block - lib\features\reports\presentation\screens\reports_screen.dart:64:35 - curly_braces_in_flow_control_structures
-   info - Statements in an if should be enclosed in a block. Try wrapping the statement in a block - lib\features\reports\presentation\screens\reports_screen.dart:65:12 - curly_braces_in_flow_control_structures
-   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\reports\presentation\screens\reports_screen.dart:86:14 - prefer_const_constructors
-   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\tasks\presentation\screens\tasks_screen.dart:145:14 - prefer_const_constructors
-warning - The value of the local variable 'selectedStage' isn't used. Try removing the variable or using it - lib\features\tasks\presentation\screens\tasks_screen.dart:359:12 - unused_local_variable
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\reports\presentation\screens\reports_screen.dart:119:14 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\tasks\presentation\screens\tasks_screen.dart:149:14 - prefer_const_constructors
+warning - The value of the local variable 'selectedStage' isn't used. Try removing the variable or using it - lib\features\tasks\presentation\screens\tasks_screen.dart:371:12 - unused_local_variable
+warning - The declaration '_shellNavigatorKey' isn't referenced. Try removing the declaration of '_shellNavigatorKey' - lib\routes\app_router.dart:27:33 - unused_element
    info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\ui\components\ts_button.dart:91:17 - prefer_const_constructors
+   info - The import of 'dart:ui' is unnecessary because all of the used elements are also provided by the import of 'package:flutter/material.dart'. Try removing the import directive - lib\ui\components\ts_page.dart:1:8 - unnecessary_import
 
-84 issues found. (ran in 14.0s)
+119 issues found. (ran in 13.9s)
 === TEST === 
+Resolving dependencies...
+Downloading packages...
+  _flutterfire_internals 1.3.73 (1.3.77 available)
+  animations 2.2.0 (3.0.0 available)
+  cached_network_image 3.4.1 (4.0.4 available)
+  cached_network_image_platform_interface 4.1.1 (5.0.3 available)
+  cached_network_image_web 1.3.1 (2.0.3 available)
+  cli_util 0.4.2 (0.6.0 available)
+  clock 1.1.2 (1.1.3 available)
+  code_assets 1.2.1 (2.1.0 available)
+  cross_file 0.3.5+2 (0.4.0 available)
+  dio 5.9.2 (5.11.1 available)
+  dio_web_adapter 2.1.2 (2.2.2 available)
+  file_selector_linux 0.9.4 (0.9.4+1 available)
+  file_selector_macos 0.9.5 (0.9.5+1 available)
+  file_selector_windows 0.9.3+5 (0.9.3+6 available)
+  firebase_auth 6.5.4 (6.7.0 available)
+  firebase_auth_platform_interface 9.0.3 (9.1.0 available)
+  firebase_auth_web 6.2.3 (6.3.0 available)
+  firebase_core 4.11.0 (4.15.0 available)
+  firebase_core_platform_interface 7.1.0 (8.1.1 available)
+  firebase_core_web 3.9.0 (3.12.0 available)
+  flutter_cache_manager 3.4.1 (3.4.5 available)
+  flutter_lints 2.0.3 (6.0.0 available)
+  flutter_riverpod 2.6.1 (3.4.3 available)
+  flutter_secure_storage 8.1.0 (11.2.0 available)
+  flutter_secure_storage_linux 1.2.3 (3.0.3 available)
+  flutter_secure_storage_macos 3.1.3 (4.0.0 available)
+  flutter_secure_storage_platform_interface 1.1.2 (2.1.1 available)
+  flutter_secure_storage_web 1.2.1 (2.1.1 available)
+  flutter_secure_storage_windows 2.1.1 (4.2.2 available)
+  go_router 7.1.1 (18.0.2 available)
+  google_fonts 8.1.0 (9.0.0 available)
+  hooks 2.0.2 (2.2.0 available)
+  image_picker 0.8.9 (1.2.3 available)
+  image_picker_android 0.8.13+19 (0.8.13+25 available)
+  image_picker_for_web 2.2.0 (3.1.1 available)
+  image_picker_ios 0.8.13+6 (0.8.13+9 available)
+  intl 0.19.0 (0.20.3 available)
+  jni 1.0.0 (1.1.0 available)
+  jni_flutter 1.0.1 (1.0.3 available)
+  js 0.6.7 (0.7.2 available)
+  lints 2.1.1 (6.1.0 available)
+  material_color_utilities 0.13.0 (0.13.1 available)
+  mime 1.0.6 (2.1.0 available)
+  objective_c 9.4.1 (9.6.2 available)
+  octo_image 2.1.0 (2.1.2 available)
+  package_config 2.2.0 (3.0.0 available)
+  platform 3.1.6 (3.2.0 available)
+  pub_semver 2.2.0 (2.2.1 available)
+  record_use 0.6.0 (1.1.1 available)
+  riverpod 2.6.1 (3.4.3 available)
+  share_plus 12.0.2 (13.3.1 available)
+  share_plus_platform_interface 6.1.0 (7.2.0 available)
+  sqflite 2.4.3 (2.4.4 available)
+  sqflite_android 2.4.3 (2.4.4 available)
+  sqflite_common 2.5.11 (2.5.13 available)
+  sqflite_darwin 2.4.3 (2.4.4 available)
+  sqflite_platform_interface 2.4.1 (2.4.2 available)
+  stack_trace 1.12.1 (1.12.2 available)
+  syncfusion_flutter_charts 20.4.54 (35.1.37 available)
+  syncfusion_flutter_core 20.4.54 (35.1.37 available)
+  synchronized 3.4.1 (3.4.2 available)
+  test_api 0.7.12 (0.7.14 available)
+  uuid 4.5.3 (4.6.0 available)
+  vm_service 15.2.0 (15.3.0 available)
+  win32 5.15.0 (6.4.0 available)
+  yaml 3.1.3 (3.1.4 available)
+Got dependencies!
+66 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
 00:00 +0: loading C:/Users/Sandeepa/Desktop/TailorSync/frontend/flutter_app/test/stage_sheet_test.dart
 00:00 +0: C:/Users/Sandeepa/Desktop/TailorSync/frontend/flutter_app/test/stage_sheet_test.dart: Update Stage Bottom Sheet renders all 7 stages cleanly at 320x568 without overflow
-00:05 +1: C:/Users/Sandeepa/Desktop/TailorSync/frontend/flutter_app/test/widget_test.dart: App smoke test
-00:06 +2: All tests passed!
-=== DONE Sun 10/04/2026  9:43:12.07 === 
+00:01 +1: C:/Users/Sandeepa/Desktop/TailorSync/frontend/flutter_app/test/widget_test.dart: App smoke test
+00:02 +2: All tests passed!
+=== DONE Mon 10/05/2026 10:09:04.53 === 

@@ -164,6 +164,60 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
   int? _selectedStaffId = 1;
  
 
+  /// Retries an AI request when the gateway reports the server is restarting
+  /// or briefly unavailable (502/503/504, dropped connection). Azure returns
+  /// these for ~1-3 min after a deploy or while the container wakes up.
+  Future<Response> _aiCall(Future<Response> Function() call) async {
+    const waits = [Duration(seconds: 4), Duration(seconds: 8)];
+    for (var attempt = 0; ; attempt++) {
+      try {
+        return await call();
+      } on DioException catch (e) {
+        final code = e.response?.statusCode;
+        final transient = code == 502 || code == 503 || code == 504 ||
+            e.type == DioExceptionType.connectionError;
+        if (!transient || attempt >= waits.length || !mounted) rethrow;
+        await Future.delayed(waits[attempt]);
+      }
+    }
+  }
+
+  /// Human-readable message instead of the raw DioException dump.
+  String _aiErrorMessage(Object e, String what) {
+    if (e is DioException) {
+      final code = e.response?.statusCode;
+      final data = e.response?.data;
+      final detail = data is Map && data['detail'] != null ? data['detail'].toString() : null;
+      if (code == 401 || code == 403) return 'Your session has expired. Please sign in again.';
+      if (code == 502 || code == 503 || code == 504) {
+        return 'The $what service is restarting or busy right now. Please wait a moment and tap Try again.';
+      }
+      if (e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.receiveTimeout ||
+          e.type == DioExceptionType.sendTimeout) {
+        return 'The $what took too long to respond. Please tap Try again.';
+      }
+      if (e.type == DioExceptionType.connectionError) {
+        return 'Can\'t reach the server. Check your internet connection and tap Try again.';
+      }
+      if (detail != null) return detail;
+      if (code != null) return 'The $what failed (server error $code). Please tap Try again.';
+    }
+    return 'The $what failed. Please tap Try again.';
+  }
+
+  /// Re-run the AI prediction without skipping a step (_runPrediction advances it).
+  void _retryPrediction() {
+    setState(() => _currentStep--);
+    _runPrediction();
+  }
+
+  /// Re-run fabric recommendation / estimation from the step that triggered it.
+  void _retryFromPreviousStep() {
+    setState(() => _currentStep--);
+    _nextStep();
+  }
+
   Future<void> _runPrediction() async {
     setState(() { _aiPredictionLoading = true; _aiPredictionError = null; _currentStep++; });
     try {
@@ -172,14 +226,14 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
           String mlType = _selectedGarment!.contains('Shirt') ? 'shirt' : 'trouser';
           final req = <String, dynamic>{'garment_type': mlType};
           _confirmedMeasurements.forEach((k, v) { req[k.toLowerCase()] = double.parse(v); });
-          final resp = await api.predictMeasurements(req);
+          final resp = await _aiCall(() => api.predictMeasurements(req));
           setState(() {
             _aiPredictions = List<Map<String, dynamic>>.from(resp.data['options'] ?? []);
             _aiPredictionLoading = false;
           });
       } else {
           final req = {'garment_type': _selectedGarment, 'measurements': _confirmedMeasurements};
-          final resp = await api.predictMeasurementsFoundry(req);
+          final resp = await _aiCall(() => api.predictMeasurementsFoundry(req));
           setState(() {
             List<Map<String, dynamic>> preds = List<Map<String, dynamic>>.from(resp.data['predictions'] ?? []);
             double? toNum(dynamic v) =>
@@ -216,7 +270,7 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
       }
     } catch (e) {
       setState(() {
-        _aiPredictionError = "Prediction failed: $e";
+        _aiPredictionError = _aiErrorMessage(e, 'AI prediction');
         _aiPredictionLoading = false;
       });
     }
@@ -329,23 +383,20 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
     if (_currentStep == 5) {
       setState(() { _fabricRecLoading = true; _fabricRecError = null; _currentStep++; });
       try {
-        final resp = await api.recommendFabric({
+        final resp = await _aiCall(() => api.recommendFabric({
           'garment_type': _selectedGarment,
           'occasion': _occasion,
           'weather': _weather,
           'fabric_preferences': _fabricPreferences,
           'fit': _fit
-        });
+        }));
         setState(() {
           _fabricRecommendations = List<Map<String, dynamic>>.from(resp.data['recommendations'] ?? []);
           _selectedFabricIndex = null;
           _fabricRecLoading = false;
         });
       } catch (e) {
-        String errorMsg = "Fabric AI unavailable.";
-        if (e is DioException && e.response?.data != null && e.response!.data is Map && (e.response!.data as Map).containsKey('detail')) {
-            errorMsg = (e.response!.data as Map)['detail'].toString();
-        }
+        final errorMsg = _aiErrorMessage(e, 'fabric recommendation');
         setState(() { _fabricRecError = errorMsg; _fabricRecLoading = false; });
       }
       return;
@@ -362,11 +413,11 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
       
       setState(() { _fabricEstLoading = true; _fabricEstError = null; _currentStep++; });
       try {
-        final resp = await api.estimateFabric({
+        final resp = await _aiCall(() => api.estimateFabric({
           'garment_type': _selectedGarment,
           'fabric': selectedFabric,
           'measurements': _confirmedMeasurements
-        });
+        }));
         setState(() {
           _fabricEstimation = resp.data;
           if (_fabricEstimation != null && _fabricEstimation!['recommended_quantity_meters'] != null) {
@@ -375,10 +426,7 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
           _fabricEstLoading = false;
         });
       } catch (e) {
-        String errorMsg = "Fabric estimation unavailable.";
-        if (e is DioException && e.response?.data != null && e.response!.data is Map && (e.response!.data as Map).containsKey('detail')) {
-            errorMsg = (e.response!.data as Map)['detail'].toString();
-        }
+        final errorMsg = _aiErrorMessage(e, 'fabric estimation');
         setState(() { _fabricEstError = errorMsg; _fabricEstLoading = false; });
       }
       return;
@@ -706,8 +754,15 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
     );
   }
 
-  Widget _inlineError(String text) => Center(
-        child: EmptyState(icon: Icons.cloud_off_rounded, title: 'Something went wrong', message: text),
+  Widget _inlineError(String text, {VoidCallback? onRetry}) => Center(
+        child: EmptyState(
+          icon: Icons.cloud_off_rounded,
+          title: 'Something went wrong',
+          message: text,
+          actionLabel: onRetry == null ? null : 'Try again',
+          actionIcon: Icons.refresh_rounded,
+          onAction: onRetry,
+        ),
       );
 
   // --- Step 1: Customer ---
@@ -1126,7 +1181,7 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
     }
     
     if (_aiPredictionError != null) {
-      return _inlineError(_aiPredictionError!);
+      return _inlineError(_aiPredictionError!, onRetry: _retryPrediction);
     }
     
     final cs = context.colors;
@@ -1395,7 +1450,7 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
         subtitle: 'Curating the best fabric options for your style.',
       );
     }
-    if (_fabricRecError != null) return _inlineError(_fabricRecError!);
+    if (_fabricRecError != null) return _inlineError(_fabricRecError!, onRetry: _retryFromPreviousStep);
 
     final cs = context.colors;
     return Column(

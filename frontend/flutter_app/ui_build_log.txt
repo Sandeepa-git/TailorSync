@@ -1,12 +1,12 @@
-=== START Sun 10/04/2026  9:43:16.94 === 
-Deleting build...                                                   4.3s
-Deleting .dart_tool...                                              43ms
-Deleting ephemeral...                                                4ms
+=== START Mon 10/05/2026 10:09:21.00 === 
+Deleting build...                                                   8.2s
+Deleting .dart_tool...                                             303ms
+Deleting ephemeral...                                                6ms
 Deleting Generated.xcconfig...                                       0ms
 Deleting flutter_export_environment.sh...                            0ms
+Deleting ephemeral...                                                5ms
 Deleting ephemeral...                                                4ms
 Deleting ephemeral...                                                4ms
-Deleting ephemeral...                                                3ms
 Deleting .flutter-plugins-dependencies...                            0ms
 Resolving dependencies...
 Downloading packages...
@@ -39,7 +39,7 @@ Downloading packages...
   flutter_secure_storage_platform_interface 1.1.2 (2.1.1 available)
   flutter_secure_storage_web 1.2.1 (2.1.1 available)
   flutter_secure_storage_windows 2.1.1 (4.2.2 available)
-  go_router 6.5.9 (18.0.2 available)
+  go_router 7.1.1 (18.0.2 available)
   google_fonts 8.1.0 (9.0.0 available)
   hooks 2.0.2 (2.2.0 available)
   image_picker 0.8.9 (1.2.3 available)
@@ -80,6 +80,77 @@ Got dependencies!
 66 packages have newer versions incompatible with dependency constraints.
 Try `flutter pub outdated` for more information.
 === BUILD APK (fat) === 
+Resolving dependencies...
+Downloading packages...
+  _flutterfire_internals 1.3.73 (1.3.77 available)
+  animations 2.2.0 (3.0.0 available)
+  cached_network_image 3.4.1 (4.0.4 available)
+  cached_network_image_platform_interface 4.1.1 (5.0.3 available)
+  cached_network_image_web 1.3.1 (2.0.3 available)
+  cli_util 0.4.2 (0.6.0 available)
+  clock 1.1.2 (1.1.3 available)
+  code_assets 1.2.1 (2.1.0 available)
+  cross_file 0.3.5+2 (0.4.0 available)
+  dio 5.9.2 (5.11.1 available)
+  dio_web_adapter 2.1.2 (2.2.2 available)
+  file_selector_linux 0.9.4 (0.9.4+1 available)
+  file_selector_macos 0.9.5 (0.9.5+1 available)
+  file_selector_windows 0.9.3+5 (0.9.3+6 available)
+  firebase_auth 6.5.4 (6.7.0 available)
+  firebase_auth_platform_interface 9.0.3 (9.1.0 available)
+  firebase_auth_web 6.2.3 (6.3.0 available)
+  firebase_core 4.11.0 (4.15.0 available)
+  firebase_core_platform_interface 7.1.0 (8.1.1 available)
+  firebase_core_web 3.9.0 (3.12.0 available)
+  flutter_cache_manager 3.4.1 (3.4.5 available)
+  flutter_lints 2.0.3 (6.0.0 available)
+  flutter_riverpod 2.6.1 (3.4.3 available)
+  flutter_secure_storage 8.1.0 (11.2.0 available)
+  flutter_secure_storage_linux 1.2.3 (3.0.3 available)
+  flutter_secure_storage_macos 3.1.3 (4.0.0 available)
+  flutter_secure_storage_platform_interface 1.1.2 (2.1.1 available)
+  flutter_secure_storage_web 1.2.1 (2.1.1 available)
+  flutter_secure_storage_windows 2.1.1 (4.2.2 available)
+  go_router 7.1.1 (18.0.2 available)
+  google_fonts 8.1.0 (9.0.0 available)
+  hooks 2.0.2 (2.2.0 available)
+  image_picker 0.8.9 (1.2.3 available)
+  image_picker_android 0.8.13+19 (0.8.13+25 available)
+  image_picker_for_web 2.2.0 (3.1.1 available)
+  image_picker_ios 0.8.13+6 (0.8.13+9 available)
+  intl 0.19.0 (0.20.3 available)
+  jni 1.0.0 (1.1.0 available)
+  jni_flutter 1.0.1 (1.0.3 available)
+  js 0.6.7 (0.7.2 available)
+  lints 2.1.1 (6.1.0 available)
+  material_color_utilities 0.13.0 (0.13.1 available)
+  mime 1.0.6 (2.1.0 available)
+  objective_c 9.4.1 (9.6.2 available)
+  octo_image 2.1.0 (2.1.2 available)
+  package_config 2.2.0 (3.0.0 available)
+  platform 3.1.6 (3.2.0 available)
+  pub_semver 2.2.0 (2.2.1 available)
+  record_use 0.6.0 (1.1.1 available)
+  riverpod 2.6.1 (3.4.3 available)
+  share_plus 12.0.2 (13.3.1 available)
+  share_plus_platform_interface 6.1.0 (7.2.0 available)
+  sqflite 2.4.3 (2.4.4 available)
+  sqflite_android 2.4.3 (2.4.4 available)
+  sqflite_common 2.5.11 (2.5.13 available)
+  sqflite_darwin 2.4.3 (2.4.4 available)
+  sqflite_platform_interface 2.4.1 (2.4.2 available)
+  stack_trace 1.12.1 (1.12.2 available)
+  syncfusion_flutter_charts 20.4.54 (35.1.37 available)
+  syncfusion_flutter_core 20.4.54 (35.1.37 available)
+  synchronized 3.4.1 (3.4.2 available)
+  test_api 0.7.12 (0.7.14 available)
+  uuid 4.5.3 (4.6.0 available)
+  vm_service 15.2.0 (15.3.0 available)
+  win32 5.15.0 (6.4.0 available)
+  yaml 3.1.3 (3.1.4 available)
+Got dependencies!
+66 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
 Running Gradle task 'assembleRelease'...                        
 WARNING: Your app uses the following plugins that apply Kotlin Gradle Plugin (KGP): share_plus
 Future versions of Flutter will fail to build if your app uses plugins that apply KGP.
@@ -90,16 +161,87 @@ an issue against a plugin: https://docs.flutter.dev/release/breaking-changes/mig
 
 If you are a plugin author, please migrate your plugin to Built-in Kotlin using this guide: https://docs.flutter.dev/release/breaking-changes/migrate-to-built-in-kotlin/for-plugin-authors
 Expected to find fonts for (packages/cupertino_icons/CupertinoIcons, MaterialIcons), but found (MaterialIcons). This usually means you are referring to font families in an IconData class but not including them in the assets section of your pubspec.yaml, are missing the package that would include them, or are missing "uses-material-design: true".
-Font asset "MaterialIcons-Regular.otf" was tree-shaken, reducing it from 1645184 to 18740 bytes (98.9% reduction). Tree-shaking can be disabled by providing the --no-tree-shake-icons flag when building your app.
+Font asset "MaterialIcons-Regular.otf" was tree-shaken, reducing it from 1645184 to 21968 bytes (98.7% reduction). Tree-shaking can be disabled by providing the --no-tree-shake-icons flag when building your app.
 Note: Some input files use or override a deprecated API.
 Note: Recompile with -Xlint:deprecation for details.
 warning: [options] source value 8 is obsolete and will be removed in a future release
 warning: [options] target value 8 is obsolete and will be removed in a future release
 warning: [options] To suppress warnings about obsolete options, use -Xlint:-options.
 3 warnings
-Running Gradle task 'assembleRelease'...                          161.3s
-√ Built build\app\outputs\flutter-apk\app-release.apk (55.7MB)
+Running Gradle task 'assembleRelease'...                          253.9s
+√ Built build\app\outputs\flutter-apk\app-release.apk (59.5MB)
 === BUILD APK (split per ABI) === 
+Resolving dependencies...
+Downloading packages...
+  _flutterfire_internals 1.3.73 (1.3.77 available)
+  animations 2.2.0 (3.0.0 available)
+  cached_network_image 3.4.1 (4.0.4 available)
+  cached_network_image_platform_interface 4.1.1 (5.0.3 available)
+  cached_network_image_web 1.3.1 (2.0.3 available)
+  cli_util 0.4.2 (0.6.0 available)
+  clock 1.1.2 (1.1.3 available)
+  code_assets 1.2.1 (2.1.0 available)
+  cross_file 0.3.5+2 (0.4.0 available)
+  dio 5.9.2 (5.11.1 available)
+  dio_web_adapter 2.1.2 (2.2.2 available)
+  file_selector_linux 0.9.4 (0.9.4+1 available)
+  file_selector_macos 0.9.5 (0.9.5+1 available)
+  file_selector_windows 0.9.3+5 (0.9.3+6 available)
+  firebase_auth 6.5.4 (6.7.0 available)
+  firebase_auth_platform_interface 9.0.3 (9.1.0 available)
+  firebase_auth_web 6.2.3 (6.3.0 available)
+  firebase_core 4.11.0 (4.15.0 available)
+  firebase_core_platform_interface 7.1.0 (8.1.1 available)
+  firebase_core_web 3.9.0 (3.12.0 available)
+  flutter_cache_manager 3.4.1 (3.4.5 available)
+  flutter_lints 2.0.3 (6.0.0 available)
+  flutter_riverpod 2.6.1 (3.4.3 available)
+  flutter_secure_storage 8.1.0 (11.2.0 available)
+  flutter_secure_storage_linux 1.2.3 (3.0.3 available)
+  flutter_secure_storage_macos 3.1.3 (4.0.0 available)
+  flutter_secure_storage_platform_interface 1.1.2 (2.1.1 available)
+  flutter_secure_storage_web 1.2.1 (2.1.1 available)
+  flutter_secure_storage_windows 2.1.1 (4.2.2 available)
+  go_router 7.1.1 (18.0.2 available)
+  google_fonts 8.1.0 (9.0.0 available)
+  hooks 2.0.2 (2.2.0 available)
+  image_picker 0.8.9 (1.2.3 available)
+  image_picker_android 0.8.13+19 (0.8.13+25 available)
+  image_picker_for_web 2.2.0 (3.1.1 available)
+  image_picker_ios 0.8.13+6 (0.8.13+9 available)
+  intl 0.19.0 (0.20.3 available)
+  jni 1.0.0 (1.1.0 available)
+  jni_flutter 1.0.1 (1.0.3 available)
+  js 0.6.7 (0.7.2 available)
+  lints 2.1.1 (6.1.0 available)
+  material_color_utilities 0.13.0 (0.13.1 available)
+  mime 1.0.6 (2.1.0 available)
+  objective_c 9.4.1 (9.6.2 available)
+  octo_image 2.1.0 (2.1.2 available)
+  package_config 2.2.0 (3.0.0 available)
+  platform 3.1.6 (3.2.0 available)
+  pub_semver 2.2.0 (2.2.1 available)
+  record_use 0.6.0 (1.1.1 available)
+  riverpod 2.6.1 (3.4.3 available)
+  share_plus 12.0.2 (13.3.1 available)
+  share_plus_platform_interface 6.1.0 (7.2.0 available)
+  sqflite 2.4.3 (2.4.4 available)
+  sqflite_android 2.4.3 (2.4.4 available)
+  sqflite_common 2.5.11 (2.5.13 available)
+  sqflite_darwin 2.4.3 (2.4.4 available)
+  sqflite_platform_interface 2.4.1 (2.4.2 available)
+  stack_trace 1.12.1 (1.12.2 available)
+  syncfusion_flutter_charts 20.4.54 (35.1.37 available)
+  syncfusion_flutter_core 20.4.54 (35.1.37 available)
+  synchronized 3.4.1 (3.4.2 available)
+  test_api 0.7.12 (0.7.14 available)
+  uuid 4.5.3 (4.6.0 available)
+  vm_service 15.2.0 (15.3.0 available)
+  win32 5.15.0 (6.4.0 available)
+  yaml 3.1.3 (3.1.4 available)
+Got dependencies!
+66 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
 Running Gradle task 'assembleRelease'...                        
 WARNING: Your app uses the following plugins that apply Kotlin Gradle Plugin (KGP): share_plus
 Future versions of Flutter will fail to build if your app uses plugins that apply KGP.
@@ -110,21 +252,21 @@ an issue against a plugin: https://docs.flutter.dev/release/breaking-changes/mig
 
 If you are a plugin author, please migrate your plugin to Built-in Kotlin using this guide: https://docs.flutter.dev/release/breaking-changes/migrate-to-built-in-kotlin/for-plugin-authors
 Expected to find fonts for (packages/cupertino_icons/CupertinoIcons, MaterialIcons), but found (MaterialIcons). This usually means you are referring to font families in an IconData class but not including them in the assets section of your pubspec.yaml, are missing the package that would include them, or are missing "uses-material-design: true".
-Font asset "MaterialIcons-Regular.otf" was tree-shaken, reducing it from 1645184 to 18740 bytes (98.9% reduction). Tree-shaking can be disabled by providing the --no-tree-shake-icons flag when building your app.
-Running Gradle task 'assembleRelease'...                           38.7s
-√ Built build\app\outputs\flutter-apk\app-armeabi-v7a-release.apk (17.7MB)
-√ Built build\app\outputs\flutter-apk\app-arm64-v8a-release.apk (20.1MB)
-√ Built build\app\outputs\flutter-apk\app-x86_64-release.apk (21.5MB)
+Font asset "MaterialIcons-Regular.otf" was tree-shaken, reducing it from 1645184 to 21968 bytes (98.7% reduction). Tree-shaking can be disabled by providing the --no-tree-shake-icons flag when building your app.
+Running Gradle task 'assembleRelease'...                           70.7s
+√ Built build\app\outputs\flutter-apk\app-armeabi-v7a-release.apk (19.9MB)
+√ Built build\app\outputs\flutter-apk\app-arm64-v8a-release.apk (22.1MB)
+√ Built build\app\outputs\flutter-apk\app-x86_64-release.apk (23.6MB)
 === OUTPUTS === 
  Volume in drive C has no label.
  Volume Serial Number is E2EB-A553
 
  Directory of C:\Users\Sandeepa\Desktop\TailorSync\frontend\flutter_app\build\app\outputs\flutter-apk
 
-10/04/2026  09:46 AM        21,087,644 app-arm64-v8a-release.apk
-10/04/2026  09:46 AM        18,578,284 app-armeabi-v7a-release.apk
-10/04/2026  09:46 AM        58,452,990 app-release.apk
-10/04/2026  09:46 AM        22,571,416 app-x86_64-release.apk
-               4 File(s)    120,690,334 bytes
-               0 Dir(s)  19,701,821,440 bytes free
-=== DONE Sun 10/04/2026  9:46:54.48 === 
+10/05/2026  10:15 AM        23,193,921 app-arm64-v8a-release.apk
+10/05/2026  10:15 AM        20,832,013 app-armeabi-v7a-release.apk
+10/05/2026  10:13 AM        62,345,123 app-release.apk
+10/05/2026  10:15 AM        24,743,229 app-x86_64-release.apk
+               4 File(s)    131,114,286 bytes
+               0 Dir(s)  25,553,162,240 bytes free
+=== DONE Mon 10/05/2026 10:15:26.33 === 
