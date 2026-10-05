@@ -114,19 +114,6 @@ class _CustomersListScreenState extends ConsumerState<CustomersListScreen> {
           ),
         ),
       ],
-      // Lifted above the floating bottom navigation bar so it is always visible.
-      floatingActionButton: Padding(
-        padding: EdgeInsets.only(bottom: 84 + MediaQuery.paddingOf(context).bottom),
-        child: FloatingActionButton.extended(
-          heroTag: 'fab-new-customer',
-          icon: const Icon(Icons.person_add_alt_1_rounded),
-          label: const Text('Add New Customer'),
-          onPressed: () {
-            HapticFeedback.selectionClick();
-            context.go('/customers/new');
-          },
-        ),
-      ),
       slivers: async.when(
         data: body,
         loading: () => [const SliverToBoxAdapter(child: CustomersListSkeleton())],
