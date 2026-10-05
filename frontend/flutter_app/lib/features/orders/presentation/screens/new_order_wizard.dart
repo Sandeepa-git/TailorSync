@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -52,8 +51,10 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
   Future<void> _loadInitData() async {
     try {
       final api = ref.read(apiClientProvider);
-      final userResp = await api.getMe();
-      final staffResp = await api.listStaff();
+      // Perf: fire both independent requests together.
+      final results = await Future.wait([api.getMe(), api.listStaff()]);
+      final userResp = results[0];
+      final staffResp = results[1];
       if (mounted) {
         setState(() {
           _user = userResp.data;
@@ -1725,12 +1726,11 @@ class _NewOrderWizardState extends ConsumerState<NewOrderWizard> with TickerProv
         child: IgnorePointer(
           ignoring: isLoading,
           child: ClipRect(
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+            child: RepaintBoundary(
               child: Container(
                 padding: EdgeInsets.fromLTRB(context.pagePadding, Space.sm, context.pagePadding, Space.md),
                 decoration: BoxDecoration(
-                  color: cs.surface.withValues(alpha: 0.85),
+                  color: cs.surface.withValues(alpha: 0.97),
                   border: Border(top: BorderSide(color: cs.outlineVariant.withValues(alpha: 0.5))),
                 ),
                 child: Row(

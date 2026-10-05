@@ -38,9 +38,11 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     });
     try {
       final api = ref.read(apiClientProvider);
-      final statsResp = await api.getOrderStats();
-      final userResp = await api.getMe();
-      final ordersResp = await api.listOrders();
+      // Perf: fire the three independent requests together.
+      final results = await Future.wait([api.getOrderStats(), api.getMe(), api.listOrders()]);
+      final statsResp = results[0];
+      final userResp = results[1];
+      final ordersResp = results[2];
 
       _loadInventoryAlerts();
       if (mounted) {
@@ -175,7 +177,20 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     return Scaffold(
       body: TsScrollPage(
         watermark: TailorAccessory.scissors,
-        title: '',
+        title: 'TailorSync',
+        // Wordmark in the same type style as the splash screen's "TailorSync".
+        titleWidget: Text(
+          'TailorSync',
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: context.text.displaySmall?.copyWith(
+            color: context.colors.primary,
+            fontWeight: FontWeight.w600,
+            letterSpacing: -0.5,
+            fontSize: context.isSmallPhone ? 24 : 27,
+            height: 1.1,
+          ),
+        ),
         automaticallyImplyLeading: false,
         padSlivers: false,
         onRefresh: _loadData,
@@ -359,62 +374,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             SliverToBoxAdapter(child: SizedBox(height: MediaQuery.paddingOf(context).bottom + Space.xl)),
           ],
       ),
-    );
-  }
-}
-
-/// Frosted pinned app bar with the existing logo + wordmark and avatar.
-class _BrandAppBar extends StatelessWidget {
-  final String initial;
-  final VoidCallback onProfile;
-  const _BrandAppBar({required this.initial, required this.onProfile});
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = context.colors;
-    return SliverAppBar(
-      pinned: true,
-      automaticallyImplyLeading: false,
-      backgroundColor: cs.surface.withValues(alpha: 0.9),
-      titleSpacing: context.pagePadding,
-      title: Row(
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(9),
-            child: Hero(
-              tag: 'app-logo',
-              child: Image.asset('assets/icon.png', width: 32, height: 32, fit: BoxFit.cover, semanticLabel: 'TailorSync logo'),
-            ),
-          ),
-          const SizedBox(width: Space.sm),
-          Flexible(
-            child: Text('TailorSync', style: context.text.titleLarge?.copyWith(color: cs.primary), overflow: TextOverflow.ellipsis),
-          ),
-        ],
-      ),
-      actions: [
-        Padding(
-          padding: EdgeInsets.only(right: context.pagePadding - 4),
-          child: Semantics(
-            button: true,
-            label: 'Open profile',
-            child: Pressable(
-              onTap: onProfile,
-              haptic: true,
-              child: Container(
-                width: kMinTouch,
-                height: kMinTouch,
-                padding: const EdgeInsets.all(3),
-                decoration: BoxDecoration(shape: BoxShape.circle, gradient: Gradients.accent(cs)),
-                child: CircleAvatar(
-                  backgroundColor: cs.surface,
-                  child: Text(initial, style: context.text.titleMedium?.copyWith(color: cs.primary, fontWeight: FontWeight.w800)),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ],
     );
   }
 }

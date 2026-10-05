@@ -1,4 +1,3 @@
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -205,8 +204,9 @@ class _FloatingNavBar extends StatelessWidget {
           ),
           child: ClipRRect(
             borderRadius: Radii.brXl,
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+            // Perf: the bar is 96% opaque, so a live blur was invisible but
+            // cost a full-screen backdrop pass every frame while scrolling.
+            child: RepaintBoundary(
               child: Container(
                 height: barHeight,
                 decoration: BoxDecoration(

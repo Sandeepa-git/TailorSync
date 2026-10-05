@@ -1,4 +1,3 @@
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
@@ -12,6 +11,8 @@ import 'tailor_art.dart';
 /// width on wide screens, and bottom space that clears the floating nav.
 class TsScrollPage extends StatelessWidget {
   final String title;
+  /// Optional custom title (e.g. a wordmark); overrides [title].
+  final Widget? titleWidget;
   final String? subtitle;
   final List<Widget>? actions;
   final Widget? leading;
@@ -31,6 +32,7 @@ class TsScrollPage extends StatelessWidget {
   const TsScrollPage({
     super.key,
     required this.title,
+    this.titleWidget,
     required this.slivers,
     this.subtitle,
     this.actions,
@@ -58,7 +60,7 @@ class TsScrollPage extends StatelessWidget {
       floating: true,
       leading: leading,
       automaticallyImplyLeading: automaticallyImplyLeading,
-      title: Text(
+      title: titleWidget ?? Text(
         title,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
@@ -69,14 +71,8 @@ class TsScrollPage extends StatelessWidget {
       ),
       actions: [...?actions, SizedBox(width: pad - Space.xs)],
       backgroundColor: Color.lerp(cs.surface, const Color(0xFF3949AB), context.isDark ? 0.18 : 0.10)!
-          .withValues(alpha: 0.72),
+          .withValues(alpha: 0.96),
       surfaceTintColor: Colors.transparent,
-      flexibleSpace: ClipRect(
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-          child: const SizedBox.expand(),
-        ),
-      ),
       bottom: headerBottom == null
           ? null
           : PreferredSize(

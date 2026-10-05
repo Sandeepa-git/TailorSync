@@ -133,7 +133,14 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
     final unit = (_data?['period']?['unit'] ?? 'week').toString();
     final inventory = _data?['inventory'] as Map?;
 
-    final onTime = k['on_time_rate'] as num?;
+    // On-time performance: delivered-on-time / (delivered + still-open overdue).
+    // The API's on_time_rate only looks at delivered orders, so it showed 100%
+    // even while orders were overdue. Count late open orders as misses too.
+    final deliveredCount = _n(k['completed']);
+    final lateDelivered = _n(k['delayed']);
+    final overdueCount = _n(k['overdue']);
+    final onTimeBase = deliveredCount + overdueCount;
+    final num? onTime = onTimeBase > 0 ? (deliveredCount - lateDelivered) / onTimeBase * 100 : null;
     final turnaround = k['avg_turnaround_days'] as num?;
     final tiles = <_StatTile>[
       _StatTile(Icons.shopping_bag_rounded, 'Orders', '${_n(k['total_orders'])}', cs.primary,
@@ -145,7 +152,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
           sub: 'past due date, not delivered'),
       _StatTile(Icons.timer_rounded, 'On-time delivery', onTime == null ? '—' : '${onTime.round()}%',
           onTime == null ? cs.onSurfaceVariant : (onTime >= 80 ? st.success : st.warning),
-          sub: '${_n(k['delayed'])} delivered late'),
+          sub: '${lateDelivered.toInt()} delivered late · ${overdueCount.toInt()} overdue'),
       _StatTile(Icons.hourglass_bottom_rounded, 'Avg turnaround',
           turnaround == null ? '—' : '${turnaround.toStringAsFixed(1)} days', cs.tertiary,
           sub: 'order to delivery'),

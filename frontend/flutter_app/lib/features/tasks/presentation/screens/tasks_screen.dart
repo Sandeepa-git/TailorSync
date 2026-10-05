@@ -61,8 +61,10 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
     });
     try {
       final api = ref.read(apiClientProvider);
-      final userResp = await api.getMe();
-      final ordersResp = await api.listOrders();
+      // Perf: fire both independent requests together.
+      final results = await Future.wait([api.getMe(), api.listOrders()]);
+      final userResp = results[0];
+      final ordersResp = results[1];
 
       if (mounted) {
         setState(() {

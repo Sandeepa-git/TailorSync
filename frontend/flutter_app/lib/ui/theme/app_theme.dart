@@ -83,7 +83,7 @@ abstract final class TsTheme {
       textTheme: text,
       scaffoldBackgroundColor: cs.surface,
       canvasColor: cs.surface,
-      splashFactory: InkSparkle.splashFactory,
+      splashFactory: InkRipple.splashFactory,
       visualDensity: VisualDensity.standard,
       materialTapTargetSize: MaterialTapTargetSize.padded,
       extensions: [status],
