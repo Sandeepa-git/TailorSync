@@ -171,6 +171,16 @@ class _CustomersListScreenState extends ConsumerState<CustomersListScreen> {
                       ),
                     ],
                   ),
+                if (c.address != null && c.address!.isNotEmpty)
+                  Row(
+                    children: [
+                      Icon(Icons.location_on_outlined, size: 12, color: cs.onSurfaceVariant),
+                      const SizedBox(width: 4),
+                      Flexible(
+                        child: Text(c.address!, style: context.text.bodySmall, maxLines: 1, overflow: TextOverflow.ellipsis),
+                      ),
+                    ],
+                  ),
               ],
             ),
           ),
@@ -236,6 +246,16 @@ class _CustomersListScreenState extends ConsumerState<CustomersListScreen> {
                                   Icon(Icons.phone_outlined, size: 16, color: cs.onSurfaceVariant),
                                   const SizedBox(width: 8),
                                   Text(customer.phone!, style: text.bodyMedium?.copyWith(color: cs.onSurfaceVariant)),
+                                ],
+                              ),
+                            ],
+                            if (customer.address != null && customer.address!.isNotEmpty) ...[
+                              const SizedBox(height: 4),
+                              Row(
+                                children: [
+                                  Icon(Icons.location_on_outlined, size: 16, color: cs.onSurfaceVariant),
+                                  const SizedBox(width: 8),
+                                  Expanded(child: Text(customer.address!, style: text.bodyMedium?.copyWith(color: cs.onSurfaceVariant))),
                                 ],
                               ),
                             ],
